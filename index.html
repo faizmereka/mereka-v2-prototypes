@@ -2120,6 +2120,19 @@ const API = {
   mode: 'demo', // 'demo' | 'live' | 'offline'
 };
 
+// Cache for live data to avoid re-fetching
+const LIVE = {
+  dashboard: null,
+  expStats: null, expList: [],
+  expertiseStats: null, expertiseList: [],
+  hubStats: null, hubList: [],
+  jobStats: null, jobList: [],
+  bookingStats: null, bookingList: [], bookingTrends: null, topServices: null,
+  userStats: null, userList: [],
+  contractList: [], proposalList: [],
+  serviceStats: null,
+};
+
 function openApiModal(){
   document.getElementById('apiModalOverlay').classList.add('open');
 }
@@ -2153,7 +2166,6 @@ async function handleApiLogin(e){
       throw new Error(data.error?.message || 'Login failed');
     }
 
-    // Store token if returned in body (some setups return it)
     if(data.data?.tokens?.accessToken){
       API.token = data.data.tokens.accessToken;
     }
@@ -2193,81 +2205,76 @@ async function apiFetch(path){
     headers,
     credentials: 'include'
   });
-  if(!res.ok) throw new Error(`API ${res.status}`);
+  if(!res.ok) throw new Error(`API ${res.status}: ${path}`);
   return res.json();
 }
 
-// ===================== FETCH ALL LIVE DATA =====================
+// Helper: safely get nested value
+function safeVal(obj, path, fallback){
+  try { return path.split('.').reduce((o,k) => o[k], obj) ?? fallback; } catch(e){ return fallback; }
+}
+
+function fmt(n){ return n != null ? Number(n).toLocaleString() : '—'; }
+function fmtRM(n){ return n != null ? 'RM ' + Number(n).toLocaleString() : '—'; }
+function fmtPct(n){ return n != null ? Number(n).toFixed(1) + '%' : '—'; }
+
+// ===================== COMPREHENSIVE FETCH =====================
 async function fetchAllLiveData(){
   try {
-    // Fetch all stats in parallel
-    const [dashboard, expStats, expertiseStats, hubStats, jobStats, bookingStats, bookingTrends, topServices, userStats] = await Promise.allSettled([
-      apiFetch('/admin/dashboard/stats'),
-      apiFetch('/admin/experiences/stats'),
-      apiFetch('/admin/expertises/stats'),
-      apiFetch('/admin/hubs/stats'),
-      apiFetch('/admin/jobs/stats'),
-      apiFetch('/admin/bookings/stats'),
-      apiFetch('/admin/bookings/trends'),
-      apiFetch('/admin/bookings/top-services'),
-      apiFetch('/admin/users/stats'),
+    // WAVE 1: All stats endpoints + list endpoints in parallel
+    const results = await Promise.allSettled([
+      apiFetch('/admin/dashboard/stats'),           // 0
+      apiFetch('/admin/experiences/stats'),          // 1
+      apiFetch('/admin/expertises/stats'),           // 2
+      apiFetch('/admin/hubs/stats'),                 // 3
+      apiFetch('/admin/jobs/stats'),                 // 4
+      apiFetch('/admin/bookings/stats'),             // 5
+      apiFetch('/admin/users/stats'),                // 6
+      apiFetch('/admin/experiences?limit=100&sortBy=createdAt&sortOrder=desc'),   // 7
+      apiFetch('/admin/expertises?limit=100&sortBy=createdAt&sortOrder=desc'),    // 8
+      apiFetch('/admin/hubs?limit=100&sortBy=createdAt&sortOrder=desc'),          // 9
+      apiFetch('/admin/jobs?limit=100&sortBy=createdAt&sortOrder=desc'),          // 10
+      apiFetch('/admin/bookings?limit=100&sortBy=createdAt&sortOrder=desc'),      // 11
+      apiFetch('/admin/users?limit=100&sortBy=createdAt&sortOrder=desc'),         // 12
+      apiFetch('/admin/contracts?limit=100&sortBy=createdAt&sortOrder=desc'),     // 13
+      apiFetch('/admin/proposals?limit=100&sortBy=createdAt&sortOrder=desc'),     // 14
     ]);
 
-    // Also fetch list data for tables
-    const [expList, expertiseList, hubList, jobList, bookingList, userList] = await Promise.allSettled([
-      apiFetch('/admin/experiences?limit=50&sortBy=createdAt&sortOrder=desc'),
-      apiFetch('/admin/expertises?limit=50&sortBy=createdAt&sortOrder=desc'),
-      apiFetch('/admin/hubs?limit=50&sortBy=createdAt&sortOrder=desc'),
-      apiFetch('/admin/jobs?limit=50&sortBy=createdAt&sortOrder=desc'),
-      apiFetch('/admin/bookings?limit=50&sortBy=createdAt&sortOrder=desc'),
-      apiFetch('/admin/users?limit=50&sortBy=createdAt&sortOrder=desc'),
+    // Store in LIVE cache
+    const val = (i) => results[i]?.status === 'fulfilled' ? results[i].value : null;
+    LIVE.dashboard      = val(0)?.data;
+    LIVE.expStats        = val(1)?.data;
+    LIVE.expertiseStats  = val(2)?.data;
+    LIVE.hubStats        = val(3)?.data;
+    LIVE.jobStats        = val(4)?.data;
+    LIVE.bookingStats    = val(5)?.data;
+    LIVE.userStats       = val(6)?.data;
+    LIVE.expList         = val(7)?.data || [];
+    LIVE.expertiseList   = val(8)?.data || [];
+    LIVE.hubList         = val(9)?.data || [];
+    LIVE.jobList         = val(10)?.data || [];
+    LIVE.bookingList     = val(11)?.data || [];
+    LIVE.userList        = val(12)?.data || [];
+    LIVE.contractList    = val(13)?.data || [];
+    LIVE.proposalList    = val(14)?.data || [];
+
+    // WAVE 2: secondary endpoints (non-critical, best-effort)
+    const wave2 = await Promise.allSettled([
+      apiFetch('/admin/bookings/trends').catch(()=>null),       // 0
+      apiFetch('/admin/bookings/top-services').catch(()=>null), // 1
+      apiFetch('/admin/services/stats').catch(()=>null),        // 2
     ]);
+    LIVE.bookingTrends = wave2[0]?.status === 'fulfilled' ? wave2[0].value?.data : null;
+    LIVE.topServices   = wave2[1]?.status === 'fulfilled' ? wave2[1].value?.data : null;
+    LIVE.serviceStats  = wave2[2]?.status === 'fulfilled' ? wave2[2].value?.data : null;
 
-    // Populate Overview KPIs from dashboard stats
-    if(dashboard.status === 'fulfilled' && dashboard.value.data){
-      const d = dashboard.value.data;
-      populateOverviewKPIs(d);
-    }
+    console.log('[Mereka API] All data fetched:', Object.keys(LIVE).map(k => `${k}: ${LIVE[k] ? (Array.isArray(LIVE[k]) ? LIVE[k].length + ' items' : 'OK') : 'null'}`));
 
-    // Populate Experience view
-    if(expStats.status === 'fulfilled' && expStats.value.data){
-      populateExperienceStats(expStats.value.data);
-    }
-    if(expList.status === 'fulfilled'){
-      populateExperienceTable(expList.value.data, expList.value.meta);
-    }
-
-    // Populate Expertise view
-    if(expertiseStats.status === 'fulfilled' && expertiseStats.value.data){
-      populateExpertiseStats(expertiseStats.value.data);
-    }
-    if(expertiseList.status === 'fulfilled'){
-      populateExpertiseTable(expertiseList.value.data, expertiseList.value.meta);
-    }
-
-    // Populate Hub stats
-    if(hubStats.status === 'fulfilled' && hubStats.value.data){
-      populateHubStats(hubStats.value.data);
-    }
-
-    // Populate Job stats
-    if(jobStats.status === 'fulfilled' && jobStats.value.data){
-      populateJobStats(jobStats.value.data);
-    }
-
-    // Populate Booking stats
-    if(bookingStats.status === 'fulfilled' && bookingStats.value.data){
-      populateBookingStats(bookingStats.value.data);
-    }
-
-    console.log('[Mereka API] Live data loaded successfully');
-    console.log('Dashboard:', dashboard.status === 'fulfilled' ? dashboard.value.data : 'failed');
-    console.log('Experiences:', expStats.status === 'fulfilled' ? expStats.value.data : 'failed');
-    console.log('Expertise:', expertiseStats.status === 'fulfilled' ? expertiseStats.value.data : 'failed');
-    console.log('Hubs:', hubStats.status === 'fulfilled' ? hubStats.value.data : 'failed');
-    console.log('Jobs:', jobStats.status === 'fulfilled' ? jobStats.value.data : 'failed');
-    console.log('Bookings:', bookingStats.status === 'fulfilled' ? bookingStats.value.data : 'failed');
-    console.log('Users:', userStats.status === 'fulfilled' ? userStats.value.data : 'failed');
+    // Now populate ALL views
+    populateOverviewFromLive();
+    populateExperienceView();
+    populateExpertiseView();
+    populateGigsView();
 
   } catch(err){
     console.error('[Mereka API] Failed to fetch live data:', err);
@@ -2276,147 +2283,334 @@ async function fetchAllLiveData(){
   }
 }
 
-// ===================== POPULATE FUNCTIONS =====================
-// These update the DOM with real data, targeting existing KPI cards and tables
+// ===================== OVERVIEW POPULATE =====================
+function populateOverviewFromLive(){
+  const d = LIVE.dashboard;
+  const b = LIVE.bookingStats;
+  const u = LIVE.userStats;
+  const j = LIVE.jobStats;
+  if(!d) return;
 
-function populateOverviewKPIs(d){
-  // The overview has KPI cards — update the .value spans inside .when-all
+  // Overview KPI row 1: Total Active Members, Total Revenue, Completion Rate, Employment Outcome
   const kpiCards = document.querySelectorAll('#view-overview .kpi');
-  // Map: card index -> data
-  // Card order: Total Active Members, Active Hubs, Total Bookings, Total Revenue
-  // Then row 2: Active Experiences, Published Expertise, Active Jobs, Contracts
-  const vals = [
-    d.users?.total?.toLocaleString() || '—',
-    d.hubs?.total?.toLocaleString() || '—',
-    d.jobs?.total?.toLocaleString() || '—',
-    '—', // Revenue not in dashboard stats
-    d.experiences?.total?.toLocaleString() || '—',
-    d.expertise?.total?.toLocaleString() || '—',
-    d.contracts?.total?.toLocaleString() || '—',
-    d.proposals?.total?.toLocaleString() || '—',
-  ];
-  kpiCards.forEach((card, i) => {
-    if(i < vals.length){
-      const valEl = card.querySelector('.value .when-all');
-      if(valEl) valEl.textContent = vals[i];
+  
+  // Card 0: Total Active Members — from userStats or dashboard
+  const totalUsers = u?.total || d.users?.total;
+  const activeUsers = u?.active || d.users?.active;
+  setKPI(kpiCards[0], fmt(totalUsers), activeUsers ? fmt(activeUsers) + ' active' : null);
+
+  // Card 1: Total Revenue — from bookingStats if available
+  const totalRevenue = b?.revenue?.total;
+  setKPI(kpiCards[1], totalRevenue ? fmtRM(totalRevenue) : '—', b?.revenue?.thisMonth ? 'This month: ' + fmtRM(b.revenue.thisMonth) : null);
+
+  // Card 2: Completion Rate — keep demo if no real data
+  // Card 3: Employment Outcome — keep demo if no real data
+
+  // Service Overview rows — update with real counts
+  const serviceRows = document.querySelectorAll('#view-overview .divide-y > .py-3');
+  if(serviceRows.length >= 5){
+    // Experiences row
+    const expTotal = LIVE.expStats?.total || d.experiences?.total;
+    const expActive = LIVE.expStats?.active || d.experiences?.published;
+    if(expTotal != null) updateServiceRow(serviceRows[2], expTotal, expActive);
+
+    // Expertise row
+    const xprTotal = LIVE.expertiseStats?.total || d.expertise?.total;
+    const xprPublished = LIVE.expertiseStats?.published || d.expertise?.published;
+    if(xprTotal != null) updateServiceRow(serviceRows[3], xprTotal, xprPublished);
+
+    // Gigs row
+    const gigTotal = j?.total;
+    const gigActive = j?.active;
+    if(gigTotal != null) updateServiceRow(serviceRows[4], gigTotal, gigActive);
+  }
+
+  // Hub count in chip
+  const hubTotal = LIVE.hubStats?.total || d.hubs?.total;
+
+  // Update the cross-service analyser with real user counts
+  if(u){
+    const segCards = document.querySelectorAll('#view-overview .grid-cols-3 .rounded-xl');
+    if(segCards.length >= 3){
+      // Use user type breakdown
+      const learners = u.byType?.learners || 0;
+      const experts = u.byType?.experts || 0;
+      const hubOwners = u.byType?.hubOwners || 0;
+      const valEls = segCards[0].querySelectorAll('.font-bold');
+      if(valEls.length >= 1) valEls[valEls.length - 1].textContent = fmt(learners);
     }
-  });
+  }
+
+  // Update recent activity with real user/booking data if available
+  if(LIVE.bookingList.length > 0){
+    populateRecentActivity(LIVE.bookingList.slice(0, 6));
+  }
 }
 
-function populateExperienceStats(d){
-  // Update experience view KPIs
+function setKPI(card, mainVal, subLabel){
+  if(!card) return;
+  const valEl = card.querySelector('.value');
+  if(!valEl) return;
+  const wa = valEl.querySelector('.when-all');
+  if(wa) wa.textContent = mainVal;
+  else if(valEl.childNodes[0]) valEl.childNodes[0].textContent = mainVal;
+  if(subLabel){
+    const deltaRow = card.querySelector('.delta-pill');
+    if(deltaRow) deltaRow.parentElement.querySelector('.text-slate-400').textContent = subLabel;
+  }
+}
+
+function updateServiceRow(row, total, active){
+  if(!row) return;
+  // Update the count inside the chip
+  const chip = row.querySelector('.chip');
+  if(chip){
+    const txt = chip.textContent;
+    chip.textContent = txt.replace(/·\s*\d+/, '· ' + total);
+  }
+  // Update the numeric columns
+  const vals = row.querySelectorAll('.font-bold');
+  if(vals.length >= 1 && active != null) vals[0].textContent = fmt(active);
+}
+
+function populateRecentActivity(bookings){
+  const container = document.querySelector('#view-overview .card:has(.text-\\[15px\\]:first-child)');
+  // Find the "Recent Activity" card
+  const cards = document.querySelectorAll('#view-overview .grid-cols-2 .card');
+  if(!cards[0]) return;
+  const body = cards[0].querySelector('.p-5:last-child');
+  if(!body || bookings.length === 0) return;
+
+  const colors = [
+    'from-orange-300 to-pink-400', 'from-emerald-300 to-teal-500',
+    'from-sky-300 to-blue-500', 'from-purple-300 to-fuchsia-500',
+    'from-rose-300 to-red-500', 'from-slate-300 to-slate-500'
+  ];
+
+  body.innerHTML = bookings.map((bk, i) => {
+    const name = bk.user?.name || bk.userName || 'User';
+    const service = bk.service?.title || bk.serviceName || bk.type || 'Service';
+    const type = bk.type || 'booking';
+    const date = bk.createdAt ? new Date(bk.createdAt).toLocaleDateString('en-MY', {day:'numeric', month:'short'}) : '';
+    const status = bk.status || '';
+    return `<div class="flex items-start gap-3">
+      <div class="avatar bg-gradient-to-br ${colors[i % 6]}"></div>
+      <div class="flex-1 text-[13px]"><b>${name}</b> ${status} <span class="text-slate-500">${type}: ${service}</span>
+        <div class="text-[11px] text-slate-400 mt-0.5">${date}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===================== EXPERIENCE VIEW POPULATE =====================
+function populateExperienceView(){
+  const s = LIVE.expStats;
+  if(!s) return;
+
+  // KPI cards: Total Experiences, Total Attended, Avg Rating, Revenue, Fill Rate, Repeat Attendance
   const kpiCards = document.querySelectorAll('#view-experience .kpi');
-  const vals = [
-    d.total?.toLocaleString() || '—',
-    d.active?.toLocaleString() || '—',
-    d.featured?.toLocaleString() || '—',
-    d.toReview?.toLocaleString() || '—',
-  ];
-  kpiCards.forEach((card, i) => {
-    if(i < vals.length){
-      const valEl = card.querySelector('.value');
-      if(valEl){
-        // Only update the text content of .when-all if it exists, otherwise the main .value
-        const wa = valEl.querySelector('.when-all');
-        if(wa) wa.textContent = vals[i];
-        else valEl.childNodes[0].textContent = vals[i];
-      }
+  setKPI(kpiCards[0], fmt(s.total));
+  setKPI(kpiCards[1], fmt(s.active), s.byStatus?.ACTIVE ? fmt(s.byStatus.ACTIVE) + ' active' : null);
+  setKPI(kpiCards[2], s.featured != null ? fmt(s.featured) + ' featured' : '—');
+
+  // byType stats
+  const byType = s.byType || {};
+  const byStatus = s.byStatus || {};
+  
+  // Revenue from bookingStats
+  if(LIVE.bookingStats?.revenue){
+    setKPI(kpiCards[3], fmtRM(LIVE.bookingStats.revenue.total));
+  }
+
+  // Populate experience table with real data
+  if(LIVE.expList.length > 0){
+    const table = document.querySelector('#view-experience .table tbody');
+    if(table){
+      const rows = LIVE.expList.slice(0, 10).map(exp => {
+        const statusMap = {'ACTIVE':'chip-g','DRAFTED':'chip-y','EXPIRED':'chip-r','PUBLISHED':'chip-g'};
+        const statusChip = statusMap[exp.status] || 'chip-slate';
+        const date = exp.createdAt ? new Date(exp.createdAt).toLocaleDateString('en-MY',{day:'numeric',month:'short',year:'numeric'}) : '—';
+        const expType = exp.experienceType || '—';
+        const typeChipMap = {'Physical':'chip-b','Virtual':'chip-y','Hybrid':'chip-p'};
+        const typeChip = typeChipMap[expType] || 'chip-slate';
+        const hub = exp.hub?.name || exp.hostDetails?.name || '—';
+        const tickets = exp.tickets?.reduce((sum, t) => sum + (t.quantity || 0), 0) || exp.bookingStats?.totalBookings || '—';
+        const views = exp.views || 0;
+        const title = exp.experienceTitle || exp.title || '—';
+        const slug = exp.slug || exp._id || '';
+
+        return `<tr class="row-program" data-detail="experience:${slug}" onclick="showDetail('experience','${slug}')" style="cursor:pointer">
+          <td class="font-medium">${title}</td>
+          <td><span class="chip ${typeChip}">${expType}</span></td>
+          <td>${hub}</td>
+          <td><span class="chip ${statusChip}">${exp.status || '—'}</span></td>
+          <td>${fmt(tickets)}</td>
+          <td>${date}</td>
+        </tr>`;
+      }).join('');
+      table.innerHTML = rows;
     }
-  });
+  }
+
+  // Update the type breakdown chart data if byType exists
+  if(Object.keys(byType).length > 0){
+    console.log('[API] Experience byType:', byType);
+  }
+  if(Object.keys(byStatus).length > 0){
+    console.log('[API] Experience byStatus:', byStatus);
+  }
 }
 
-function populateExperienceTable(data, meta){
-  if(!data || !data.length) return;
-  const table = document.querySelector('#view-experience .table tbody');
-  if(!table) return;
+// ===================== EXPERTISE VIEW POPULATE =====================
+function populateExpertiseView(){
+  const s = LIVE.expertiseStats;
+  if(!s) return;
 
-  // Build new rows from API data
-  const rows = data.slice(0,10).map(exp => {
-    const statusChip = exp.status === 'ACTIVE' ? 'chip-g' : exp.status === 'DRAFTED' ? 'chip-y' : 'chip-r';
-    const date = new Date(exp.createdAt).toLocaleDateString('en-MY', {day:'numeric',month:'short',year:'numeric'});
-    return `<tr class="row-program" style="cursor:default">
-      <td class="font-medium">${exp.experienceTitle || '—'}</td>
-      <td>${exp.experienceType || '—'}</td>
-      <td>${exp.hub?.name || '—'}</td>
-      <td><span class="chip ${statusChip}">${exp.status}</span></td>
-      <td>${exp.views?.toLocaleString() || '0'}</td>
-      <td>${date}</td>
-    </tr>`;
-  }).join('');
-
-  table.innerHTML = rows;
-}
-
-function populateExpertiseStats(d){
   const kpiCards = document.querySelectorAll('#view-expertise .kpi');
-  const vals = [
-    d.total?.toLocaleString() || '—',
-    d.published?.toLocaleString() || '—',
-    d.toReview?.toLocaleString() || '—',
-  ];
-  kpiCards.forEach((card, i) => {
-    if(i < vals.length){
-      const valEl = card.querySelector('.value');
-      if(valEl){
-        const wa = valEl.querySelector('.when-all');
-        if(wa) wa.textContent = vals[i];
-        else if(valEl.childNodes[0]) valEl.childNodes[0].textContent = vals[i];
-      }
-    }
-  });
+  // KPIs: Active Listings, Total Bookings, Avg Hourly Rate, Revenue, Avg Rating, Repeat Client
+  setKPI(kpiCards[0], fmt(s.total));
+  setKPI(kpiCards[1], fmt(s.published), 'published');
+
+  // Populate expert leaderboard table with real expertise data
+  if(LIVE.expertiseList.length > 0){
+    const table = document.querySelector('#view-expertise .table:last-of-type tbody');
+    if(!table) return;
+
+    const rows = LIVE.expertiseList.slice(0, 10).map((exp, i) => {
+      const statusMap = {'published':'chip-g','draft':'chip-y','archived':'chip-slate'};
+      const statusChip = statusMap[exp.status] || 'chip-slate';
+      const title = exp.expertiseTitle || exp.title || '—';
+      const hub = exp.hub?.name || '—';
+      const rating = exp.rating ? exp.rating.toFixed(1) : '—';
+      const creator = exp.creator?.name || exp.user?.name || '—';
+      const slug = exp.slug || exp._id || '';
+
+      return `<tr class="row-program" data-detail="expert:${slug}" onclick="showDetail('expert','${slug}')" style="cursor:pointer">
+        <td><span class="rank">${i + 1}</span></td>
+        <td class="flex items-center gap-3"><b>${creator}</b></td>
+        <td>${title}</td>
+        <td><span class="chip ${statusChip}">${exp.status || '—'}</span></td>
+        <td>${rating}</td>
+        <td>${hub}</td>
+      </tr>`;
+    }).join('');
+    table.innerHTML = rows;
+
+    // Update Expert Leaderboard header
+    const thead = document.querySelector('#view-expertise .table:last-of-type thead tr');
+    if(thead) thead.innerHTML = '<th>Rank</th><th>Expert</th><th>Expertise</th><th>Status</th><th>Rating</th><th>Hub</th>';
+  }
+
+  // Update the category distribution with real data if available
+  updateCategoryDistribution();
 }
 
-function populateExpertiseTable(data, meta){
-  if(!data || !data.length) return;
-  const table = document.querySelector('#view-expertise .table tbody');
-  if(!table) return;
+function updateCategoryDistribution(){
+  // Group expertise by category/focusArea
+  if(LIVE.expertiseList.length === 0) return;
+  const cats = {};
+  LIVE.expertiseList.forEach(exp => {
+    const cat = exp.focusArea?.name || exp.category || 'Other';
+    cats[cat] = (cats[cat] || 0) + 1;
+  });
 
-  const rows = data.slice(0,10).map((exp, i) => {
-    const statusChip = exp.status === 'published' ? 'chip-g' : exp.status === 'draft' ? 'chip-y' : 'chip-slate';
-    return `<tr class="row-program" style="cursor:default">
-      <td><span class="rank">${i+1}</span></td>
-      <td class="font-medium">${exp.expertiseTitle || '—'}</td>
-      <td>${exp.hub?.name || '—'}</td>
-      <td><span class="chip ${statusChip}">${exp.status}</span></td>
-      <td>${exp.rating?.toFixed(1) || '—'}</td>
-      <td>${exp.creator?.name || '—'}</td>
-    </tr>`;
+  const sorted = Object.entries(cats).sort((a,b) => b[1] - a[1]).slice(0, 6);
+  const max = sorted[0]?.[1] || 1;
+
+  const container = document.querySelector('#view-expertise .card.mt-5 .flex.flex-col.gap-3');
+  if(!container) return;
+
+  const tealShades = ['#0D9488','#14B8A6','#2DD4BF','#5EEAD4','#99F6E4','#CCFBF1'];
+  container.innerHTML = sorted.map(([cat, count], i) => {
+    const pct = Math.round((count / max) * 100);
+    return `<div class="grid grid-cols-[110px_1fr_70px_70px] items-center gap-3">
+      <span>${cat}</span>
+      <div class="bar-track h-3"><div class="bar-fill" style="width:${pct}%;background:${tealShades[i] || '#CCFBF1'}"></div></div>
+      <span class="text-right font-medium">${count}</span>
+      <span class="text-right text-slate-500">—</span>
+    </div>`;
   }).join('');
-
-  table.innerHTML = rows;
 }
 
-function populateHubStats(d){
-  // Update overview or hub-related cards if they exist
-  console.log('[API] Hub stats:', d);
-}
+// ===================== GIGS VIEW POPULATE =====================
+function populateGigsView(){
+  const j = LIVE.jobStats;
+  if(!j) return;
 
-function populateJobStats(d){
-  // Update gig view KPIs
   const kpiCards = document.querySelectorAll('#view-gigs .kpi');
-  const vals = [
-    d.total?.toLocaleString() || '—',
-    d.active?.toLocaleString() || '—',
-    d.inProgress?.toLocaleString() || '—',
-    d.totalProposals?.toLocaleString() || '—',
-    d.totalContracts?.toLocaleString() || '—',
-  ];
-  kpiCards.forEach((card, i) => {
-    if(i < vals.length){
-      const valEl = card.querySelector('.value');
-      if(valEl){
-        const wa = valEl.querySelector('.when-all');
-        if(wa) wa.textContent = vals[i];
-        else if(valEl.childNodes[0]) valEl.childNodes[0].textContent = vals[i];
-      }
-    }
-  });
+  // KPIs: Open Gigs, Completed Gigs, Total Value, Avg Time to Fill, Freelancer Sat, Close Rate
+  setKPI(kpiCards[0], fmt(j.total), j.active ? fmt(j.active) + ' active' : null);
+  setKPI(kpiCards[1], fmt(j.inProgress), 'in progress');
+  setKPI(kpiCards[2], fmt(j.totalProposals), 'proposals');
+  setKPI(kpiCards[3], fmt(j.totalContracts), 'contracts');
+
+  // Contract/proposal stats
+  if(j.contractsByStatus){
+    setKPI(kpiCards[4], fmt(j.contractsByStatus.completed || 0), 'completed contracts');
+  }
+
+  // Total payment info
+  if(j.totalContractPayments != null){
+    setKPI(kpiCards[5], fmt(j.totalContractPayments), 'contract payments');
+  }
+
+  // Populate job listings table
+  if(LIVE.jobList.length > 0){
+    const table = document.querySelector('#view-gigs .table tbody');
+    if(!table) return;
+
+    const rows = LIVE.jobList.slice(0, 10).map(job => {
+      const statusMap = {'open':'chip-g','in_progress':'chip-y','completed':'chip-b','closed':'chip-slate','cancelled':'chip-r'};
+      const statusChip = statusMap[job.status] || 'chip-slate';
+      const date = job.createdAt ? new Date(job.createdAt).toLocaleDateString('en-MY',{day:'numeric',month:'short',year:'numeric'}) : '—';
+      const budget = job.budget ? fmtRM(job.budget) : '—';
+      const title = job.title || '—';
+      const proposals = job.proposalCount || job.proposals?.length || 0;
+
+      return `<tr style="cursor:default">
+        <td class="font-medium">${title}</td>
+        <td class="text-right">${proposals}</td>
+        <td class="text-right">${budget}</td>
+        <td><span class="chip ${statusChip}">${job.status || '—'}</span></td>
+        <td>${date}</td>
+      </tr>`;
+    }).join('');
+    table.innerHTML = rows;
+
+    // Update table header
+    const thead = document.querySelector('#view-gigs .table thead tr');
+    if(thead) thead.innerHTML = '<th>Job Title</th><th class="text-right">Proposals</th><th class="text-right">Budget</th><th>Status</th><th>Created</th>';
+  }
+
+  // Update category breakdown with real job data
+  updateGigCategories();
 }
 
-function populateBookingStats(d){
-  console.log('[API] Booking stats:', d);
-  // Revenue data available: d.revenue.total, d.revenue.thisMonth, etc.
+function updateGigCategories(){
+  if(LIVE.jobList.length === 0) return;
+  const cats = {};
+  LIVE.jobList.forEach(job => {
+    const cat = job.category?.name || job.focusArea?.name || job.skills?.[0]?.name || 'Other';
+    cats[cat] = (cats[cat] || 0) + 1;
+  });
+
+  const sorted = Object.entries(cats).sort((a,b) => b[1] - a[1]).slice(0, 6);
+  const max = sorted[0]?.[1] || 1;
+
+  const containers = document.querySelectorAll('#view-gigs .card.mt-5 .flex.flex-col.gap-3');
+  if(!containers[0]) return;
+
+  const purpleShades = ['#9333EA','#A855F7','#C084FC','#D8B4FE','#E9D5FF','#F3E8FF'];
+  containers[0].innerHTML = sorted.map(([cat, count], i) => {
+    const pct = Math.round((count / max) * 100);
+    return `<div class="grid grid-cols-[120px_1fr_70px] items-center gap-3">
+      <span>${cat}</span>
+      <div class="bar-track h-3.5"><div class="bar-fill" style="width:${pct}%;background:${purpleShades[i] || '#F3E8FF'}"></div></div>
+      <span class="text-right font-medium">${count}</span>
+    </div>`;
+  }).join('');
 }
+
 </script>
 
 <!-- ===== STICKY FILTER FAB ===== -->
