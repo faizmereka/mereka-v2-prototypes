@@ -232,6 +232,32 @@
     .fab-panel{width:calc(100vw - 32px);max-height:60vh}
     .fab-btn{width:48px;height:48px;border-radius:14px}
   }
+
+  /* ===== API Login Modal ===== */
+  .api-modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center}
+  .api-modal-overlay.open{display:flex}
+  .api-modal{background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(15,23,42,.2);width:380px;padding:32px;text-align:center}
+  .api-modal h2{font-size:20px;font-weight:800;color:var(--ink);margin:0 0 4px}
+  .api-modal p{font-size:13px;color:#64748B;margin:0 0 20px}
+  .api-input{width:100%;padding:10px 14px;font-size:13.5px;border:1px solid var(--line);border-radius:10px;margin-bottom:12px;color:var(--ink);background:#F8FAFC;transition:all .15s}
+  .api-input:focus{outline:none;border-color:#F9A8D4;box-shadow:0 0 0 3px #FDF2F8;background:#fff}
+  .api-login-btn{width:100%;padding:11px;border:none;border-radius:10px;background:var(--brand-pink);color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+  .api-login-btn:hover{background:#CF2B6B}
+  .api-login-btn:disabled{opacity:.5;cursor:not-allowed}
+  .api-error{color:#DC2626;font-size:12px;margin-top:8px;display:none}
+  .api-error.show{display:block}
+  .api-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;margin-bottom:16px}
+  .api-badge.live{background:#DCFCE7;color:#166534}
+  .api-badge.demo{background:#FEF3C7;color:#92400E}
+  .api-badge.offline{background:#FEE2E2;color:#991B1B}
+  /* data loading shimmer */
+  .shimmer{background:linear-gradient(90deg,#F1F5F9 25%,#E2E8F0 50%,#F1F5F9 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px;min-height:28px}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  /* connection indicator in header */
+  .conn-dot{width:8px;height:8px;border-radius:999px;display:inline-block}
+  .conn-dot.live{background:#16A34A;box-shadow:0 0 6px rgba(22,163,74,.4)}
+  .conn-dot.demo{background:#F59E0B}
+  .conn-dot.offline{background:#DC2626}
 </style>
 </head>
 <body class="min-h-screen mode-all">
@@ -275,6 +301,7 @@
       </div>
     </div>
     <div class="flex items-center gap-3">
+      <button class="btn" id="apiConnBtn" onclick="openApiModal()" style="font-size:11.5px;gap:5px"><span class="conn-dot demo" id="connDot"></span><span id="connLabel">Sample Data</span></button>
       <button class="btn btn-pink">My Dashboard</button>
       <button class="relative w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
@@ -2277,6 +2304,333 @@
   }
 
   show('overview');
+</script>
+
+
+<!-- ===== API LOGIN MODAL ===== -->
+<div class="api-modal-overlay" id="apiModalOverlay">
+  <div class="api-modal">
+    <div class="api-badge demo" id="apiModeBadge">Sample Data Mode</div>
+    <h2>Connect to Live Data</h2>
+    <p>Sign in with your Mereka admin credentials to load real data from the platform.</p>
+    <form id="apiLoginForm" onsubmit="handleApiLogin(event)">
+      <input type="email" class="api-input" id="apiEmail" placeholder="Admin email" required />
+      <input type="password" class="api-input" id="apiPassword" placeholder="Password" required />
+      <input type="text" class="api-input" id="apiBaseUrl" placeholder="API URL" value="https://api.mereka.dev/api/v1" />
+      <button type="submit" class="api-login-btn" id="apiLoginBtn">Connect & Load Data</button>
+    </form>
+    <div class="api-error" id="apiError"></div>
+    <div style="margin-top:16px;font-size:12px;color:#94A3B8">
+      <button onclick="closeApiModal()" style="background:none;border:none;color:var(--brand-pink);font-weight:600;cursor:pointer;font-size:12px">Continue with sample data</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== API DATA LAYER =====================
+const API = {
+  baseUrl: 'https://api.mereka.dev/api/v1',
+  token: null,
+  mode: 'demo', // 'demo' | 'live' | 'offline'
+};
+
+function openApiModal(){
+  document.getElementById('apiModalOverlay').classList.add('open');
+}
+function closeApiModal(){
+  document.getElementById('apiModalOverlay').classList.remove('open');
+}
+
+async function handleApiLogin(e){
+  e.preventDefault();
+  const email = document.getElementById('apiEmail').value;
+  const password = document.getElementById('apiPassword').value;
+  const baseUrl = document.getElementById('apiBaseUrl').value.replace(/\/+$/,'');
+  const btn = document.getElementById('apiLoginBtn');
+  const errEl = document.getElementById('apiError');
+
+  btn.disabled = true;
+  btn.textContent = 'Connecting...';
+  errEl.classList.remove('show');
+  API.baseUrl = baseUrl;
+
+  try {
+    const res = await fetch(`${baseUrl}/admin/auth/login`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      credentials: 'include',
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if(!res.ok || !data.success){
+      throw new Error(data.error?.message || 'Login failed');
+    }
+
+    // Store token if returned in body (some setups return it)
+    if(data.data?.tokens?.accessToken){
+      API.token = data.data.tokens.accessToken;
+    }
+
+    API.mode = 'live';
+    updateConnectionUI();
+    closeApiModal();
+
+    // Fetch all live data
+    await fetchAllLiveData();
+
+  } catch(err){
+    errEl.textContent = err.message || 'Connection failed. Check URL and credentials.';
+    errEl.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Connect & Load Data';
+  }
+}
+
+function updateConnectionUI(){
+  const dot = document.getElementById('connDot');
+  const label = document.getElementById('connLabel');
+  const badge = document.getElementById('apiModeBadge');
+  dot.className = 'conn-dot ' + API.mode;
+  label.textContent = API.mode === 'live' ? 'Live Data' : API.mode === 'offline' ? 'Offline' : 'Sample Data';
+  if(badge){
+    badge.className = 'api-badge ' + API.mode;
+    badge.textContent = API.mode === 'live' ? 'Connected to Live API' : API.mode === 'offline' ? 'Connection Lost' : 'Sample Data Mode';
+  }
+}
+
+async function apiFetch(path){
+  const headers = {'Content-Type':'application/json'};
+  if(API.token) headers['Authorization'] = `Bearer ${API.token}`;
+  const res = await fetch(`${API.baseUrl}${path}`, {
+    headers,
+    credentials: 'include'
+  });
+  if(!res.ok) throw new Error(`API ${res.status}`);
+  return res.json();
+}
+
+// ===================== FETCH ALL LIVE DATA =====================
+async function fetchAllLiveData(){
+  try {
+    // Fetch all stats in parallel
+    const [dashboard, expStats, expertiseStats, hubStats, jobStats, bookingStats, bookingTrends, topServices, userStats] = await Promise.allSettled([
+      apiFetch('/admin/dashboard/stats'),
+      apiFetch('/admin/experiences/stats'),
+      apiFetch('/admin/expertises/stats'),
+      apiFetch('/admin/hubs/stats'),
+      apiFetch('/admin/jobs/stats'),
+      apiFetch('/admin/bookings/stats'),
+      apiFetch('/admin/bookings/trends'),
+      apiFetch('/admin/bookings/top-services'),
+      apiFetch('/admin/users/stats'),
+    ]);
+
+    // Also fetch list data for tables
+    const [expList, expertiseList, hubList, jobList, bookingList, userList] = await Promise.allSettled([
+      apiFetch('/admin/experiences?limit=50&sortBy=createdAt&sortOrder=desc'),
+      apiFetch('/admin/expertises?limit=50&sortBy=createdAt&sortOrder=desc'),
+      apiFetch('/admin/hubs?limit=50&sortBy=createdAt&sortOrder=desc'),
+      apiFetch('/admin/jobs?limit=50&sortBy=createdAt&sortOrder=desc'),
+      apiFetch('/admin/bookings?limit=50&sortBy=createdAt&sortOrder=desc'),
+      apiFetch('/admin/users?limit=50&sortBy=createdAt&sortOrder=desc'),
+    ]);
+
+    // Populate Overview KPIs from dashboard stats
+    if(dashboard.status === 'fulfilled' && dashboard.value.data){
+      const d = dashboard.value.data;
+      populateOverviewKPIs(d);
+    }
+
+    // Populate Experience view
+    if(expStats.status === 'fulfilled' && expStats.value.data){
+      populateExperienceStats(expStats.value.data);
+    }
+    if(expList.status === 'fulfilled'){
+      populateExperienceTable(expList.value.data, expList.value.meta);
+    }
+
+    // Populate Expertise view
+    if(expertiseStats.status === 'fulfilled' && expertiseStats.value.data){
+      populateExpertiseStats(expertiseStats.value.data);
+    }
+    if(expertiseList.status === 'fulfilled'){
+      populateExpertiseTable(expertiseList.value.data, expertiseList.value.meta);
+    }
+
+    // Populate Hub stats
+    if(hubStats.status === 'fulfilled' && hubStats.value.data){
+      populateHubStats(hubStats.value.data);
+    }
+
+    // Populate Job stats
+    if(jobStats.status === 'fulfilled' && jobStats.value.data){
+      populateJobStats(jobStats.value.data);
+    }
+
+    // Populate Booking stats
+    if(bookingStats.status === 'fulfilled' && bookingStats.value.data){
+      populateBookingStats(bookingStats.value.data);
+    }
+
+    console.log('[Mereka API] Live data loaded successfully');
+    console.log('Dashboard:', dashboard.status === 'fulfilled' ? dashboard.value.data : 'failed');
+    console.log('Experiences:', expStats.status === 'fulfilled' ? expStats.value.data : 'failed');
+    console.log('Expertise:', expertiseStats.status === 'fulfilled' ? expertiseStats.value.data : 'failed');
+    console.log('Hubs:', hubStats.status === 'fulfilled' ? hubStats.value.data : 'failed');
+    console.log('Jobs:', jobStats.status === 'fulfilled' ? jobStats.value.data : 'failed');
+    console.log('Bookings:', bookingStats.status === 'fulfilled' ? bookingStats.value.data : 'failed');
+    console.log('Users:', userStats.status === 'fulfilled' ? userStats.value.data : 'failed');
+
+  } catch(err){
+    console.error('[Mereka API] Failed to fetch live data:', err);
+    API.mode = 'offline';
+    updateConnectionUI();
+  }
+}
+
+// ===================== POPULATE FUNCTIONS =====================
+// These update the DOM with real data, targeting existing KPI cards and tables
+
+function populateOverviewKPIs(d){
+  // The overview has KPI cards — update the .value spans inside .when-all
+  const kpiCards = document.querySelectorAll('#view-overview .kpi');
+  // Map: card index -> data
+  // Card order: Total Active Members, Active Hubs, Total Bookings, Total Revenue
+  // Then row 2: Active Experiences, Published Expertise, Active Jobs, Contracts
+  const vals = [
+    d.users?.total?.toLocaleString() || '—',
+    d.hubs?.total?.toLocaleString() || '—',
+    d.jobs?.total?.toLocaleString() || '—',
+    '—', // Revenue not in dashboard stats
+    d.experiences?.total?.toLocaleString() || '—',
+    d.expertise?.total?.toLocaleString() || '—',
+    d.contracts?.total?.toLocaleString() || '—',
+    d.proposals?.total?.toLocaleString() || '—',
+  ];
+  kpiCards.forEach((card, i) => {
+    if(i < vals.length){
+      const valEl = card.querySelector('.value .when-all');
+      if(valEl) valEl.textContent = vals[i];
+    }
+  });
+}
+
+function populateExperienceStats(d){
+  // Update experience view KPIs
+  const kpiCards = document.querySelectorAll('#view-experience .kpi');
+  const vals = [
+    d.total?.toLocaleString() || '—',
+    d.active?.toLocaleString() || '—',
+    d.featured?.toLocaleString() || '—',
+    d.toReview?.toLocaleString() || '—',
+  ];
+  kpiCards.forEach((card, i) => {
+    if(i < vals.length){
+      const valEl = card.querySelector('.value');
+      if(valEl){
+        // Only update the text content of .when-all if it exists, otherwise the main .value
+        const wa = valEl.querySelector('.when-all');
+        if(wa) wa.textContent = vals[i];
+        else valEl.childNodes[0].textContent = vals[i];
+      }
+    }
+  });
+}
+
+function populateExperienceTable(data, meta){
+  if(!data || !data.length) return;
+  const table = document.querySelector('#view-experience .table tbody');
+  if(!table) return;
+
+  // Build new rows from API data
+  const rows = data.slice(0,10).map(exp => {
+    const statusChip = exp.status === 'ACTIVE' ? 'chip-g' : exp.status === 'DRAFTED' ? 'chip-y' : 'chip-r';
+    const date = new Date(exp.createdAt).toLocaleDateString('en-MY', {day:'numeric',month:'short',year:'numeric'});
+    return `<tr class="row-program" style="cursor:default">
+      <td class="font-medium">${exp.experienceTitle || '—'}</td>
+      <td>${exp.experienceType || '—'}</td>
+      <td>${exp.hub?.name || '—'}</td>
+      <td><span class="chip ${statusChip}">${exp.status}</span></td>
+      <td>${exp.views?.toLocaleString() || '0'}</td>
+      <td>${date}</td>
+    </tr>`;
+  }).join('');
+
+  table.innerHTML = rows;
+}
+
+function populateExpertiseStats(d){
+  const kpiCards = document.querySelectorAll('#view-expertise .kpi');
+  const vals = [
+    d.total?.toLocaleString() || '—',
+    d.published?.toLocaleString() || '—',
+    d.toReview?.toLocaleString() || '—',
+  ];
+  kpiCards.forEach((card, i) => {
+    if(i < vals.length){
+      const valEl = card.querySelector('.value');
+      if(valEl){
+        const wa = valEl.querySelector('.when-all');
+        if(wa) wa.textContent = vals[i];
+        else if(valEl.childNodes[0]) valEl.childNodes[0].textContent = vals[i];
+      }
+    }
+  });
+}
+
+function populateExpertiseTable(data, meta){
+  if(!data || !data.length) return;
+  const table = document.querySelector('#view-expertise .table tbody');
+  if(!table) return;
+
+  const rows = data.slice(0,10).map((exp, i) => {
+    const statusChip = exp.status === 'published' ? 'chip-g' : exp.status === 'draft' ? 'chip-y' : 'chip-slate';
+    return `<tr class="row-program" style="cursor:default">
+      <td><span class="rank">${i+1}</span></td>
+      <td class="font-medium">${exp.expertiseTitle || '—'}</td>
+      <td>${exp.hub?.name || '—'}</td>
+      <td><span class="chip ${statusChip}">${exp.status}</span></td>
+      <td>${exp.rating?.toFixed(1) || '—'}</td>
+      <td>${exp.creator?.name || '—'}</td>
+    </tr>`;
+  }).join('');
+
+  table.innerHTML = rows;
+}
+
+function populateHubStats(d){
+  // Update overview or hub-related cards if they exist
+  console.log('[API] Hub stats:', d);
+}
+
+function populateJobStats(d){
+  // Update gig view KPIs
+  const kpiCards = document.querySelectorAll('#view-gigs .kpi');
+  const vals = [
+    d.total?.toLocaleString() || '—',
+    d.active?.toLocaleString() || '—',
+    d.inProgress?.toLocaleString() || '—',
+    d.totalProposals?.toLocaleString() || '—',
+    d.totalContracts?.toLocaleString() || '—',
+  ];
+  kpiCards.forEach((card, i) => {
+    if(i < vals.length){
+      const valEl = card.querySelector('.value');
+      if(valEl){
+        const wa = valEl.querySelector('.when-all');
+        if(wa) wa.textContent = vals[i];
+        else if(valEl.childNodes[0]) valEl.childNodes[0].textContent = vals[i];
+      }
+    }
+  });
+}
+
+function populateBookingStats(d){
+  console.log('[API] Booking stats:', d);
+  // Revenue data available: d.revenue.total, d.revenue.thisMonth, etc.
+}
 </script>
 
 <!-- ===== STICKY FILTER FAB ===== -->
