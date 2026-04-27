@@ -34,12 +34,12 @@
   .nav-link{color:#475569;font-weight:500;font-size:13px}
   .nav-link:hover{color:var(--ink)}
   /* sidebar */
-  .side-item{position:relative;display:flex;align-items:center;gap:10px;padding:8px 12px 8px 14px;border-radius:8px;font-size:13px;color:#64748B;cursor:pointer;font-weight:500}
-  .side-item:hover{background:#F8FAFC;color:var(--ink)}
-  .side-item.active{background:#F8FAFC;color:var(--ink);font-weight:600}
-  .side-item.active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--brand-pink)}
-  .side-item svg{width:14px;height:14px;color:#94A3B8}
-  .side-item.active svg{color:var(--brand-pink)}
+  .side-item{position:relative;display:flex;align-items:center;gap:10px;padding:6px 12px 6px 24px;border-radius:6px;font-size:13px;color:#64748B;cursor:pointer;font-weight:500}
+  .side-item:hover{color:var(--ink)}
+  .side-item.active{color:var(--ink);font-weight:600}
+  .side-item::before{content:"";width:6px;height:6px;border-radius:50%;border:1.5px solid #CBD5E1;flex-shrink:0}
+  .side-item.active::before{background:var(--brand-pink);border-color:var(--brand-pink)}
+  .side-item svg{display:none}
   /* chips */
   .chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;line-height:1.3}
   .chip-g{background:var(--prog-soft);color:#15803D}
@@ -290,7 +290,7 @@
     <nav class="flex items-center gap-5">
       <a class="nav-link flex items-center gap-1" href="#">Find experts <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
       <a class="nav-link flex items-center gap-1" href="#">Find gigs <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
-      <a class="nav-link flex items-center gap-1" href="#">Upskill <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+      <a class="nav-link flex items-center gap-1" href="#">Learn <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
       <a class="nav-link" href="#">Workspace</a>
       <a class="nav-link" href="#">Why Mereka</a>
     </nav>
@@ -318,31 +318,25 @@
 <div class="max-w-[1500px] mx-auto px-6 py-5 flex gap-5">
 
   <!-- ===== SIDEBAR ===== -->
-  <aside class="w-52 flex-shrink-0">
+  <aside class="w-44 flex-shrink-0">
     <div class="sticky top-20">
-      <div class="flex items-center gap-2 px-3 pb-4 mb-2 border-b border-slate-100">
-        <svg width="100" height="25" viewBox="0 0 145 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:var(--ink)">
-<path d="M11.5952 24.5301C12.5234 25.48 13.1508 26.6827 13.3986 27.9876C13.6464 29.2924 13.5037 30.6414 12.9884 31.8655C12.4731 33.0896 11.608 34.1345 10.5015 34.8692C9.39506 35.6039 8.09642 35.9958 6.76824 35.9958C5.44007 35.9958 4.14142 35.6039 3.03496 34.8692C1.9285 34.1345 1.06342 33.0896 0.548082 31.8655C0.0327398 30.6414 -0.109953 29.2924 0.137877 27.9876C0.385706 26.6827 1.01304 25.48 1.9413 24.5301C2.0166 24.4595 2.09073 24.3871 2.16367 24.313C3.82308 22.6313 4.75162 20.3626 4.74746 18C4.75056 15.6348 3.8194 13.364 2.15661 11.6818L1.9413 11.47C1.01244 10.5199 0.384581 9.31692 0.136396 8.01163C-0.111789 6.70634 0.0307323 5.35683 0.546105 4.13218C1.06148 2.90753 1.92678 1.8622 3.03361 1.12714C4.14044 0.392089 5.43957 0 6.76824 0C8.09692 0 9.39605 0.392089 10.5029 1.12714C11.6097 1.8622 12.475 2.90753 12.9904 4.13218C13.5058 5.35683 13.6483 6.70634 13.4001 8.01163C13.1519 9.31692 12.5241 10.5199 11.5952 11.47L11.371 11.6818C9.71174 13.3658 8.7816 15.635 8.7816 17.9992C8.7816 20.3633 9.71174 22.6325 11.371 24.3165C11.4452 24.3907 11.5175 24.463 11.5934 24.5336L11.5952 24.5301Z" fill="currentColor"/>
-<path d="M38.2606 35.9685C41.9879 35.9685 45.0095 32.9469 45.0095 29.2196C45.0095 25.4923 41.9879 22.4707 38.2606 22.4707C34.5333 22.4707 31.5117 25.4923 31.5117 29.2196C31.5117 32.9469 34.5333 35.9685 38.2606 35.9685Z" fill="currentColor"/>
-<path d="M15.7339 18.0012C15.7349 19.5851 16.2929 21.1183 17.3101 22.3324C18.3274 23.5465 19.7392 24.3642 21.2985 24.6425C22.8578 24.9208 24.4653 24.6419 25.8397 23.8547C27.2142 23.0674 28.2681 21.8219 28.8169 20.3361C28.8852 20.0526 28.9675 19.7749 29.064 19.5031C29.6807 17.7426 30.8292 16.2171 32.3506 15.1377C33.872 14.0583 35.6912 13.4783 37.5566 13.4778H37.7225C37.8708 13.4778 38.0173 13.4866 38.1637 13.4955H38.2308C39.4713 13.4954 40.6877 13.1535 41.7466 12.5074C42.8055 11.8613 43.6659 10.9359 44.2333 9.83288C44.8008 8.72982 45.0533 7.49174 44.9632 6.25457C44.8731 5.01739 44.4439 3.82895 43.7227 2.81973C43.0014 1.81051 42.0161 1.01952 40.8747 0.533617C39.7334 0.0477114 38.4803 -0.114328 37.2529 0.0652887C36.0255 0.244906 34.8714 0.759233 33.9171 1.55181C32.9629 2.34438 32.2455 3.38455 31.8437 4.55812C31.7978 4.73461 31.7449 4.9111 31.6866 5.08758C31.0927 6.88504 29.9473 8.44949 28.4131 9.55846C26.8789 10.6674 25.0341 11.2645 23.1411 11.2647H22.9875C22.8375 11.2647 22.6893 11.2647 22.541 11.247H22.4828C21.5961 11.2472 20.7182 11.4221 19.8991 11.7617C19.0801 12.1013 18.336 12.5989 17.7092 13.2261C17.0825 13.8533 16.5855 14.5978 16.2466 15.4172C15.9076 16.2365 15.7334 17.1145 15.7339 18.0012Z" fill="currentColor"/>
-<path d="M29.2475 18.0012C29.2464 19.5851 28.6885 21.1183 27.6712 22.3324C26.6539 23.5465 25.2422 24.3642 23.6829 24.6425C22.1236 24.9208 20.516 24.6419 19.1416 23.8547C17.7672 23.0674 16.7133 21.8219 16.1644 20.3361C16.0962 20.0526 16.0138 19.7749 15.9173 19.5031C15.3005 17.7423 14.1518 16.2166 12.6301 15.1372C11.1083 14.0578 9.28869 13.4779 7.42297 13.4778H7.25707C7.10882 13.4778 6.96233 13.4866 6.81761 13.4955H6.74878C5.50812 13.4956 4.29141 13.1539 3.23228 12.5077C2.17315 11.8616 1.31256 10.9361 0.745029 9.83285C0.177496 8.72961 -0.0750281 7.4913 0.0151883 6.25392C0.105405 5.01655 0.534872 3.82796 1.25643 2.8187C1.97798 1.80945 2.96371 1.01855 4.10536 0.532882C5.24701 0.0472112 6.50042 -0.11445 7.72794 0.0656506C8.95546 0.245752 10.1096 0.760649 11.0636 1.5538C12.0177 2.34694 12.7347 3.38766 13.1359 4.56165C13.1835 4.73814 13.2365 4.91463 13.2947 5.09111C13.8885 6.88828 15.0337 8.45253 16.5676 9.56147C18.1014 10.6704 19.9458 11.2676 21.8385 11.2682H21.9938C22.1421 11.2682 22.2921 11.2682 22.4386 11.2505H22.4968C23.3833 11.2505 24.2611 11.4252 25.0802 11.7644C25.8992 12.1037 26.6434 12.6009 27.2702 13.2278C27.8971 13.8546 28.3943 14.5988 28.7336 15.4178C29.0728 16.2369 29.2475 17.1147 29.2475 18.0012Z" fill="currentColor"/>
-        </svg>
-        <span style="font-size:10px;font-weight:700;color:var(--brand-pink);background:var(--brand-pink-soft);padding:2px 6px;border-radius:4px;letter-spacing:.04em">ANALYTICS</span>
+      <div class="flex items-center gap-2 px-3 pb-3 mb-2">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+        <span class="text-[13px] font-semibold text-slate-800">Analytics</span>
       </div>
-      <div class="px-3 py-2 text-[10.5px] uppercase tracking-widest font-bold text-slate-400">Analytics</div>
       <div class="flex flex-col gap-0.5">
-        <div class="side-item" data-view="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>Impact overview</div>
-        <div class="side-item" data-view="programmes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Programmes</div>
-        <div class="side-item" data-view="courses"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Courses</div>
-        <div class="side-item" data-view="experience"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Experience</div>
-        <div class="side-item" data-view="expertise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11l-3 3-2-2"/></svg>Expertise</div>
-        <div class="side-item" data-view="gigs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Gig</div>
+        <div class="side-item" data-view="overview">Impact overview</div>
+        <div class="side-item" data-view="programmes">Programmes</div>
+        <div class="side-item" data-view="courses">Courses</div>
+        <div class="side-item" data-view="experience">Experience</div>
+        <div class="side-item" data-view="expertise">Expertise</div>
+        <div class="side-item" data-view="gigs">Gig</div>
       </div>
       <div class="divider my-3 mx-3"></div>
       <div class="flex flex-col gap-0.5">
-        <div class="side-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 2"/></svg>Correlations</div>
-        <div class="side-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>KPI builder</div>
-        <div class="side-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>BAE Impact</div>
+        <div class="side-item">Correlations</div>
+        <div class="side-item">API builder</div>
+        <div class="side-item">Bill Impact</div>
       </div>
     </div>
   </aside>
