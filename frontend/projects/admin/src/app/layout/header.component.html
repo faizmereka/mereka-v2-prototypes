@@ -1,0 +1,133 @@
+<header class="flex items-center justify-between h-20 px-6 border-b border-gray-200 bg-white shadow-sm">
+  <div class="flex items-center gap-10">
+    <h1 class="text-3xl font-black leading-tight">{{ pageTitle() }}</h1>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <!-- Notifications -->
+    <div class="relative">
+      <button (click)="toggleNotifications()" class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
+        <img src="icons/bell.svg" alt="Notifications" class="w-5 h-5 opacity-70" />
+        @if (unreadCount() > 0) {
+        <span
+          class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+          {{ unreadCount() }}
+        </span>
+        }
+      </button>
+
+      <!-- Notifications Dropdown -->
+      @if (showNotifications()) {
+      <div
+        class="absolute right-0 top-12 w-80 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+          <h3 class="font-bold text-gray-900">Notifications</h3>
+          @if (notifications().length > 0) {
+          <button (click)="markAllAsRead()" class="text-sm text-primary hover:underline">
+            Mark all read
+          </button>
+          }
+        </div>
+
+        <div class="max-h-80 overflow-y-auto">
+          @if (notifications().length === 0) {
+          <div class="px-4 py-8 text-center text-gray-500">
+            <img src="icons/bell.svg" alt="" class="w-12 h-12 mx-auto mb-3 opacity-30" />
+            <p>No notifications</p>
+          </div>
+          } @else {
+          @for (notification of notifications(); track notification.id) {
+          <div (click)="markAsRead(notification)"
+            class="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0"
+            [class.bg-blue-50]="!notification.read">
+            <div class="flex gap-3">
+              <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"
+                [class]="getNotificationClasses(notification.type)">
+                <img [src]="'icons/' + getNotificationIcon(notification.type)" alt="" class="w-4 h-4" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-sm text-gray-900 truncate">{{ notification.title }}</p>
+                <p class="text-sm text-gray-600 truncate">{{ notification.message }}</p>
+                <p class="text-xs text-gray-400 mt-1">{{ notification.time }}</p>
+              </div>
+              @if (!notification.read) {
+              <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+              }
+            </div>
+          </div>
+          }
+          }
+        </div>
+
+        @if (notifications().length > 0) {
+        <div class="px-4 py-3 border-t border-gray-100">
+          <button (click)="clearNotifications()" class="w-full text-sm text-gray-500 hover:text-gray-700">
+            Clear all notifications
+          </button>
+        </div>
+        }
+      </div>
+      }
+    </div>
+
+    <!-- User Menu -->
+    <div class="relative">
+      <button (click)="toggleUserMenu()"
+        class="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors">
+        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm">
+          {{ userName().charAt(0).toUpperCase() }}
+        </div>
+        <span class="font-semibold text-gray-700 hidden md:block">{{ userName() }}</span>
+        <svg class="w-4 h-4 text-gray-500 transition-transform" [class.rotate-180]="showUserMenu()" fill="none"
+          stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <!-- User Dropdown -->
+      @if (showUserMenu()) {
+      <div
+        class="absolute right-0 top-12 w-64 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-100">
+          <p class="font-bold text-gray-900">{{ userName() }}</p>
+          <p class="text-sm text-gray-500">{{ userEmail() }}</p>
+        </div>
+
+        <div class="py-2">
+          <a routerLink="/dashboard/settings" (click)="closeDropdowns()"
+            class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+            <img src="icons/person.svg" alt="" class="w-5 h-5 opacity-70" />
+            <span>Profile</span>
+          </a>
+          <a routerLink="/dashboard/settings" (click)="closeDropdowns()"
+            class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+            <img src="icons/settings.svg" alt="" class="w-5 h-5 opacity-70" />
+            <span>Settings</span>
+          </a>
+          <a routerLink="/dashboard/monitoring" (click)="closeDropdowns()"
+            class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+            <img src="icons/stacked_line_chart.svg" alt="" class="w-5 h-5 opacity-70" />
+            <span>API Monitoring</span>
+          </a>
+        </div>
+
+        <div class="border-t border-gray-100 py-2">
+          <button (click)="logout()"
+            class="flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors w-full">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</header>
+
+<!-- Click outside to close dropdowns -->
+@if (showUserMenu() || showNotifications()) {
+<div class="fixed inset-0 z-40" (click)="closeDropdowns()"></div>
+}

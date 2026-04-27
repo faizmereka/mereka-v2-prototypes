@@ -1,0 +1,21 @@
+<div class="avatar-button" tabindex="0" [matMenuTriggerFor]="menu">
+  <img ui-image placeholder="user" class="avatar" [src]="profileUrl" alt />
+</div>
+
+<mat-menu #menu="matMenu" class="ui-dropmenu ui-dropmenu--padded">
+  <a mat-menu-item class="ui-dropmenu-item" href="{{(hasHub) ? ('/expert/' + user.uid) : '/profile'}}">My Profile</a>
+  <a mat-menu-item class="ui-dropmenu-item" href="{{ merekaBaseUrl }}/saved">Saved</a>
+  <a mat-menu-item class="ui-dropmenu-item" href="{{ merekaBaseUrl }}/learner-dashboard/scholarhub">My Dashboard</a>
+  <div class="ui-dropmenu-separator"></div>
+  <a mat-menu-item class="ui-dropmenu-item" href="{{ merekaBaseUrl }}/my-bookings/upcoming">My Bookings</a>
+  <a mat-menu-item class="ui-dropmenu-item" href="{{ merekaBaseUrl }}/create-job">Post a Job</a>
+
+  <div class="ui-dropmenu-separator"></div>
+  @if (!hasHub) {
+    <a mat-menu-item class="ui-dropmenu-item" href="{{ merekaBaseUrl }}/welcome/hub">Become an Expert</a>
+  }
+  <a mat-menu-item class="ui-dropmenu-item" href="https://help.mereka.io/">Help</a>
+  <a mat-menu-item class="ui-dropmenu-item" tabindex="0" (keyup.enter)="onLogOut()" (click)="onLogOut()">Log Out</a>
+</mat-menu>
+
+<common-overlay-progress-spinner [isDisplayed]="isOverlayProgressSpinnerDisplayed" />

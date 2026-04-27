@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    // Language and Environment
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    // Emit
+    "noEmit": true,
+    "isolatedModules": true,
+    // Type Checking - Strict Mode
+    "strict": true,
+    "exactOptionalPropertyTypes": false, // Disabled for Fastify/Mongoose compatibility
+    "noUncheckedIndexedAccess": true,
+    "useUnknownInCatchVariables": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    // Interop Constraints
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    // Skip Library Check (for faster builds and to avoid external dependency type errors)
+    "skipLibCheck": true,
+    // Incremental
+    "incremental": true,
+    "tsBuildInfoFile": ".cache/tsconfig.tsbuildinfo",
+    // Base URL and Paths
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@core/*": ["./src/core/*"],
+      "@core/models/*": ["./src/core/models/*"],
+      "@core/schemas/*": ["./src/core/schemas/*"],
+      "@core/services/*": ["./src/core/services/*"],
+      "@core/middlewares/*": ["./src/core/middlewares/*"],
+      "@core/config/*": ["./src/core/config/*"],
+      "@core/utils/*": ["./src/core/utils/*"],
+      "@core/types/*": ["./src/core/types/*"],
+      "@core/plugins/*": ["./src/core/plugins/*"],
+      "@core/constants": ["./src/core/constants"],
+      "@core/constants/*": ["./src/core/constants/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@jobs/*": ["./src/jobs/*"],
+      // Service module aliases - mirrors modules structure
+      "@services/admin": ["./src/core/services/admin"],
+      "@services/web": ["./src/core/services/web"],
+      "@services/hub": ["./src/core/services/hub"],
+      "@services/shared": ["./src/core/services/shared"],
+      // Shared sub-module aliases for cleaner imports
+      "@services/auth": ["./src/core/services/shared/auth"],
+      "@services/infrastructure": ["./src/core/services/shared/infrastructure"],
+      "@services/payments": ["./src/core/services/shared/payments"],
+      "@services/communications": ["./src/core/services/shared/communications"],
+      "@services/reference-data": ["./src/core/services/admin/reference-data"],
+      // Schema module aliases - mirrors modules structure
+      "@schemas/admin": ["./src/core/schemas/admin"],
+      "@schemas/web": ["./src/core/schemas/web"],
+      "@schemas/hub": ["./src/core/schemas/hub"],
+      "@schemas/shared": ["./src/core/schemas/shared"],
+      // Controller module aliases
+      "@controllers/admin": ["./src/modules/admin/controllers"],
+      "@controllers/web": ["./src/modules/web/controllers"],
+      "@controllers/hub": ["./src/modules/hub/controllers"],
+      "@controllers/shared": ["./src/modules/shared"],
+      // Route module aliases
+      "@routes/admin": ["./src/modules/admin/routes"],
+      "@routes/web": ["./src/modules/web/routes"],
+      "@routes/hub": ["./src/modules/hub/routes"],
+      "@routes/shared": ["./src/modules/shared"]
+    }
+  },
+  "include": ["src/**/*", "tests/**/*", "scripts/**/*"],
+  "exclude": ["node_modules", "dist", "coverage"],
+  // Make TS watchers cheaper
+  "watchOptions": {
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriority",
+    "synchronousWatchDirectory": false
+  }
+}

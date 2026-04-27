@@ -1,0 +1,332 @@
+<!-- Ticket Container -->
+<div class="rounded-lg bg-[#f5f5f5] overflow-hidden">
+  <!-- Table Header (Desktop) -->
+  <div class="hidden lg:grid border border-[rgba(0,0,0,0.12)] rounded-t-lg bg-[#f5f5f5]"
+    style="grid-template-columns: 40px 1.2fr 2.2fr 1.6fr 1fr 1fr; padding: 12px 20px 12px 28px;">
+    <div></div>
+    <div class="text-sm text-neutral-700">Ticket Type*</div>
+    <div class="text-sm text-neutral-700">Ticket Name*</div>
+    <div class="text-sm text-neutral-700">Standard Rate*</div>
+    <div class="text-sm text-neutral-700">Ticket Quantity*</div>
+    <div class="text-sm text-neutral-700 text-center">Action</div>
+  </div>
+
+  <!-- Tickets List with Drag & Drop -->
+  <div
+    cdkDropList
+    [cdkDropListData]="tickets()"
+    (cdkDropListDropped)="onDrop($event)"
+  >
+    @for (ticket of tickets(); track ticket.id; let i = $index) {
+      <div cdkDrag [cdkDragDisabled]="ticket.isEditing && !ticket.isSaved">
+        <!-- Ticket Row -->
+        <div class="bg-white border-x border-b border-[rgba(0,0,0,0.12)]"
+          [class.border-t]="i === 0 && tickets().length > 0"
+          [class.lg:border-t-0]="i === 0">
+
+          <!-- Main Row - Always visible -->
+          <div class="lg:grid items-center gap-5"
+            style="grid-template-columns: 40px 1.2fr 2.2fr 1.6fr 1fr 1fr; padding: 16px 20px 16px 28px;">
+
+            <!-- Drag Handle -->
+            <div class="hidden lg:flex justify-center">
+              <button
+                type="button"
+                cdkDragHandle
+                class="cursor-grab active:cursor-grabbing text-neutral-400 hover:text-neutral-600"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Mobile: Saved Ticket Summary -->
+            @if (!ticket.isEditing && ticket.isSaved) {
+              <div class="lg:hidden flex justify-between items-center w-full mb-4">
+                <div>
+                  <div class="font-semibold text-[17px]">{{ ticket.ticketName }}</div>
+                  <div class="text-sm text-neutral-600">Price: {{ currency() }} {{ ticket.ticketPrice | number:'1.2-2' }}</div>
+                  <div class="text-sm text-neutral-600">Quantity: {{ ticket.ticketQty }}</div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    (click)="toggleExpand(ticket.id)"
+                    class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100"
+                  >
+                    <svg class="w-5 h-5 transition-transform" [class.rotate-180]="!ticket.isEditing" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                    </svg>
+                  </button>
+                  @if (tickets().length > 1) {
+                    <button
+                      type="button"
+                      (click)="removeTicket(ticket.id)"
+                      class="w-8 h-8 flex items-center justify-center rounded-full bg-black text-white"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Type Select -->
+            <div class="mb-4 lg:mb-0">
+              <div class="text-sm text-neutral-700 mb-1 lg:hidden">Ticket Type*</div>
+              <select
+                [ngModel]="ticket.ticketType"
+                (ngModelChange)="onTicketTypeChange(ticket.id, $event)"
+                class="w-full h-12 px-4 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-white text-sm"
+              >
+                @for (type of ticketTypes; track type) {
+                  <option [value]="type">{{ type }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Ticket Name -->
+            <div class="mb-4 lg:mb-0">
+              <div class="text-sm text-neutral-700 mb-1 lg:hidden">Ticket Name*</div>
+              <input
+                type="text"
+                [ngModel]="ticket.ticketName"
+                (ngModelChange)="updateTicket(ticket.id, 'ticketName', $event)"
+                [disabled]="ticket.ticketType === 'Private Group'"
+                placeholder="Name of ticket"
+                maxlength="40"
+                class="w-full h-12 px-4 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:bg-neutral-100 disabled:text-neutral-500 placeholder:text-[rgba(0,0,0,0.38)] text-sm"
+              />
+              <div class="text-[13px] text-[rgba(0,0,0,0.5)] mt-1">{{ ticket.ticketName.length }} / 40</div>
+            </div>
+
+            <!-- Standard Rate -->
+            <div class="mb-4 lg:mb-0">
+              <div class="text-sm text-neutral-700 mb-1 lg:hidden">Standard Rate*</div>
+              <div class="relative h-12 flex items-center">
+                <span class="absolute left-4 font-bold text-sm" [class.text-[rgba(0,0,0,0.38)]]="ticket.ticketType === 'Free'">{{ currency() }}</span>
+                <input
+                  type="number"
+                  [ngModel]="ticket.ticketPrice"
+                  (ngModelChange)="updateTicket(ticket.id, 'ticketPrice', $event)"
+                  [disabled]="ticket.ticketType === 'Free'"
+                  placeholder="00.00"
+                  step="0.01"
+                  min="0"
+                  class="w-full h-12 pl-12 pr-4 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:border-[rgba(0,0,0,0.38)] disabled:bg-transparent text-right text-sm"
+                />
+              </div>
+              @if (ticket.ticketType !== 'Free' && ticket.ticketPrice && ticket.ticketPrice > 0) {
+                <div class="text-[13px] text-[rgba(0,0,0,0.5)] mt-1">
+                  Buyer total: <span class="underline cursor-pointer hover:text-[rgba(0,0,0,0.38)]">{{ currency() }} {{ calculateBuyerTotal(ticket.ticketPrice) }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Quantity -->
+            <div class="mb-4 lg:mb-0">
+              <div class="text-sm text-neutral-700 mb-1 lg:hidden">Ticket Quantity*</div>
+              <input
+                type="number"
+                [ngModel]="ticket.ticketQty"
+                (ngModelChange)="updateTicket(ticket.id, 'ticketQty', $event)"
+                placeholder="1"
+                min="1"
+                max="9999"
+                class="w-full h-12 px-4 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 text-right text-sm"
+              />
+            </div>
+
+            <!-- Actions (Desktop) -->
+            <div class="hidden lg:flex items-center justify-center gap-2">
+              <button
+                type="button"
+                (click)="toggleExpand(ticket.id)"
+                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 transition-colors"
+              >
+                <svg class="w-5 h-5 transition-transform" [class.rotate-180]="!ticket.isEditing" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                (click)="duplicateTicket(ticket.id)"
+                [disabled]="!ticket.isSaved"
+                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 transition-colors disabled:text-[rgba(0,0,0,0.38)] disabled:cursor-not-allowed"
+                title="Duplicate"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+              @if (tickets().length > 1) {
+                <button
+                  type="button"
+                  (click)="removeTicket(ticket.id)"
+                  class="w-8 h-8 flex items-center justify-center rounded-full bg-black text-white"
+                  title="Delete"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Expanded Details -->
+          @if (ticket.isEditing) {
+            <div class="bg-[#f7f6f8] border-t border-[rgba(0,0,0,0.12)] px-5 py-5 lg:border-l lg:border-r">
+              <!-- Ticket Sale Period Section -->
+              <div class="mb-6 pb-6 border-b border-[rgba(0,0,0,0.12)]">
+                <h4 class="font-semibold text-base mb-2">Ticket Sale Period</h4>
+                <p class="text-sm text-[rgba(0,0,0,0.6)] mb-4">Consider whether you would like to set a cutoff time for ticket sales.</p>
+
+                <div class="space-y-3">
+                  <label class="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      [checked]="!ticket.hasCutoffTime"
+                      (change)="updateTicket(ticket.id, 'hasCutoffTime', false)"
+                      class="mt-1"
+                    />
+                    <div>
+                      <div class="text-sm">I want to allow sales for this ticket until my Experience ends.</div>
+                      <p class="text-[13px] text-[rgba(0,0,0,0.5)]">
+                        This option will disable cutoff time and allow bookings for this ticket throughout the duration of your Experience.
+                      </p>
+                    </div>
+                  </label>
+
+                  <label class="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      [checked]="ticket.hasCutoffTime"
+                      (change)="updateTicket(ticket.id, 'hasCutoffTime', true)"
+                      class="mt-1"
+                    />
+                    <div>
+                      <div class="text-sm">I want to set a cutoff time for this ticket.</div>
+                      <p class="text-[13px] text-[rgba(0,0,0,0.5)]">
+                        The cutoff time is the time at which this ticket will become unavailable for booking.
+                      </p>
+                    </div>
+                  </label>
+                </div>
+
+                @if (ticket.hasCutoffTime) {
+                  <div class="flex flex-wrap items-center gap-4 mt-4">
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="number"
+                        [ngModel]="ticket.cutoffNumber"
+                        (ngModelChange)="updateTicket(ticket.id, 'cutoffNumber', $event)"
+                        min="1"
+                        max="23"
+                        class="w-16 h-12 px-3 border border-[rgba(0,0,0,0.12)] rounded-lg text-center text-sm"
+                      />
+                      <select
+                        [ngModel]="ticket.cutoffTime"
+                        (ngModelChange)="updateTicket(ticket.id, 'cutoffTime', $event)"
+                        class="h-12 px-3 border border-[rgba(0,0,0,0.12)] rounded-lg bg-white text-sm"
+                      >
+                        @for (opt of cutoffTimeOptions; track opt) {
+                          <option [value]="opt">{{ opt }}</option>
+                        }
+                      </select>
+                    </div>
+                    <select
+                      [ngModel]="ticket.cutoffBeforeAfter"
+                      (ngModelChange)="updateTicket(ticket.id, 'cutoffBeforeAfter', $event)"
+                      class="h-12 px-3 border border-[rgba(0,0,0,0.12)] rounded-lg bg-white text-sm"
+                    >
+                      @for (opt of cutoffBeforeAfterOptions; track opt) {
+                        <option [value]="opt">{{ opt }}</option>
+                      }
+                    </select>
+                  </div>
+                }
+              </div>
+
+              <!-- Description Section -->
+              <div class="mb-6 pb-6 border-b border-[rgba(0,0,0,0.12)]">
+                <div class="flex items-center gap-2 mb-2">
+                  <h4 class="font-semibold text-base">Description</h4>
+                  <span class="text-[13px] text-[rgba(0,0,0,0.38)]">(Optional)</span>
+                </div>
+                <p class="text-sm text-[rgba(0,0,0,0.6)] mb-3">Tell Learners more about this ticket. You can include the services and features you are offering for the ticket here.</p>
+                <textarea
+                  [ngModel]="ticket.description"
+                  (ngModelChange)="updateTicket(ticket.id, 'description', $event)"
+                  rows="5"
+                  maxlength="500"
+                  placeholder="Description of ticket"
+                  class="w-full px-4 py-3 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 resize-none text-sm placeholder:text-[rgba(0,0,0,0.38)]"
+                ></textarea>
+                <div class="text-[13px] text-[rgba(0,0,0,0.5)] mt-1">{{ ticket.description.length }} / 500</div>
+              </div>
+
+              <!-- Save Button -->
+              <div class="flex items-center gap-4">
+                <button
+                  type="button"
+                  (click)="saveTicket(ticket.id)"
+                  [disabled]="!isTicketValid(ticket)"
+                  class="flex items-center gap-2 px-5 py-2.5 bg-white border border-[rgba(0,0,0,0.12)] rounded-lg hover:bg-neutral-50 disabled:text-[rgba(0,0,0,0.38)] disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                >
+                  Save Ticket
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </button>
+                @if (!ticket.isSaved) {
+                  <span class="flex items-center gap-2 text-sm">
+                    <svg class="w-5 h-5 text-[#fdc20e]" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2L1 21h22L12 2zm0 3.83L19.17 19H4.83L12 5.83zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
+                    </svg>
+                    <span class="text-red-600">You need to Save Ticket before adding another Ticket Type</span>
+                  </span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Drag Preview -->
+        <div *cdkDragPlaceholder class="h-24 border-2 border-dashed border-neutral-300 bg-neutral-50"></div>
+      </div>
+    }
+  </div>
+
+  <!-- Footer - Add Ticket Buttons -->
+  <div class="bg-[#f5f5f5] border border-[rgba(0,0,0,0.12)] border-t-0 rounded-b-lg p-5">
+    <div class="flex flex-wrap gap-3">
+      @for (type of ticketTypes; track type) {
+        <button
+          type="button"
+          (click)="addTicket(type)"
+          [disabled]="!canAddTicket()"
+          class="flex items-center gap-2 px-5 py-2.5 bg-white border border-[rgba(0,0,0,0.12)] rounded-lg hover:bg-neutral-50 disabled:text-[rgba(0,0,0,0.38)] disabled:cursor-not-allowed transition-colors text-sm font-medium"
+        >
+          {{ type }}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+      }
+    </div>
+
+    <!-- Max Tickets Warning -->
+    @if (tickets().length >= maxTickets()) {
+      <div class="flex items-center gap-3 mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span class="text-sm">You have reached the limit to the number of ticket types you can add.</span>
+      </div>
+    }
+  </div>
+</div>

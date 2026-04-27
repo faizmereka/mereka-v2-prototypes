@@ -1,0 +1,242 @@
+### Variables
+@baseUrl = http://localhost:3000/api/v1
+@token = your-access-token-here
+
+### ==============================================
+### Learner Profile Endpoints
+### ==============================================
+
+### 1. Get Own Learner Profile
+# GET /learner/profile/me
+# Retrieve authenticated learner's profile
+GET {{baseUrl}}/learner/profile/me
+Authorization: Bearer {{token}}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "id": "...",
+#     "email": "...",
+#     "name": "...",
+#     "slug": "unique-slug",
+#     "phoneNumber": "+60123456789",
+#     "bio": "...",
+#     "profilePicture": "https://...",
+#     "interests": ["focus-area-id-1", "focus-area-id-2"],
+#     "location": {
+#       "city": "Kuala Lumpur",
+#       "state": "Selangor",
+#       "country": "Malaysia"
+#     },
+#     "createdAt": "...",
+#     "updatedAt": "..."
+#   }
+# }
+
+### 2. Update Learner Profile
+# PATCH /learner/profile/me
+# Update authenticated learner's profile information
+PATCH {{baseUrl}}/learner/profile/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Updated Name",
+  "bio": "Updated bio information about the learner",
+  "phoneNumber": "+60123456789",
+  "location": {
+    "city": "Kuala Lumpur",
+    "state": "Selangor",
+    "country": "Malaysia"
+  },
+  "interests": ["focus-area-id-1", "focus-area-id-2"],
+  "profilePicture": "https://example.com/profile.jpg"
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "id": "...",
+#     "name": "Updated Name",
+#     "bio": "Updated bio...",
+#     ...
+#   }
+# }
+
+### 3. Update Slug
+# PATCH /learner/profile/me
+# Update learner's unique slug (URL identifier)
+PATCH {{baseUrl}}/learner/profile/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "slug": "new-unique-slug"
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "slug": "new-unique-slug",
+#     ...
+#   }
+# }
+
+### 4. Check Slug Availability
+# POST /learner/slug/check
+# Check if a slug is available for use
+POST {{baseUrl}}/learner/slug/check
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "slug": "desired-slug"
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "available": true,
+#     "slug": "desired-slug"
+#   }
+# }
+
+### 4b. Check Slug Availability (Unavailable)
+POST {{baseUrl}}/learner/slug/check
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "slug": "taken-slug"
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "available": false,
+#     "slug": "taken-slug",
+#     "suggestions": ["taken-slug-1", "taken-slug-2", "taken-slug-3"]
+#   }
+# }
+
+### ==============================================
+### Error Scenarios
+### ==============================================
+
+### Unauthorized Access
+GET {{baseUrl}}/learner/profile/me
+
+# Expected Response (401):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "UNAUTHORIZED",
+#     "message": "Authentication required"
+#   }
+# }
+
+### Invalid Slug Format
+PATCH {{baseUrl}}/learner/profile/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "slug": "Invalid Slug!"
+}
+
+# Expected Response (400):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "VALIDATION_ERROR",
+#     "message": "Slug must be lowercase, alphanumeric, and can contain hyphens"
+#   }
+# }
+
+### Duplicate Slug
+PATCH {{baseUrl}}/learner/profile/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "slug": "existing-slug"
+}
+
+# Expected Response (400):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "SLUG_TAKEN",
+#     "message": "This slug is already in use"
+#   }
+# }
+
+### Invalid Phone Number Format
+PATCH {{baseUrl}}/learner/profile/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "phoneNumber": "123"
+}
+
+# Expected Response (400):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "VALIDATION_ERROR",
+#     "message": "Invalid phone number format"
+#   }
+# }
+
+### ==============================================
+### Profile Completion Flow
+### ==============================================
+
+### Step 1: Basic Information
+PATCH {{baseUrl}}/learner/profile/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "phoneNumber": "+60123456789"
+}
+
+### Step 2: Location Information
+PATCH {{baseUrl}}/learner/profile/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "location": {
+    "city": "Kuala Lumpur",
+    "state": "Selangor",
+    "country": "Malaysia"
+  }
+}
+
+### Step 3: Interests & Bio
+PATCH {{baseUrl}}/learner/profile/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "bio": "Passionate about technology and continuous learning",
+  "interests": ["tech-focus-area-id", "business-focus-area-id"]
+}
+
+### Step 4: Slug & Profile Picture
+PATCH {{baseUrl}}/learner/profile/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "slug": "john-doe",
+  "profilePicture": "https://example.com/john-profile.jpg"
+}

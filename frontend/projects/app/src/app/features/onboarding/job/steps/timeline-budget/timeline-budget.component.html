@@ -1,0 +1,188 @@
+<form [formGroup]="form" class="space-y-8">
+  <!-- Start Date -->
+  <div class="space-y-3">
+    <h3 class="text-lg font-semibold text-neutral-900">When do you need this job to start?</h3>
+    <div class="space-y-3">
+      <!-- ASAP -->
+      <label class="flex items-start gap-3 cursor-pointer">
+        <input
+          type="radio"
+          formControlName="startDateType"
+          value="asap"
+          class="w-5 h-5 mt-0.5 text-neutral-900 focus:ring-neutral-900 accent-neutral-900"
+        />
+        <span class="text-sm text-neutral-700">
+          <strong>ASAP.</strong> Job needs to be delivered/started as soon as possible.
+        </span>
+      </label>
+
+      <!-- Flexible -->
+      <label class="flex items-start gap-3 cursor-pointer">
+        <input
+          type="radio"
+          formControlName="startDateType"
+          value="flexible"
+          class="w-5 h-5 mt-0.5 text-neutral-900 focus:ring-neutral-900 accent-neutral-900"
+        />
+        <span class="text-sm text-neutral-700">
+          <strong>Flexible start date,</strong> open to discussion
+        </span>
+      </label>
+
+      <!-- Specific date -->
+      <div class="flex items-center gap-3">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input
+            type="radio"
+            formControlName="startDateType"
+            value="specific"
+            class="w-5 h-5 text-neutral-900 focus:ring-neutral-900 accent-neutral-900"
+          />
+          <span class="text-sm text-neutral-700"><strong>Specific start date</strong></span>
+        </label>
+        @if (showDatePicker()) {
+          <input
+            type="date"
+            formControlName="startDate"
+            [min]="minDate()"
+            class="px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+          />
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Duration -->
+  <div class="space-y-3">
+    <h3 class="text-lg font-semibold text-neutral-900">How long do you expect the job to take?</h3>
+    <div class="space-y-3">
+      @for (option of durationOptions; track option.value) {
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input
+            type="radio"
+            formControlName="duration"
+            [value]="option.value"
+            class="w-5 h-5 text-neutral-900 focus:ring-neutral-900 accent-neutral-900"
+          />
+          <span class="text-sm text-neutral-700">{{ option.label }}</span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <!-- Currency -->
+  <div class="space-y-2">
+    <h3 class="text-lg font-semibold text-neutral-900">What currency will you be using for this job?</h3>
+    <select
+      formControlName="currency"
+      class="w-48 px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+    >
+      @for (option of currencyOptions; track option.value) {
+        <option [value]="option.value">{{ option.value }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Budget -->
+  <div class="space-y-4">
+    <div>
+      <h3 class="text-lg font-semibold text-neutral-900">Specify your estimated budget</h3>
+      <p class="text-sm text-neutral-500">The final price can be discussed and agreed upon with the Expert through further communication.</p>
+    </div>
+
+    <!-- Pricing Type with inline budget inputs -->
+    <div class="space-y-4">
+      <!-- Fixed price -->
+      <div class="flex flex-wrap items-center gap-4">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input
+            type="radio"
+            formControlName="pricingType"
+            value="fixed"
+            class="w-5 h-5 text-neutral-900 focus:ring-neutral-900 accent-neutral-900"
+          />
+          <span class="text-sm text-neutral-700">Fixed price</span>
+        </label>
+
+        @if (form.get('pricingType')?.value === 'fixed') {
+          <div class="flex items-center gap-3">
+            <div class="text-center">
+              <p class="text-xs text-neutral-500 mb-1">From</p>
+              <div class="flex items-center border border-neutral-200 rounded-lg overflow-hidden">
+                <span class="px-3 py-2 bg-neutral-50 text-sm text-neutral-600 border-r border-neutral-200">{{ getCurrencySymbol() }}</span>
+                <input
+                  type="number"
+                  formControlName="budgetFrom"
+                  placeholder="00.00"
+                  min="0"
+                  class="w-24 px-3 py-2 focus:outline-none text-sm"
+                />
+              </div>
+            </div>
+            <div class="text-center">
+              <p class="text-xs text-neutral-500 mb-1">Up to (optional)</p>
+              <div class="flex items-center border border-neutral-200 rounded-lg overflow-hidden">
+                <span class="px-3 py-2 bg-neutral-50 text-sm text-neutral-600 border-r border-neutral-200">{{ getCurrencySymbol() }}</span>
+                <input
+                  type="number"
+                  formControlName="budgetTo"
+                  placeholder="00.00"
+                  min="0"
+                  class="w-24 px-3 py-2 focus:outline-none text-sm"
+                />
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Hourly rate -->
+      <div class="flex flex-wrap items-center gap-4">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input
+            type="radio"
+            formControlName="pricingType"
+            value="hourly"
+            class="w-5 h-5 text-neutral-900 focus:ring-neutral-900 accent-neutral-900"
+          />
+          <span class="text-sm text-neutral-700">Hourly rate</span>
+        </label>
+
+        @if (form.get('pricingType')?.value === 'hourly') {
+          <div class="flex items-center gap-3">
+            <div class="text-center">
+              <p class="text-xs text-neutral-500 mb-1">From</p>
+              <div class="flex items-center border border-neutral-200 rounded-lg overflow-hidden">
+                <span class="px-3 py-2 bg-neutral-50 text-sm text-neutral-600 border-r border-neutral-200">{{ getCurrencySymbol() }}</span>
+                <input
+                  type="number"
+                  formControlName="budgetFrom"
+                  placeholder="00.00"
+                  min="0"
+                  class="w-24 px-3 py-2 focus:outline-none text-sm"
+                />
+              </div>
+            </div>
+            <div class="text-center">
+              <p class="text-xs text-neutral-500 mb-1">Up to (optional)</p>
+              <div class="flex items-center border border-neutral-200 rounded-lg overflow-hidden">
+                <span class="px-3 py-2 bg-neutral-50 text-sm text-neutral-600 border-r border-neutral-200">{{ getCurrencySymbol() }}</span>
+                <input
+                  type="number"
+                  formControlName="budgetTo"
+                  placeholder="00.00"
+                  min="0"
+                  class="w-24 px-3 py-2 focus:outline-none text-sm"
+                />
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (form.get('budgetFrom')?.invalid && form.get('budgetFrom')?.touched) {
+      <p class="text-sm text-red-500">Please enter a budget amount</p>
+    }
+  </div>
+</form>

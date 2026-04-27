@@ -1,0 +1,160 @@
+<!-- Navigation Header -->
+<web-header />
+
+@if (showSkeleton()) {
+  <!-- Loading Skeleton - Show during client navigation -->
+  <main class="min-h-screen bg-white">
+    <div class="relative">
+      <!-- Dark Background -->
+      <div class="absolute top-0 left-0 right-0 bg-primary h-[700px] sm:h-[650px] lg:h-[600px] z-0"></div>
+
+      <!-- Skeleton Content -->
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:grid lg:gap-8" style="grid-template-columns: 1fr 330px;">
+          <!-- Left Column Skeleton -->
+          <div class="animate-pulse">
+            <!-- Header Skeleton -->
+            <div class="pt-6 pb-8 lg:pt-8 lg:pb-10">
+              <!-- Breadcrumb -->
+              <div class="h-4 bg-white/20 rounded w-48 mb-6"></div>
+              <!-- Title -->
+              <div class="h-10 bg-white/20 rounded w-3/4 mb-4"></div>
+              <!-- Subtitle -->
+              <div class="h-5 bg-white/20 rounded w-1/2 mb-6"></div>
+              <!-- Meta info -->
+              <div class="flex gap-4 mb-6">
+                <div class="h-6 bg-white/20 rounded w-24"></div>
+                <div class="h-6 bg-white/20 rounded w-32"></div>
+                <div class="h-6 bg-white/20 rounded w-20"></div>
+              </div>
+              <!-- Cover image skeleton -->
+              <div class="aspect-video bg-white/10 rounded-xl"></div>
+            </div>
+
+            <!-- Content Skeleton -->
+            <div class="bg-white rounded-t-2xl lg:rounded-none py-8">
+              <!-- Themes -->
+              <div class="pb-8">
+                <div class="h-6 bg-neutral-200 rounded w-40 mb-4"></div>
+                <div class="flex gap-2">
+                  <div class="h-8 bg-neutral-100 rounded-full w-24"></div>
+                  <div class="h-8 bg-neutral-100 rounded-full w-32"></div>
+                  <div class="h-8 bg-neutral-100 rounded-full w-28"></div>
+                </div>
+              </div>
+
+              <!-- About -->
+              <div class="border-t border-neutral-200 py-8">
+                <div class="h-6 bg-neutral-200 rounded w-48 mb-4"></div>
+                <div class="space-y-3">
+                  <div class="h-4 bg-neutral-100 rounded w-full"></div>
+                  <div class="h-4 bg-neutral-100 rounded w-full"></div>
+                  <div class="h-4 bg-neutral-100 rounded w-3/4"></div>
+                </div>
+              </div>
+
+              <!-- Instructions -->
+              <div class="border-t border-neutral-200 py-8">
+                <div class="h-6 bg-neutral-200 rounded w-36 mb-4"></div>
+                <div class="space-y-3">
+                  <div class="h-4 bg-neutral-100 rounded w-full"></div>
+                  <div class="h-4 bg-neutral-100 rounded w-2/3"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column Skeleton (Booking Widget) -->
+          <div class="hidden lg:block">
+            <div class="sticky top-24 pt-8 animate-pulse">
+              <div class="bg-white rounded-2xl shadow-lg p-6 border border-neutral-200">
+                <div class="h-8 bg-neutral-200 rounded w-32 mb-4"></div>
+                <div class="h-12 bg-neutral-100 rounded-lg mb-4"></div>
+                <div class="h-12 bg-neutral-100 rounded-lg mb-4"></div>
+                <div class="h-12 bg-primary/20 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- More sections skeleton -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-pulse">
+      <div class="h-6 bg-neutral-200 rounded w-48 mb-6"></div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="aspect-square bg-neutral-100 rounded-xl"></div>
+        <div class="aspect-square bg-neutral-100 rounded-xl"></div>
+        <div class="aspect-square bg-neutral-100 rounded-xl hidden lg:block"></div>
+        <div class="aspect-square bg-neutral-100 rounded-xl hidden lg:block"></div>
+      </div>
+    </div>
+
+    <ui-footer />
+  </main>
+} @else if (slug(); as currentSlug) {
+  <main class="min-h-screen bg-white">
+    <!-- Experience Layout with Sticky Booking Widget -->
+    <div class="relative">
+      <!-- Full Width Dark Background (extends behind header area) -->
+      <div class="absolute top-0 left-0 right-0 bg-primary h-[700px] sm:h-[650px] lg:h-[600px] z-0"></div>
+
+      <!-- Content Container -->
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:grid lg:gap-8" style="grid-template-columns: 1fr 330px;">
+
+          <!-- Left Column: Header + Content -->
+          <div>
+            <!-- Experience Header Section -->
+            <div class="text-white pt-6 pb-8 lg:pt-8 lg:pb-10">
+              <app-experience-header
+                [slug]="currentSlug"
+                [isFavorited]="isFavorited()"
+                (saveClicked)="onSave()"
+                (shareClicked)="onShare()" />
+            </div>
+
+            <!-- Content Sections (White Background) -->
+            <div class="bg-white rounded-t-2xl lg:rounded-none py-8">
+              <!-- Themes & Topics -->
+              <div class="pb-8">
+                <app-experience-themes-topics [slug]="currentSlug" />
+              </div>
+
+              <!-- About the Experience -->
+              <div class="border-t border-neutral-200 py-8">
+                <app-experience-about [slug]="currentSlug" />
+              </div>
+
+              <!-- Instructions -->
+              <div class="border-t border-neutral-200 py-8">
+                <app-experience-instructions [slug]="currentSlug" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Booking Widget (Sticky) -->
+          <div class="hidden lg:block">
+            <div class="sticky top-24 pt-8">
+              <app-experience-booking-widget [slug]="currentSlug" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Width Sections -->
+    <app-experience-about-host [slug]="currentSlug" />
+    <app-experience-location [slug]="currentSlug" />
+    <app-experience-reviews [slug]="currentSlug" />
+    <app-experience-featured [slug]="currentSlug" />
+
+    <!-- Footer -->
+    <ui-footer />
+  </main>
+
+  <!-- Mobile Booking Bar -->
+  <div class="lg:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom">
+    <app-experience-booking-widget [slug]="currentSlug" [isMobile]="true" />
+  </div>
+}

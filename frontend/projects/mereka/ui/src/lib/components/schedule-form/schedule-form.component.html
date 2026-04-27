@@ -1,0 +1,551 @@
+<!-- Schedule Form Container -->
+<div class="space-y-6">
+  <!-- Duration Section -->
+  <div class="pb-6 border-b border-[rgba(0,0,0,0.12)]">
+    <h3 class="text-[17px] font-semibold text-neutral-900 mb-2">How long will your {{ serviceType() }} be?</h3>
+    <p class="text-sm text-[rgba(0,0,0,0.6)] mb-4">Indicate the duration that each of your slots will be.</p>
+
+    <div class="flex items-end gap-4">
+      <!-- Hours -->
+      <div class="flex-1 max-w-[200px]">
+        <label class="block text-sm text-neutral-700 mb-2">Hour(s)</label>
+        <select
+          [ngModel]="durationHours()"
+          (ngModelChange)="onDurationHoursChange($event)"
+          class="w-full h-12 px-4 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-white text-sm"
+        >
+          @for (hour of hoursOptions; track hour) {
+            <option [value]="hour">{{ hour }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Minutes -->
+      <div class="flex-1 max-w-[200px]">
+        <label class="block text-sm text-neutral-700 mb-2">Minute(s)</label>
+        <select
+          [ngModel]="durationMinutes()"
+          (ngModelChange)="onDurationMinutesChange($event)"
+          class="w-full h-12 px-4 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-white text-sm"
+        >
+          @for (minute of minutesOptions; track minute) {
+            <option [value]="minute">{{ formatMinute(minute) }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    @if (!durationHours() && !durationMinutes()) {
+      <p class="text-[13px] text-red-600 mt-2">Duration is a required field</p>
+    }
+  </div>
+
+  <!-- Timezone Section -->
+  <div class="pb-6 border-b border-[rgba(0,0,0,0.12)]">
+    <h3 class="text-[17px] font-semibold text-neutral-900 mb-2">What timezone will you be hosting from?</h3>
+    <p class="text-sm text-[rgba(0,0,0,0.6)] mb-4">You will also be able to change the timezone later.</p>
+
+    <div class="max-w-[400px]">
+      <label class="block text-sm text-neutral-700 mb-2">Timezone</label>
+      <select
+        [ngModel]="timezone()"
+        (ngModelChange)="onTimezoneChange($event)"
+        class="w-full h-12 px-4 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-white text-sm"
+      >
+        @for (tz of timezones; track tz.value) {
+          <option [value]="tz.value">{{ tz.label }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Schedule Slots Section -->
+  <div>
+    <div class="mb-4">
+      <h3 class="text-[17px] font-semibold text-neutral-900 mb-2">When will you be hosting your {{ serviceType() }}?</h3>
+      <p class="text-sm text-[rgba(0,0,0,0.6)]">You will be able to add or change the exact dates later.</p>
+    </div>
+
+    <!-- Slot Tabs (only show when not editing and not multi-day) -->
+    @if (editingIndex() === -1) {
+      <div class="flex items-center border border-[rgba(0,0,0,0.12)] rounded-xl w-fit mb-4">
+        <button
+          type="button"
+          (click)="filterSlots('upcoming')"
+          class="px-6 py-3 text-sm transition-colors rounded-xl"
+          [class.bg-black]="activeSlotTab() === 'upcoming'"
+          [class.text-white]="activeSlotTab() === 'upcoming'"
+        >
+          Upcoming
+        </button>
+        @if (!isMultiDay()) {
+          <button
+            type="button"
+            (click)="filterSlots('recurring')"
+            class="px-6 py-3 text-sm transition-colors flex items-center gap-1"
+            [class.bg-black]="activeSlotTab() === 'recurring'"
+            [class.text-white]="activeSlotTab() === 'recurring'"
+          >
+            Recurring
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </button>
+        }
+        <button
+          type="button"
+          (click)="filterSlots('past')"
+          class="px-6 py-3 text-sm transition-colors rounded-xl"
+          [class.bg-black]="activeSlotTab() === 'past'"
+          [class.text-white]="activeSlotTab() === 'past'"
+        >
+          Past
+        </button>
+      </div>
+    }
+
+    <!-- Add Slot Button -->
+    @if (editingIndex() === -1) {
+      <button
+        type="button"
+        (click)="addSlot()"
+        class="flex items-center gap-2 mb-4 cursor-pointer"
+      >
+        <span class="w-10 h-10 flex items-center justify-center border border-[rgba(0,0,0,0.12)] rounded-full hover:bg-neutral-50 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </span>
+        <span class="font-semibold text-sm">Add Slot</span>
+      </button>
+    }
+
+    <!-- Slots List -->
+    @if (editingIndex() === -1) {
+      @for (schedule of filteredSchedules(); track schedule.uid; let i = $index) {
+        <div class="slot-container my-5 p-4 lg:px-7 lg:py-4 border border-[rgba(0,0,0,0.12)] rounded-xl">
+          <div class="text-[13px] text-neutral-900 mb-1">Slot {{ schedule.slotNo }}</div>
+          <div class="flex justify-between items-start">
+            <div class="font-bold text-[15px] leading-6 whitespace-pre-line">
+              {{ getSlotDisplayDate(schedule) }}
+            </div>
+            <div class="flex items-center gap-5">
+              <button
+                type="button"
+                (click)="editSlot(i)"
+                class="p-2 hover:bg-neutral-100 rounded-full transition-colors"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                (click)="deleteSlot(schedule.uid)"
+                class="p-2 hover:bg-neutral-100 rounded-full transition-colors"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          @if (schedule.updatedAt) {
+            <div class="mt-3 flex items-center gap-2 text-sm text-[rgba(0,0,0,0.6)]">
+              <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+              </svg>
+              <span>This slot has been edited. Last edited: {{ schedule.updatedAt }}</span>
+            </div>
+          }
+        </div>
+      } @empty {
+        <div class="text-sm text-[rgba(0,0,0,0.5)] py-4">No slots in this category.</div>
+      }
+    }
+
+    <!-- Edit Slot Form -->
+    @if (editingIndex() > -1 && currentEditingSchedule()) {
+      <div class="edit-slot-container">
+        @if (isMultiDay()) {
+          <!-- Multi-Day Slot Edit -->
+          <div class="space-y-4">
+            <!-- Date Range -->
+            <div>
+              <label class="block text-sm font-normal mb-2">Date range</label>
+              <div class="flex items-center gap-2">
+                <input
+                  type="date"
+                  [min]="minDate()"
+                  [ngModel]="getDatePart(currentEditingSchedule()!.startDate)"
+                  (ngModelChange)="updateScheduleField('startDate', $event + ' ' + getTimeFromDate(currentEditingSchedule()!.startDate))"
+                  class="h-12 px-4 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-white text-sm"
+                />
+                <span class="text-neutral-400">to</span>
+                <input
+                  type="date"
+                  [min]="minDate()"
+                  [ngModel]="getDatePart(currentEditingSchedule()!.endDate)"
+                  (ngModelChange)="updateScheduleField('endDate', $event + ' ' + getTimeFromDate(currentEditingSchedule()!.endDate))"
+                  class="h-12 px-4 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-white text-sm"
+                />
+              </div>
+            </div>
+
+            <!-- Start Time -->
+            <div class="flex flex-wrap gap-4">
+              <div>
+                <label class="block text-sm font-normal mb-2">Start Time</label>
+                <div class="flex items-center gap-2">
+                  <select
+                    [ngModel]="getHourFromDate(currentEditingSchedule()!.startDate)"
+                    (ngModelChange)="updateScheduleTime('startDate', $event, getMinuteFromDate(currentEditingSchedule()!.startDate), getAmPmFromDate(currentEditingSchedule()!.startDate))"
+                    class="w-[71px] h-12 px-3 border border-[rgba(0,0,0,0.12)] rounded-lg bg-white text-sm"
+                  >
+                    @for (hour of hourSelectOptions; track hour) {
+                      <option [value]="hour">{{ hour }}</option>
+                    }
+                  </select>
+                  <select
+                    [ngModel]="getMinuteFromDate(currentEditingSchedule()!.startDate)"
+                    (ngModelChange)="updateScheduleTime('startDate', getHourFromDate(currentEditingSchedule()!.startDate), $event, getAmPmFromDate(currentEditingSchedule()!.startDate))"
+                    class="w-[71px] h-12 px-3 border border-[rgba(0,0,0,0.12)] rounded-lg bg-white text-sm"
+                  >
+                    @for (minute of minuteSelectOptions; track minute) {
+                      <option [value]="minute">{{ minute }}</option>
+                    }
+                  </select>
+                  <div class="flex border border-[rgba(0,0,0,0.12)] rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      (click)="updateScheduleTime('startDate', getHourFromDate(currentEditingSchedule()!.startDate), getMinuteFromDate(currentEditingSchedule()!.startDate), 'AM')"
+                      class="px-4 py-3 text-sm transition-colors"
+                      [class.bg-black]="getAmPmFromDate(currentEditingSchedule()!.startDate) === 'AM'"
+                      [class.text-white]="getAmPmFromDate(currentEditingSchedule()!.startDate) === 'AM'"
+                    >
+                      AM
+                    </button>
+                    <button
+                      type="button"
+                      (click)="updateScheduleTime('startDate', getHourFromDate(currentEditingSchedule()!.startDate), getMinuteFromDate(currentEditingSchedule()!.startDate), 'PM')"
+                      class="px-4 py-3 text-sm transition-colors border-l border-[rgba(0,0,0,0.12)]"
+                      [class.bg-black]="getAmPmFromDate(currentEditingSchedule()!.startDate) === 'PM'"
+                      [class.text-white]="getAmPmFromDate(currentEditingSchedule()!.startDate) === 'PM'"
+                    >
+                      PM
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- End Time -->
+              <div>
+                <label class="block text-sm font-normal mb-2">End Time</label>
+                <div class="flex items-center gap-2">
+                  <select
+                    [ngModel]="getHourFromDate(currentEditingSchedule()!.endDate)"
+                    (ngModelChange)="updateScheduleTime('endDate', $event, getMinuteFromDate(currentEditingSchedule()!.endDate), getAmPmFromDate(currentEditingSchedule()!.endDate))"
+                    class="w-[71px] h-12 px-3 border border-[rgba(0,0,0,0.12)] rounded-lg bg-white text-sm"
+                  >
+                    @for (hour of hourSelectOptions; track hour) {
+                      <option [value]="hour">{{ hour }}</option>
+                    }
+                  </select>
+                  <select
+                    [ngModel]="getMinuteFromDate(currentEditingSchedule()!.endDate)"
+                    (ngModelChange)="updateScheduleTime('endDate', getHourFromDate(currentEditingSchedule()!.endDate), $event, getAmPmFromDate(currentEditingSchedule()!.endDate))"
+                    class="w-[71px] h-12 px-3 border border-[rgba(0,0,0,0.12)] rounded-lg bg-white text-sm"
+                  >
+                    @for (minute of minuteSelectOptions; track minute) {
+                      <option [value]="minute">{{ minute }}</option>
+                    }
+                  </select>
+                  <div class="flex border border-[rgba(0,0,0,0.12)] rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      (click)="updateScheduleTime('endDate', getHourFromDate(currentEditingSchedule()!.endDate), getMinuteFromDate(currentEditingSchedule()!.endDate), 'AM')"
+                      class="px-4 py-3 text-sm transition-colors"
+                      [class.bg-black]="getAmPmFromDate(currentEditingSchedule()!.endDate) === 'AM'"
+                      [class.text-white]="getAmPmFromDate(currentEditingSchedule()!.endDate) === 'AM'"
+                    >
+                      AM
+                    </button>
+                    <button
+                      type="button"
+                      (click)="updateScheduleTime('endDate', getHourFromDate(currentEditingSchedule()!.endDate), getMinuteFromDate(currentEditingSchedule()!.endDate), 'PM')"
+                      class="px-4 py-3 text-sm transition-colors border-l border-[rgba(0,0,0,0.12)]"
+                      [class.bg-black]="getAmPmFromDate(currentEditingSchedule()!.endDate) === 'PM'"
+                      [class.text-white]="getAmPmFromDate(currentEditingSchedule()!.endDate) === 'PM'"
+                    >
+                      PM
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <!-- Single-Day Slot Edit -->
+          <div class="space-y-4">
+            <!-- Date -->
+            <div>
+              <label class="block text-sm font-normal mb-2">Date</label>
+              <input
+                type="date"
+                [min]="minDate()"
+                [ngModel]="getDatePart(currentEditingSchedule()!.startDate)"
+                (ngModelChange)="updateScheduleField('startDate', $event + ' ' + getTimeFromDate(currentEditingSchedule()!.startDate))"
+                class="h-12 px-4 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-white text-sm"
+              />
+            </div>
+
+            <!-- Time -->
+            <div>
+              <label class="block text-sm font-normal mb-2">Start Time</label>
+              <div class="flex items-center gap-2">
+                <select
+                  [ngModel]="getHourFromDate(currentEditingSchedule()!.startDate)"
+                  (ngModelChange)="updateScheduleTime('startDate', $event, getMinuteFromDate(currentEditingSchedule()!.startDate), getAmPmFromDate(currentEditingSchedule()!.startDate))"
+                  class="w-[71px] h-12 px-3 border border-[rgba(0,0,0,0.12)] rounded-lg bg-white text-sm"
+                >
+                  @for (hour of hourSelectOptions; track hour) {
+                    <option [value]="hour">{{ hour }}</option>
+                  }
+                </select>
+                <select
+                  [ngModel]="getMinuteFromDate(currentEditingSchedule()!.startDate)"
+                  (ngModelChange)="updateScheduleTime('startDate', getHourFromDate(currentEditingSchedule()!.startDate), $event, getAmPmFromDate(currentEditingSchedule()!.startDate))"
+                  class="w-[71px] h-12 px-3 border border-[rgba(0,0,0,0.12)] rounded-lg bg-white text-sm"
+                >
+                  @for (minute of minuteSelectOptions; track minute) {
+                    <option [value]="minute">{{ minute }}</option>
+                  }
+                </select>
+                <div class="flex border border-[rgba(0,0,0,0.12)] rounded-lg overflow-hidden">
+                  <button
+                    type="button"
+                    (click)="updateScheduleTime('startDate', getHourFromDate(currentEditingSchedule()!.startDate), getMinuteFromDate(currentEditingSchedule()!.startDate), 'AM')"
+                    class="px-4 py-3 text-sm transition-colors"
+                    [class.bg-black]="getAmPmFromDate(currentEditingSchedule()!.startDate) === 'AM'"
+                    [class.text-white]="getAmPmFromDate(currentEditingSchedule()!.startDate) === 'AM'"
+                  >
+                    AM
+                  </button>
+                  <button
+                    type="button"
+                    (click)="updateScheduleTime('startDate', getHourFromDate(currentEditingSchedule()!.startDate), getMinuteFromDate(currentEditingSchedule()!.startDate), 'PM')"
+                    class="px-4 py-3 text-sm transition-colors border-l border-[rgba(0,0,0,0.12)]"
+                    [class.bg-black]="getAmPmFromDate(currentEditingSchedule()!.startDate) === 'PM'"
+                    [class.text-white]="getAmPmFromDate(currentEditingSchedule()!.startDate) === 'PM'"
+                  >
+                    PM
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recurring Type -->
+            <div>
+              <label class="block text-sm font-normal mb-2">Repeat</label>
+              <select
+                [ngModel]="currentEditingSchedule()!.recurringType"
+                (ngModelChange)="onRecurringTypeChange($event)"
+                class="w-full max-w-[300px] h-12 px-4 border border-[rgba(0,0,0,0.12)] rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-white text-sm"
+              >
+                @for (option of recurringOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Custom Recurring Section -->
+            @if (isCustomRecurring()) {
+              <div class="mt-6 p-5 bg-neutral-50 rounded-xl border border-[rgba(0,0,0,0.08)] space-y-5">
+                <!-- Interval and Frequency -->
+                <div class="flex flex-wrap items-center gap-3">
+                  <span class="text-sm text-neutral-700">Set recurring for every</span>
+
+                  <!-- Plus/Minus Control for Interval -->
+                  <div class="flex items-center border border-[rgba(0,0,0,0.12)] rounded-lg overflow-hidden bg-white">
+                    <button
+                      type="button"
+                      (click)="decrementInterval()"
+                      class="w-10 h-10 flex items-center justify-center hover:bg-neutral-100 transition-colors"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                      </svg>
+                    </button>
+                    <span class="w-12 text-center font-medium text-sm">{{ customInterval() }}</span>
+                    <button
+                      type="button"
+                      (click)="incrementInterval()"
+                      class="w-10 h-10 flex items-center justify-center hover:bg-neutral-100 transition-colors"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <!-- Frequency Dropdown -->
+                  <select
+                    [ngModel]="customFrequency()"
+                    (ngModelChange)="onFrequencyChange($event)"
+                    class="h-10 px-4 border border-[rgba(0,0,0,0.12)] rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                  >
+                    @for (freq of frequencyOptions; track freq.value) {
+                      <option [value]="freq.value">{{ freq.label }}</option>
+                    }
+                  </select>
+                </div>
+
+                <!-- Weekly Day Selection -->
+                @if (customFrequency() === 'Weekly') {
+                  <div>
+                    <label class="block text-sm text-neutral-700 mb-3">Repeat on</label>
+                    <div class="flex flex-wrap gap-2">
+                      @for (day of weekDays; track day) {
+                        <button
+                          type="button"
+                          (click)="toggleWeekDay(day)"
+                          class="w-12 h-12 rounded-full text-sm font-medium transition-colors"
+                          [class.bg-black]="isWeekDaySelected(day)"
+                          [class.text-white]="isWeekDaySelected(day)"
+                          [class.bg-white]="!isWeekDaySelected(day)"
+                          [class.border]="!isWeekDaySelected(day)"
+                          [class.border-neutral-300]="!isWeekDaySelected(day)"
+                          [class.hover:bg-neutral-100]="!isWeekDaySelected(day)"
+                        >
+                          {{ day }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <!-- Ends Section -->
+                <div>
+                  <label class="block text-sm text-neutral-700 mb-3">Ends</label>
+                  <div class="space-y-3">
+                    <!-- Never -->
+                    <label class="flex items-center gap-3 cursor-pointer">
+                      <div
+                        (click)="setEndMode('Never')"
+                        class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                        [class.border-black]="customEndMode() === 'Never'"
+                        [class.border-neutral-300]="customEndMode() !== 'Never'"
+                      >
+                        @if (customEndMode() === 'Never') {
+                          <div class="w-2.5 h-2.5 rounded-full bg-black"></div>
+                        }
+                      </div>
+                      <span class="text-sm">Never</span>
+                    </label>
+
+                    <!-- On Date -->
+                    <label class="flex items-center gap-3 cursor-pointer">
+                      <div
+                        (click)="setEndMode('On date')"
+                        class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                        [class.border-black]="customEndMode() === 'On date'"
+                        [class.border-neutral-300]="customEndMode() !== 'On date'"
+                      >
+                        @if (customEndMode() === 'On date') {
+                          <div class="w-2.5 h-2.5 rounded-full bg-black"></div>
+                        }
+                      </div>
+                      <span class="text-sm">On</span>
+                      <input
+                        type="date"
+                        [min]="minDate()"
+                        [ngModel]="customEndDate()"
+                        (ngModelChange)="onEndDateChange($event)"
+                        [disabled]="customEndMode() !== 'On date'"
+                        class="h-10 px-3 border border-[rgba(0,0,0,0.12)] rounded-lg text-sm bg-white disabled:bg-neutral-100 disabled:cursor-not-allowed"
+                      />
+                    </label>
+
+                    <!-- After X Occurrences -->
+                    <label class="flex items-center gap-3 cursor-pointer">
+                      <div
+                        (click)="setEndMode('After')"
+                        class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                        [class.border-black]="customEndMode() === 'After'"
+                        [class.border-neutral-300]="customEndMode() !== 'After'"
+                      >
+                        @if (customEndMode() === 'After') {
+                          <div class="w-2.5 h-2.5 rounded-full bg-black"></div>
+                        }
+                      </div>
+                      <span class="text-sm">After</span>
+
+                      <!-- Plus/Minus Control for Occurrences -->
+                      <div class="flex items-center border border-[rgba(0,0,0,0.12)] rounded-lg overflow-hidden bg-white"
+                           [class.opacity-50]="customEndMode() !== 'After'">
+                        <button
+                          type="button"
+                          (click)="decrementOccurrences()"
+                          [disabled]="customEndMode() !== 'After'"
+                          class="w-8 h-8 flex items-center justify-center hover:bg-neutral-100 transition-colors disabled:cursor-not-allowed"
+                        >
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                          </svg>
+                        </button>
+                        <span class="w-10 text-center text-sm">{{ customEndAfterOccurrences() }}</span>
+                        <button
+                          type="button"
+                          (click)="incrementOccurrences()"
+                          [disabled]="customEndMode() !== 'After'"
+                          class="w-8 h-8 flex items-center justify-center hover:bg-neutral-100 transition-colors disabled:cursor-not-allowed"
+                        >
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                          </svg>
+                        </button>
+                      </div>
+                      <span class="text-sm">occurrences</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- End Date Display -->
+                @if (computedEndDate()) {
+                  <div class="pt-4 border-t border-[rgba(0,0,0,0.08)]">
+                    <div class="flex items-center gap-2">
+                      <span class="text-sm text-neutral-500">End Date:</span>
+                      <span class="text-sm font-medium">{{ formatComputedEndDate() }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-3 mt-6">
+          <button
+            type="button"
+            (click)="cancelSlot()"
+            class="px-5 py-2.5 border border-[rgba(0,0,0,0.12)] rounded-lg hover:bg-neutral-50 transition-colors text-sm font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            (click)="saveSlot(currentEditingSchedule()!)"
+            [disabled]="!isSlotValid(currentEditingSchedule()!)"
+            class="flex items-center gap-2 px-5 py-2.5 bg-black text-white rounded-lg hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+          >
+            Save Slot
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,123 @@
+@use 'abstracts' as *;
+
+/*
+ * Variables
+ */
+
+main {
+  --text-large: #{get-clamp(76, 25)};
+  --text-medium: #{get-clamp(49, 22)};
+  --text-small: #{get-clamp(20, 17)};
+}
+
+/*
+ * Common layouts
+ */
+
+.layout-section {
+  position: relative;
+  overflow-x: hidden;
+  padding-block: get-clamp(80, 40);
+}
+
+.layout-container {
+  max-width: var(--layout-container-width-wide);
+  gap: get-clamp(40, 20);
+  position: relative;
+}
+
+.ui-button {
+  align-self: center;
+  width: 100%;
+}
+
+.br {
+  display: none;
+}
+
+/*
+ * Section
+ */
+
+.section-heading {
+  align-self: center;
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: var(--text-medium);
+  line-height: 1.2em;
+  letter-spacing: -1.15px;
+  text-align: center;
+
+  .heading-accent {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.section-subheading {
+  font-family: var(--font-primary);
+  font-weight: 400;
+  font-size: var(--text-small);
+  line-height: 1.4em;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+/*
+ * Backgrounds
+ */
+
+.bg-underlay {
+
+  &:before {
+    content: '';
+    width: 100%;
+    max-width: 1380px;
+    position: absolute;
+    margin-inline: auto;
+    top: 0;
+    bottom: 0;
+    left: 0; 
+    right: 0;
+    background-size: cover;
+    background-position: top center;    
+  }
+}
+
+/*
+ * Breakpoint
+ */
+
+ @media (width >= $breakpoint-laptop) {
+
+  .br {
+    display: block;
+  }
+
+  .ui-button {
+    width: auto;
+  }
+
+  .section-subheading {
+    text-align: left;
+  }
+
+  .layout-section {
+    & + &:not(.marketplace):not(.corporate):not(.cta) {
+      margin-top: 2rem;
+    }
+  }
+
+  .cta {
+    margin-top: 6rem;
+    margin-bottom: 6rem;
+  }
+
+  .bg-underlay {
+    &:before {
+      width: calc(100% - 60px);
+      border-radius: 40px;
+    }
+  }  
+}

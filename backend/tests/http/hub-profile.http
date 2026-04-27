@@ -1,0 +1,330 @@
+### Variables
+@baseUrl = http://localhost:3000/api/v1
+@token = your-access-token-here
+@hubId = your-hub-id-here
+
+### ==============================================
+### Hub Profile Endpoints
+### ==============================================
+
+### 1. Get User's Hub Profile
+# GET /hub-profile
+# Retrieve authenticated user's hub profile
+GET {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "id": "...",
+#     "userId": "...",
+#     "businessName": "Creative Hub KL",
+#     "slug": "creative-hub-kl",
+#     "plan": "scale",
+#     "status": "draft",
+#     "contactInfo": { ... },
+#     "location": { ... },
+#     "facilities": [...],
+#     "amenities": [...],
+#     "createdAt": "...",
+#     "updatedAt": "..."
+#   }
+# }
+
+### 2. Create Hub Profile
+# POST /hub-profile
+# Create a new hub profile for the user
+POST {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "businessName": "Creative Hub KL",
+  "slug": "creative-hub-kl",
+  "plan": "scale",
+  "contactInfo": {
+    "email": "hub@example.com",
+    "phoneNumber": "+60123456789",
+    "website": "https://creativehub.example.com"
+  },
+  "location": {
+    "address": "123 Main St",
+    "city": "Kuala Lumpur",
+    "state": "Selangor",
+    "country": "Malaysia",
+    "postalCode": "50000",
+    "coordinates": {
+      "latitude": 3.1569,
+      "longitude": 101.7123
+    }
+  },
+  "description": "A creative space for artists and innovators",
+  "focusAreas": ["focus-area-id-1", "focus-area-id-2"],
+  "amenities": ["amenity-id-1", "amenity-id-2"],
+  "facilities": ["facility-id-1", "facility-id-2"]
+}
+
+# Expected Response (201):
+# {
+#   "success": true,
+#   "data": {
+#     "id": "...",
+#     "businessName": "Creative Hub KL",
+#     "slug": "creative-hub-kl",
+#     "status": "draft",
+#     ...
+#   }
+# }
+
+### 3. Update Hub Profile (Scale Plan)
+# PATCH /hub-profile
+# Update hub profile (plan-aware fields)
+PATCH {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "description": "Updated description",
+  "contactInfo": {
+    "phoneNumber": "+60198765432"
+  },
+  "amenities": ["wifi", "parking"],
+  "facilities": ["meeting-room"]
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "id": "...",
+#     "description": "Updated description",
+#     ...
+#   }
+# }
+
+### 3b. Update Hub Profile (Soar Plan - Premium Features)
+PATCH {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "description": "Premium hub with advanced features",
+  "customBranding": {
+    "logo": "https://example.com/logo.png",
+    "primaryColor": "#FF5733",
+    "secondaryColor": "#3498DB"
+  },
+  "socialMedia": {
+    "facebook": "https://facebook.com/creativehub",
+    "instagram": "https://instagram.com/creativehub",
+    "linkedin": "https://linkedin.com/company/creativehub"
+  },
+  "operatingHours": {
+    "monday": { "open": "09:00", "close": "18:00" },
+    "tuesday": { "open": "09:00", "close": "18:00" },
+    "wednesday": { "open": "09:00", "close": "18:00" },
+    "thursday": { "open": "09:00", "close": "18:00" },
+    "friday": { "open": "09:00", "close": "18:00" }
+  },
+  "pricing": {
+    "hourlyRate": 50,
+    "dayRate": 300,
+    "currency": "MYR"
+  }
+}
+
+# Note: These fields are only available for Soar plan subscribers
+
+### 4. Submit Hub for Approval
+# POST /hub-profile/publish
+# Submit hub profile for admin approval
+POST {{baseUrl}}/hub-profile/publish
+Authorization: Bearer {{token}}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "id": "...",
+#     "status": "pending_approval",
+#     "submittedAt": "2025-11-07T...",
+#     "message": "Your hub has been submitted for review"
+#   }
+# }
+
+### ==============================================
+### Hub Onboarding Multi-Step Flow
+### ==============================================
+
+### Step 1: Basic Information
+POST {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "businessName": "Innovation Hub",
+  "slug": "innovation-hub-kl",
+  "plan": "scale"
+}
+
+### Step 2: Contact Information
+PATCH {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "contactInfo": {
+    "email": "contact@innovationhub.com",
+    "phoneNumber": "+60123456789",
+    "website": "https://innovationhub.com"
+  }
+}
+
+### Step 3: Location Details
+PATCH {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "location": {
+    "address": "456 Innovation Street",
+    "city": "Kuala Lumpur",
+    "state": "Selangor",
+    "country": "Malaysia",
+    "postalCode": "50100",
+    "coordinates": {
+      "latitude": 3.1569,
+      "longitude": 101.7123
+    }
+  }
+}
+
+### Step 4: Description & Focus Areas
+PATCH {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "description": "A hub for innovation and collaboration in the tech industry",
+  "focusAreas": ["technology", "innovation", "startup"]
+}
+
+### Step 5: Amenities & Facilities
+PATCH {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "amenities": ["wifi", "parking", "coffee"],
+  "facilities": ["meeting-rooms", "event-space", "coworking"]
+}
+
+### Step 6: Submit for Approval
+POST {{baseUrl}}/hub-profile/publish
+Authorization: Bearer {{token}}
+
+### ==============================================
+### Error Scenarios
+### ==============================================
+
+### Hub Already Exists
+POST {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "businessName": "Duplicate Hub",
+  "slug": "duplicate-hub",
+  "plan": "scale"
+}
+
+# Expected Response (400):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "HUB_EXISTS",
+#     "message": "User already has a hub profile"
+#   }
+# }
+
+### Invalid Slug
+POST {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "businessName": "Test Hub",
+  "slug": "Invalid Slug!",
+  "plan": "scale"
+}
+
+# Expected Response (400):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "VALIDATION_ERROR",
+#     "message": "Slug must be lowercase, alphanumeric, and can contain hyphens"
+#   }
+# }
+
+### Plan-Restricted Feature Access
+# Trying to use Soar-only features on Scale plan
+PATCH {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "customBranding": {
+    "logo": "https://example.com/logo.png"
+  }
+}
+
+# Expected Response (403):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "PLAN_RESTRICTION",
+#     "message": "This feature is only available on Soar plan"
+#   }
+# }
+
+### Submit Incomplete Hub
+POST {{baseUrl}}/hub-profile/publish
+Authorization: Bearer {{token}}
+
+# Expected Response (400):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "INCOMPLETE_PROFILE",
+#     "message": "Hub profile is incomplete. Required fields: contactInfo, location"
+#   }
+# }
+
+### No Hub Found
+GET {{baseUrl}}/hub-profile
+Authorization: Bearer {{token}}
+
+# Expected Response (404):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "HUB_NOT_FOUND",
+#     "message": "No hub profile found for this user"
+#   }
+# }
+
+### ==============================================
+### Testing Notes
+### ==============================================
+
+# Hub Status Flow:
+# 1. draft - Initial creation
+# 2. pending_approval - After publish
+# 3. approved - Admin approved (hub goes live)
+# 4. rejected - Admin rejected (need revisions)
+
+# Plan Tiers:
+# - Scale Plan: Basic features, limited customization
+# - Soar Plan: Premium features, full customization, advanced analytics

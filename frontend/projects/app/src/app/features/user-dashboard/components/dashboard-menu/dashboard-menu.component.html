@@ -1,0 +1,204 @@
+<!-- Profile Section -->
+<div class="menu-profile flex items-center justify-start gap-3 p-6 border-b border-[#DDDDDE] lg:border-b-0">
+  <div class="menu-profile__image flex-shrink-0">
+    @if (userProfilePhoto()) {
+      <img [src]="userProfilePhoto()" alt="User image" class="w-14 h-14 rounded-full object-cover" />
+    } @else {
+      <div class="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xl">
+        {{ userInitials() }}
+      </div>
+    }
+  </div>
+  <div class="menu-profile__info flex flex-col gap-2">
+    <!-- Desktop only -->
+    @if (!isMobile()) {
+      <div class="menu-profile__name font-bold text-[1.0625rem] leading-none text-black">
+        {{ userName() }}
+      </div>
+      <div class="menu-profile__title text-[0.9375rem] text-neutral-600">
+        {{ userEmail() }}
+      </div>
+    }
+    <!-- Mobile only -->
+    @if (isMobile()) {
+      <div class="menu-profile__name font-bold text-[1.0625rem] leading-none text-black">
+        {{ userName() }}
+      </div>
+      <div class="menu-profile__links flex items-center gap-2">
+        <a routerLink="/profile" class="text-[0.812rem] leading-none text-black/60 underline underline-offset-2">
+          View Profile
+        </a>
+        <div class="w-px h-3 bg-[#7B7B7C]"></div>
+        <a routerLink="/learner-onboard/profile" class="text-[0.812rem] leading-none text-black/60 underline underline-offset-2">
+          Edit Profile
+        </a>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Mobile Only: Switch to Business Dashboard -->
+@if (isMobile()) {
+  <div class="menu-content px-6 my-6">
+    <div class="w-full h-px bg-[#DDDDDE] mb-6"></div>
+    <button
+      type="button"
+      class="w-full flex items-center justify-center gap-2 px-4 py-3 border border-primary rounded-full text-primary font-semibold hover:bg-primary/5 transition-colors"
+    >
+      Switch to Business Dashboard
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+    </button>
+    <button
+      type="button"
+      class="w-full flex items-center justify-center gap-2 px-4 py-3 mt-2 border border-primary rounded-full text-primary font-semibold hover:bg-primary/5 transition-colors"
+    >
+      Post a Job
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+    </button>
+  </div>
+}
+
+<!-- Menu Content -->
+<div class="menu-content px-6 my-6 lg:px-10 lg:my-0">
+  <ul class="menu-list block p-0 m-0 lg:flex lg:flex-col lg:gap-2">
+
+    <!-- Mobile: List a Service Button -->
+    @if (isMobile()) {
+      <button
+        type="button"
+        routerLink="/welcome/hub"
+        class="w-full flex items-center justify-center gap-2 px-4 py-3 mb-4 border border-primary rounded-full text-primary font-semibold hover:bg-primary/5 transition-colors"
+      >
+        List a service
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+      </button>
+    }
+
+    <!-- Overview Section (items without section) -->
+    @if (getItemsWithoutSection().length > 0) {
+      <!-- Mobile section title -->
+      @if (isMobile()) {
+        <div class="menu-item-title my-4 text-[0.812rem] font-bold text-[#9E9E9E] uppercase">Overview</div>
+      }
+
+      @for (item of getItemsWithoutSection(); track item.path; let i = $index) {
+        <li class="menu-item my-5 lg:my-0 flex flex-row items-center justify-between gap-3 w-full lg:rounded-xl lg:hover:bg-black/4">
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="lg:bg-black/8"
+            [routerLinkActiveOptions]="{ exact: item.path === 'overview' }"
+            (click)="onMenuClick(item)"
+            class="flex items-center gap-4 leading-none text-[15px] font-bold no-underline text-black w-full lg:px-[18px] lg:py-3"
+          >
+            <ui-icon [name]="item.icon" size="sm" />
+            {{ item.label }}
+          </a>
+        </li>
+
+        <!-- My Bookings after Account Details (mobile) -->
+        @if (i === 0 && isMobile()) {
+          <li class="menu-item my-5 lg:my-0 flex flex-row items-center justify-between gap-3 w-full">
+            <a
+              routerLink="/my-bookings"
+              (click)="mobileContentToggle.emit()"
+              class="flex items-center gap-4 leading-none text-[15px] font-bold no-underline text-black w-full"
+            >
+              <ui-icon name="calendar" size="sm" />
+              My Bookings
+            </a>
+          </li>
+        }
+
+        <!-- Desktop: Section titles after certain items -->
+        @if (!isMobile() && i === 0) {
+          <div class="menu-item-title my-4 text-[0.812rem] font-bold text-[#9E9E9E] uppercase lg:hidden">Bookings</div>
+        }
+      }
+    }
+
+    <!-- Sections -->
+    @for (section of getUniqueSections(); track section; let sectionIndex = $index) {
+      <!-- Separator -->
+      <div class="menu-separator w-full h-px my-8 bg-[#DDDDDE]"></div>
+
+      <!-- Section Title (mobile only on lg:hidden) -->
+      <div class="menu-item-title my-4 text-[0.812rem] font-bold text-[#9E9E9E] uppercase lg:hidden">{{ section }}</div>
+
+      @for (item of getSectionItems(section); track item.path) {
+        <li class="menu-item my-5 lg:my-0 flex flex-row items-center justify-between gap-3 w-full lg:rounded-xl lg:hover:bg-black/4">
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="lg:bg-black/8"
+            (click)="onMenuClick(item)"
+            class="flex items-center gap-4 leading-none text-[15px] font-bold no-underline text-black w-full lg:px-[18px] lg:py-3"
+          >
+            <ui-icon [name]="item.icon" size="sm" />
+            {{ item.label }}
+            <!-- Badge for Reviews -->
+            @if (item.label === 'Reviews' && reviewsCount() > 0) {
+              <span class="count-indicator ml-auto min-w-[20px] h-5 px-1 inline-flex items-center justify-center bg-[#49A0EB] text-white rounded-full font-bold text-[0.6875rem]">
+                {{ reviewsCount() }}
+              </span>
+            }
+          </a>
+        </li>
+      }
+    }
+
+    <!-- Additional Links (Mobile) -->
+    @if (isMobile()) {
+      <div class="menu-separator w-full h-px my-8 bg-[#DDDDDE]"></div>
+      <div class="menu-item-title my-4 text-[0.812rem] font-bold text-[#9E9E9E] uppercase">More Information</div>
+
+      <li class="menu-item my-5 flex flex-row items-center justify-between gap-3 w-full">
+        <a
+          href="https://legal.mereka.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-4 leading-none text-[15px] font-bold no-underline text-black w-full"
+        >
+          Terms of Service
+        </a>
+      </li>
+      <li class="menu-item my-5 flex flex-row items-center justify-between gap-3 w-full">
+        <a
+          href="https://help.mereka.io/hc/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-4 leading-none text-[15px] font-bold no-underline text-black w-full"
+        >
+          Help Center
+        </a>
+      </li>
+
+      <!-- Become an Expert -->
+      <div class="menu-separator w-full h-px my-8 bg-[#DDDDDE]"></div>
+      <li class="menu-item my-5 flex flex-row items-center justify-between gap-3 w-full">
+        <a
+          routerLink="/welcome/hub"
+          class="flex items-center gap-4 leading-none text-[15px] font-bold no-underline text-black w-full"
+        >
+          Become an Expert
+        </a>
+      </li>
+
+      <!-- Logout -->
+      <div class="menu-separator w-full h-px my-8 bg-[#DDDDDE]"></div>
+      <li class="menu-item my-5 flex flex-row items-center justify-between gap-3 w-full">
+        <a
+          href="#"
+          (click)="logout($event)"
+          class="flex items-center gap-4 leading-none text-[15px] font-bold no-underline text-black w-full"
+        >
+          Log Out
+        </a>
+      </li>
+    }
+  </ul>
+</div>

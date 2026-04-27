@@ -1,0 +1,24 @@
+@layer mereka-ui {
+  .ui-collapse-text {
+    display: inline;
+
+  .collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: var(--max-lines, 3);
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .toggle {
+    display: inline;
+    color: var(--content-secondary, #7B7B7B);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+  }
+}

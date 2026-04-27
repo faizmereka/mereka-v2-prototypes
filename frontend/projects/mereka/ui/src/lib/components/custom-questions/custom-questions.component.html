@@ -1,0 +1,278 @@
+<div class="space-y-4">
+  <!-- Questions List with Drag & Drop -->
+  <div
+    cdkDropList
+    [cdkDropListData]="questions()"
+    (cdkDropListDropped)="onDrop($event)"
+    class="space-y-3"
+  >
+    @for (question of questions(); track question.id) {
+      <div cdkDrag [cdkDragDisabled]="question.isEditing" class="group">
+        @if (question.isEditing) {
+          <!-- Edit Mode -->
+          <div class="bg-white border border-neutral-200 rounded-xl p-5 space-y-4">
+            <!-- Question Label Input -->
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 mb-2">Form Question</label>
+              <input
+                type="text"
+                [ngModel]="question.questionLabel"
+                (ngModelChange)="updateQuestionLabel(question.id, $event)"
+                placeholder="Your Question"
+                class="w-full h-12 px-4 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
+              />
+            </div>
+
+            <!-- Question Type Select -->
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 mb-2">Question Type</label>
+              <select
+                [ngModel]="question.questionType"
+                (ngModelChange)="updateQuestionType(question.id, $event)"
+                class="w-full md:w-56 h-12 px-4 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent bg-white"
+              >
+                @for (type of questionTypes; track type.name) {
+                  <option [value]="type.name">{{ type.title }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Checkbox Options -->
+            @if (question.questionType === 'checkbox') {
+              <div class="space-y-3">
+                @for (option of question.options; track $index; let j = $index) {
+                  <div class="flex items-center gap-3">
+                    <div class="w-5 h-5 border-2 border-neutral-300 rounded"></div>
+                    <div class="relative flex-1 max-w-md">
+                      <input
+                        type="text"
+                        [ngModel]="option"
+                        (ngModelChange)="updateOption(question.id, j, $event)"
+                        [placeholder]="'Option ' + (j + 1)"
+                        class="w-full h-10 px-4 pr-10 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
+                      />
+                      <button
+                        type="button"
+                        (click)="deleteOption(question.id, j)"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-red-500 transition-colors"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                }
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 border-2 border-neutral-300 rounded"></div>
+                  <button
+                    type="button"
+                    (click)="addOption(question.id)"
+                    class="px-4 py-2 text-sm border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+                  >
+                    Add Option
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- Multiple Choice Options -->
+            @if (question.questionType === 'multiple_choice') {
+              <div class="space-y-3">
+                @for (option of question.options; track $index; let j = $index) {
+                  <div class="flex items-center gap-3">
+                    <div class="w-5 h-5 border-2 border-neutral-300 rounded-full"></div>
+                    <div class="relative flex-1 max-w-md">
+                      <input
+                        type="text"
+                        [ngModel]="option"
+                        (ngModelChange)="updateOption(question.id, j, $event)"
+                        [placeholder]="'Option ' + (j + 1)"
+                        class="w-full h-10 px-4 pr-10 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
+                      />
+                      <button
+                        type="button"
+                        (click)="deleteOption(question.id, j)"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-red-500 transition-colors"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                }
+                <div class="flex items-center gap-3">
+                  <div class="w-5 h-5 border-2 border-neutral-300 rounded-full"></div>
+                  <button
+                    type="button"
+                    (click)="addOption(question.id)"
+                    class="px-4 py-2 text-sm border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+                  >
+                    Add Option
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- Dropdown Options -->
+            @if (question.questionType === 'dropdown') {
+              <div class="space-y-3">
+                <ol class="list-decimal list-inside space-y-3 pl-2">
+                  @for (option of question.options; track $index; let j = $index) {
+                    <li class="flex items-center gap-3">
+                      <div class="relative flex-1 max-w-md">
+                        <input
+                          type="text"
+                          [ngModel]="option"
+                          (ngModelChange)="updateOption(question.id, j, $event)"
+                          [placeholder]="'Option ' + (j + 1)"
+                          class="w-full h-10 px-4 pr-10 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
+                        />
+                        <button
+                          type="button"
+                          (click)="deleteOption(question.id, j)"
+                          class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-red-500 transition-colors"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </li>
+                  }
+                  <li class="flex items-center gap-3">
+                    <button
+                      type="button"
+                      (click)="addOption(question.id)"
+                      class="px-4 py-2 text-sm border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+                    >
+                      Add Option
+                    </button>
+                  </li>
+                </ol>
+              </div>
+            }
+          </div>
+        } @else {
+          <!-- Display Mode - Saved Question -->
+          <div class="flex items-center justify-between p-4 border border-neutral-200 rounded-xl bg-white hover:border-neutral-300 transition-colors">
+            <div class="flex items-center gap-3">
+              <button
+                type="button"
+                cdkDragHandle
+                class="cursor-grab text-neutral-400 hover:text-neutral-600 p-1"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                </svg>
+              </button>
+              <span class="font-medium text-neutral-900">{{ question.questionLabel }}</span>
+              <span class="text-xs text-neutral-500 bg-neutral-100 px-2 py-1 rounded">{{ getQuestionTypeTitle(question.questionType) }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                (click)="editQuestion(question.id)"
+                class="p-2 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                (click)="removeQuestion(question.id)"
+                class="p-2 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- Drag Preview -->
+        <div *cdkDragPlaceholder class="h-14 border-2 border-dashed border-neutral-300 rounded-xl bg-neutral-50"></div>
+      </div>
+    }
+  </div>
+
+  <!-- Add Question Button -->
+  @if (canAddQuestion()) {
+    <div class="relative">
+      <button
+        type="button"
+        (click)="showAddMenu.set(!showAddMenu())"
+        class="flex items-center gap-2 px-4 py-2 text-neutral-700 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span class="font-medium">Add a question</span>
+      </button>
+
+      <!-- Dropdown Menu -->
+      @if (showAddMenu()) {
+        <div class="absolute top-full left-0 mt-2 w-48 bg-white border border-neutral-200 rounded-lg shadow-lg z-10">
+          @for (type of questionTypes; track type.name) {
+            <button
+              type="button"
+              (click)="addQuestion(type.name)"
+              class="w-full px-4 py-2 text-left text-sm hover:bg-neutral-50 first:rounded-t-lg last:rounded-b-lg transition-colors"
+            >
+              {{ type.title }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Save/Cancel Buttons -->
+  @if (hasUnsavedQuestions()) {
+    <div class="flex items-center gap-4 pt-2">
+      <button
+        type="button"
+        (click)="saveAllQuestions()"
+        class="flex items-center gap-2 px-5 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors"
+      >
+        Save Question
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        (click)="cancelAllUnsaved()"
+        class="text-neutral-600 hover:text-neutral-900 underline transition-colors"
+      >
+        Cancel
+      </button>
+    </div>
+  }
+
+  <!-- Max Questions Warning -->
+  @if (questions().length >= maxQuestions() && !hasUnsavedQuestions()) {
+    <div class="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <span class="text-sm">You have reached the limit to the number of questions you can add to the form.</span>
+    </div>
+  }
+
+  <!-- Mandatory Checkbox -->
+  @if (questions().length > 0 && !hasUnsavedQuestions()) {
+    <label class="flex items-center gap-3 cursor-pointer pt-2">
+      <input
+        type="checkbox"
+        [checked]="isQuestionMandatory()"
+        (change)="toggleMandatory($any($event.target).checked)"
+        class="w-5 h-5 rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900"
+      />
+      <span class="text-neutral-700">These questions are mandatory to answer in order for users to book this {{ serviceType() }}</span>
+    </label>
+  }
+</div>

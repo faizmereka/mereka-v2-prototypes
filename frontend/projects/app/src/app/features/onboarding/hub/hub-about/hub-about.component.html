@@ -1,0 +1,515 @@
+<div class="min-h-screen bg-neutral-50 flex flex-col">
+  <!-- Loading State -->
+  @if (onboarding.isLoading()) {
+  <div class="flex-1 flex items-center justify-center">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+  } @else {
+  <!-- Main Content -->
+  <div class="flex-1 overflow-y-auto">
+    <div class="max-w-4xl mx-auto px-4 lg:px-8 py-6 lg:py-8">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl lg:text-4xl font-bold text-neutral-900 mb-2">Tell us about your business</h1>
+        <p class="text-base text-neutral-500">Help customers understand what you offer and what makes you unique.</p>
+      </div>
+
+      <!-- Save Error Banner -->
+      @if (saveError()) {
+      <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+        <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="text-sm text-red-700">{{ saveError() }}</p>
+      </div>
+      }
+
+      <div class="space-y-6" [formGroup]="aboutForm">
+        <!-- Professional Title Section - Scale Plan Only -->
+        @if (onboarding.isScalePlan()) {
+        <ui-collapsible title="Professional Title" [expanded]="sections()['title']"
+          (expandedChange)="toggleSection('title')">
+          <div class="flex flex-col lg:flex-row gap-8 pt-6">
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-neutral-900 mb-2">Indicate your title</h3>
+              <p class="text-sm text-neutral-500 mb-4">
+                Craft a compelling title that's concise and informative, highlighting your specialty and qualifications.
+              </p>
+              <input type="text" formControlName="professionalTitle"
+                placeholder="e.g., Certified Life Coach | Leadership Consultant"
+                class="w-full px-4 py-3 border rounded-xl outline-none transition-colors bg-neutral-50 focus:border-primary focus:bg-white"
+                [class.border-neutral-200]="!hasError('professionalTitle')"
+                [class.border-red-500]="hasError('professionalTitle')" />
+              @if (hasError('professionalTitle')) {
+              <p class="mt-2 text-sm text-red-500">{{ getErrorMessage('professionalTitle') }}</p>
+              }
+            </div>
+
+            <div class="lg:w-80 flex-shrink-0">
+              <div class="flex items-center gap-2 mb-3">
+                <ui-icon name="star" class="w-5 h-5 text-neutral-600"></ui-icon>
+                <span class="text-sm font-semibold text-neutral-900 uppercase tracking-wide">Tips</span>
+              </div>
+              <div class="text-sm text-neutral-600 space-y-3">
+                <p class="font-medium">What works:</p>
+                <ul class="list-disc list-inside space-y-1.5 text-neutral-500">
+                  <li>Personal Finance Coach: Empowering Millennials with Debt-Free Lives</li>
+                  <li>Certified Digital Marketing Specialist with 5+ Years Experience</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </ui-collapsible>
+        }
+
+        <!-- Company Type Section - Soar Plan Only -->
+        @if (onboarding.isSoarPlan()) {
+        <ui-collapsible title="Company Type" [expanded]="sections()['companyType']"
+          (expandedChange)="toggleSection('companyType')">
+          <div class="pt-6">
+            <h3 class="text-xl font-bold text-neutral-900 mb-2">What type of company is this?</h3>
+            <p class="text-sm text-neutral-500 mb-6">
+              Select the legal structure of your business.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              @for (option of referenceData.companyTypes(); track option._id) {
+              <button type="button" (click)="selectCompanyType(option._id)"
+                class="flex items-center justify-between p-4 border rounded-xl transition-all text-left"
+                [class.border-neutral-200]="!isCompanyTypeSelected(option._id)"
+                [class.border-primary]="isCompanyTypeSelected(option._id)"
+                [class.bg-primary/5]="isCompanyTypeSelected(option._id)"
+                [class.hover:border-neutral-300]="!isCompanyTypeSelected(option._id)">
+                <span class="font-medium text-neutral-900">{{ option.name }}</span>
+              </button>
+              }
+            </div>
+
+            @if (hasError('companyType')) {
+            <p class="text-sm text-red-500">{{ getErrorMessage('companyType') }}</p>
+            }
+          </div>
+        </ui-collapsible>
+        }
+
+        <!-- Description Section -->
+        <ui-collapsible title="Description" [expanded]="sections()['description']"
+          (expandedChange)="toggleSection('description')">
+          <div class="flex flex-col lg:flex-row gap-8 pt-6">
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-neutral-900 mb-2">Add a description to your profile</h3>
+              <p class="text-sm text-neutral-500 mb-4">
+                Please make your description concise. The optimum word count is 100-200 words.
+              </p>
+              <textarea formControlName="description" placeholder="Describe your business..." rows="6" maxlength="1000"
+                class="w-full px-4 py-3 border rounded-xl outline-none transition-colors bg-neutral-50 focus:border-primary focus:bg-white resize-none"
+                [class.border-neutral-200]="!hasError('description')"
+                [class.border-red-500]="hasError('description')"></textarea>
+              <div class="mt-2 flex justify-between">
+                @if (hasError('description')) {
+                <p class="text-sm text-red-500">{{ getErrorMessage('description') }}</p>
+                } @else {
+                <span></span>
+                }
+                <span class="text-sm text-neutral-400">{{ aboutForm.get('description')?.value?.length || 0 }} /
+                  1000</span>
+              </div>
+            </div>
+
+            <div class="lg:w-80 flex-shrink-0">
+              <div class="flex items-center gap-2 mb-3">
+                <ui-icon name="star" class="w-5 h-5 text-neutral-600"></ui-icon>
+                <span class="text-sm font-semibold text-neutral-900 uppercase tracking-wide">Tips</span>
+              </div>
+              <div class="text-sm text-neutral-500 space-y-3">
+                <p>Tell the world what you offer and what makes your business stand out!</p>
+                <p>Feel free to use the copy published on your website or social media channels.</p>
+              </div>
+            </div>
+          </div>
+        </ui-collapsible>
+
+        <!-- Focus Area Section -->
+        <ui-collapsible title="Focus Area" badge="Used for Job Matching" [expanded]="sections()['focusArea']"
+          (expandedChange)="toggleSection('focusArea')">
+          <div class="pt-6">
+            <h3 class="text-xl font-bold text-neutral-900 mb-2">What would you say is your primary focus area?</h3>
+            <p class="text-sm text-neutral-500 mb-6">
+              Select your primary category. This information may be used to match you with relevant opportunities.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              @for (option of referenceData.focusAreas(); track option._id) {
+              <button type="button" (click)="selectFocusArea(option._id)"
+                class="flex items-center justify-between p-4 border rounded-xl transition-all text-left"
+                [class.border-neutral-200]="!isFocusAreaSelected(option._id)"
+                [class.border-primary]="isFocusAreaSelected(option._id)"
+                [class.bg-primary/5]="isFocusAreaSelected(option._id)"
+                [class.hover:border-neutral-300]="!isFocusAreaSelected(option._id)">
+                <span class="font-medium text-neutral-900">{{ option.name }}</span>
+                <ui-icon name="star" class="w-5 h-5 text-neutral-400"></ui-icon>
+              </button>
+              }
+            </div>
+
+            @if (hasError('focusArea')) {
+            <p class="text-sm text-red-500">{{ getErrorMessage('focusArea') }}</p>
+            }
+          </div>
+        </ui-collapsible>
+
+        <!-- Services & Custom Tags Section -->
+        <ui-collapsible title="Services & Custom Tags" [expanded]="sections()['services']"
+          (expandedChange)="toggleSection('services')">
+          <div class="flex flex-col lg:flex-row gap-8 pt-6">
+            <div class="flex-1 space-y-6">
+              <!-- Experiences -->
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <h3 class="text-xl font-bold text-neutral-900">Which experiences do you offer?</h3>
+                  <span
+                    class="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-xs font-medium rounded uppercase">Optional</span>
+                </div>
+                <p class="text-sm text-neutral-500 mb-4">Please select all relevant experiences from the options below.
+                </p>
+
+                <div class="flex flex-wrap gap-2">
+                  @for (expType of referenceData.experienceTypes(); track expType._id) {
+                  <button type="button" (click)="toggleExperience(expType._id)"
+                    class="px-4 py-2 border rounded-full text-sm font-medium transition-all"
+                    [class.border-neutral-200]="!isExperienceSelected(expType._id)"
+                    [class.text-neutral-600]="!isExperienceSelected(expType._id)"
+                    [class.border-primary]="isExperienceSelected(expType._id)"
+                    [class.bg-primary]="isExperienceSelected(expType._id)"
+                    [class.text-white]="isExperienceSelected(expType._id)"
+                    [class.hover:border-neutral-300]="!isExperienceSelected(expType._id)">
+                    {{ expType.name }}
+                  </button>
+                  }
+                </div>
+              </div>
+
+              <!-- Custom Tags -->
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <h4 class="text-lg font-bold text-neutral-900">Create Additional Tags for your Business</h4>
+                  <span
+                    class="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-xs font-medium rounded uppercase">Optional</span>
+                </div>
+                <p class="text-sm text-neutral-500 mb-4">For example: Visual Art, Theater, Sustainability, Film Studio,
+                  etc.</p>
+
+                @if (tags.length > 0) {
+                <div class="flex flex-wrap gap-2 mb-3">
+                  @for (tag of tags; track $index) {
+                  <span
+                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm">
+                    {{ tag }}
+                    <button type="button" (click)="removeCustomTag($index)"
+                      class="hover:text-red-500 transition-colors">
+                      <ui-icon name="close" class="w-3.5 h-3.5"></ui-icon>
+                    </button>
+                  </span>
+                  }
+                </div>
+                }
+
+                <div class="flex items-center gap-2">
+                  <input type="text" [value]="customTagInput()" (input)="customTagInput.set($any($event.target).value)"
+                    (keydown)="onTagInputKeydown($event)" placeholder="Type Tags"
+                    class="flex-1 px-4 py-3 border border-neutral-200 rounded-xl outline-none transition-colors bg-neutral-50 focus:border-primary focus:bg-white" />
+                  <button type="button" (click)="addCustomTag()"
+                    class="w-10 h-10 flex items-center justify-center border border-neutral-200 rounded-full hover:bg-neutral-50 transition-colors">
+                    <ui-icon name="plus" class="w-5 h-5 text-neutral-600"></ui-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="lg:w-80 flex-shrink-0">
+              <div class="flex items-center gap-2 mb-3">
+                <ui-icon name="star" class="w-5 h-5 text-neutral-600"></ui-icon>
+                <span class="text-sm font-semibold text-neutral-900 uppercase tracking-wide">Tips</span>
+              </div>
+              <div class="text-sm text-neutral-500">
+                <p>Additional tags help to give users a better understanding of what you/ your business has to offer!
+                </p>
+              </div>
+            </div>
+          </div>
+        </ui-collapsible>
+
+        <!-- Job Preferences Section - Scale Plan Only -->
+        @if (onboarding.isScalePlan()) {
+        <ui-collapsible title="Job Preferences" badge="Used for Job Matching" [expanded]="sections()['jobPreferences']"
+          (expandedChange)="toggleSection('jobPreferences')">
+          <div class="flex flex-col lg:flex-row gap-8 pt-6">
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-neutral-900 mb-2">Are you open to professional opportunities?</h3>
+              <p class="text-sm text-neutral-500 mb-6">
+                Let clients know what types of work you are available for.
+              </p>
+
+              <div class="space-y-3">
+                @for (pref of referenceData.jobPreferences(); track pref._id) {
+                <label
+                  class="flex items-center gap-3 p-4 border border-neutral-200 rounded-xl cursor-pointer hover:border-neutral-300 transition-colors"
+                  [class.border-primary]="isJobPreferenceSelected(pref._id)"
+                  [class.bg-primary/5]="isJobPreferenceSelected(pref._id)">
+                  <input type="checkbox" [checked]="isJobPreferenceSelected(pref._id)"
+                    (change)="toggleJobPreference(pref._id)"
+                    class="w-5 h-5 rounded border-neutral-300 text-primary focus:ring-primary" />
+                  <span class="text-neutral-700">{{ pref.name }}</span>
+                  @if (pref.description) {
+                  <span class="text-sm text-neutral-500">- {{ pref.description }}</span>
+                  }
+                </label>
+                } @empty {
+                <p class="text-sm text-neutral-500">Loading job preferences...</p>
+                }
+              </div>
+            </div>
+
+            <div class="lg:w-80 flex-shrink-0">
+              <div class="flex items-center gap-2 mb-3">
+                <ui-icon name="star" class="w-5 h-5 text-neutral-600"></ui-icon>
+                <span class="text-sm font-semibold text-neutral-900 uppercase tracking-wide">Tips</span>
+              </div>
+              <div class="text-sm text-neutral-500">
+                <p>Remember to update your availability on your listing once you have confirmed these projects.</p>
+              </div>
+            </div>
+          </div>
+        </ui-collapsible>
+        }
+
+        <!-- Location Section -->
+        <ui-collapsible title="Business Location" [expanded]="sections()['address']"
+          (expandedChange)="toggleSection('address')">
+          <div class="flex flex-col lg:flex-row gap-8 pt-6">
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-neutral-900 mb-2">Where is your business based?</h3>
+              <p class="text-sm text-neutral-500 mb-6">
+                Set your business location so customers can find you easily.
+              </p>
+
+              <div class="space-y-5" [formGroup]="onboarding.profileForm">
+                <div formGroupName="location">
+                  <!-- Street Address / Search -->
+                  <div>
+                    <label class="block text-sm font-medium text-neutral-700 mb-2">Street Address</label>
+                    <ui-location-autocomplete [apiKey]="googleMapsApiKey"
+                      [initialValue]="locationData?.address || (locationData?.city ? locationData?.city + ', ' + locationData?.country : '')"
+                      placeholder="Search for your address..." (locationSelected)="onLocationSelected($event)"
+                      (locationCleared)="onLocationCleared()" />
+                    @if (locationError()) {
+                    <p class="mt-1 text-sm text-red-500">{{ locationError() }}</p>
+                    }
+                    @if (isStripeConnected() && !locationError()) {
+                    <div class="mt-1.5 text-xs text-neutral-500 flex items-center gap-1">
+                      <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>You can change city but country cannot be changed after Stripe is connected.</span>
+                    </div>
+                    }
+                  </div>
+
+                  <!-- Country and State Row -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-neutral-700 mb-2">Country</label>
+                      <input type="text" formControlName="country" placeholder="Country"
+                        class="w-full px-4 py-3 border border-neutral-200 rounded-xl outline-none transition-colors bg-neutral-50 focus:border-primary focus:bg-white" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-neutral-700 mb-2">State (if any)</label>
+                      <input type="text" formControlName="state" placeholder="State / Province"
+                        class="w-full px-4 py-3 border border-neutral-200 rounded-xl outline-none transition-colors bg-neutral-50 focus:border-primary focus:bg-white" />
+                    </div>
+                  </div>
+
+                  <!-- City and Postcode Row -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-neutral-700 mb-2">Town / City</label>
+                      <input type="text" formControlName="city" placeholder="City"
+                        class="w-full px-4 py-3 border border-neutral-200 rounded-xl outline-none transition-colors bg-neutral-50 focus:border-primary focus:bg-white"
+                        [class.border-red-500]="hasError('location.city')" />
+                      @if (hasError('location.city')) {
+                      <p class="mt-1 text-sm text-red-500">City is required.</p>
+                      }
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-neutral-700 mb-2">Postcode</label>
+                      <input type="text" formControlName="postcode" placeholder="Postcode"
+                        class="w-full px-4 py-3 border border-neutral-200 rounded-xl outline-none transition-colors bg-neutral-50 focus:border-primary focus:bg-white" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Location Picker with Map -->
+              <div class="mt-6">
+                @if (!showLocationPicker()) {
+                <button type="button" (click)="showLocationPicker.set(true)"
+                  class="w-full px-4 py-3 border-2 border-dashed border-neutral-300 rounded-xl text-neutral-600 hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-2">
+                  <ui-icon name="location" class="w-5 h-5"></ui-icon>
+                  <span>Pin exact location on map</span>
+                </button>
+                } @else {
+                <div class="relative">
+                  <button type="button" (click)="showLocationPicker.set(false)"
+                    class="absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-neutral-50 transition-colors">
+                    <ui-icon name="close" class="w-4 h-4 text-neutral-600"></ui-icon>
+                  </button>
+                  <ui-location-picker [apiKey]="googleMapsApiKey" [initialValue]="fullLocationString()"
+                    [initialLat]="locationData?.lat || null" [initialLng]="locationData?.lng || null"
+                    placeholder="Search for a location..."
+                    (locationSelected)="onLocationSelected($event)"></ui-location-picker>
+                </div>
+                }
+              </div>
+
+              <!-- Location Visibility -->
+              <div class="mt-6">
+                <div class="text-sm font-semibold text-neutral-900 mb-3">Location visibility</div>
+                <div class="space-y-3">
+                  <label
+                    class="flex items-start gap-3 p-4 border border-neutral-200 rounded-xl cursor-pointer hover:border-neutral-300 transition-colors"
+                    [class.border-primary]="!displayFullAddress()" [class.bg-primary/5]="!displayFullAddress()">
+                    <input type="radio" name="locationVisibility" [checked]="!displayFullAddress()"
+                      (change)="onLocationVisibilityChange(false)"
+                      class="mt-0.5 w-4 h-4 text-primary focus:ring-primary" />
+                    <div class="flex-1">
+                      <div class="font-medium text-neutral-900 mb-1">
+                        I want the full address to be visible on my profile
+                      </div>
+                      <p class="text-sm text-neutral-500">
+                        Anybody can see the full address on your profile and subsequently can be added to any listings
+                      </p>
+                    </div>
+                  </label>
+
+                  <label
+                    class="flex items-start gap-3 p-4 border border-neutral-200 rounded-xl cursor-pointer hover:border-neutral-300 transition-colors"
+                    [class.border-primary]="displayFullAddress()" [class.bg-primary/5]="displayFullAddress()">
+                    <input type="radio" name="locationVisibility" [checked]="displayFullAddress()"
+                      (change)="onLocationVisibilityChange(true)"
+                      class="mt-0.5 w-4 h-4 text-primary focus:ring-primary" />
+                    <div class="flex-1">
+                      <div class="font-medium text-neutral-900 mb-1">
+                        I want only the general area of my location to be displayed on my profile
+                      </div>
+                      <p class="text-sm text-neutral-500">
+                        The map/address will only display the State/Province, City, and Country on your profile. The
+                        remaining information will still be saved for you to easily add to listings if required.
+                      </p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="lg:w-80 flex-shrink-0">
+              <div class="flex items-center gap-2 mb-3">
+                <ui-icon name="star" class="w-5 h-5 text-neutral-600"></ui-icon>
+                <span class="text-sm font-semibold text-neutral-900 uppercase tracking-wide">Tips</span>
+              </div>
+              <div class="text-sm text-neutral-500 space-y-3">
+                <p class="font-medium">Pin It</p>
+                <p>Is this pinned to the correct location? You can drag the marker on the map to adjust the exact
+                  position.</p>
+              </div>
+            </div>
+          </div>
+        </ui-collapsible>
+
+        <!-- Availability Section -->
+        <ui-collapsible title="Operating Hours" [expanded]="sections()['availability']"
+          (expandedChange)="toggleSection('availability')">
+          <div class="flex flex-col lg:flex-row gap-8 pt-6">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <h3 class="text-xl font-bold text-neutral-900">State your operating hours</h3>
+                <span
+                  class="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-xs font-medium rounded uppercase">Optional</span>
+              </div>
+              <p class="text-sm text-neutral-500 mb-6">You will be able to add or change this later.</p>
+
+              <!-- Operating Days -->
+              <div class="mb-6">
+                <h4 class="text-sm font-semibold text-neutral-900 mb-3">Operating Days</h4>
+                <div class="flex items-center gap-2">
+                  @for (day of daysOfWeek; track day.key) {
+                  <button type="button" (click)="toggleDay(day.key)"
+                    class="w-10 h-10 rounded-full border text-sm font-medium transition-all"
+                    [class.border-neutral-200]="!isDayActive(day.key)" [class.text-neutral-600]="!isDayActive(day.key)"
+                    [class.border-primary]="isDayActive(day.key)" [class.bg-primary]="isDayActive(day.key)"
+                    [class.text-white]="isDayActive(day.key)" [class.hover:border-neutral-300]="!isDayActive(day.key)">
+                    {{ day.short }}
+                  </button>
+                  }
+                </div>
+              </div>
+
+              <!-- Hours for selected days -->
+              @if (getActiveDays().length > 0) {
+              <div class="space-y-3" formGroupName="operatingHours">
+                @for (day of getActiveDays(); track day.key) {
+                <div class="flex items-center gap-4 p-3 bg-neutral-50 rounded-xl" [formGroupName]="day.key">
+                  <div class="w-28 flex-shrink-0">
+                    <span class="text-sm font-medium text-neutral-700">{{ day.full }}</span>
+                  </div>
+                  <div class="flex-1 flex items-center gap-3">
+                    <input type="time" formControlName="open"
+                      class="px-3 py-2 border border-neutral-200 rounded-lg outline-none focus:border-primary text-sm bg-white" />
+                    <span class="text-neutral-400">to</span>
+                    <input type="time" formControlName="close"
+                      class="px-3 py-2 border border-neutral-200 rounded-lg outline-none focus:border-primary text-sm bg-white" />
+                  </div>
+                </div>
+                }
+              </div>
+              }
+            </div>
+
+            <div class="lg:w-80 flex-shrink-0">
+              <div class="flex items-center gap-2 mb-3">
+                <ui-icon name="star" class="w-5 h-5 text-neutral-600"></ui-icon>
+                <span class="text-sm font-semibold text-neutral-900 uppercase tracking-wide">Tips</span>
+              </div>
+              <div class="text-sm text-neutral-500 space-y-3">
+                <p>The more hours you are open, the more bookings you are likely to receive.</p>
+              </div>
+            </div>
+          </div>
+        </ui-collapsible>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed Footer -->
+  <div class="sticky bottom-0 bg-white border-t border-neutral-200 px-4 lg:px-8 py-4">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <button type="button" (click)="goBack()"
+        class="px-6 py-3 border border-neutral-300 rounded-full text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">
+        Back
+      </button>
+
+      <button type="button" (click)="saveAndExit()" [disabled]="isSaving()"
+        class="text-neutral-600 font-medium hover:text-neutral-900 transition-colors disabled:opacity-50">
+        Save and Exit
+      </button>
+
+      <button type="button" (click)="onContinue()" [disabled]="isSaving()"
+        class="px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2">
+        @if (isSaving()) {
+        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+        }
+        Continue
+      </button>
+    </div>
+  </div>
+  }
+</div>

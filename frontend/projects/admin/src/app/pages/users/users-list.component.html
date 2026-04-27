@@ -1,0 +1,340 @@
+<div class="flex flex-col gap-4 animate-fade-in">
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    @if (statsLoading()) {
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="bg-white rounded-xl p-4 border border-gray-200 animate-pulse">
+          <div class="h-4 bg-gray-200 rounded w-20 mb-2"></div>
+          <div class="h-8 bg-gray-200 rounded w-16"></div>
+        </div>
+      }
+    } @else if (stats()) {
+      <div class="bg-white rounded-xl p-4 border border-gray-200">
+        <p class="text-sm text-gray-500 mb-1">Total Users</p>
+        <p class="text-2xl font-bold text-gray-900">{{ stats()!.total | number }}</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-gray-200">
+        <p class="text-sm text-gray-500 mb-1">Learners</p>
+        <p class="text-2xl font-bold text-blue-600">{{ stats()!.byType.learners | number }}</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-gray-200">
+        <p class="text-sm text-gray-500 mb-1">Hub Owners</p>
+        <p class="text-2xl font-bold text-green-600">{{ stats()!.byType.hubOwners | number }}</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-gray-200">
+        <p class="text-sm text-gray-500 mb-1">Experts</p>
+        <p class="text-2xl font-bold text-purple-600">{{ stats()!.byType.experts | number }}</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-gray-200">
+        <p class="text-sm text-gray-500 mb-1">New This Week</p>
+        <p class="text-2xl font-bold text-orange-600">{{ stats()!.newThisWeek | number }}</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-gray-200">
+        <p class="text-sm text-gray-500 mb-1">New This Month</p>
+        <p class="text-2xl font-bold text-teal-600">{{ stats()!.newThisMonth | number }}</p>
+      </div>
+    }
+  </div>
+
+  <!-- User Type Tabs -->
+  <div class="flex gap-2 py-4">
+    @for (tab of userTypeTabs(); track tab.value) {
+      <button
+        class="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all cursor-pointer"
+        [class.bg-gray-900]="userTypeFilter() === tab.value"
+        [class.text-white]="userTypeFilter() === tab.value"
+        [class.bg-gray-100]="userTypeFilter() !== tab.value"
+        [class.text-gray-600]="userTypeFilter() !== tab.value"
+        [class.hover:bg-gray-200]="userTypeFilter() !== tab.value"
+        (click)="setUserType(tab.value)"
+      >
+        {{ tab.label }}
+        @if (tab.count > 0) {
+          <span
+            class="ml-1 px-2 py-0.5 rounded-full text-xs"
+            [class.bg-white]="userTypeFilter() === tab.value"
+            [class.text-gray-900]="userTypeFilter() === tab.value"
+            [class]="userTypeFilter() !== tab.value ? getTabCountClass(tab.value) : ''"
+          >{{ tab.count | number }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  <!-- Toolbar -->
+  <div class="flex justify-between items-center p-3 bg-white border border-gray-200 rounded-xl">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <input
+          type="checkbox"
+          [checked]="allSelected()"
+          (change)="toggleSelectAll()"
+          class="w-[18px] h-[18px] cursor-pointer"
+        />
+        <button class="bg-transparent border-none p-1 cursor-pointer">
+          <img src="icons/icon-dropmenu.svg" alt="Menu" class="w-3 h-3" />
+        </button>
+      </div>
+
+      <div class="relative">
+        <button
+          class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          [disabled]="selectedUsers().length === 0"
+          (click)="showActions.set(!showActions())"
+        >
+          Action
+          <img src="icons/icon-dropmenu.svg" alt="Menu" class="w-3 h-3" />
+        </button>
+        @if (showActions() && selectedUsers().length > 0) {
+          <div class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-10 min-w-[150px]">
+            <button class="flex items-center gap-2 w-full p-3 bg-transparent border-none text-left cursor-pointer hover:bg-gray-100" (click)="bulkAction('suspend')">
+              <img src="icons/archive.png" alt="Suspend" class="w-[18px] h-[18px]" />
+              Suspend
+            </button>
+            <button class="flex items-center gap-2 w-full p-3 bg-transparent border-none text-left cursor-pointer hover:bg-gray-100" (click)="bulkAction('activate')">
+              <img src="icons/upload.png" alt="Activate" class="w-[18px] h-[18px]" />
+              Activate
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-xl">
+        <img src="icons/icon-search.svg" alt="Search" class="w-4 h-4 opacity-50" />
+        <input
+          type="search"
+          placeholder="Search Name or Email"
+          [(ngModel)]="searchQuery"
+          (input)="filterUsers()"
+          class="border-none bg-transparent outline-none w-[200px] text-sm"
+        />
+      </div>
+
+      <span class="text-sm text-gray-500">
+        @if (usersMeta()) {
+          {{ pageStart() }}-{{ pageEnd() }} of {{ totalItems() | number }} items
+        }
+      </span>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <select
+        class="px-3 py-2 border border-gray-200 rounded-xl bg-white text-sm"
+        [ngModel]="currentStatus()"
+        (ngModelChange)="setStatus($any($event))"
+      >
+        @for (option of statusOptions(); track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+
+      <button class="p-2 bg-white border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-100" (click)="exportData()">
+        <img src="icons/icon-copy.svg" alt="Export" class="w-[18px] h-[18px]" />
+      </button>
+
+      <button class="p-2 bg-white border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-100" (click)="showFilters.set(!showFilters())">
+        <img src="icons/icon-filter.svg" alt="Filter" class="w-[18px] h-[18px]" />
+      </button>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <ui-card [padding]="'p-0'">
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr>
+            <th class="w-10 p-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">
+              <input
+                type="checkbox"
+                [checked]="allSelected()"
+                (change)="toggleSelectAll()"
+                class="w-[18px] h-[18px] cursor-pointer"
+              />
+            </th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">User</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Role</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Status</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Joined</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Last Active</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Hubs</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (usersLoading()) {
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <tr>
+                <td class="p-4 border-b border-gray-200" colspan="8">
+                  <div class="animate-pulse flex items-center gap-4">
+                    <div class="w-[18px] h-[18px] bg-gray-200 rounded"></div>
+                    <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
+                    <div class="flex-1">
+                      <div class="h-4 bg-gray-200 rounded w-32 mb-2"></div>
+                      <div class="h-3 bg-gray-200 rounded w-48"></div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            }
+          } @else {
+            @for (user of users(); track user._id) {
+              <tr>
+                <td class="p-4 border-b border-gray-200">
+                  <input
+                    type="checkbox"
+                    [checked]="isSelected(user._id)"
+                    (change)="toggleSelect(user._id)"
+                    class="w-[18px] h-[18px] cursor-pointer"
+                  />
+                </td>
+                <td class="p-4 border-b border-gray-200">
+                  <div class="flex items-center gap-3">
+                    @if (user.profilePhoto) {
+                      <img [src]="user.profilePhoto" [alt]="user.name" class="w-10 h-10 rounded-full object-cover" />
+                    } @else {
+                      <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                        {{ user.name.charAt(0).toUpperCase() }}
+                      </div>
+                    }
+                    <div class="flex flex-col">
+                      <span class="font-bold">{{ user.name }}</span>
+                      <span class="text-sm text-gray-500">{{ user.email }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="p-4 border-b border-gray-200">
+                  <div class="flex flex-wrap gap-1">
+                    @for (role of user.userTypes; track role) {
+                      <span
+                        class="inline-block px-2 py-1 rounded-sm text-xs font-medium capitalize"
+                        [class]="getRoleClass(role)"
+                      >
+                        {{ getRoleLabel(role) }}
+                      </span>
+                    }
+                  </div>
+                </td>
+                <td class="p-4 border-b border-gray-200">
+                  <span
+                    class="inline-block px-2 py-1 rounded-sm text-xs font-medium capitalize"
+                    [class]="getStatusClass(user.status)"
+                  >
+                    {{ user.status }}
+                  </span>
+                </td>
+                <td class="p-4 border-b border-gray-200">{{ user.createdAt | date:'MMM d, yyyy' }}</td>
+                <td class="p-4 border-b border-gray-200">
+                  @if (user.lastLoginAt) {
+                    {{ user.lastLoginAt | date:'MMM d, yyyy' }}
+                  } @else {
+                    <span class="text-gray-400">Never</span>
+                  }
+                </td>
+                <td class="p-4 border-b border-gray-200">
+                  @if (user.hubCount === 0) {
+                    <span class="text-gray-400">-</span>
+                  } @else {
+                    <span>{{ getHubName(user.hubDisplay) }}</span>
+                    @if (user.hubCount > 1) {
+                      <span class="ml-1 text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">+{{ user.hubCount - 1 }}</span>
+                    }
+                  }
+                </td>
+                <td class="p-4 border-b border-gray-200">
+                  <div class="flex gap-2">
+                    <button class="p-1 bg-transparent border-none cursor-pointer opacity-60 hover:opacity-100" [routerLink]="['/dashboard/users', user._id]">
+                      <img src="icons/icon-eye.svg" alt="View" class="w-[18px] h-[18px]" />
+                    </button>
+                    <button class="p-1 bg-transparent border-none cursor-pointer opacity-60 hover:opacity-100" (click)="editUser(user._id)">
+                      <img src="icons/icon-edit.svg" alt="Edit" class="w-[18px] h-[18px]" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="text-center py-10 text-gray-500">
+                  <p>No users found</p>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </ui-card>
+
+  <!-- Pagination -->
+  <div class="flex justify-center items-center gap-4 p-4">
+    <button
+      class="px-4 py-2 bg-white border border-gray-200 rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+      [disabled]="currentPage() === 1"
+      (click)="goToPage(currentPage() - 1)"
+    >
+      Previous
+    </button>
+    <span class="text-sm text-gray-500">
+      Page {{ currentPage() }} of {{ totalPages() }}
+    </span>
+    <button
+      class="px-4 py-2 bg-white border border-gray-200 rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+      [disabled]="currentPage() === totalPages()"
+      (click)="goToPage(currentPage() + 1)"
+    >
+      Next
+    </button>
+  </div>
+
+  <!-- Filter Side Panel -->
+  @if (showFilters()) {
+    <div class="fixed inset-0 bg-black/30 z-[99]" (click)="showFilters.set(false)"></div>
+    <aside class="fixed top-0 right-0 w-80 h-screen bg-white shadow-xl z-[100] flex flex-col">
+      <div class="flex justify-between items-center p-4 border-b border-gray-200">
+        <h3 class="text-lg font-bold">Filter Users</h3>
+        <button class="bg-transparent border-none cursor-pointer" (click)="showFilters.set(false)">
+          <img src="icons/icon-close-gray.svg" alt="Close" class="w-5 h-5" />
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-4">
+        <div class="mb-6">
+          <h4 class="text-sm font-bold mb-3">User Type</h4>
+          @for (tab of userTypeTabs(); track tab.value) {
+            <label class="flex items-center gap-2 py-2 cursor-pointer">
+              <input
+                type="radio"
+                name="userType"
+                [value]="tab.value"
+                [checked]="userTypeFilter() === tab.value"
+                (change)="setUserType(tab.value)"
+              />
+              {{ tab.label }} ({{ tab.count | number }})
+            </label>
+          }
+        </div>
+
+        <div class="mb-6">
+          <h4 class="text-sm font-bold mb-3">Status</h4>
+          @for (option of statusOptions(); track option.value) {
+            <label class="flex items-center gap-2 py-2 cursor-pointer">
+              <input
+                type="radio"
+                name="status"
+                [value]="option.value"
+                [checked]="currentStatus() === option.value"
+                (change)="setStatus($any(option.value))"
+              />
+              {{ option.label }}
+            </label>
+          }
+        </div>
+      </div>
+
+      <div class="flex justify-between p-4 border-t border-gray-200">
+        <button class="px-4 py-2 bg-transparent border border-gray-200 rounded-xl cursor-pointer" (click)="clearFilters()">Clear All</button>
+        <button class="px-4 py-2 bg-primary text-white border-none rounded-xl cursor-pointer" (click)="applyFilters()">Apply Filter</button>
+      </div>
+    </aside>
+  }
+</div>

@@ -1,0 +1,117 @@
+<div class="inner-container">
+  @if (!(isEmpty(badge()) || hideElements().includes('badge')) && effectiveLayout() !== 'horizontal-reverse') {
+    <div class="ui-card-badge">{{ badge() }}</div>
+  }
+  @if (!hideElements().includes('image') && effectiveLayout() !== 'horizontal-reverse') {
+    <div ui-card-image>
+      <img ui-image [src]="image()" alt loading="lazy" />
+    </div>
+  }
+
+  <div ui-card-body>
+    <ng-content select="[ui-card-body-start]"></ng-content>
+    @if (effectiveLayout() !== 'horizontal-small') {
+      <ng-container [ngTemplateOutlet]="uiMeta"></ng-container>
+    }
+    <ng-template #uiMeta>
+      <div class="ui-card-meta">
+        @if (!(isEmpty(location()) || hideElements().includes('location') || effectiveLayout() === 'horizontal-reverse')) {
+          <span class="ui-card-location" [attr.aria-label]="location()">{{ location() }}</span>
+        }
+        @if (!(isEmpty(badge()) || hideElements().includes('badge')) && effectiveLayout() === 'horizontal-reverse') {
+          <div class="ui-card-badge">{{ badge() }}</div>
+        }
+        @if (rating() && !hideElements().includes('rating')) {
+          <span class="ui-card-rating" [attr.aria-label]="rating() + ' of 5 stars'">
+            <mat-icon>star</mat-icon>
+            <span>{{ rating() ? rating().toFixed(1) : '' }}</span>
+          </span>
+        }
+      </div>
+    </ng-template>
+
+    @if (!hideElements().includes('title')) {
+      <h3 ui-card-title>
+        @if (url()) {
+          <a ui-card-link
+            [routerLink]="url() ? [url()] : []"
+            [title]="title()"
+            [attr.target]="target() ?? null"
+            (click)="onClick()">
+            {{ title() }}
+          </a>
+        } @else if (href()) {
+          <a ui-card-link
+            [href]="href() ?? null"
+            [title]="title()"
+            [attr.target]="target() ?? null"
+            (click)="onClick()">
+            {{ title() }}
+          </a>
+        } @else {
+          {{ title() }}
+        }
+      </h3>
+    }
+
+    @if (!(isEmpty(dates()) || hideElements().includes('dates'))) {
+      <span class="ui-card-date">{{ displayDate() }}</span>
+    }
+    @if (effectiveLayout() === 'horizontal-small') {
+      <ng-container [ngTemplateOutlet]="uiMeta"></ng-container>
+    }
+
+    @if (!(isEmpty(metadata()) || hideElements().includes('metadata'))) {
+      <div class="ui-card-meta separator">
+        @for (data of metadata(); track data) {
+          @if (data) {
+            <span>{{ data }}</span>
+          }
+        }
+      </div>
+    }
+    @if (!(isEmpty(host()) || hideElements().includes('host'))) {
+      <div class="ui-card-host">
+        <span class="ui-card-host__name">{{ host() }}</span>
+      </div>
+    }
+
+    @if (!(isEmpty(location()) || hideElements().includes('location') || effectiveLayout() !== 'horizontal-reverse')) {
+      <span class="ui-card-location" [attr.aria-label]="location()">{{ location() }}</span>
+    }
+
+    @if (!(isEmpty(displayPrice()) || hideElements().includes('price'))) {
+      <div class="ui-card-price"
+        [attr.aria-label]="'Experience price is ' + displayPrice().beforeLabel + ' ' + displayPrice().amount + ' ' + displayPrice().afterLabel">
+        @if (displayPrice().beforeLabel) {
+          <span class="ui-card-price__label-before">{{ displayPrice().beforeLabel }}</span>
+        }
+        <span class="ui-card-price__amount">{{ displayPrice().amount }}</span>
+        @if (displayPrice().afterLabel) {
+          <span class="ui-card-price__label-after">{{ displayPrice().afterLabel }}</span>
+        }
+      </div>
+    }
+
+    <ng-content select="[ui-card-body-end]"></ng-content>
+  </div>
+
+  @if (!hideElements().includes('image') && effectiveLayout() === 'horizontal-reverse') {
+    <div class="ui-card-reverse-image">
+      <img ui-image [src]="image()" [alt]="title() + ' cover image'" />
+    </div>
+  }
+
+  <ng-content select="[ui-inner-container-end]"></ng-content>
+
+  @if (!hideElements().includes('favourite')) {
+    <button ui-button-icon
+      class="ui-button-favourite"
+      [attr.aria-label]="isFavourite() ? 'Remove experience from favourites' : 'Add experience to favourites'"
+      (click)="toggleFavourite($event)">
+      <span ui-button-icon-wrapper>
+        <mat-icon>{{ isFavourite() ? 'favorite' : 'favorite_border' }}</mat-icon>
+      </span>
+    </button>
+  }
+</div>

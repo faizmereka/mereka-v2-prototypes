@@ -1,0 +1,52 @@
+.mat-mdc-radio-button.mat-accent {
+  --mat-radio-ripple-color: transparent;
+  --mdc-radio-selected-hover-icon-color: var(--border-selected, #7B7B7C);
+  --mat-radio-checked-ripple-color: transparent;
+  --mdc-radio-unselected-icon-color: var(--border-solid, #DDDDDE);
+  --mdc-radio-unselected-hover-icon-color: var(--border-selected, #7B7B7C);
+  --mdc-radio-disabled-selected-icon-opacity: 0.275;
+  --mdc-radio-disabled-unselected-icon-opacity: 0.275;
+}
+
+.ui-radio-button.mat-mdc-radio-button {
+  .mdc-radio {
+    padding-left: 0;
+  }
+}
+
+.mat-mdc-radio-button {
+  --mat-checkbox-label-text-size: 1rem;
+}
+
+.mat-mdc-radio-button .mdc-radio [aria-disabled=true] .mdc-radio__native-control:not(:checked)+.mdc-radio__background .mdc-radio__outer-circle,
+.mat-mdc-radio-button .mdc-radio .mdc-radio__native-control:disabled:not(:checked)+.mdc-radio__background .mdc-radio__outer-circle,
+.mat-mdc-radio-button .mdc-radio [aria-disabled=true] .mdc-radio__native-control:checked+.mdc-radio__background .mdc-radio__outer-circle,
+.mat-mdc-radio-button .mdc-radio .mdc-radio__native-control:disabled:checked+.mdc-radio__background .mdc-radio__outer-circle {
+  background: #B5B5B5;
+}
+
+.mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__background::before {
+  background-color: transparent !important;
+}
+
+.mat-mdc-radio-button .mdc-radio .mdc-radio__background::before {
+  background-color: transparent !important;
+}
+
+.mdc-checkbox__background {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 4px !important;
+}
+
+.mat-radio-ripple {
+  display: none;
+}
+
+.mdc-checkbox__checkmark {
+  transform: scale(0.8);
+}
+
+.mdc-checkbox__checkmark-path {
+  stroke-width: 4px !important
+}

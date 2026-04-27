@@ -1,0 +1,8 @@
+{
+  "enabledPlugins": {
+    "github:Biji-Biji-Initiative/team-skills/plugins/core": true,
+    "github:Biji-Biji-Initiative/team-skills/plugins/backend": true,
+    "github:Biji-Biji-Initiative/team-skills/plugins/infra": true,
+    "github:Biji-Biji-Initiative/team-skills/plugins/projects/mereka-backend-v2": true
+  }
+}

@@ -1,0 +1,16 @@
+<div ui-upload-drop
+  class="upload-dropzone"
+  (fileDrop)="onFileDrop($event)"
+  (fileOver)="onFileOver($event)"
+  [multiple]="multiple()"
+  [allowedMimeType]="allowedMimeType()">
+
+  <input
+    #inputFile
+    class="ui-upload__input"
+    type="file"
+    [attr.accept]="allowedMimeType().length ? allowedMimeType().join(',') : null"
+    [attr.multiple]="multiple() ? 'multiple' : null"
+    (change)="onFileSelected($event)" />
+    <ng-content></ng-content>
+</div>

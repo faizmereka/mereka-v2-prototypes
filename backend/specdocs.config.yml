@@ -1,0 +1,39 @@
+# specdocs.config.yml — mereka-backend-v2
+# Project-specific configuration for spec-driven development
+
+project:
+  name: "mereka-backend-v2"
+  vehicle: "marketplace_platform"
+  description: "Node.js + Fastify + MongoDB backend for Mereka marketplace"
+
+paths:
+  specs_root: "specs/"
+  docs_root: "docs/"
+  testmaps_dir: "specs/testmaps/"
+
+defaults:
+  require_testmap: true
+
+quality_gates:
+  specs:
+    require_frontmatter: true
+    require_human_summary: true
+    max_ac_count: 50
+    ac_id_format: "AC-{PREFIX}-{NNN}"
+
+verification:
+  scan_dirs:
+    - "src/"
+    - "tests/"
+    - "scripts/"
+  annotation_format:
+    covers: "// @covers AC-001, AC-002"
+    spec: "// @spec: feature_spec.md"
+  fail_under_coverage: 50  # percent
+
+lint_rules:
+  enabled:
+    - "SPEC-FM-001"   # Frontmatter present
+    - "SPEC-FM-002"   # Required frontmatter fields
+    - "SPEC-AC-001"   # Unique AC IDs
+    - "SPEC-AC-002"   # AC prefix format

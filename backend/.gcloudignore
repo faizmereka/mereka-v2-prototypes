@@ -1,0 +1,69 @@
+# Cloud Build ignore file
+# NOTE: package-lock.json is INCLUDED (not ignored) for reproducible builds
+
+# Dependencies (but keep package-lock.json!)
+node_modules/
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+*.js.map
+*.d.ts.map
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pino-debug.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+
+# Cache
+.cache/
+.turbo/
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Husky
+.husky/
+
+# Documentation (not needed for build)
+docs/
+*.md
+!README.md
+
+# Tests (not needed for production build)
+tests/
+__tests__/
+*.test.ts
+*.spec.ts

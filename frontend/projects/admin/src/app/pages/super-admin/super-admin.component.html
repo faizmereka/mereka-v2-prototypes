@@ -1,0 +1,375 @@
+<div class="flex flex-col gap-6 animate-fade-in">
+  <!-- Header -->
+  <header class="flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold m-0">Admin Management</h1>
+      <p class="text-gray-500 mt-1">Manage admin accounts and monitor login activity</p>
+    </div>
+    <button class="px-4 py-2 bg-primary text-white border-none rounded-md cursor-pointer font-medium hover:opacity-90"
+      (click)="openAddModal()">
+      <span>+ Add Admin</span>
+    </button>
+  </header>
+
+  <!-- Stats Cards -->
+  @if (stats()) {
+  <div class="grid grid-cols-4 gap-4">
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Total Admins</p>
+      <p class="text-2xl font-bold m-0 mt-1">{{ stats()?.total }}</p>
+    </div>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Active</p>
+      <p class="text-2xl font-bold m-0 mt-1 text-green-600">{{ stats()?.byStatus?.active }}</p>
+    </div>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Super Admins</p>
+      <p class="text-2xl font-bold m-0 mt-1 text-purple-600">{{ stats()?.byRole?.superAdmin }}</p>
+    </div>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Locked Accounts</p>
+      <p class="text-2xl font-bold m-0 mt-1 text-red-600">{{ stats()?.lockedAccounts }}</p>
+    </div>
+  </div>
+  }
+
+  <!-- Tabs -->
+  <div class="flex gap-4 border-b border-gray-200">
+    <button class="px-4 py-3 font-medium border-b-2 transition-colors" [class.border-primary]="activeTab === 'all'"
+      [class.text-primary]="activeTab === 'all'" [class.border-transparent]="activeTab !== 'all'"
+      [class.text-gray-500]="activeTab !== 'all'" (click)="onTabChange('all')">
+      All Admins
+    </button>
+    <button class="px-4 py-3 font-medium border-b-2 transition-colors" [class.border-primary]="activeTab === 'active'"
+      [class.text-primary]="activeTab === 'active'" [class.border-transparent]="activeTab !== 'active'"
+      [class.text-gray-500]="activeTab !== 'active'" (click)="onTabChange('active')">
+      Active
+    </button>
+    <button class="px-4 py-3 font-medium border-b-2 transition-colors" [class.border-primary]="activeTab === 'inactive'"
+      [class.text-primary]="activeTab === 'inactive'" [class.border-transparent]="activeTab !== 'inactive'"
+      [class.text-gray-500]="activeTab !== 'inactive'" (click)="onTabChange('inactive')">
+      Inactive
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <section>
+    <div class="flex justify-between items-center flex-wrap gap-4 mb-5">
+      <h2 class="text-xl font-bold m-0">Admin Users</h2>
+      <div class="flex gap-4">
+        <div class="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-xl bg-white w-[250px]">
+          <img src="icons/icon-search.svg" alt="" class="w-4 h-4 opacity-50" />
+          <input type="text" placeholder="Search admins..." [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+            class="border-none outline-none w-full text-sm bg-transparent" />
+        </div>
+        <select class="px-4 py-2 border border-gray-200 rounded-xl bg-white text-sm cursor-pointer"
+          [(ngModel)]="roleFilter" (change)="onRoleFilterChange()">
+          <option value="">All Roles</option>
+          <option value="superAdmin">Super Admin</option>
+          <option value="platformAdmin">Platform Admin</option>
+        </select>
+      </div>
+    </div>
+
+    @if (loading()) {
+    <div class="text-center py-10 text-gray-500">Loading...</div>
+    } @else {
+    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <table class="w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Admin</th>
+            <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Role</th>
+            <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Status</th>
+            <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Last Login</th>
+            <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">MFA</th>
+            <th class="text-right px-4 py-3 font-semibold text-sm text-gray-600">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (admin of filteredAdmins(); track admin._id) {
+          <tr class="border-b border-gray-100 hover:bg-gray-50">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+                  {{ admin.name.charAt(0).toUpperCase() }}
+                </div>
+                <div>
+                  <p class="font-medium m-0">{{ admin.name }}</p>
+                  <p class="text-sm text-gray-500 m-0">{{ admin.email }}</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-4 py-3">
+              <span class="px-2 py-1 rounded text-xs font-medium" [ngClass]="getRoleColor(admin.role)">
+                {{ admin.role === 'superAdmin' ? 'Super Admin' : 'Platform Admin' }}
+              </span>
+            </td>
+            <td class="px-4 py-3">
+              <span class="px-2 py-1 rounded text-xs font-medium" [ngClass]="getStatusColor(admin.status)">
+                {{ admin.status | titlecase }}
+              </span>
+              @if (isAdminLocked(admin)) {
+              <span class="ml-2 px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium">
+                Locked
+              </span>
+              }
+            </td>
+            <td class="px-4 py-3 text-gray-600 text-sm">
+              @if (admin.lastLoginAt) {
+              <div>
+                <p class="m-0">{{ admin.lastLoginAt | date : 'short' }}</p>
+                @if (admin.lastLoginIp) {
+                <p class="text-xs text-gray-400 m-0">{{ admin.lastLoginIp }}</p>
+                }
+              </div>
+              } @else {
+              <span class="text-gray-400">Never</span>
+              }
+            </td>
+            <td class="px-4 py-3">
+              <span class="px-2 py-1 rounded text-xs font-medium" [class.bg-green-100]="admin.mfaEnabled"
+                [class.text-green-700]="admin.mfaEnabled" [class.bg-gray-100]="!admin.mfaEnabled"
+                [class.text-gray-500]="!admin.mfaEnabled">
+                {{ admin.mfaEnabled ? 'Enabled' : 'Disabled' }}
+              </span>
+            </td>
+            <td class="px-4 py-3 text-right">
+              <div class="flex justify-end gap-2">
+                <button class="p-2 rounded hover:bg-gray-100" title="View Sessions" (click)="viewSessions(admin)">
+                  <img src="icons/view-eye.png" alt="Sessions" class="w-4 h-4" />
+                </button>
+                <button class="p-2 rounded hover:bg-gray-100" title="Edit" (click)="openEditModal(admin)">
+                  <img src="icons/edit.svg" alt="Edit" class="w-4 h-4" />
+                </button>
+                @if (admin._id !== currentAdminId()) {
+                <button class="p-2 rounded hover:bg-gray-100" title="Deactivate" (click)="deleteAdmin(admin)">
+                  <img src="icons/delete.png" alt="Delete" class="w-4 h-4" />
+                </button>
+                }
+              </div>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="6" class="text-center py-10 text-gray-500">
+              <p>No admins found</p>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+
+  <!-- Add Admin Modal -->
+  @if (showAddModal()) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]" (click)="showAddModal.set(false)">
+    <div class="w-full max-w-[480px] mx-4 bg-white rounded-lg shadow-xl" (click)="$event.stopPropagation()">
+      <div class="flex justify-between items-center p-5 border-b border-gray-200">
+        <h3 class="m-0 font-bold">Add New Admin</h3>
+        <button class="p-2 rounded-md border-none bg-transparent cursor-pointer hover:bg-gray-100"
+          (click)="showAddModal.set(false)">
+          <img src="icons/icon-close-gray.svg" alt="Close" class="w-5 h-5" />
+        </button>
+      </div>
+      <div class="p-5">
+        <div class="mb-4">
+          <label class="block font-bold mb-2 text-sm">Name *</label>
+          <input type="text"
+            class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+            placeholder="Enter full name" [value]="formData().name"
+            (input)="updateFormField('name', $any($event.target).value)" />
+        </div>
+        <div class="mb-4">
+          <label class="block font-bold mb-2 text-sm">Email *</label>
+          <input type="email"
+            class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+            placeholder="admin@example.com" [value]="formData().email"
+            (input)="updateFormField('email', $any($event.target).value)" />
+        </div>
+        <div class="mb-4">
+          <label class="block font-bold mb-2 text-sm">Password *</label>
+          <input type="password"
+            class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+            placeholder="Minimum 8 characters" [value]="formData().password"
+            (input)="updateFormField('password', $any($event.target).value)" />
+          <p class="text-xs text-gray-500 mt-1">
+            Must contain uppercase, lowercase, and numbers
+          </p>
+        </div>
+        <div class="mb-4">
+          <label class="block font-bold mb-2 text-sm">Role *</label>
+          <select
+            class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+            [value]="formData().role" (change)="updateFormField('role', $any($event.target).value)">
+            <option value="platformAdmin">Platform Admin</option>
+            <option value="superAdmin">Super Admin</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 p-5 border-t border-gray-200">
+        <button class="px-4 py-2 bg-gray-100 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-200"
+          (click)="showAddModal.set(false)">
+          Cancel
+        </button>
+        <button class="px-4 py-2 bg-primary text-white border-none rounded-md cursor-pointer hover:opacity-90"
+          (click)="createAdmin()" [disabled]="loading()">
+          {{ loading() ? 'Creating...' : 'Create Admin' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Edit Admin Modal -->
+  @if (showEditModal()) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]" (click)="showEditModal.set(false)">
+    <div class="w-full max-w-[480px] mx-4 bg-white rounded-lg shadow-xl" (click)="$event.stopPropagation()">
+      <div class="flex justify-between items-center p-5 border-b border-gray-200">
+        <h3 class="m-0 font-bold">Edit Admin</h3>
+        <button class="p-2 rounded-md border-none bg-transparent cursor-pointer hover:bg-gray-100"
+          (click)="showEditModal.set(false)">
+          <img src="icons/icon-close-gray.svg" alt="Close" class="w-5 h-5" />
+        </button>
+      </div>
+      <div class="p-5">
+        <div class="mb-4">
+          <label class="block font-bold mb-2 text-sm">Name *</label>
+          <input type="text"
+            class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+            [value]="editFormData().name" (input)="updateEditFormField('name', $any($event.target).value)" />
+        </div>
+        <div class="mb-4">
+          <label class="block font-bold mb-2 text-sm">Status *</label>
+          <select
+            class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+            [value]="editFormData().status" (change)="updateEditFormField('status', $any($event.target).value)"
+            [disabled]="selectedAdmin()?._id === currentAdminId()">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="suspended">Suspended</option>
+          </select>
+          @if (selectedAdmin()?._id === currentAdminId()) {
+          <p class="text-xs text-gray-500 mt-1">Cannot change your own status</p>
+          }
+        </div>
+        <div class="mb-4">
+          <label class="block font-bold mb-2 text-sm">Role *</label>
+          <select
+            class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+            [value]="editFormData().role" (change)="updateEditFormField('role', $any($event.target).value)"
+            [disabled]="selectedAdmin()?._id === currentAdminId()">
+            <option value="platformAdmin">Platform Admin</option>
+            <option value="superAdmin">Super Admin</option>
+          </select>
+          @if (selectedAdmin()?._id === currentAdminId()) {
+          <p class="text-xs text-gray-500 mt-1">Cannot change your own role</p>
+          }
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 p-5 border-t border-gray-200">
+        <button class="px-4 py-2 bg-gray-100 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-200"
+          (click)="showEditModal.set(false)">
+          Cancel
+        </button>
+        <button class="px-4 py-2 bg-primary text-white border-none rounded-md cursor-pointer hover:opacity-90"
+          (click)="updateAdmin()" [disabled]="loading()">
+          {{ loading() ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Session Info Modal -->
+  @if (showSessionModal()) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
+    (click)="showSessionModal.set(false)">
+    <div class="w-full max-w-[520px] mx-4 bg-white rounded-lg shadow-xl" (click)="$event.stopPropagation()">
+      <div class="flex justify-between items-center p-5 border-b border-gray-200">
+        <h3 class="m-0 font-bold">Session Information</h3>
+        <button class="p-2 rounded-md border-none bg-transparent cursor-pointer hover:bg-gray-100"
+          (click)="showSessionModal.set(false)">
+          <img src="icons/icon-close-gray.svg" alt="Close" class="w-5 h-5" />
+        </button>
+      </div>
+      @if (sessionInfo()) {
+      <div class="p-5">
+        <!-- Admin Info -->
+        <div class="flex items-center gap-3 mb-5 pb-5 border-b border-gray-200">
+          <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg">
+            {{ sessionInfo()?.name?.charAt(0)?.toUpperCase() }}
+          </div>
+          <div>
+            <p class="font-bold m-0">{{ sessionInfo()?.name }}</p>
+            <p class="text-sm text-gray-500 m-0">{{ sessionInfo()?.email }}</p>
+          </div>
+        </div>
+
+        <!-- Login Info -->
+        <div class="grid grid-cols-2 gap-4 mb-5">
+          <div class="p-4 bg-gray-50 rounded-lg">
+            <p class="text-xs text-gray-500 m-0">Last Login</p>
+            <p class="font-medium m-0 mt-1">
+              @if (sessionInfo()?.lastLoginAt) {
+              {{ sessionInfo()?.lastLoginAt | date : 'medium' }}
+              } @else {
+              Never
+              }
+            </p>
+          </div>
+          <div class="p-4 bg-gray-50 rounded-lg">
+            <p class="text-xs text-gray-500 m-0">Last Login IP</p>
+            <p class="font-medium m-0 mt-1 font-mono">
+              {{ sessionInfo()?.lastLoginIp || 'N/A' }}
+            </p>
+          </div>
+          <div class="p-4 bg-gray-50 rounded-lg">
+            <p class="text-xs text-gray-500 m-0">Active Sessions</p>
+            <p class="font-medium m-0 mt-1">{{ sessionInfo()?.activeSessions }}</p>
+          </div>
+          <div class="p-4 bg-gray-50 rounded-lg">
+            <p class="text-xs text-gray-500 m-0">Login Attempts</p>
+            <p class="font-medium m-0 mt-1">{{ sessionInfo()?.loginAttempts }}</p>
+          </div>
+        </div>
+
+        <!-- Lock Status -->
+        @if (sessionInfo()?.isLocked) {
+        <div class="p-4 bg-red-50 border border-red-200 rounded-lg mb-5">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="font-bold text-red-700 m-0">Account Locked</p>
+              <p class="text-sm text-red-600 m-0 mt-1">
+                Locked until: {{ sessionInfo()?.lockedUntil | date : 'medium' }}
+              </p>
+            </div>
+            <button
+              class="px-4 py-2 bg-red-600 text-white border-none rounded-md cursor-pointer font-medium hover:bg-red-700"
+              (click)="unlockAdmin(selectedAdmin()!)">
+              Unlock Account
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+      <div class="flex justify-end gap-3 p-5 border-t border-gray-200">
+        <button class="px-4 py-2 bg-gray-100 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-200"
+          (click)="showSessionModal.set(false)">
+          Close
+        </button>
+        @if (selectedAdmin()?._id !== currentAdminId()) {
+        <button
+          class="px-4 py-2 bg-red-600 text-white border-none rounded-md cursor-pointer font-medium hover:bg-red-700"
+          (click)="forceLogout(selectedAdmin()!)">
+          Force Logout All Sessions
+        </button>
+        }
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>

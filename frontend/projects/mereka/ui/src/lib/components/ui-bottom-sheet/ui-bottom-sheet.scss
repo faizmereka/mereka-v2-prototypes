@@ -1,0 +1,78 @@
+.ui-bottom-sheet-panel {  
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 101;
+  transition: 0.1s linear;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(0,0,0,0.15));
+
+  &--rounded .ui-bottom-sheet-container {
+    border-radius: 20px 20px 0 0;
+  }
+  &.expanded {
+    pointer-events: auto;
+  }  
+  &.dragging .ui-bottom-sheet-container {
+    transition: none;
+  }
+  &.fullscreen .ui-bottom-sheet-container {
+    border-radius: 0;
+    overflow-y: hidden;
+  }
+}
+.ui-bottom-sheet-backdrop {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background: rgba(0,0,0,0.3);
+  pointer-events: auto;
+}
+.ui-bottom-sheet-container {
+  width: 100%;
+  max-width: 800px;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: #FFF;
+  transition: 0.25s ease;
+  z-index: 1;
+
+  &.collapsed .ui-bottom-sheet-body {
+    overflow-y: hidden;
+  }
+}
+.ui-bottom-sheet-header {
+  padding-block: 8px;
+  padding-inline: 20px;
+  display: flex;
+  flex-direction: column;  
+  justify-content: center;
+  pointer-events: auto;
+  cursor: grab;
+}
+.ui-bottom-sheet-handle {  
+  width: 40px;
+  height: 4px;
+  display: block;
+  align-self: center;
+  background: #C7D0E1;
+  border-radius: 50px;
+  user-select: none;
+}
+.ui-bottom-sheet-body {
+  height: 100%;
+  padding-inline: 20px;
+  overflow-y: auto;
+  pointer-events: auto;
+}

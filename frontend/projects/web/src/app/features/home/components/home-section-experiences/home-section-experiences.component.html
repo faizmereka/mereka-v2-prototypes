@@ -1,0 +1,70 @@
+<div class="layout-container">
+  <h2 class="section-heading">Discover <span class="heading-accent">Experiences</span></h2>
+
+  <!-- TODO: Experience filters not yet integrated - selectFilterType(filterType) requires filter API in v2
+    <div class="experiences-filters">
+      <button ui-button-outline (click)="selectFilterType('today')">Today</button>
+      <button ui-button-outline (click)="selectFilterType('weekend')">The weekend</button>
+      <button ui-button-outline (click)="selectFilterType('free')">Free</button>
+    </div>
+  -->
+
+  @if (loading()) {
+    <!-- Loading State -->
+    <div class="placeholder-grid">
+      @for (item of placeholderList; track $index) {
+        <div ui-loader-skeleton-card-experience></div>
+      }
+    </div>
+  } @else if (experiences().length > 0) {
+    @if (view.isMobile()) {
+      <!-- Mobile Swiper carousel -->
+      <swiper-container ui-swiper [config]="config">
+        @for (experience of experiences(); track experience._id) {
+          <swiper-slide ui-swiper-slide>
+            <div ui-card-experience
+              [id]="experience._id"
+              [title]="experience.experienceTitle"
+              [url]="'/experience/' + experience.slug"
+              [image]="experience.coverPhoto ?? ''"
+              [host]="experience.hostDetails?.[0]?.name ?? ''"
+              [rating]="experience.rating ?? 0"
+              [badge]="experience.experienceType"
+              [price]="formatPrice(experience)"
+              [isFavourite]="false">
+            </div>
+          </swiper-slide>
+        }
+      </swiper-container>
+    } @else {
+      <!-- Desktop grid -->
+      <!-- TODO: isFavourite always false - ToggleFavouriteUseCase + IsFavouriteUseCase not yet ported to v2 -->
+      <!-- TODO: GA tracking on cardClick - GoogleAnalyticsService not yet in v2 -->
+      <!-- TODO: ImageKit optimization - no ImageKitPipe in v2 yet; images served directly -->
+      <div class="experiences-grid">
+        @for (experience of experiences(); track experience._id) {
+          <div ui-card-experience
+            [id]="experience._id"
+            [title]="experience.experienceTitle"
+            [url]="'/experience/' + experience.slug"
+            [image]="experience.coverPhoto ?? ''"
+            [host]="experience.hostDetails?.[0]?.name ?? ''"
+            [rating]="experience.rating ?? 0"
+            [badge]="experience.experienceType"
+            [price]="formatPrice(experience)"
+            [isFavourite]="false">
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <!-- Empty State -->
+    <div class="placeholder-grid">
+      @for (item of placeholderList; track $index) {
+        <div ui-loader-skeleton-card-experience></div>
+      }
+    </div>
+  }
+
+  <a ui-button-fill-large class="cta-button" routerLink="/experiences">View all Experiences</a>
+</div>

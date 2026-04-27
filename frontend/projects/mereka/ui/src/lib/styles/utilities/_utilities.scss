@@ -1,0 +1,91 @@
+.w-100 {
+  width: 100%;
+}
+
+
+.display-hide {
+  display: none;
+}
+
+.display-show {
+  display: inherit;
+}
+
+.display-block {
+  display: block;
+}
+
+.display-flex {
+  display: -webkit-box;
+  display: flex;
+}
+
+.display-inlineflex {
+  display: -webkit-inline-box;
+  display: inline-flex;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-no-wrap {
+  flex-wrap: no-wrap;
+}
+
+.items-left {
+  justify-items: start;
+}
+
+.content-left {
+  justify-content: start;
+}
+
+.items-center {
+  justify-items: center;
+}
+
+.content-center {
+  justify-content: center;
+}
+
+.items-right {
+  justify-items: end;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+.overflow-scroll {
+  overflow: scroll;
+}
+
+
+
+
+.pointer {
+  cursor: pointer;
+}
+.not-allowed {
+  cursor: not-allowed;
+}
+.cursor-auto {
+  cursor: auto;
+}
+.no-pointer-events {
+  pointer-events: none;
+}

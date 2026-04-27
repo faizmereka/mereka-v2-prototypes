@@ -1,0 +1,362 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <h1 class="text-2xl font-semibold text-neutral-900">My Bookings</h1>
+
+    <!-- Service Type Toggle - Desktop -->
+    <div class="hidden md:flex items-center bg-neutral-100 rounded-lg p-1">
+      @for (type of serviceTypes; track type) {
+        <button
+          (click)="setServiceType(type)"
+          class="px-4 py-2 text-sm font-medium rounded-md transition-colors"
+          [class.bg-white]="selectedServiceType() === type"
+          [class.shadow-sm]="selectedServiceType() === type"
+          [class.text-neutral-900]="selectedServiceType() === type"
+          [class.text-neutral-500]="selectedServiceType() !== type"
+        >
+          {{ getServiceTypeLabel(type) }}
+        </button>
+      }
+    </div>
+
+    <!-- Mobile Filter Button -->
+    <button
+      (click)="toggleMobileFilter()"
+      class="md:hidden flex items-center justify-center gap-2 p-2 border border-neutral-300 rounded-lg"
+    >
+      <svg class="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+      </svg>
+      <span class="text-sm">Filter</span>
+    </button>
+  </div>
+
+  <!-- Service Type Toggle - Mobile -->
+  <div class="md:hidden flex items-center bg-neutral-100 rounded-lg p-1">
+    @for (type of serviceTypes; track type) {
+      <button
+        (click)="setServiceType(type)"
+        class="flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors"
+        [class.bg-white]="selectedServiceType() === type"
+        [class.shadow-sm]="selectedServiceType() === type"
+        [class.text-neutral-900]="selectedServiceType() === type"
+        [class.text-neutral-500]="selectedServiceType() !== type"
+      >
+        {{ getServiceTypeLabel(type) }}
+      </button>
+    }
+  </div>
+
+  <!-- Bookings Card -->
+  <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+    <!-- Status Tabs -->
+    <div class="px-6 py-3 border-b border-neutral-200 overflow-x-auto">
+      <div class="flex items-center gap-6">
+        @for (tab of currentStatusTabs(); track tab) {
+          <button
+            (click)="setTab(tab)"
+            class="text-sm font-medium whitespace-nowrap pb-2 transition-colors border-b-2"
+            [class.text-primary]="selectedTab() === tab"
+            [class.border-primary]="selectedTab() === tab"
+            [class.text-neutral-500]="selectedTab() !== tab"
+            [class.border-transparent]="selectedTab() !== tab"
+          >
+            {{ tab | titlecase }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Content -->
+    @if (loading()) {
+      <div class="flex items-center justify-center py-16">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900"></div>
+      </div>
+    } @else if (filteredBookings().length === 0) {
+      <div class="text-center py-16 px-6">
+        <div class="w-20 h-20 mx-auto mb-4">
+          <svg class="w-full h-full text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <p class="text-neutral-600 mb-4">You have no {{ selectedTab() }} bookings.</p>
+        <a
+          [routerLink]="selectedServiceType() === 'experience' ? '/experiences' : selectedServiceType() === 'space' ? '/spaces' : '/expertise'"
+          class="inline-flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          View {{ getServiceTypeLabel(selectedServiceType()) }}
+        </a>
+      </div>
+    } @else {
+      <!-- Desktop List -->
+      <div class="hidden lg:block divide-y divide-neutral-200">
+        @for (booking of filteredBookings(); track booking.id) {
+          <div class="p-6 hover:bg-neutral-50 transition-colors">
+            <!-- Status Badge (mobile style on small screens) -->
+            <div class="lg:hidden mb-2">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
+                [ngClass]="getStatusClass(booking.status)"
+              >
+                {{ booking.status }}
+              </span>
+            </div>
+
+            <!-- Booking Time -->
+            <div class="text-sm text-neutral-500 mb-2">
+              {{ booking.bookingDate }}, {{ booking.bookingTime }} ({{ booking.timezone }})
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-12 gap-4 items-start">
+              <!-- Service Info -->
+              <div class="col-span-12 lg:col-span-5">
+                <a
+                  (click)="viewReservation(booking)"
+                  class="text-lg font-medium text-neutral-900 hover:text-primary cursor-pointer"
+                >
+                  {{ booking.serviceName }}
+                  @if (booking.hostName) {
+                    <span class="font-normal">with {{ booking.hostName }}</span>
+                  }
+                </a>
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-sm text-neutral-500">
+                  @if (selectedServiceType() !== 'expertise') {
+                    <span>Hub: <a class="text-primary hover:underline cursor-pointer">{{ booking.hubName }}</a></span>
+                  } @else {
+                    <span>Expert: {{ booking.hostName }}</span>
+                  }
+                  <span class="flex items-center gap-1">
+                    @if (booking.locationType === 'Physical') {
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    } @else {
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    }
+                    {{ booking.location }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Tickets -->
+              <div class="col-span-6 lg:col-span-2">
+                <div class="text-xs font-semibold text-neutral-400 uppercase mb-1">
+                  {{ selectedServiceType() === 'expertise' ? 'Package' : 'Tickets' }}
+                </div>
+                <ul class="text-sm text-neutral-700">
+                  @for (ticket of booking.tickets; track ticket.name) {
+                    <li>
+                      @if (selectedServiceType() === 'experience') {
+                        {{ ticket.quantity }} x {{ ticket.name }}
+                      } @else if (selectedServiceType() === 'space') {
+                        {{ ticket.name }} x {{ ticket.quantity }} {{ ticket.duration }}
+                      } @else {
+                        {{ ticket.name }}
+                        @if (ticket.duration) {
+                          <span class="flex items-center gap-1 text-neutral-500">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {{ ticket.duration }}
+                          </span>
+                        }
+                      }
+                    </li>
+                  }
+                </ul>
+              </div>
+
+              <!-- Total Paid -->
+              <div class="col-span-6 lg:col-span-2">
+                <div class="text-xs font-semibold text-neutral-400 uppercase mb-1">Total Paid</div>
+                <div class="text-sm font-medium text-neutral-900">
+                  {{ booking.currency }} {{ booking.totalPaid | number:'1.2-2' }}
+                </div>
+              </div>
+
+              <!-- Review (only for past bookings) -->
+              @if (selectedTab() === 'past') {
+                <div class="col-span-12 lg:col-span-3">
+                  <div class="text-xs font-semibold text-neutral-400 uppercase mb-1">Review</div>
+                  @if (booking.hasReview && booking.rating) {
+                    <div class="flex items-center gap-3">
+                      <span class="flex items-center gap-1 text-sm text-neutral-900">
+                        <svg class="w-4 h-4 text-yellow-500 fill-current" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        {{ booking.rating }}
+                      </span>
+                      <button
+                        (click)="editReview(booking)"
+                        class="p-1 text-neutral-400 hover:text-neutral-600 transition-colors"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                    </div>
+                  } @else {
+                    <button
+                      (click)="addReview(booking)"
+                      class="text-sm text-primary hover:underline"
+                    >
+                      Add Review
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Mobile List -->
+      <div class="lg:hidden divide-y divide-neutral-200">
+        @for (booking of filteredBookings(); track booking.id) {
+          <div class="p-4">
+            <!-- Status & Date -->
+            <div class="flex items-center justify-between mb-2">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
+                [ngClass]="getStatusClass(booking.status)"
+              >
+                {{ booking.status }}
+              </span>
+            </div>
+
+            <!-- Time -->
+            <p class="text-sm text-neutral-500 mb-2">
+              {{ booking.bookingDate }}, {{ booking.bookingTime }} ({{ booking.timezone }})
+            </p>
+
+            <!-- Service Name -->
+            <h3 class="font-medium text-neutral-900 mb-2">
+              {{ booking.serviceName }}
+              @if (booking.hostName) {
+                <span class="font-normal text-neutral-600">with {{ booking.hostName }}</span>
+              }
+            </h3>
+
+            <!-- Location -->
+            <div class="flex items-center gap-1 text-sm text-neutral-500 mb-3">
+              @if (booking.locationType === 'Physical') {
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+              } @else {
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              }
+              {{ booking.location }}
+            </div>
+
+            <!-- Tickets & Total -->
+            <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+              <div>
+                <p class="text-neutral-400 text-xs uppercase">{{ selectedServiceType() === 'expertise' ? 'Package' : 'Tickets' }}</p>
+                <ul class="text-neutral-700">
+                  @for (ticket of booking.tickets; track ticket.name) {
+                    <li>{{ ticket.quantity }} x {{ ticket.name }}</li>
+                  }
+                </ul>
+              </div>
+              <div>
+                <p class="text-neutral-400 text-xs uppercase">Total Paid</p>
+                <p class="font-medium text-neutral-900">{{ booking.currency }} {{ booking.totalPaid | number:'1.2-2' }}</p>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col gap-2">
+              <button
+                (click)="viewReservation(booking)"
+                class="w-full py-2.5 text-sm font-medium text-primary border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+              >
+                View Details
+              </button>
+              @if (selectedTab() === 'past') {
+                @if (booking.hasReview) {
+                  <button
+                    (click)="editReview(booking)"
+                    class="w-full py-2.5 text-sm font-medium text-neutral-600 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+                  >
+                    Edit Review
+                  </button>
+                } @else {
+                  <button
+                    (click)="addReview(booking)"
+                    class="w-full py-2.5 text-sm font-medium text-neutral-600 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+                  >
+                    Add Review
+                  </button>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Mobile Filter Overlay -->
+@if (isMobileFilterOpen()) {
+  <div class="fixed inset-0 z-50 lg:hidden">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/50" (click)="toggleMobileFilter()"></div>
+
+    <!-- Filter Panel -->
+    <div class="absolute inset-y-0 right-0 w-full max-w-xs bg-white shadow-xl flex flex-col">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-200">
+        <button (click)="toggleMobileFilter()" class="p-1">
+          <svg class="w-6 h-6 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+        </button>
+        <h3 class="font-semibold text-neutral-900">Filters</h3>
+        <div class="w-6"></div>
+      </div>
+
+      <!-- Filter Content -->
+      <div class="flex-1 overflow-y-auto p-4">
+        <h4 class="font-medium text-neutral-900 mb-3">Status</h4>
+        <div class="space-y-3">
+          @for (tab of currentStatusTabs(); track tab) {
+            <label class="flex items-center justify-between cursor-pointer">
+              <span class="text-neutral-700 capitalize">{{ tab }}</span>
+              <input
+                type="radio"
+                name="status"
+                [checked]="selectedTab() === tab"
+                (change)="setTab(tab)"
+                class="w-4 h-4 text-primary focus:ring-primary border-neutral-300"
+              />
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="p-4 border-t border-neutral-200 flex gap-3">
+        <button
+          (click)="toggleMobileFilter()"
+          class="flex-1 py-2.5 text-sm font-medium text-neutral-600 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+        >
+          Clear
+        </button>
+        <button
+          (click)="toggleMobileFilter()"
+          class="flex-1 py-2.5 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          Apply
+        </button>
+      </div>
+    </div>
+  </div>
+}

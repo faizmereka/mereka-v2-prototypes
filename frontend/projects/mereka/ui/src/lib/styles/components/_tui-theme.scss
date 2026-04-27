@@ -1,0 +1,12 @@
+:root {  
+  --tui-font-heading: var(--font-primary, 'Poppins');
+  --tui-font-text: var(--font-secondary, 'InterVariable');
+  --tui-text-action: var(--content-primary, #1A1623);
+  --tui-text-action-hover: var(--content-tertiary, #AFADB2);
+  --tui-text-primary-on-accent-1: var(--content-inverse-primary, #FFFFFF);
+  --tui-background-accent-1: var(--surface-inverse-primary, #1A1623);
+  --tui-background-accent-1-hover: var(---surface-inverse-tertiary, #7B7B7C);
+  --tui-background-neutral-1: var(--surface-tertiary, #F5F5F5);
+  --tui-background-neutral-1-hover: var(---surface-inverse-tertiary, #7B7B7C);
+  
+}

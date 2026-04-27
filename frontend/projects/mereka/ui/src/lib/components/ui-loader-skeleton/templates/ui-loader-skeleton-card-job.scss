@@ -1,0 +1,64 @@
+@layer mereka-ui {  
+  .ui-loader-skeleton-card-job {
+    display: block;
+    background-color: #FFF;
+    border: 1px solid #EDEDED;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .ui-loader-skeleton-body {
+      padding: 1.25rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .ui-loader-skeleton-row {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
+
+    .ui-loader-skeleton-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex: 1 0 auto;
+    }
+
+    .ui-loader-skeleton-footer{
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1 0 auto;
+    }
+
+    .description + .description {
+      margin-top: 0.5rem;
+    }
+    
+    .separator {
+      width: 100%;
+      height: 1px;
+      margin-top: auto;
+      background-color: #EDEDED;
+    }
+    
+    .meta-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 0.5rem;
+
+      > .ui-loader-skeleton {
+        flex: 0 1 auto;
+      }
+    }
+
+    .button {
+      width: 100%;
+      height: 44px;
+      border-radius: 24px;
+    }
+  }
+}

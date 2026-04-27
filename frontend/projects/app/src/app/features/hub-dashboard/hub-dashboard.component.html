@@ -1,0 +1,82 @@
+<!-- Desktop Navbar - Fixed at top -->
+<app-hub-dashboard-navbar class="fixed top-0 left-0 right-0 z-50 hidden lg:block" />
+
+<!-- Mobile Header -->
+@if (isMobile()) {
+  <header class="mobile-header fixed top-0 left-0 right-0 z-50 bg-white border-b border-neutral-200">
+    <div class="flex items-center justify-between h-14 px-4">
+      <!-- Logo - Links to main website -->
+      <a [href]="webUrl" class="flex items-center">
+        <img src="/assets/images/mereka-logo-symbol.svg" alt="Mereka" class="w-8 h-8" />
+      </a>
+
+      <!-- Hub Name -->
+      <div class="flex-1 text-center">
+        <span class="font-semibold text-sm truncate">{{ hubName() }}</span>
+      </div>
+
+      <!-- Notifications -->
+      <button type="button" class="p-2 relative">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+        @if (unreadNotifications() > 0) {
+          <span class="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full"></span>
+        }
+      </button>
+    </div>
+  </header>
+}
+
+<!-- Main Content Area -->
+<div class="site-content" [class.pt-[84px]]="!isMobile()" [class.pt-14]="isMobile()" [class.pb-[60px]]="isMobile()">
+  <!-- Desktop Layout -->
+  @if (!isMobile()) {
+    @if (showSidebar()) {
+      <!-- Layout with Sidebar (Overview page only) -->
+      <div class="max-w-7xl mx-auto px-6 py-6">
+        <div class="flex gap-6">
+          <!-- Sidebar -->
+          <app-hub-sidebar />
+
+          <!-- Main Content -->
+          <main class="flex-1 min-w-0">
+            <router-outlet />
+          </main>
+        </div>
+      </div>
+    } @else {
+      <!-- Layout without Sidebar (Other pages) -->
+      <main class="h-[calc(100vh-84px)]">
+        <router-outlet />
+      </main>
+    }
+  } @else {
+    <!-- Mobile Layout - No Sidebar -->
+    <router-outlet />
+  }
+</div>
+
+<!-- Footer (Desktop only, and only when sidebar is shown) -->
+@if (!isMobile() && showSidebar()) {
+  <app-footer />
+}
+
+<!-- Mobile Bottom Navigation -->
+@if (isMobile()) {
+  <nav class="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-neutral-200">
+    <div class="flex h-[60px]">
+      @for (item of mobileNavItems(); track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="text-primary"
+          [routerLinkActiveOptions]="{ exact: item.path === 'overview' }"
+          class="mobile-nav-item flex-1 flex flex-col items-center justify-center gap-1 text-neutral-400 transition-colors"
+        >
+          <ui-icon [name]="item.icon" size="md" />
+          <span class="text-[10px] font-medium">{{ item.label }}</span>
+        </a>
+      }
+    </div>
+  </nav>
+}

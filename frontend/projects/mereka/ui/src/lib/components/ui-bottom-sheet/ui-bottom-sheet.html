@@ -1,0 +1,42 @@
+<!-- Sheet main panel -->
+<div #bottomSheetPanel
+  class="ui-bottom-sheet-panel"
+  role="dialog"
+  [class.ui-bottom-sheet-panel--rounded]="hasRoundedCorners()"
+  [class.dragging]="isDragging"
+  [attr.aria-modal]="state === 'collapsed' ? false : true">
+  @if (hasBackdrop() && state !== 'collapsed') {
+  <div class="ui-bottom-sheet-backdrop"
+    tabindex="0"
+    (keyup)="enableBackdropClick() ? collapse() : null"
+    (click)="enableBackdropClick() ? collapse() : null"
+    [@backdropFade]="state">
+  </div>
+  }
+  <div #bottomSheetContainer class="ui-bottom-sheet-container"
+    [class.expanded]="state === 'expanded'"
+    [class.collapsed]="state === 'collapsed'"
+    [class.partial]="state === 'partial'">
+    <div class="ui-bottom-sheet-header" tabindex="0"
+      (mousedown)="onDragStart($event)"
+      (mousemove)="onDragging($event)"
+      (mouseup)="onDragStop()"
+      (touchstart)="onDragStart($event)"
+      (touchmove)="onDragging($event)"
+      (touchend)="onDragStop()"
+      (click)="toggleState()"
+      (keyup.enter)="toggleState()">
+      @if (showHandle()) {
+      <div class="ui-bottom-sheet-handle"></div>
+      }
+      <ng-content select="[ui-bottom-sheet-header]"></ng-content>
+    </div>
+    <!-- Sheet body -->
+    <div #bottomSheetContent class="ui-bottom-sheet-body"
+      [attr.tabindex]="state === 'expanded' || state === 'partial' ? 0 : null">
+      <div class="ui-bottom-sheet-body__content">
+        <ng-content></ng-content>
+        <!-- <div loading *ngIf="loading"></div>-->
+      </div>
+  </div>
+</div>

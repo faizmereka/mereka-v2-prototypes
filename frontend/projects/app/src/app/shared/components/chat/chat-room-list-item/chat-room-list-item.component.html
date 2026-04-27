@@ -1,0 +1,101 @@
+<!-- @covers AC-FEC-050 through AC-FEC-060 -->
+<button
+  type="button"
+  class="w-full px-4 py-3 flex gap-3 text-left transition-colors"
+  [class.bg-primary/5]="isActive()"
+  [class.hover:bg-neutral-50]="!isActive()"
+  [class.border-l-4]="isActive()"
+  [class.border-primary]="isActive()"
+  (click)="onClick()"
+>
+  <!-- @covers AC-FEC-051 - Avatar -->
+  <div class="relative flex-shrink-0">
+    @if (avatarUrl()) {
+      <img
+        [src]="avatarUrl()"
+        [alt]="displayName()"
+        class="w-12 h-12 rounded-full object-cover"
+      />
+    } @else {
+      <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold">
+        {{ getInitials(displayName()) }}
+      </div>
+    }
+    <!-- @covers AC-FEC-056 - Unread badge -->
+    @if (hasUnread()) {
+      <span class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full">
+        {{ roomItem().userState.unreadCount > 99 ? '99+' : roomItem().userState.unreadCount }}
+      </span>
+    }
+  </div>
+
+  <!-- Content -->
+  <div class="flex-1 min-w-0">
+    <div class="flex items-start justify-between gap-2">
+      <!-- @covers AC-FEC-051 - Participant name, AC-FEC-057 - Bold if unread -->
+      <h4
+        class="text-sm truncate"
+        [class.font-semibold]="hasUnread()"
+        [class.font-medium]="!hasUnread()"
+        [class.text-neutral-900]="!hasUnread()"
+        [class.text-black]="hasUnread()"
+      >
+        {{ displayName() }}
+      </h4>
+      <!-- @covers AC-FEC-055 - Timestamp -->
+      <span class="text-xs text-neutral-400 flex-shrink-0">
+        {{ formatTimestamp(roomItem().room.lastMessage?.sentAt) }}
+      </span>
+    </div>
+
+    <!-- @covers AC-FEC-052, AC-FEC-053 - Context badge and title -->
+    <div class="flex items-center gap-2 mt-0.5">
+      <span
+        class="inline-flex items-center px-1.5 py-0.5 text-xs font-medium rounded"
+        [ngClass]="contextBadges[roomItem().room.contextType].color"
+      >
+        {{ contextBadges[roomItem().room.contextType].label }}
+      </span>
+      @if (roomItem().room.contextSnapshot?.title) {
+        <span class="text-xs text-neutral-500 truncate">
+          {{ roomItem().room.contextSnapshot!.title }}
+        </span>
+      }
+    </div>
+
+    <!-- @covers AC-FEC-054 - Last message preview -->
+    @if (roomItem().room.lastMessage) {
+      <p
+        class="text-sm mt-1 truncate"
+        [class.text-neutral-600]="!hasUnread()"
+        [class.text-neutral-900]="hasUnread()"
+        [class.font-medium]="hasUnread()"
+      >
+        <span class="text-neutral-400">{{ roomItem().room.lastMessage!.senderName }}:</span>
+        {{ truncateMessage(roomItem().room.lastMessage!.preview) }}
+      </p>
+    }
+
+    <!-- @covers AC-FEC-058 - Assigned member badge -->
+    @if (roomItem().assignedMember) {
+      <div class="flex items-center gap-1.5 mt-1.5">
+        <div class="w-5 h-5 rounded-full bg-neutral-200 flex items-center justify-center">
+          @if (roomItem().assignedMember!.avatar) {
+            <img
+              [src]="roomItem().assignedMember!.avatar"
+              [alt]="roomItem().assignedMember!.name"
+              class="w-5 h-5 rounded-full object-cover"
+            />
+          } @else {
+            <span class="text-[10px] font-medium text-neutral-600">
+              {{ getInitials(roomItem().assignedMember!.name) }}
+            </span>
+          }
+        </div>
+        <span class="text-xs text-neutral-500">
+          {{ roomItem().assignedMember!.name }}
+        </span>
+      </div>
+    }
+  </div>
+</button>

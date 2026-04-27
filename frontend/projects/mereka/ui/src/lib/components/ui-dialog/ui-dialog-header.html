@@ -1,0 +1,24 @@
+<div class="ui-dialog-header__inner-container">
+  <ng-container [ngTemplateOutlet]="uiDialogHeaderContent() ?? defaultContent"></ng-container>
+  <ng-template #defaultContent>
+    <div class="ui-dialog-header__icon-mobile">
+      @if (!hasHeaderIconContent()) {
+        <button ui-button mat-dialog-close>
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+      }
+      <div #uiDialogHeaderIcon><ng-content select="[ui-dialog-header-icon]"></ng-content></div>
+    </div>
+    <div ui-dialog-title>
+      <ng-content></ng-content>
+    </div>
+    @if (!disableClose) {
+      <button ui-button-icon-outline mat-dialog-close class="ui-dialog-header__icon">
+        <div ui-button-icon-wrapper>
+          <mat-icon>close</mat-icon>
+        </div>
+      </button>
+    }
+  </ng-template>
+</div>
+<ng-content select="[ui-dialog-header-bottom]"></ng-content>

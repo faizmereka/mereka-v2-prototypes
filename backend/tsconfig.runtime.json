@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Runtime execution with tsx - point to src for direct execution
+    "paths": {
+      "@/*": ["./src/*"],
+      "@core/*": ["./src/core/*"],
+      "@core/models/*": ["./src/core/models/*"],
+      "@core/schemas/*": ["./src/core/schemas/*"],
+      "@core/services/*": ["./src/core/services/*"],
+      "@core/middlewares/*": ["./src/core/middlewares/*"],
+      "@core/config/*": ["./src/core/config/*"],
+      "@core/utils/*": ["./src/core/utils/*"],
+      "@core/types/*": ["./src/core/types/*"],
+      "@core/plugins/*": ["./src/core/plugins/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@jobs/*": ["./src/jobs/*"]
+    }
+  },
+  "include": ["scripts/**/*", "src/**/*"]
+}

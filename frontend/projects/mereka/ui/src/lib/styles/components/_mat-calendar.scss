@@ -1,0 +1,103 @@
+.mat-datepicker-content {
+  border-radius: 1rem !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.ui-datepicker {
+  &.mat-calendar {
+    font-size: 15px;
+    box-shadow: none;
+    padding: 0;
+    .mat-calendar-table-header {
+      th {
+        height: 44px;
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .mat-calendar-table-header-divider {
+        display: none;
+      }
+    }
+    .mat-calendar-body-label {
+      // Hides month body label
+      &:not(:last-of-type) {
+        visibility: hidden;
+      }
+      &:last-of-type {
+        display: none;
+      }
+    }
+    .mat-calendar-body-in-range {
+      &::before {
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+    }
+    .mat-calendar-body-cell {
+      font-size: 15px;
+      font-weight: 700;
+      // Hover select
+      &:not(.mat-calendar-body-disabled):hover > {
+        .mat-calendar-body-cell-content {
+          &:not(.mat-calendar-body-selected) {
+            &:not(.mat-calendar-body-comparison-identical) {
+              background-color: rgba(0, 0, 0, 0.04);
+            }
+          }
+        }
+      }
+    }
+    // Disabled dates
+    .mat-calendar-body-disabled > {
+      .mat-calendar-body-cell-content {
+        &:not(.mat-calendar-body-selected) {
+          &:not(.mat-calendar-body-comparison-identical) {
+            &:not(.mat-calendar-body-selected) {
+              &:not(.mat-calendar-body-comparison-identical) {
+                color: rgba(0, 0, 0, 0.2);
+              }
+            }
+          }
+        }
+      }
+    }
+    // Selected dates
+    .mat-calendar-body-selected {
+      background-color: #1a1623;
+      color: #fafafa;
+    }
+    // Custom class to show limited tickets
+    .limited:after {
+      content: "";
+      position: absolute;
+      background-color: #2f80ed;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      top: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+  &--padded {
+    &.mat-calendar {
+      padding: 1rem;
+    }
+  }
+  &--height-auto {
+    &.mat-calendar {
+      height: auto !important;
+    }    
+  }
+}
+.ui-datepicker-toggle {
+  &.input-group-text {
+    padding: 0;
+
+    .mat-icon-button {
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+    }
+  }  
+}
+/* End of global styling of mat-calendar */

@@ -1,0 +1,183 @@
+<!-- Desktop Widget -->
+@if (!isMobile()) {
+  <div class="bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden">
+    <!-- Price Header -->
+    <div class="p-6 border-b border-neutral-100">
+      <p class="text-sm text-neutral-500">From</p>
+      <p class="text-2xl font-bold text-neutral-900">{{ priceDisplay() }}</p>
+      @if (durationDisplay()) {
+        <p class="text-sm text-neutral-500">{{ durationDisplay() }} session</p>
+      }
+    </div>
+
+    <div class="p-6">
+      <!-- Package Selection -->
+      @if (tickets().length > 1) {
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            Select Package
+          </label>
+          <div class="space-y-2">
+            @for (ticket of tickets(); track ticket.ticketName; let i = $index) {
+              <button
+                (click)="selectTicket(i)"
+                [class]="selectedTicketIndex() === i
+                  ? 'w-full p-3 border-2 border-primary bg-primary/5 rounded-lg text-left'
+                  : 'w-full p-3 border border-neutral-200 rounded-lg text-left hover:border-neutral-300'">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <p class="font-medium text-neutral-900">{{ ticket.ticketName }}</p>
+                    <p class="text-sm text-neutral-500">
+                      {{ ticket.expertiseMode === 'online' ? 'Online' : ticket.expertiseMode === 'hybrid' ? 'Hybrid' : 'Physical' }}
+                      &bull;
+                      {{ expertiseService.formatDuration(ticket.sessionDuration || 0, ticket.durationUnit) }}
+                    </p>
+                  </div>
+                  <p class="font-semibold text-neutral-900">
+                    @if (ticket.ticketType === 'Free') {
+                      Free
+                    } @else {
+                      RM {{ ticket.standardRate }}
+                    }
+                  </p>
+                </div>
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Single Package Display -->
+      @if (tickets().length === 1 && selectedTicket(); as ticket) {
+        <div class="mb-4 p-3 bg-neutral-50 rounded-lg">
+          <p class="font-medium text-neutral-900">{{ ticket.ticketName }}</p>
+          <p class="text-sm text-neutral-500">
+            {{ ticket.expertiseMode === 'online' ? 'Online' : ticket.expertiseMode === 'hybrid' ? 'Hybrid' : 'Physical' }}
+            &bull;
+            {{ durationDisplay() }}
+          </p>
+        </div>
+      }
+
+      <!-- Date/Time Selection (for flexible/autofill availability) -->
+      @if (isFlexibleOrAutofill()) {
+        @if (hasSelection()) {
+          <!-- Selected Date/Time Summary -->
+          <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-sm font-medium text-green-800">Selected Date & Time</p>
+                <p class="text-sm text-green-700 mt-1">
+                  {{ selectedDateDisplay() }} at {{ selectedTimeDisplay() }}
+                </p>
+              </div>
+              <button
+                (click)="clearSelection()"
+                class="text-sm text-green-700 hover:text-green-900 underline">
+                Change
+              </button>
+            </div>
+          </div>
+        } @else {
+          <!-- Date/Time Picker Button -->
+          <button
+            (click)="openDateTimePicker()"
+            class="w-full mb-4 p-4 border border-dashed border-neutral-300 rounded-lg text-left hover:border-primary hover:bg-primary/5 transition-colors">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <div>
+                <p class="text-sm font-medium text-neutral-700">Select Date & Time</p>
+                <p class="text-xs text-neutral-500">Choose when you'd like to book</p>
+              </div>
+            </div>
+          </button>
+        }
+      }
+
+      <!-- Availability Type Indicator (Manual) -->
+      @if (availabilityType() === 'manual') {
+        <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-sm text-amber-800">Availability confirmed upon request</p>
+          </div>
+        </div>
+      }
+
+      <!-- Book Button -->
+      <button
+        (click)="onBook()"
+        [disabled]="!hasTickets()"
+        class="w-full py-3 px-4 bg-primary text-white font-medium rounded-full hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+        {{ bookingLabel() }}
+      </button>
+
+      <!-- Info -->
+      <p class="text-xs text-neutral-500 text-center mt-3">
+        @if (availabilityType() === 'manual') {
+          The host will confirm your booking request
+        } @else if (selectedTicket()?.instantBooking) {
+          Instant confirmation
+        } @else {
+          You won't be charged yet
+        }
+      </p>
+
+      <!-- Ask a Question -->
+      <div class="mt-4 pt-4 border-t border-neutral-100">
+        <button
+          (click)="askQuestion()"
+          [disabled]="startingChat()"
+          class="w-full flex items-center justify-center gap-2 py-3 text-sm font-medium text-neutral-700 bg-neutral-100 rounded-full hover:bg-neutral-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          @if (startingChat()) {
+            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          } @else {
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          }
+          Ask a Question
+        </button>
+      </div>
+    </div>
+  </div>
+} @else {
+  <!-- Mobile Bottom Bar -->
+  <div class="bg-white border-t border-neutral-200 px-4 py-3 shadow-lg">
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <p class="text-sm text-neutral-500">From</p>
+        <p class="text-lg font-bold text-neutral-900">{{ priceDisplay() }}</p>
+        @if (hasSelection()) {
+          <p class="text-xs text-primary">{{ selectedDateDisplay() }}, {{ selectedTimeSlot()?.label }}</p>
+        }
+        <!-- Ask a Question link for mobile -->
+        <button
+          (click)="askQuestion()"
+          [disabled]="startingChat()"
+          class="text-sm text-primary hover:text-primary/80 transition-colors disabled:opacity-50 mt-1 flex items-center gap-1">
+          @if (startingChat()) {
+            <svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          }
+          Ask a Question
+        </button>
+      </div>
+      <button
+        (click)="onBook()"
+        [disabled]="!hasTickets()"
+        class="px-8 py-3 bg-primary text-white font-medium rounded-full hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+        {{ bookingLabel() }}
+      </button>
+    </div>
+  </div>
+}

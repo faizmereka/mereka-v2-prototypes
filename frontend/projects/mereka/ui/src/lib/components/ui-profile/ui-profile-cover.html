@@ -1,0 +1,28 @@
+<picture class="ui-profile-cover-image">
+  @if (src()) {
+    <img [src]="src()" alt />
+  } @else {    
+    @if (defaultImageType() === 1) {
+      
+      <!-- Source for desktop large screens -->
+      <source srcset="/assets/images/ui/profile-cover-01-desktop-large.jpg" media="(width >= 1440px)">
+      <!-- Source for desktop screens -->
+      <source srcset="/assets/images/ui/profile-cover-01-desktop.jpg" media="(width >= 1024px)">
+      <!-- Source for tablet screens -->
+      <source srcset="/assets/images/ui/profile-cover-01-tablet.jpg" media="(width >= 576px)">
+      <!-- Fallback mobile image -->
+      <img src="/assets/images/ui/profile-cover-01-mobile.jpg" alt lazyload>
+    }
+    @if (defaultImageType() === 2) {
+
+      <!-- Source for desktop large screens -->
+      <source srcset="/assets/images/ui/profile-cover-02-desktop-large.jpg" media="(width >= 1440px)">
+      <!-- Source for desktop screens -->
+      <source srcset="/assets/images/ui/profile-cover-02-desktop.jpg" media="(width >= 1024px)">
+      <!-- Source for tablet screens -->
+      <source srcset="/assets/images/ui/profile-cover-02-tablet.jpg" media="(width >= 576px)">
+      <!-- Fallback mobile image -->
+      <img src="/assets/images/ui/profile-cover-02-mobile.jpg" alt lazyload>
+    }
+  }
+</picture>

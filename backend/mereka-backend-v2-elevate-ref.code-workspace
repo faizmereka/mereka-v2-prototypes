@@ -1,0 +1,17 @@
+{
+	"folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "../mereka-frontend-workspace"
+    },
+    {
+      "path": "../bbi-infrastructure"
+    }
+  ],
+	"settings": {
+		"typescript.tsdk": "mereka-frontend-workspace/node_modules/typescript/lib",
+		"typescript.enablePromptUseWorkspaceTsdk": true
+	}
+}

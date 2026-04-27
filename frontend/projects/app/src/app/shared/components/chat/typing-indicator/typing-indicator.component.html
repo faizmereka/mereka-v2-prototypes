@@ -1,0 +1,13 @@
+<!-- @covers AC-FEC-080 through AC-FEC-085 -->
+@if (isVisible()) {
+  <div class="flex items-center gap-2 px-4 py-2 text-sm text-neutral-500" data-testid="typing-indicator">
+    <!-- @covers AC-FEC-084 - Animated dots -->
+    <span class="typing-dots flex gap-0.5" data-testid="typing-dots">
+      <span class="w-1.5 h-1.5 bg-neutral-400 rounded-full"></span>
+      <span class="w-1.5 h-1.5 bg-neutral-400 rounded-full"></span>
+      <span class="w-1.5 h-1.5 bg-neutral-400 rounded-full"></span>
+    </span>
+    <!-- @covers AC-FEC-081, AC-FEC-082, AC-FEC-083 -->
+    <span data-testid="typing-text">{{ displayText() }}</span>
+  </div>
+}

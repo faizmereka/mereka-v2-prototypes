@@ -1,0 +1,64 @@
+@use 'abstracts' as *;
+@use '../../pages/home/home.page.scss' as *;
+
+:host { 
+  /* Background underlay */
+  &:before {
+    background-color: #E5D9F5;
+  }
+
+  @media (width < $breakpoint-laptop) {
+    padding-top: 60px;
+    margin-top: -20px;    
+  }
+}
+
+.heading-accent {
+  background-image: linear-gradient(90deg, #8A3AEF 0%, #E45DC3 100%);
+}
+
+.jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  row-gap: var(--space-4xl);
+  column-gap: var(--space-m);
+}
+
+.placeholder-grid {
+  display: flex;
+  overflow: visible;
+  column-gap: var(--space-m);
+
+  > * {
+    min-width: get-clamp(370, 290);
+  }
+}
+
+@media (width >= $breakpoint-laptop) {
+  :host {
+    /* Background underlay */
+    &:before {
+      background-image: url('/assets/feat/homepage/images/bg-jobs.jpg');
+    }  
+  }
+
+  .jobs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: 1fr;
+    row-gap: var(--space-4xl);
+    column-gap: var(--space-m);
+  }
+
+  .placeholder-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: 1fr;
+    row-gap: var(--space-4xl);
+    column-gap: var(--space-m);
+
+    > * {
+      min-width: 0;
+    }
+  }
+}

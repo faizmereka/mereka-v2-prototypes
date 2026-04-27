@@ -1,0 +1,208 @@
+<!-- Hidden Banner -->
+@if (isHidden()) {
+  <div class="bg-amber-100 border border-amber-200 rounded-lg p-3 mb-4">
+    <div class="flex items-center gap-2 text-amber-800">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <p class="text-sm text-amber-800">
+        This Experience is hidden. It can only be found using a direct URL.
+      </p>
+    </div>
+  </div>
+}
+
+<!-- Desktop Header (Parent has dark background) -->
+<div class="hidden lg:block text-white">
+  <!-- Title Row -->
+  <div class="flex items-start justify-between mb-4">
+    <div>
+      <h1 class="text-2xl font-bold mb-2">{{ header().title }}</h1>
+      <ul class="flex flex-wrap items-center gap-x-4 text-sm text-neutral-300">
+        <li class="flex items-center gap-1.5">
+          @if (header().type === 'Physical') {
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          } @else {
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          }
+          <span>{{ header().type }} | {{ header().category }}</span>
+        </li>
+        @if (header().type === 'Physical' && locationText()) {
+          <li class="flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>{{ locationText() }}</span>
+          </li>
+        }
+        @if (hasReviews()) {
+          <li class="flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <span>{{ header().rating?.toFixed(1) }} ({{ header().totalReviews }})</span>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <!-- Desktop Actions -->
+    <div class="flex items-center gap-1">
+      <button
+        (click)="onSave()"
+        class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-colors"
+        [attr.aria-label]="isFavorited() ? 'Remove from favorites' : 'Add to favorites'">
+        @if (isFavorited()) {
+          <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          <span>Saved</span>
+        } @else {
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <span>Save</span>
+        }
+      </button>
+      <button
+        (click)="onShare()"
+        class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+        </svg>
+        <span>Share</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <div class="relative rounded-xl overflow-hidden">
+    @if (header().gallery.length > 0) {
+      <div class="aspect-[16/9]">
+        <img
+          [src]="header().gallery[0]"
+          [alt]="header().title"
+          class="w-full h-full object-cover"
+          loading="eager" />
+      </div>
+
+      @if (header().gallery.length > 1) {
+        <button class="absolute bottom-4 left-4 flex items-center gap-2 px-4 py-2 bg-black/80 text-white text-sm font-medium rounded-lg hover:bg-black transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span>VIEW ALL PHOTOS</span>
+        </button>
+      }
+    } @else {
+      <div class="aspect-[16/9] bg-neutral-700 flex items-center justify-center">
+        <svg class="w-16 h-16 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Mobile Header -->
+<div class="lg:hidden">
+  <!-- Gallery First on Mobile -->
+  <div class="relative z-20 -mx-4 sm:-mx-6">
+    @if (header().gallery.length > 0) {
+      <div class="aspect-[16/9]">
+        <img
+          [src]="header().gallery[0]"
+          [alt]="header().title"
+          class="w-full h-full object-cover"
+          loading="eager" />
+      </div>
+    } @else {
+      <div class="aspect-[16/9] bg-neutral-700 flex items-center justify-center">
+        <svg class="w-16 h-16 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+    }
+
+    <!-- Mobile Actions Overlay -->
+    <div class="absolute top-3 left-0 right-0 px-4 flex justify-between z-10">
+      <a href="/experiences" class="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm">
+        <svg class="w-5 h-5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
+      <div class="flex gap-2">
+        <button
+          (click)="onSave()"
+          class="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm"
+          [attr.aria-label]="isFavorited() ? 'Remove from favorites' : 'Add to favorites'">
+          @if (isFavorited()) {
+            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          } @else {
+            <svg class="w-5 h-5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          }
+        </button>
+        <button (click)="onShare()" class="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm">
+          <svg class="w-5 h-5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- View All Photos Button -->
+    @if (header().gallery.length > 1) {
+      <button class="absolute bottom-4 left-4 flex items-center gap-2 px-3 py-2 bg-black/80 text-white text-xs font-medium rounded-lg">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>VIEW ALL PHOTOS</span>
+      </button>
+    }
+  </div>
+
+  <!-- Title & Info on Mobile (still inside dark area) -->
+  <div class="py-4 text-white">
+    <h1 class="text-xl font-bold mb-2">{{ header().title }}</h1>
+    <ul class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-neutral-300">
+      <li class="flex items-center gap-1">
+        @if (header().type === 'Physical') {
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        } @else {
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        }
+        <span>{{ header().type }} | {{ header().category }}</span>
+      </li>
+      @if (header().type === 'Physical' && locationText()) {
+        <li class="flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span>{{ locationText() }}</span>
+        </li>
+      }
+      @if (hasReviews()) {
+        <li class="flex items-center gap-1">
+          <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+          <span>{{ header().rating?.toFixed(1) }} ({{ header().totalReviews }})</span>
+        </li>
+      }
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# E2E Test Artifacts
+artifacts/playwright-report-e2e-*/
+tests/e2e-test/playwright-report/
+tests/e2e-test/test-results/
+artifacts/test-results/*.pdf
+# Authentication state (contains sensitive session data)
+tests/e2e-test/.auth/
+# Beads local database
+.claude/skills
+.claude/skills
+.claude/skills
+__pycache__
+__pycache__
+scripts/qa/spec-tools/__pycache__

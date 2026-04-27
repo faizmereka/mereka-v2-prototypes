@@ -1,0 +1,82 @@
+<div class="ui-profile-card__inner-container">
+  <div class="ui-profile-card__header">
+    @if (!hideElements().includes('avatar')) {
+      <ui-profile-avatar class="ui-profile-card__avatar" [src]="image()" size="96" displayType="image" placeholder="user" />
+    }
+    @if (!hideElements().includes('actions')) {
+      <div class="ui-profile-card__actions">
+        @if (!hideElements().includes('favorite')) {
+          <button ui-button (click)="toggleFavourite()">
+            @if (isFavorite) {
+              <mat-icon fontIcon="favorite" />
+            } @else {
+              <mat-icon fontIcon="favorite_border" />
+            }
+          </button>
+        }
+        @if (!hideElements().includes('message')) {
+          <button ui-button (click)="messageClick()">
+            <mat-icon fontIcon="message" />
+          </button>
+        }
+      </div>
+    }
+  </div>
+  <div class="ui-profile-card__body">
+    <div class="ui-profile-card__name">{{ name() }}</div>
+    @if (!hideElements().includes('title')) {
+      <div class="ui-profile-card__title">
+        {{ title() }}
+        @if (hubName()) {
+          at <a [routerLink]="'/hub/' + hubSlug()">{{ hubName() }}</a>
+        }
+      </div>
+    }
+    @if (!hideElements().includes('location')) {
+      <div class="ui-profile-card__info">
+        <mat-icon fontIcon="place" />{{ location() }}
+      </div>
+    }
+    @if (!hideElements().includes('rating')) {
+      <div class="ui-profile-card__info">
+        <mat-icon fontIcon="star" /><span>{{ rating().stars }}</span> <span>({{ rating().rating }})</span>
+      </div>
+    }
+  </div>
+  <div class="ui-profile-card__footer">
+    @if (!hideElements().includes('contacts')) {
+      <div class="ui-profile-card__contact">
+        @if (contact().website) {
+          <a ui-button href="{{ contact().website }}" target="_blank">
+            <mat-icon fontIcon="public" />
+          </a>
+        }
+        @if (contact().linkedin) {
+          <a ui-button href="{{ contact().linkedin }}" target="_blank">
+            <mat-icon svgIcon="brand-linkedin" />
+          </a>
+        }
+        @if (contact().facebook) {
+          <a ui-button href="{{ contact().facebook }}" target="_blank">
+            <mat-icon svgIcon="brand-facebook-square" />
+          </a>
+        }
+        @if (contact().instagram) {
+          <a ui-button href="{{ contact().instagram }}" target="_blank">
+            <mat-icon svgIcon="brand-instagram-square" />
+          </a>
+        }
+        @if (contact().twitter) {
+          <a ui-button href="{{ contact().twitter }}" target="_blank">
+            <mat-icon svgIcon="brand-twitter-x" />
+          </a>
+        }
+        @if (contact().email) {
+          <a ui-button href="mailto:{{ contact().email }}">
+            <mat-icon fontIcon="email" />
+          </a>
+        }
+      </div>
+    }
+  </div>
+</div>

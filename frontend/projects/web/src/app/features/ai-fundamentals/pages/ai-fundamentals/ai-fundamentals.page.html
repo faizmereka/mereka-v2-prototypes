@@ -1,0 +1,752 @@
+<!-- Navigation Header -->
+<header class="bg-white sticky top-0 z-50" style="box-shadow: 0 6px 14px rgba(0,0,0,0.06);">
+  <div class="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-20">
+    <div class="flex items-center justify-between h-[70px] md:h-[84px]">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2">
+        <!-- Mereka Symbol -->
+        <svg class="h-7 w-8 md:h-9 md:w-10" viewBox="0 0 46 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0_mereka)">
+            <path d="M38.2635 36.9726C41.9909 36.9726 45.0124 33.951 45.0124 30.2237C45.0124 26.4963 41.9909 23.4748 38.2635 23.4748C34.5362 23.4748 31.5146 26.4963 31.5146 30.2237C31.5146 33.951 34.5362 36.9726 38.2635 36.9726Z" fill="black"/>
+            <path d="M29.0664 20.5058C28.9711 20.7776 28.8888 21.0552 28.8193 21.3388C28.8387 21.2858 28.8582 21.2347 28.8758 21.1817C28.9199 21.0052 28.9693 20.8499 29.0223 20.6858C29.0382 20.6258 29.0541 20.5658 29.0664 20.5058Z" fill="black"/>
+            <path d="M22.5439 12.2567C22.6922 12.2656 22.8404 12.2726 22.9905 12.2744C22.8422 12.2638 22.694 12.2567 22.5439 12.2567Z" fill="black"/>
+            <path d="M15.7363 19.0058C15.7374 20.5897 16.2953 22.1228 17.3126 23.3369C18.3298 24.551 19.7416 25.3688 21.3009 25.647C22.8602 25.9253 24.4677 25.6465 25.8422 24.8592C27.2166 24.072 28.2705 22.8265 28.8194 21.3407C28.8876 21.0571 28.97 20.7795 29.0665 20.5077C29.6831 18.7471 30.8316 17.2217 32.353 16.1423C33.8744 15.0629 35.6936 14.4828 37.5591 14.4824H37.725C37.8732 14.4824 38.0197 14.4912 38.1662 14.5H38.2332C39.4737 14.4999 40.6901 14.1581 41.749 13.512C42.8079 12.8659 43.6683 11.9405 44.2358 10.8374C44.8032 9.73437 45.0558 8.49629 44.9657 7.25911C44.8756 6.02194 44.4464 4.8335 43.7251 3.82428C43.0039 2.81505 42.0185 2.02407 40.8772 1.53816C39.7359 1.05226 38.4827 0.890219 37.2553 1.06984C36.028 1.24945 34.8738 1.76378 33.9196 2.55635C32.9654 3.34893 32.248 4.3891 31.8461 5.56267C31.8003 5.73916 31.7473 5.91564 31.6891 6.09213C31.0952 7.88958 29.9497 9.45404 28.4155 10.563C26.8813 11.672 25.0365 12.269 23.1435 12.2692H22.99C22.84 12.2692 22.6917 12.2692 22.5435 12.2516H22.4852C21.5986 12.2518 20.7206 12.4267 19.9016 12.7663C19.0825 13.1058 18.3384 13.6034 17.7117 14.2307C17.085 14.8579 16.5879 15.6024 16.249 16.4217C15.9101 17.241 15.7359 18.1191 15.7363 19.0058Z" fill="black"/>
+            <path d="M38.1668 14.5017C38.0203 14.5017 37.8738 14.4858 37.7256 14.484C37.8721 14.4946 38.0185 14.5017 38.1668 14.5017Z" fill="black"/>
+            <path d="M31.6895 6.10261C31.7477 5.92613 31.8006 5.74964 31.8465 5.57315C31.8473 5.57664 31.8473 5.58025 31.8465 5.58374C31.8024 5.7514 31.753 5.9173 31.7 6.07967C31.696 6.08706 31.6924 6.09472 31.6895 6.10261Z" fill="black"/>
+            <path d="M15.918 20.5058C16.0133 20.7776 16.0956 21.0552 16.1651 21.3388C16.1456 21.2858 16.128 21.2347 16.1103 21.1817C16.0645 21.0052 16.0168 20.8499 15.9621 20.6858C15.9462 20.6258 15.9321 20.5658 15.918 20.5058Z" fill="black"/>
+            <path d="M22.4408 12.2567C22.2944 12.2656 22.1443 12.2726 21.9961 12.2744C22.1426 12.2638 22.2908 12.2567 22.4408 12.2567Z" fill="black"/>
+            <path d="M29.2501 19.0058C29.2491 20.5897 28.6912 22.1228 27.6739 23.3369C26.6566 24.551 25.2448 25.3688 23.6855 25.647C22.1262 25.9253 20.5187 25.6465 19.1443 24.8592C17.7698 24.072 16.716 22.8265 16.1671 21.3407C16.0989 21.0571 16.0165 20.7795 15.92 20.5077C15.3032 18.7468 14.1545 17.2212 12.6327 16.1418C11.111 15.0623 9.29138 14.4825 7.42565 14.4824H7.25975C7.1115 14.4824 6.96502 14.4912 6.8203 14.5H6.75147C5.51081 14.5002 4.2941 14.1584 3.23497 13.5123C2.17584 12.8662 1.31525 11.9406 0.747715 10.8374C0.180182 9.73416 -0.0723425 8.49585 0.0178738 7.25847C0.10809 6.02109 0.537558 4.83251 1.25911 3.82325C1.98066 2.81399 2.96639 2.0231 4.10804 1.53743C5.2497 1.05176 6.50311 0.890097 7.73063 1.0702C8.95815 1.2503 10.1123 1.7652 11.0663 2.55834C12.0203 3.35149 12.7373 4.39221 13.1386 5.5662C13.1862 5.74269 13.2392 5.91917 13.2974 6.09566C13.8912 7.89283 15.0364 9.45708 16.5702 10.566C18.1041 11.675 19.9485 12.2722 21.8412 12.2727H21.9965C22.1447 12.2727 22.2948 12.2727 22.4412 12.2551H22.4995C23.386 12.2551 24.2638 12.4297 25.0828 12.769C25.9019 13.1082 26.6461 13.6055 27.2729 14.2323C27.8998 14.8592 28.397 15.6034 28.7363 16.4224C29.0755 17.2414 29.2501 18.1192 29.2501 19.0058Z" fill="black"/>
+            <path d="M6.82031 14.5017C6.96503 14.5017 7.11152 14.4858 7.25977 14.484C7.11505 14.4946 6.96856 14.5017 6.82031 14.5017Z" fill="black"/>
+            <path d="M13.2975 6.10261C13.2393 5.92613 13.1863 5.74964 13.1387 5.57315C13.1387 5.57315 13.1387 5.57315 13.1387 5.58374C13.1828 5.7514 13.2322 5.9173 13.2869 6.07967C13.2922 6.0832 13.2957 6.09203 13.2975 6.10261Z" fill="black"/>
+            <path d="M11.5981 25.5356C12.5264 26.4856 13.1537 27.6883 13.4015 28.9931C13.6494 30.298 13.5067 31.6469 12.9913 32.871C12.476 34.0952 11.6109 35.14 10.5045 35.8747C9.39799 36.6094 8.09935 37.0013 6.77117 37.0013C5.443 37.0013 4.14435 36.6094 3.03789 35.8747C1.93143 35.14 1.06635 34.0952 0.551011 32.871C0.0356695 31.6469 -0.107023 30.298 0.140806 28.9931C0.388636 27.6883 1.01597 26.4856 1.94423 25.5356C2.01953 25.465 2.09366 25.3927 2.1666 25.3185C3.82601 23.6368 4.75455 21.3681 4.75039 19.0056C4.75349 16.6403 3.82233 14.3695 2.15954 12.6873L1.94423 12.4755C1.01536 11.5255 0.38751 10.3224 0.139325 9.01715C-0.10886 7.71186 0.033662 6.36236 0.549034 5.13771C1.06441 3.91306 1.92971 2.86772 3.03654 2.13267C4.14337 1.39761 5.4425 1.00552 6.77117 1.00552C8.09985 1.00552 9.39898 1.39761 10.5058 2.13267C11.6126 2.86772 12.4779 3.91306 12.9933 5.13771C13.5087 6.36236 13.6512 7.71186 13.403 9.01715C13.1548 10.3224 12.527 11.5255 11.5981 12.4755L11.374 12.6873C9.71467 14.3713 8.78453 16.6405 8.78453 19.0047C8.78453 21.3688 9.71467 23.6381 11.374 25.3221C11.4481 25.3962 11.5205 25.4686 11.5964 25.5392L11.5981 25.5356Z" fill="black"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_mereka">
+              <rect width="45.0124" height="36.0026" fill="white" transform="translate(0 0.998688)"/>
+            </clipPath>
+          </defs>
+        </svg>
+        <!-- Mereka Text -->
+        <span class="text-lg md:text-xl font-bold text-[#1a1623]" style="font-family: 'Poppins', sans-serif;">Mereka</span>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-6">
+        <a href="/" class="px-4 py-1.5 text-[#1a1623] font-medium text-base" style="font-family: 'Lato', sans-serif; letter-spacing: 0.15px;">Home</a>
+        <button class="flex items-center gap-1 px-4 py-1.5 text-[#1a1623] font-medium text-base" style="font-family: 'Lato', sans-serif; letter-spacing: 0.15px;">
+          Departments
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24">
+            <path d="M6 8.295L12 15.705 18 8.295" fill="#000"/>
+          </svg>
+        </button>
+        <a href="#" class="flex items-center gap-1 px-4 py-1.5 bg-[#f2f2f2] rounded-[20px] text-[#1a1623] font-medium text-base" style="font-family: 'Lato', sans-serif; letter-spacing: 0.15px;">
+          🤖 AI Services
+        </a>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-2">
+        <a href="/auth/login" class="hidden md:block px-5 py-1.5 text-[#1a1623] font-medium text-sm md:text-base" style="font-family: 'Lato', sans-serif; letter-spacing: 0.15px;">Log In</a>
+        <a href="#pricing" (click)="scrollToSection('pricing'); $event.preventDefault()"
+           class="px-4 md:px-5 py-1.5 bg-[#1a1623] text-white rounded-[20px] font-medium text-sm md:text-base border-2 border-[#1a1623]" style="font-family: 'Lato', sans-serif;">
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="min-h-screen bg-white">
+  <!-- Hero Section -->
+  <section class="py-10 md:py-16 lg:py-20 px-4 md:px-8 lg:px-20">
+    <div class="max-w-[1280px] mx-auto text-center">
+      <!-- Badge with Yellow Diamonds -->
+      <div class="inline-flex items-center gap-1 px-3 py-2 rounded-[30px] mb-4">
+        <span class="text-[#ffdf00] text-base md:text-lg">◆</span>
+        <span class="text-[#1a1623] font-semibold text-sm md:text-base" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">100% HRDF Claimable</span>
+        <span class="text-[#ffdf00] text-base md:text-lg">◆</span>
+      </div>
+
+      <!-- Title with Blue Checkered Circle -->
+      <div class="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-[17px] mb-0">
+        <!-- Checkered Circle Pattern -->
+        <div class="w-14 h-14 md:w-20 md:h-20 rounded-full overflow-hidden" style="background: #b1cbfb;">
+          <svg class="w-full h-full" viewBox="0 0 80 80">
+            <defs>
+              <pattern id="checkerPattern" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="4" height="4" fill="#b1cbfb"/>
+                <rect x="4" y="0" width="4" height="4" fill="#d4e4fd"/>
+                <rect x="0" y="4" width="4" height="4" fill="#d4e4fd"/>
+                <rect x="4" y="4" width="4" height="4" fill="#b1cbfb"/>
+              </pattern>
+            </defs>
+            <circle cx="40" cy="40" r="40" fill="url(#checkerPattern)"/>
+          </svg>
+        </div>
+        <h1 class="text-4xl md:text-6xl lg:text-[88px] font-bold text-[#1f1f1f] leading-[1.09]" style="font-family: 'Poppins', sans-serif;">
+          1-Day
+        </h1>
+      </div>
+      <h1 class="text-4xl md:text-6xl lg:text-[88px] font-bold text-[#1f1f1f] leading-[1.09] mb-4" style="font-family: 'Poppins', sans-serif;">
+        AI Fundamentals
+      </h1>
+
+      <!-- Feature Tags with Emojis -->
+      <div class="flex flex-wrap items-center justify-center gap-2 md:gap-4 lg:gap-6 mb-4">
+        <span class="inline-flex items-center gap-2 px-3 md:px-4 py-[5px] rounded-[30px] text-sm md:text-base lg:text-xl font-normal text-[#1a1623]" style="background: #fffade; font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+          📝  Write Better Prompts
+        </span>
+        <span class="inline-flex items-center gap-2 px-3 md:px-4 py-[5px] rounded-[30px] text-sm md:text-base lg:text-xl font-normal text-[#1a1623]" style="background: #e4eeff; font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+          🤖  Automate Tedious Tasks
+        </span>
+        <span class="inline-flex items-center gap-2 px-3 md:px-4 py-[5px] rounded-[30px] text-sm md:text-base lg:text-xl font-normal text-[#1a1623]" style="background: rgba(255, 207, 239, 0.59); font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+          ✅  Analyse More Data
+        </span>
+      </div>
+
+      <!-- Description -->
+      <p class="text-base md:text-lg lg:text-xl text-[#1a1623] max-w-[800px] mx-auto mb-8 md:mb-14 leading-[1.5] text-center px-4" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+        Improve your team's productivity through AI literacy and adoption of AI in task-specific roles.
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-col items-center justify-center gap-2">
+        <a href="#pricing" (click)="scrollToSection('pricing'); $event.preventDefault()"
+           class="inline-flex items-center gap-2 md:gap-3 pl-4 md:pl-6 pr-[6px] py-[6px] bg-[#1a1623] text-white rounded-[38px] font-medium hover:bg-gray-800 transition-colors"
+           style="box-shadow: 0 2px 14px rgba(85,85,85,0.14); font-family: 'Poppins', sans-serif;">
+          <span class="text-base md:text-xl font-medium leading-[1.2]">Get More Information</span>
+          <span class="w-9 h-9 md:w-11 md:h-11 bg-[#2f80ed] rounded-full flex items-center justify-center">
+            <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" viewBox="0 0 24 24">
+              <path d="M8 4L16 12L8 20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </a>
+        <button (click)="scrollToSection('curriculum')"
+                class="px-6 py-3 md:py-4 text-base md:text-xl font-medium text-[#276ef1] hover:text-blue-700 transition-colors" style="font-family: 'Poppins', sans-serif;">
+          See what's included
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5X Productivity Section -->
+  <section class="bg-white px-4 md:px-8 lg:px-20 py-10 md:py-16 lg:py-20">
+    <div class="max-w-[1280px] mx-auto">
+      <h2 class="text-2xl md:text-4xl lg:text-[48px] font-semibold text-center text-[#1a1623] mb-8 md:mb-12 leading-[1.17]" style="font-family: 'Poppins', sans-serif;">
+        5X your company productivity!
+      </h2>
+
+      <!-- Feature Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16 md:mb-[120px]">
+        <!-- Marketing & Lead Gen -->
+        <div class="flex flex-col gap-3">
+          <div class="h-[200px] md:h-[308px] rounded-xl overflow-hidden bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=400&fit=crop');">
+          </div>
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg md:text-xl font-semibold text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">Marketing & Lead Gen</h3>
+            <p class="text-sm md:text-base text-[#7b7b7b] leading-[1.5]" style="font-family: 'Lato', sans-serif;">Leverage generative AI to develop marketing strategies, attract clients, publish content and convert leads</p>
+          </div>
+        </div>
+
+        <!-- Finance & Strategy -->
+        <div class="flex flex-col gap-3">
+          <div class="h-[200px] md:h-[308px] rounded-xl overflow-hidden bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=400&fit=crop');">
+          </div>
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg md:text-xl font-semibold text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">Finance & Strategy</h3>
+            <p class="text-sm md:text-base text-[#7b7b7b] leading-[1.5]" style="font-family: 'Lato', sans-serif;">Use AI to increase accuracy of financial projections. Automate data analysis, reporting and financial tracking</p>
+          </div>
+        </div>
+
+        <!-- Project Management -->
+        <div class="flex flex-col gap-3">
+          <div class="h-[200px] md:h-[308px] rounded-xl overflow-hidden bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=400&h=400&fit=crop');">
+          </div>
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg md:text-xl font-semibold text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">Project Management</h3>
+            <p class="text-sm md:text-base text-[#7b7b7b] leading-[1.5]" style="font-family: 'Lato', sans-serif;">Learn to embed AI in project management workflows. Convert support tickets into tasks and generate weekly reports with AI.</p>
+          </div>
+        </div>
+
+        <!-- Human Resource -->
+        <div class="flex flex-col gap-3">
+          <div class="h-[200px] md:h-[308px] rounded-xl overflow-hidden bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&h=400&fit=crop');">
+          </div>
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg md:text-xl font-semibold text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">Human Resource</h3>
+            <p class="text-sm md:text-base text-[#7b7b7b] leading-[1.5]" style="font-family: 'Lato', sans-serif;">Automate candidate screening and job requirement creation. Use AI to create and manage employee knowledge base.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- In just 1 day -->
+      <div class="text-center">
+        <h3 class="text-2xl md:text-4xl lg:text-[48px] font-semibold text-[#1a1623] mb-8 md:mb-12 leading-[1.17]" style="font-family: 'Poppins', sans-serif;">
+          In just 1 day, your team will be able to
+        </h3>
+
+        <!-- Skills with checkmarks -->
+        <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-3 md:mb-4">
+          <span class="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 bg-white rounded-[32px] border border-[#bdbdbd] text-sm md:text-base lg:text-xl text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+            <span class="w-6 h-6 md:w-8 md:h-8 bg-[#276ef1] rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            Understand prompt basics
+          </span>
+          <span class="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 bg-white rounded-[32px] border border-[#bdbdbd] text-sm md:text-base lg:text-xl text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+            <span class="w-6 h-6 md:w-8 md:h-8 bg-[#276ef1] rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            Write clear, effective prompts
+          </span>
+          <span class="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 bg-white rounded-[32px] border border-[#bdbdbd] text-sm md:text-base lg:text-xl text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+            <span class="w-6 h-6 md:w-8 md:h-8 bg-[#276ef1] rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            Personalise prompts
+          </span>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-3 md:mb-4">
+          <span class="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 bg-white rounded-[32px] border border-[#bdbdbd] text-sm md:text-base lg:text-xl text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+            <span class="w-6 h-6 md:w-8 md:h-8 bg-[#276ef1] rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            Use prompting techniques
+          </span>
+          <span class="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 bg-white rounded-[32px] border border-[#bdbdbd] text-sm md:text-base lg:text-xl text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+            <span class="w-6 h-6 md:w-8 md:h-8 bg-[#276ef1] rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            Apply prompts for work
+          </span>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-3 md:mb-4">
+          <span class="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 bg-white rounded-[32px] border border-[#bdbdbd] text-sm md:text-base lg:text-xl text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+            <span class="w-6 h-6 md:w-8 md:h-8 bg-[#276ef1] rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            Automate simple tasks
+          </span>
+          <span class="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 bg-white rounded-[32px] border border-[#bdbdbd] text-sm md:text-base lg:text-xl text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+            <span class="w-6 h-6 md:w-8 md:h-8 bg-[#276ef1] rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            Evaluate & refine AI responses
+          </span>
+        </div>
+        <div class="flex justify-center">
+          <span class="text-base md:text-xl text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+            And more!
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Learn AI Section -->
+  <section class="bg-white px-4 md:px-8 lg:px-20 py-10 md:py-16 lg:py-20">
+    <div class="max-w-[1280px] mx-auto">
+      <div class="text-center mb-8 md:mb-10">
+        <h2 class="text-2xl md:text-4xl lg:text-[48px] font-semibold text-[#1a1623] mb-3 leading-[1.17]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.15px;">
+          Why learn AI with us?
+        </h2>
+        <p class="text-base md:text-lg lg:text-xl text-[#1a1623] leading-[1.5] px-4" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+          Our AI skilling initiatives in partnership with Microsoft have created significant impact
+        </p>
+      </div>
+
+      <!-- Stats with gradient text -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8 md:mb-10">
+        <div class="text-center p-4 md:p-6 bg-[#f2f2f2] rounded-2xl">
+          <div class="text-2xl md:text-4xl lg:text-[49px] font-semibold mb-2 leading-[1.2]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.98px; background: linear-gradient(to right, #0d60f5, #25b1ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">842K+</div>
+          <p class="text-sm md:text-base lg:text-xl text-black leading-[1.5]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">learners trained in AI fundamentals</p>
+        </div>
+        <div class="text-center p-4 md:p-6 bg-[#f2f2f2] rounded-2xl">
+          <div class="text-2xl md:text-4xl lg:text-[49px] font-semibold mb-2 leading-[1.2]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.98px; background: linear-gradient(to right, #0d60f5, #25b1ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">1,484</div>
+          <p class="text-sm md:text-base lg:text-xl text-black leading-[1.5]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">TVET educators trained in AI literacy</p>
+        </div>
+        <div class="text-center p-4 md:p-6 bg-[#f2f2f2] rounded-2xl">
+          <div class="text-2xl md:text-4xl lg:text-[49px] font-semibold mb-2 leading-[1.2]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.98px; background: linear-gradient(to right, #0d60f5, #25b1ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">51K</div>
+          <p class="text-sm md:text-base lg:text-xl text-black leading-[1.5]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">students trained</p>
+        </div>
+        <div class="text-center p-4 md:p-6 bg-[#f2f2f2] rounded-2xl">
+          <div class="text-2xl md:text-4xl lg:text-[49px] font-semibold mb-2 leading-[1.2]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.98px; background: linear-gradient(to right, #0d60f5, #25b1ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">57–70%</div>
+          <p class="text-sm md:text-base lg:text-xl text-black leading-[1.5]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">women participation</p>
+        </div>
+      </div>
+
+      <!-- AI Skills Portfolio - Gradient Background -->
+      <div class="h-[200px] md:h-[400px] lg:h-[530px] rounded-2xl md:rounded-3xl overflow-hidden relative" style="background: linear-gradient(135deg, #93eadb 0%, #b1cbfb 30%, #f5f5f5 50%, #39d6eb 70%, #f585ff 100%);">
+      </div>
+    </div>
+  </section>
+
+  <!-- HRDF Claimable Section -->
+  <section class="px-4 md:px-8 lg:px-20 py-16 md:py-24 lg:py-[120px]" style="background: linear-gradient(135deg, #0d60f5 0%, #25b1ff 100%);">
+    <div class="max-w-[1280px] mx-auto">
+      <div class="flex flex-col lg:flex-row items-center justify-between gap-8 md:gap-10">
+        <div class="text-white max-w-xl text-center lg:text-left">
+          <h2 class="text-2xl md:text-4xl lg:text-[48px] font-semibold mb-4 leading-[1.17]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.48px;">
+            Our programme is 100% HRDF-claimable.
+          </h2>
+          <p class="text-base md:text-lg lg:text-xl text-white/90 mb-6 md:mb-8 leading-[1.5]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+            Any registered employer under HRD Corp can apply for the training grant.
+          </p>
+          <a href="#pricing" (click)="scrollToSection('pricing'); $event.preventDefault()"
+             class="inline-flex items-center gap-2 md:gap-3 pl-4 md:pl-6 pr-[6px] py-[6px] bg-[#1a1623] text-white rounded-[38px] font-medium hover:bg-gray-800 transition-colors"
+             style="box-shadow: 0 2px 14px rgba(85,85,85,0.14); font-family: 'Poppins', sans-serif;">
+            <span class="text-base md:text-xl font-medium leading-[1.2]">Get in touch with our team</span>
+            <span class="w-9 h-9 md:w-11 md:h-11 bg-[#2f80ed] rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" viewBox="0 0 24 24">
+                <path d="M8 4L16 12L8 20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </a>
+        </div>
+        <!-- Checkered Circle Pattern -->
+        <div class="w-[150px] h-[150px] md:w-[200px] md:h-[200px] lg:w-[300px] lg:h-[300px] rounded-full overflow-hidden opacity-60 hidden md:block">
+          <svg class="w-full h-full" viewBox="0 0 300 300">
+            <defs>
+              <pattern id="hrdfCheckerPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="10" height="10" fill="rgba(255,255,255,0.3)"/>
+                <rect x="10" y="0" width="10" height="10" fill="rgba(255,255,255,0.15)"/>
+                <rect x="0" y="10" width="10" height="10" fill="rgba(255,255,255,0.15)"/>
+                <rect x="10" y="10" width="10" height="10" fill="rgba(255,255,255,0.3)"/>
+              </pattern>
+            </defs>
+            <circle cx="150" cy="150" r="150" fill="url(#hrdfCheckerPattern)"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Curriculum Section -->
+  <section id="curriculum" class="px-4 md:px-8 lg:px-20 py-10 md:py-16 lg:py-20 bg-[#f4f8ff]">
+    <div class="max-w-[1120px] mx-auto">
+      <h2 class="text-2xl md:text-4xl lg:text-[48px] font-semibold text-center text-[#1a1623] mb-4 leading-[1.17]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.15px;">
+        1-Day AI Fundamental Includes
+      </h2>
+      <p class="text-base md:text-lg lg:text-xl text-[#1a1623] text-center mb-6 md:mb-8 max-w-[900px] mx-auto leading-[1.5] px-4" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+        Learn the essential concepts of artificial intelligence, including its history, various AI types, and the transformative potential of AI across industries.
+      </p>
+
+      <!-- Lesson List -->
+      <div class="bg-[#f4f8ff] rounded-2xl mb-6 md:mb-8">
+        <div class="space-y-2">
+          @for (lesson of module1Lessons; track lesson.number) {
+            <div class="flex items-center justify-between bg-white rounded-xl px-4 md:px-6 py-3 md:py-4 border border-[#e0e0e0]">
+              <div class="flex items-center gap-3 md:gap-4">
+                <span class="w-8 h-8 md:w-10 md:h-10 bg-[#e4eeff] text-[#276ef1] rounded-lg flex items-center justify-center font-semibold text-sm md:text-base" style="font-family: 'Poppins', sans-serif;">
+                  {{ lesson.number }}
+                </span>
+                <span class="text-[#1a1623] font-medium text-sm md:text-base lg:text-xl" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">{{ lesson.title }}</span>
+              </div>
+              <span class="text-[#7b7b7b] text-sm md:text-base" style="font-family: 'Poppins', sans-serif;">{{ lesson.duration }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- CTA Button -->
+      <div class="text-center">
+        <a href="#pricing" (click)="scrollToSection('pricing'); $event.preventDefault()"
+           class="inline-flex items-center gap-2 md:gap-3 pl-4 md:pl-6 pr-[6px] py-[6px] bg-[#1a1623] text-white rounded-[38px] font-medium hover:bg-gray-800 transition-colors"
+           style="box-shadow: 0 2px 14px rgba(85,85,85,0.14); font-family: 'Poppins', sans-serif;">
+          <span class="text-base md:text-xl font-medium leading-[1.2]">Get Started from RM8,000</span>
+          <span class="w-9 h-9 md:w-11 md:h-11 bg-[#2f80ed] rounded-full flex items-center justify-center">
+            <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" viewBox="0 0 24 24">
+              <path d="M8 4L16 12L8 20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience Quote Section -->
+  <section class="bg-white px-4 md:px-8 lg:px-20 py-10 md:py-16 lg:py-[120px]">
+    <div class="max-w-[1280px] mx-auto">
+      <div class="flex flex-col lg:flex-row items-start gap-6 md:gap-10 mb-10 md:mb-[120px]">
+        <!-- Quote Icon -->
+        <svg class="w-12 h-8 md:w-[85px] md:h-[59px] flex-shrink-0" viewBox="0 0 85 59" fill="#1f1f1f">
+          <path d="M0 59V39.3C0 31.5 1.8 24.5 5.4 18.3C9.1 12 14.7 6.8 22.2 2.7L30.9 14.4C26.1 17.1 22.5 20.4 20.1 24.3C17.7 28.2 16.5 32.4 16.5 36.9H30V59H0ZM54.1 59V39.3C54.1 31.5 55.9 24.5 59.5 18.3C63.2 12 68.8 6.8 76.3 2.7L85 14.4C80.2 17.1 76.6 20.4 74.2 24.3C71.8 28.2 70.6 32.4 70.6 36.9H84.1V59H54.1Z"/>
+        </svg>
+        <h2 class="text-2xl md:text-4xl lg:text-[56px] font-bold text-[#1f1f1f] leading-[1.14] flex-grow" style="font-family: 'Poppins', sans-serif;">
+          "The most human centered AI Upskilling Programme"
+        </h2>
+        <!-- Author Info -->
+        <div class="flex items-center gap-2 flex-shrink-0 mt-4 lg:mt-0">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop" alt="Zainba Khalida" class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover">
+          <div class="flex flex-col gap-1">
+            <span class="text-sm md:text-base font-semibold text-[#1a1623]" style="font-family: 'Poppins', sans-serif;">Zainba Khalida</span>
+            <span class="text-xs md:text-sm text-[#7b7b7b]" style="font-family: 'Poppins', sans-serif;">Advisor</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trusted By -->
+      <div class="flex flex-wrap items-center gap-4 md:gap-10">
+        <span class="text-sm md:text-base text-[#1a1623] leading-[1.5]" style="font-family: 'Lato', sans-serif;">Trusted by:</span>
+        <div class="flex flex-wrap items-center gap-4 md:gap-10">
+          <div class="w-16 h-3 md:w-[70px] md:h-[14px] bg-gray-300 rounded"></div>
+          <div class="w-12 h-3 md:w-[49px] md:h-[14px] bg-gray-300 rounded"></div>
+          <div class="w-16 h-3 md:w-[70px] md:h-[14px] bg-gray-300 rounded"></div>
+          <div class="w-10 h-3 md:w-[40px] md:h-[14px] bg-gray-300 rounded"></div>
+          <div class="w-10 h-3 md:w-[40px] md:h-[14px] bg-gray-300 rounded"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Instructors Section -->
+  <section class="bg-white px-4 md:px-8 lg:px-20 py-10 md:py-16 lg:py-20">
+    <div class="max-w-[1280px] mx-auto">
+      <!-- Header with Navigation -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <h2 class="text-xl md:text-2xl lg:text-[28px] font-semibold text-[#1a1623] leading-[1]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.15px;">
+          Learn From Experts In Their Field
+        </h2>
+        <div class="flex items-center gap-4 md:gap-6">
+          <button class="w-8 h-8 md:w-9 md:h-9 rounded-full border border-[#1a1623] flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <svg class="w-4 h-4 md:w-5 md:h-5 text-[#1a1623]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <button class="w-8 h-8 md:w-9 md:h-9 rounded-full border border-[#1a1623] flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <svg class="w-4 h-4 md:w-5 md:h-5 text-[#1a1623]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Instructor Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        @for (instructor of instructors; track instructor.name; let i = $index) {
+          <div class="flex flex-col gap-3">
+            <div class="h-[200px] md:h-[308px] rounded-xl overflow-hidden bg-cover bg-center relative"
+                 [style.background-image]="'url(https://images.unsplash.com/photo-' + (i === 0 ? '1560250097-0b93528c311a' : i === 1 ? '1472099645785-5658abf4ff4e' : i === 2 ? '1507003211169-0a1dd7228f2d' : '1573496359142-b8d87734a5a2') + '?w=400&h=400&fit=crop)'">
+            </div>
+            <div class="flex flex-col gap-1">
+              <h3 class="text-lg md:text-xl font-semibold text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">{{ instructor.name }}</h3>
+              <p class="text-xs md:text-sm text-[#7b7b7b] leading-[1.5]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.14px;">{{ instructor.title }} / {{ instructor.company }}</p>
+              <p class="text-xs md:text-sm text-[#1a1623] leading-[1.5] line-clamp-3 md:line-clamp-4" style="font-family: 'Lato', sans-serif;">{{ instructor.description }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="bg-white px-4 md:px-8 lg:px-20 py-10 md:py-12 lg:py-[60px]">
+    <div class="max-w-[1280px] mx-auto">
+      <div class="text-center mb-6 md:mb-8">
+        <h2 class="text-2xl md:text-3xl lg:text-[39px] font-semibold text-[#1a1623] leading-[1.3]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.39px;">
+          Simple, Transparent Pricing
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <!-- Standard Plan -->
+        <div class="bg-[#f4f8ff] rounded-[20px] p-6 md:p-10">
+          <div class="flex flex-col gap-6 md:gap-10">
+            <div class="flex flex-col gap-2">
+              <h3 class="text-lg md:text-xl font-semibold text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">1-Day AI Fundamentals</h3>
+              <div class="flex items-baseline gap-2">
+                <span class="text-sm md:text-base text-[#7b7b7b] line-through" style="font-family: 'Poppins', sans-serif;">RM8,200.00</span>
+                <span class="text-xl md:text-[28px] font-semibold text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.28px;">RM16,000</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <p class="text-sm md:text-base text-[#7b7b7b] mb-2" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">What's included:</p>
+              <ul class="space-y-2 md:space-y-3">
+                <li class="flex items-center gap-2 md:gap-3 text-sm md:text-base text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">
+                  <span class="w-5 h-5 md:w-6 md:h-6 bg-[#276ef1] rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </span>
+                  Full access for up to 10 employees
+                </li>
+                <li class="flex items-center gap-2 md:gap-3 text-sm md:text-base text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">
+                  <span class="w-5 h-5 md:w-6 md:h-6 bg-[#276ef1] rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </span>
+                  +RM1,000 for extra employees
+                </li>
+                <li class="flex items-center gap-2 md:gap-3 text-sm md:text-base text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">
+                  <span class="w-5 h-5 md:w-6 md:h-6 bg-[#276ef1] rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </span>
+                  Lifetime access to course materials
+                </li>
+                <li class="flex items-center gap-2 md:gap-3 text-sm md:text-base text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">
+                  <span class="w-5 h-5 md:w-6 md:h-6 bg-[#276ef1] rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </span>
+                  Certificate of completion
+                </li>
+              </ul>
+            </div>
+
+            <a href="mailto:hello@mereka.io?subject=1-Day AI Fundamentals Inquiry"
+               class="flex items-center justify-between w-full h-12 md:h-14 px-4 md:px-6 bg-[#2f80ed] text-white rounded-[38px] font-medium hover:bg-blue-600 transition-colors">
+              <span class="text-sm md:text-base font-medium" style="font-family: 'Poppins', sans-serif;">Get Started</span>
+              <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Custom Plan -->
+        <div class="rounded-[20px] p-6 md:p-10" style="background: rgba(244, 248, 255, 0.4);">
+          <div class="flex flex-col gap-6 md:gap-10">
+            <div class="flex flex-col gap-2">
+              <h3 class="text-lg md:text-xl font-semibold text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">Customised Training</h3>
+              <p class="text-sm md:text-base text-[#7b7b7b]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">Get in touch with our team</p>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <p class="text-sm md:text-base text-[#7b7b7b] mb-2" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">What's included:</p>
+              <ul class="space-y-2 md:space-y-3">
+                <li class="flex items-center gap-2 md:gap-3 text-sm md:text-base text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">
+                  <span class="w-5 h-5 md:w-6 md:h-6 bg-[#276ef1] rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </span>
+                  Free business consultation
+                </li>
+                <li class="flex items-center gap-2 md:gap-3 text-sm md:text-base text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">
+                  <span class="w-5 h-5 md:w-6 md:h-6 bg-[#276ef1] rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </span>
+                  Dedicated account manager
+                </li>
+                <li class="flex items-center gap-2 md:gap-3 text-sm md:text-base text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">
+                  <span class="w-5 h-5 md:w-6 md:h-6 bg-[#276ef1] rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </span>
+                  Packaged pricing
+                </li>
+                <li class="flex items-center gap-2 md:gap-3 text-sm md:text-base text-[#1a1623]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.16px;">
+                  <span class="w-5 h-5 md:w-6 md:h-6 bg-[#276ef1] rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </span>
+                  Custom AI prompt templates
+                </li>
+              </ul>
+            </div>
+
+            <a href="mailto:hello@mereka.io?subject=Customised AI Training Inquiry"
+               class="flex items-center justify-between w-full h-12 md:h-14 px-4 md:px-6 bg-transparent text-[#276ef1] rounded-[38px] font-medium border-2 border-[#276ef1] hover:bg-blue-50 transition-colors">
+              <span class="text-sm md:text-base font-medium" style="font-family: 'Poppins', sans-serif;">Contact Us</span>
+              <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="bg-[#f4f8ff] px-4 md:px-8 lg:px-20 py-10 md:py-12 lg:py-[60px]">
+    <div class="max-w-[1280px] mx-auto">
+      <div class="text-center mb-6 md:mb-8">
+        <h2 class="text-2xl md:text-3xl lg:text-[39px] font-semibold text-[#1a1623] leading-[1.3] mb-2 md:mb-3" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.39px;">
+          Common Questions
+        </h2>
+        <p class="text-base md:text-lg lg:text-xl text-[#1a1623] leading-[1.5]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+          and the answers, of course. Still not sure? Email us
+        </p>
+      </div>
+
+      <div class="space-y-2 md:space-y-3">
+        @for (item of faqItems(); track item.question; let i = $index) {
+          <div class="bg-white rounded-[16px] md:rounded-[20px] overflow-hidden">
+            <button (click)="toggleFaq(i)"
+                    class="w-full flex items-center justify-between px-4 md:px-6 py-3 md:py-4 text-left">
+              <div class="flex flex-col gap-2 md:gap-3 pr-4">
+                <h3 class="text-base md:text-lg lg:text-xl font-semibold text-[#1a1623] leading-[1.5]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">{{ item.question }}</h3>
+                @if (item.isOpen) {
+                  <p class="text-sm md:text-base lg:text-xl text-[#1a1623] leading-[1.5]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">{{ item.answer }}</p>
+                }
+              </div>
+              <div class="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3 h-2 md:w-4 md:h-[10px] text-black transition-transform"
+                     [class.rotate-180]="item.isOpen"
+                     fill="currentColor" viewBox="0 0 16 10">
+                  <path d="M0.5 0.5L8 8L15.5 0.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                </svg>
+              </div>
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="text-center mt-6 md:mt-8">
+        <button class="h-12 md:h-14 px-6 bg-white text-[#1a1623] rounded-[38px] font-medium hover:bg-gray-50 transition-colors text-sm md:text-base" style="font-family: 'Poppins', sans-serif;">
+          Load All
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-[#1a1623] px-4 md:px-8 lg:px-10 py-8 md:py-10">
+    <div class="max-w-[1360px] mx-auto">
+      <div class="rounded-[24px] md:rounded-[40px] overflow-hidden relative px-4 md:px-10 lg:px-[60px] py-10 md:py-16 lg:py-20" style="background: #031224;">
+        <div class="absolute inset-0 overflow-hidden">
+          <div class="absolute top-0 left-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full opacity-30" style="background: radial-gradient(circle, #0d60f5 0%, transparent 70%);"></div>
+          <div class="absolute bottom-0 right-1/4 w-[200px] md:w-[400px] h-[200px] md:h-[400px] rounded-full opacity-20" style="background: radial-gradient(circle, #25b1ff 0%, transparent 70%);"></div>
+        </div>
+
+        <div class="relative z-10 flex flex-col items-center text-center gap-4 md:gap-[30px]">
+          <h2 class="text-2xl md:text-4xl lg:text-[49px] font-semibold text-white leading-[1.2] max-w-[853px]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.98px;">
+            Not sure where to begin?
+          </h2>
+          <p class="text-base md:text-lg lg:text-xl text-white leading-[1.5] max-w-[853px]" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">
+            Consult our expert team and we'll help you find the right programme.
+          </p>
+          <a href="mailto:hello@mereka.io?subject=AI Training Consultation"
+             class="inline-flex items-center gap-2 md:gap-3 pl-6 md:pl-8 pr-[6px] py-[6px] bg-[#1a1623] text-white rounded-[38px] font-medium hover:bg-gray-800 transition-colors border-2 border-[#1a1623]"
+             style="box-shadow: 0 2px 14px rgba(85,85,85,0.14); font-family: 'Poppins', sans-serif;">
+            <span class="text-sm md:text-base font-medium leading-[1.5]">Get in touch</span>
+            <span class="w-9 h-9 md:w-11 md:h-11 bg-[#2f80ed] rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-[#1a1623] text-white px-4 md:px-8 lg:px-20 py-10 md:py-12 lg:py-[60px]">
+    <div class="max-w-[1280px] mx-auto">
+      <!-- Top Row: Logo and Social -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 md:mb-[30px]">
+        <div class="flex items-center gap-5">
+          <svg class="h-7 w-28 md:h-9 md:w-36" viewBox="0 0 144 36" fill="none">
+            <path d="M0 0l18.01 8.97v13.5L0 36V0z" fill="white"/>
+            <path d="M31.5 22.47l-13.49-13.5v13.5L31.5 36V22.47z" fill="white"/>
+            <path d="M45 7.22v13.83h-5.18L31.5 7.22v13.83h5.19l8.31 13.97V21.05h-5.18L31.5 7.22h13.5z" fill="white"/>
+          </svg>
+        </div>
+        <div class="flex items-center gap-3 md:gap-5">
+          <a href="#" class="w-10 h-10 md:w-[50px] md:h-[50px] bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+            <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+            </svg>
+          </a>
+          <a href="#" class="w-10 h-10 md:w-[50px] md:h-[50px] bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+            <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+          </a>
+          <a href="#" class="w-10 h-10 md:w-[50px] md:h-[50px] bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+            <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="h-px bg-white/30 mb-6 md:mb-10"></div>
+
+      <!-- Link Columns -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-[60px] mb-6 md:mb-10">
+        <div class="flex flex-col gap-4 md:gap-[30px]">
+          <h4 class="text-base md:text-xl font-semibold text-white" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">Company</h4>
+          <ul class="flex flex-col gap-3 md:gap-5">
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">Pricing</a></li>
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">About</a></li>
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="flex flex-col gap-4 md:gap-[30px]">
+          <h4 class="text-base md:text-xl font-semibold text-white" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">Resources</h4>
+          <ul class="flex flex-col gap-3 md:gap-5">
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">Blog</a></li>
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">Help Center</a></li>
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">Pricing</a></li>
+          </ul>
+        </div>
+
+        <div class="flex flex-col gap-4 md:gap-[30px]">
+          <h4 class="text-base md:text-xl font-semibold text-white" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">Academy</h4>
+          <ul class="flex flex-col gap-3 md:gap-5">
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">AI Fundamentals</a></li>
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">Digital Skills</a></li>
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">Workshops</a></li>
+          </ul>
+        </div>
+
+        <div class="flex flex-col gap-4 md:gap-[30px]">
+          <h4 class="text-base md:text-xl font-semibold text-white" style="font-family: 'Poppins', sans-serif; letter-spacing: -0.2px;">Space</h4>
+          <ul class="flex flex-col gap-3 md:gap-5">
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">Coworking</a></li>
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">Events</a></li>
+            <li><a href="#" class="text-white/80 hover:text-white transition-colors text-sm md:text-base" style="font-family: 'Lato', sans-serif;">Membership</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="h-px bg-white/30 mb-4 md:mb-6"></div>
+
+      <!-- Bottom Row -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-10">
+          <svg class="h-5 w-16 md:h-6 md:w-24" viewBox="0 0 96 24" fill="none">
+            <path d="M0 0l12.01 5.98v9L0 24V0z" fill="white"/>
+            <path d="M21 14.98l-8.99-9v9L21 24V14.98z" fill="white"/>
+          </svg>
+          <span class="text-xs md:text-[15px] font-semibold text-white" style="font-family: 'Poppins', sans-serif;">Terms of Use</span>
+          <span class="text-xs md:text-[15px] font-semibold text-white" style="font-family: 'Poppins', sans-serif;">Privacy Policy</span>
+          <span class="text-xs md:text-[15px] font-semibold text-white" style="font-family: 'Poppins', sans-serif;">Cookies Policy</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs md:text-[15px] font-semibold text-white" style="font-family: 'Poppins', sans-serif;">MYR - RM</span>
+          <svg class="w-5 h-5 md:w-6 md:h-6 rotate-180" fill="white" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5H7z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </footer>
+</main>

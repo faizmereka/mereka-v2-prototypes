@@ -1,0 +1,245 @@
+<!-- Navigation Header -->
+<web-header />
+
+@if (showSkeleton()) {
+  <!-- Loading Skeleton -->
+  <main class="min-h-screen bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:grid lg:gap-12 py-12" style="grid-template-columns: 1fr 330px;">
+        <!-- Left Column Skeleton -->
+        <div class="animate-pulse space-y-8">
+          <div class="h-10 bg-neutral-200 rounded w-3/4"></div>
+          <div class="h-4 bg-neutral-200 rounded w-1/4"></div>
+          <div class="h-40 bg-neutral-100 rounded-xl"></div>
+          <div class="h-60 bg-neutral-100 rounded"></div>
+        </div>
+        <!-- Right Column Skeleton -->
+        <div class="hidden lg:block">
+          <div class="sticky top-24 pt-8 animate-pulse">
+            <div class="h-72 bg-neutral-100 rounded-xl border border-neutral-200"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+} @else if (jobService.hasJob()) {
+  @let job = jobService.job()!;
+
+  <main class="min-h-screen bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Two-column layout -->
+      <div class="lg:grid lg:gap-12 py-8 lg:py-12" style="grid-template-columns: 1fr 330px;">
+
+        <!-- Left Column: Job Content -->
+        <div class="space-y-8">
+          <!-- Title Section -->
+          <header>
+            <h1 class="text-3xl lg:text-4xl font-bold text-neutral-900">{{ job.jobTitle }}</h1>
+            <p class="text-sm text-neutral-500 mt-2">{{ jobService.postedAgo() }}</p>
+          </header>
+
+          <!-- Info Section (Card with icons) -->
+          <section class="p-5 rounded-xl border border-neutral-200 bg-neutral-50">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              @for (item of jobService.infoItems(); track item.label) {
+                <div class="flex gap-3 items-start">
+                  <!-- Using SVG icons -->
+                  @switch (item.icon) {
+                    @case ('military_tech') {
+                      <svg class="w-5 h-5 text-neutral-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                      </svg>
+                    }
+                    @case ('place') {
+                      <svg class="w-5 h-5 text-neutral-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    }
+                    @case ('event') {
+                      <svg class="w-5 h-5 text-neutral-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    }
+                    @case ('schedule') {
+                      <svg class="w-5 h-5 text-neutral-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    }
+                    @case ('attach_money') {
+                      <svg class="w-5 h-5 text-neutral-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    }
+                    @default {
+                      <svg class="w-5 h-5 text-neutral-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    }
+                  }
+                  <div>
+                    <span class="block text-[10px] uppercase tracking-wide text-neutral-500">{{ item.label }}</span>
+                    <p class="font-semibold text-neutral-900 m-0">{{ item.value }}</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </section>
+
+          <!-- About Section -->
+          <section class="pt-8 border-t border-neutral-200">
+            <h2 class="text-xl font-bold text-neutral-900 mb-4">About the Job</h2>
+            <div class="prose max-w-none text-neutral-700" [innerHTML]="job.jobDescription"></div>
+          </section>
+
+          <!-- Skills Section -->
+          @if (job.jobSkills?.length) {
+            <section class="pt-8 border-t border-neutral-200">
+              <h2 class="text-xl font-bold text-neutral-900 mb-4">Required Skills</h2>
+              <div class="flex flex-wrap gap-2">
+                @for (skill of job.jobSkills; track skill) {
+                  <span class="px-4 py-1.5 bg-neutral-100 rounded-full text-sm font-medium text-neutral-900">{{ skill }}</span>
+                }
+              </div>
+            </section>
+          }
+
+          <!-- Client Section -->
+          <section class="pt-8 border-t border-neutral-200">
+            <h2 class="text-xl font-bold text-neutral-900 mb-4">Meet the Client</h2>
+            <div class="flex gap-4 p-4 border border-neutral-200 rounded-xl">
+              @if (job.client.organizationImage) {
+                <img
+                  [src]="job.client.organizationImage"
+                  [alt]="job.client.name"
+                  class="w-16 h-16 rounded-full object-cover flex-shrink-0" />
+              } @else {
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center flex-shrink-0">
+                  <span class="text-2xl font-bold text-white">{{ job.client.name.charAt(0).toUpperCase() }}</span>
+                </div>
+              }
+              <div>
+                <h3 class="text-lg font-semibold m-0">{{ job.client.name }}</h3>
+                @if (job.client.organizationName) {
+                  <p class="text-sm text-neutral-500 mt-1">{{ job.client.organizationName }}</p>
+                }
+                @if (job.client.aboutOrganization) {
+                  <p class="text-neutral-600 mt-2 text-sm">{{ job.client.aboutOrganization }}</p>
+                }
+              </div>
+            </div>
+          </section>
+
+          <!-- Client Reviews Section -->
+          @if (jobService.hasClientReviews()) {
+            <section class="pt-8 border-t border-neutral-200" data-testid="job-client-reviews-section">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-neutral-900">What Experts Say</h2>
+                @if (job.client.rating) {
+                  <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    <span class="font-medium text-neutral-900">{{ job.client.rating?.toFixed(1) }}</span>
+                    <span class="text-neutral-500">({{ job.client.totalReviews }} reviews)</span>
+                  </div>
+                }
+              </div>
+
+              @if (jobService.clientReviewsLoading()) {
+                <div class="flex items-center justify-center py-8">
+                  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                </div>
+              } @else {
+                <div class="space-y-4">
+                  @for (review of jobService.clientReviews(); track review._id) {
+                    <div class="p-4 border border-neutral-200 rounded-xl" data-testid="job-client-review-item">
+                      <div class="flex items-start gap-3">
+                        <!-- Reviewer Avatar -->
+                        @if (review.reviewer?.profileImage) {
+                          <img
+                            [src]="review.reviewer?.profileImage"
+                            [alt]="review.reviewer?.name"
+                            class="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                          />
+                        } @else {
+                          <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-medium flex-shrink-0">
+                            {{ review.reviewer?.name?.charAt(0) || 'E' }}
+                          </div>
+                        }
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center justify-between mb-1">
+                            <p class="font-medium text-neutral-900">{{ review.reviewer?.name || 'Expert' }}</p>
+                            <p class="text-sm text-neutral-500">{{ review.createdAt | date:'mediumDate' }}</p>
+                          </div>
+                          <!-- Rating -->
+                          <div class="flex gap-0.5 mb-2">
+                            @for (star of [1,2,3,4,5]; track star) {
+                              <svg
+                                class="w-4 h-4"
+                                [class.text-yellow-400]="star <= review.rating"
+                                [class.text-neutral-300]="star > review.rating"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            }
+                          </div>
+                          <p class="text-neutral-600 text-sm" data-testid="job-client-review-content">{{ review.content }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </section>
+          }
+        </div>
+
+        <!-- Right Column: Booking Widget (Sticky) -->
+        <div class="hidden lg:block">
+          <div class="sticky top-24 pt-8">
+            <app-job-booking-widget [jobId]="id()!" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Similar Jobs Section -->
+    @if (jobService.hasSimilarJobs()) {
+      <section class="bg-neutral-50 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Similar Jobs</h2>
+            <a routerLink="/jobs" class="text-purple-600 underline">View all</a>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @for (similarJob of jobService.similarJobs(); track similarJob._id) {
+              <a [routerLink]="['/job', similarJob._id]" class="block bg-white rounded-xl border border-neutral-200 p-5 hover:shadow-lg transition no-underline">
+                <h3 class="text-lg font-semibold mb-2 text-neutral-900">{{ similarJob.jobTitle }}</h3>
+                @if (similarJob.jobSummary) {
+                  <p class="text-sm text-neutral-500 line-clamp-2">{{ similarJob.jobSummary }}</p>
+                }
+                <div class="flex gap-2 mt-3 text-sm text-neutral-500">
+                  <span class="capitalize">{{ similarJob.employmentType }}</span>
+                  @if (similarJob.jobLocation) {
+                    <span>•</span>
+                    <span class="capitalize">{{ similarJob.jobLocation }}</span>
+                  }
+                </div>
+              </a>
+            }
+          </div>
+        </div>
+      </section>
+    }
+  </main>
+
+  <!-- Mobile Booking Bar (fixed bottom) -->
+  <div class="lg:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom">
+    <app-job-booking-widget [jobId]="id()!" [isMobile]="true" />
+  </div>
+}
+
+<ui-footer />

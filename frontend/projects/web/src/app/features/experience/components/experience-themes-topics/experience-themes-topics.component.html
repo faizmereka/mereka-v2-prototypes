@@ -1,0 +1,21 @@
+@if (hasData()) {
+  <section class="border-b border-neutral-200 pb-8">
+    <h2 class="text-xl font-semibold text-neutral-900 mb-4">Themes & Topics</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      @for (item of themesTopics(); track item.theme) {
+        <div class="flex items-start gap-3">
+          <div class="flex-shrink-0 w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getIconPath(item.icon)" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-medium text-neutral-900">{{ item.theme }}</h3>
+            <p class="text-sm text-neutral-500">{{ item.topics }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+}

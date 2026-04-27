@@ -1,0 +1,57 @@
+/*
+* Override mat-tooltip styles
+* TODO: To revisit tooltip implementation as MatTooltip does not allow links to be added into the tooltip.
+*/
+$tooltip-background: #2D2D2D;
+
+@mixin tooltip {
+  content: "";
+  position: absolute;
+  border-width: 7px;
+  border-style: solid;
+  border-color: transparent;
+}
+
+:root {
+  --mdc-plain-tooltip-container-color: #{$tooltip-background};
+  --mdc-plain-tooltip-supporting-text-color: #FFF;
+  --mdc-plain-tooltip-supporting-text-size: .875rem;
+}
+
+.mat-mdc-tooltip .mdc-tooltip__surface {
+  margin: -1px;
+  padding: 8px 16px 10px !important;
+  border-radius: 1rem !important;
+}
+
+.mat-mdc-tooltip-panel-above .mdc-tooltip::after {
+  @include tooltip;
+  top: 100%;
+  left: 50%;
+  margin-left: -7px;  
+  border-top-color: $tooltip-background;
+}
+
+.mat-mdc-tooltip-panel-below .mdc-tooltip::after {
+  @include tooltip;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -7px;
+  border-bottom-color: $tooltip-background;
+}
+
+.mat-mdc-tooltip-panel-left .mdc-tooltip::after {
+  @include tooltip;
+  top: 50%;
+  left: 100%;
+  margin-top: -7px;
+  border-left-color: $tooltip-background;
+}
+
+.mat-mdc-tooltip-panel-right .mdc-tooltip::after {
+  @include tooltip;
+  top: 50%;
+  right: 100%;
+  margin-top: -7px;
+  border-right-color: $tooltip-background;
+}

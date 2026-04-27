@@ -1,0 +1,170 @@
+<form [formGroup]="form" class="space-y-8">
+  <!-- Job Description -->
+  <div class="space-y-2">
+    <h3 class="text-lg font-semibold text-neutral-900">Job description</h3>
+    <p class="text-sm text-neutral-500">Provide detailed information about your needs. Include any specific requirements or preferences. Clearly outline your expectations and deliverables.</p>
+
+    <ui-rich-text-editor
+      [placeholder]="'Describe your requirements'"
+      formControlName="jobDescription"
+      [maxLength]="maxDescriptionLength"
+      [showCount]="true"
+      minHeight="lg"
+      (contentChange)="onDescriptionChange($event)"
+    ></ui-rich-text-editor>
+
+    @if (form.get('jobDescription')?.invalid && form.get('jobDescription')?.touched) {
+      <p class="text-sm text-red-500">Job description is required</p>
+    }
+  </div>
+
+  <!-- Job Summary -->
+  <div class="space-y-2">
+    <div class="flex items-center gap-3">
+      <h3 class="text-lg font-semibold text-neutral-900">Job summary</h3>
+      <button
+        type="button"
+        (click)="generateAiSummary()"
+        [disabled]="isGeneratingAi() || descriptionLength() < 50"
+        class="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-white bg-pink-500 rounded-full hover:bg-pink-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        @if (isGeneratingAi()) {
+          <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          Generating...
+        } @else {
+          Write with AI
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        }
+      </button>
+    </div>
+    <div class="relative">
+      <textarea
+        formControlName="jobSummary"
+        (input)="onSummaryInput($event)"
+        placeholder="Summary"
+        rows="3"
+        class="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+      ></textarea>
+    </div>
+    <span class="text-sm text-neutral-400">
+      {{ summaryLength() }} / {{ maxSummaryLength }}
+    </span>
+  </div>
+
+  <!-- Attachments -->
+  <div class="space-y-2">
+    <h3 class="text-lg font-semibold text-neutral-900">Attachment (Optional):</h3>
+
+    <!-- Upload Button -->
+    <div class="relative inline-block">
+      <input
+        type="file"
+        (change)="onFileSelect($event)"
+        [disabled]="isUploading()"
+        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+        accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
+      />
+      <button
+        type="button"
+        [disabled]="isUploading()"
+        class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors disabled:opacity-50"
+      >
+        @if (isUploading()) {
+          <span class="w-4 h-4 border-2 border-neutral-600 border-t-transparent rounded-full animate-spin"></span>
+          Uploading...
+        } @else {
+          Select File
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+          </svg>
+        }
+      </button>
+    </div>
+    <p class="text-xs text-neutral-500">Max file size: 100 MB</p>
+
+    <!-- Uploaded Files -->
+    @if (attachments.length > 0) {
+      <div class="space-y-2 mt-4">
+        @for (attachment of attachments; track attachment.id) {
+          <div class="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 flex items-center justify-center bg-neutral-200 rounded-lg">
+                <svg class="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-neutral-900 truncate max-w-xs">{{ attachment.name }}</p>
+                <p class="text-xs text-neutral-500">{{ formatFileSize(attachment.size) }}</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              (click)="removeAttachment(attachment.id)"
+              class="p-1.5 text-neutral-500 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Skills -->
+  <div class="space-y-2">
+    <h3 class="text-lg font-semibold text-neutral-900">List the skills required for this job</h3>
+    <p class="text-sm text-neutral-500">Add 3-5 keywords that describe the skills needed for this job.</p>
+
+    <!-- Skill Input -->
+    <div class="flex gap-2">
+      <input
+        type="text"
+        [ngModel]="skillInput()"
+        (ngModelChange)="skillInput.set($event)"
+        [ngModelOptions]="{standalone: true}"
+        (keydown)="onSkillKeydown($event)"
+        placeholder="Type a skill and press Enter"
+        [disabled]="skills.length >= 5"
+        class="flex-1 px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:bg-neutral-100 disabled:cursor-not-allowed"
+      />
+      <button
+        type="button"
+        (click)="addSkill()"
+        [disabled]="!skillInput() || skills.length >= 5"
+        class="px-4 py-3 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Add
+      </button>
+    </div>
+
+    <!-- Skills Tags -->
+    @if (skills.length > 0) {
+      <div class="flex flex-wrap gap-2 mt-3">
+        @for (skill of skills; track skill) {
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+            {{ skill }}
+            <button
+              type="button"
+              (click)="removeSkill(skill)"
+              class="hover:bg-primary/20 rounded-full p-0.5 transition-colors"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </span>
+        }
+      </div>
+    }
+
+    <!-- Skills Count -->
+    <p class="text-xs" [class.text-red-500]="skills.length < 3" [class.text-neutral-500]="skills.length >= 3">
+      {{ skills.length }}/5 skills added (minimum 3 required)
+    </p>
+  </div>
+</form>

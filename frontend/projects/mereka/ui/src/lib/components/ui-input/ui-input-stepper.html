@@ -1,0 +1,50 @@
+<div class="ui-input-stepper__wrap">
+  <!-- Decrease value number -->
+  <button #decreaseButton
+    ui-button-icon-outline
+    class="ui-input-stepper__button ui-input-stepper__button-decrease"
+    aria-label="Decrease value"
+    (keydown.enter)="onDecrease($event)"
+    (keyup.enter)="onRelease()"
+    (mousedown)="onDecrease($event)"
+    (mouseup)="onRelease()"
+    (mouseleave)="onRelease()"
+    (touchstart)="onDecrease($event)"
+    (touchend)="onRelease()"
+    [disabled]="disabled || value <= min()">
+    <span ui-button-icon-wrapper>
+      <mat-icon aria-hidden="true">remove</mat-icon>
+    </span>
+  </button>
+
+  <!-- TODO: For future use with input type number -->
+  <!-- 
+     <div class="ui-input-stepper__input">
+    <input type="number">
+  </div> -->
+  <div class="ui-input-stepper__label">
+    <span class="ui-input-stepper__value">{{ value }}</span>
+    @if (showMaxLabel && max() !== undefined) {
+      <span class="ui-input-stepper__max">/{{ max() }}</span>
+    }
+  </div>
+
+  <!-- Increase value number -->
+  <button #increaseButton
+    ui-button-icon-outline
+    class="ui-input-stepper__button ui-input-stepper__button-increase"
+    aria-label="Increase value"
+    (keydown.enter)="onIncrease($event)"
+    (keyup.enter)="onRelease()"
+    (mousedown)="onIncrease($event)"
+    (mouseup)="onRelease()"
+    (mouseleave)="onRelease()"
+    (touchstart)="onIncrease($event)"
+    (touchend)="onRelease()"
+    [disabled]="disabled || (value >= max())">
+    <span ui-button-icon-wrapper>
+      <mat-icon aria-hidden="true">add</mat-icon>
+    </span>
+  </button>
+</div>
+<ng-content></ng-content>

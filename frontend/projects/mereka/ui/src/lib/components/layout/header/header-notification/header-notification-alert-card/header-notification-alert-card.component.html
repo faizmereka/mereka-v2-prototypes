@@ -1,0 +1,52 @@
+
+<!-- User notification -->
+<div class="header-notification-alert-card">
+  <div class="header-notification-alert-card__avatar">
+    <img ui-image [src]="notification.image | imageKit: { n: 'profile_avatar' }" placeholder="user" alt="" loading="lazy">
+  </div>
+  <div class="header-notification-alert-card__content" [class.read]="notification.isViewed">
+    <div class="header-notification-alert-card__description" [innerHtml]="notification.description"></div>
+    <div class="header-notification-alert-card__date">
+      {{ notification.relativeDate }}
+    </div>
+    <div class="header-notification-alert-card__actions">
+
+      <!-- @if (notification.isActionType) {
+        @if (notificationType.COMPLETE_HUB_PROFILE === notification.type && !myAgency.isCompleted) {
+          <button ui-button-fill-large (click)="goToProfile()" >
+            Complete Hub Profile
+          </button>
+        }
+        @if (notificationType.COMPLETE_HUB_PROFILE !== notification.type) {
+          <button ui-button-fill (click)="checkInvitationToken(notification.invitationId, notification.id)">
+            Accept
+          </button>
+          <button ui-button-outline (click)="cancelInvitation(notification)">
+            Decline
+          </button>
+        }
+      } -->
+
+      @if (!notification.isActionType && notification.actions.length > 0) {
+        @for (action of notification.actions; track $index) {
+          <!-- Primary button -->
+          @if (action.button === 'primary') {
+            <!-- <button ui-button-fill (click)="notificationAction(notification, action)">
+              {{ action.label }}
+            </button> -->
+          }
+          <!-- Secondary button -->
+          @if (action.button === 'secondary') {
+            <!-- <button ui-button-outline (click)="notificationAction(notification, action)">
+              {{ action.label }}
+            </button> -->
+          }
+        }
+
+      }
+    </div>
+  </div>
+  @if (!notification.isViewed) {
+    <div class="header-notification-alert-card__status"></div>
+  }
+</div>

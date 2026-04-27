@@ -1,0 +1,146 @@
+<!-- @covers AC-FEC-001 through AC-FEC-010 -->
+<div
+  class="flex gap-3 group"
+  [class.flex-row-reverse]="isOwn()"
+  [class.justify-end]="isOwn()"
+  data-testid="message-bubble"
+  [attr.data-message-id]="message()._id"
+>
+  <!-- Avatar - @covers AC-FEC-002 -->
+  @if (showAvatar() && !isOwn()) {
+    <div class="flex-shrink-0" data-testid="sender-avatar">
+      @if (message().sender.avatar) {
+        <img
+          [src]="message().sender.avatar"
+          [alt]="message().sender.name"
+          class="w-8 h-8 rounded-full object-cover"
+        />
+      } @else {
+        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs font-medium">
+          {{ getInitials(message().sender.name) }}
+        </div>
+      }
+    </div>
+  }
+
+  <div class="max-w-[70%]" [class.max-w-[80%]]="!showAvatar()">
+    <!-- Sender name - @covers AC-FEC-002 -->
+    @if (!isOwn() && showAvatar()) {
+      <p class="text-xs text-neutral-500 mb-1" data-testid="sender-name">{{ message().sender.name }}</p>
+    }
+
+    <!-- Message bubble -->
+    <div
+      class="relative px-4 py-2 rounded-2xl"
+      [class.bg-primary]="isOwn()"
+      [class.text-white]="isOwn()"
+      [class.bg-neutral-100]="!isOwn()"
+      [class.text-neutral-900]="!isOwn()"
+      [class.rounded-br-md]="isOwn()"
+      [class.rounded-bl-md]="!isOwn()"
+      data-testid="bubble-content"
+    >
+      <!-- @covers AC-FEC-006 - Deleted message -->
+      @if (message().isDeleted) {
+        <p class="italic text-neutral-400" data-testid="deleted-message">This message was deleted</p>
+      } @else {
+        <!-- @covers AC-FEC-003, AC-FEC-009, AC-FEC-010 - Message text -->
+        @if (message().text) {
+          <p
+            class="whitespace-pre-wrap break-words"
+            [innerHTML]="formatMessageText(message().text!)"
+            data-testid="message-text"
+          ></p>
+        }
+
+        <!-- File attachments - images render inline, files as links -->
+        @if (message().files?.length) {
+          <div class="mt-2 space-y-2" data-testid="file-attachments">
+            @for (file of message().files; track file.url) {
+              @if (isImage(file.mimeType)) {
+                <!-- Image: render inline with click to open full size -->
+                <a
+                  [href]="file.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="block rounded-lg overflow-hidden hover:opacity-90 transition-opacity"
+                  data-testid="image-attachment"
+                >
+                  <img
+                    [src]="file.thumbnailUrl || file.url"
+                    [alt]="file.name"
+                    class="max-w-full max-h-64 object-contain rounded-lg"
+                    loading="lazy"
+                  />
+                </a>
+              } @else {
+                <!-- File: render as clickable link -->
+                <a
+                  [href]="file.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center gap-2 px-3 py-2 rounded-lg bg-black/10 hover:bg-black/20 transition-colors"
+                  data-testid="file-attachment"
+                >
+                  @switch (getFileIcon(file.mimeType)) {
+                    @case ('pdf') {
+                      <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                    }
+                    @case ('doc') {
+                      <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    }
+                    @case ('sheet') {
+                      <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                      </svg>
+                    }
+                    @default {
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                      </svg>
+                    }
+                  }
+                  <div class="flex-1 min-w-0">
+                    <span class="text-sm truncate block">{{ file.name }}</span>
+                    <span class="text-xs opacity-60">{{ formatFileSize(file.sizeBytes) }}</span>
+                  </div>
+                  <svg class="w-4 h-4 flex-shrink-0 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                </a>
+              }
+            }
+          </div>
+        }
+      }
+
+      <!-- @covers AC-FEC-007 - Delete button (visible on hover) -->
+      @if (showDeleteButton()) {
+        <button
+          type="button"
+          class="absolute -top-2 -right-2 p-1.5 rounded-full bg-white shadow-md border border-neutral-200 text-neutral-500 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+          (click)="onDelete()"
+          title="Delete message"
+          data-testid="delete-message-button"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      }
+    </div>
+
+    <!-- @covers AC-FEC-004 - Timestamp -->
+    <p
+      class="text-xs text-neutral-400 mt-1"
+      [class.text-right]="isOwn()"
+      data-testid="message-timestamp"
+    >
+      {{ formatRelativeTime(message().createdAt) }}
+    </p>
+  </div>
+</div>

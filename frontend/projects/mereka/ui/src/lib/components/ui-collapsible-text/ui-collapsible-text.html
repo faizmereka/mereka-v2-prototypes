@@ -1,0 +1,11 @@
+<div
+  #textElement
+  class="text-content block-ellipsis"
+  [style.-webkit-line-clamp]="currentLineClamp()"
+  [innerHTML]="text()">
+</div>
+@if (isOverflowing()) {
+  <span class="more-toggle" tabindex="0" (click)="toggle()" (keydown)="toggle()">
+    {{ isCollapsed() ? 'Read More' : 'Read Less' }}
+  </span>
+}

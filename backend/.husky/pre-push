@@ -1,0 +1,11 @@
+echo "🔎 Running pre-push validation..."
+echo ""
+
+# Run fast check before pushing
+npm run check:fast
+
+echo ""
+echo "✅ Pre-push validation passed"
+echo "💡 Remember to run 'npm run check' periodically for full validation"
+echo ""
+

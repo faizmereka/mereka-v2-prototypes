@@ -1,0 +1,269 @@
+<div class="space-y-6">
+  <!-- Error Alert -->
+  @if (error()) {
+    <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-red-900">Failed to load dashboard</p>
+          <p class="text-xs text-red-600">{{ error() }}</p>
+        </div>
+      </div>
+      <button
+        type="button"
+        (click)="refresh()"
+        class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-full hover:bg-red-700 transition-colors whitespace-nowrap"
+      >
+        Retry
+      </button>
+    </div>
+  }
+
+  <!-- Verify Email Alert -->
+  @if (!isEmailVerified()) {
+    <div class="bg-white rounded-xl border border-neutral-200 p-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full border border-neutral-200 flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-neutral-900">Verify Email</p>
+          <p class="text-xs text-neutral-500">Click on the button and check your email</p>
+        </div>
+      </div>
+      <button
+        type="button"
+        (click)="verifyEmail()"
+        class="px-4 py-2 bg-neutral-900 text-white text-sm font-medium rounded-full hover:bg-neutral-800 transition-colors whitespace-nowrap"
+      >
+        Send email
+      </button>
+    </div>
+  }
+
+  <!-- Success Profile Notification -->
+  @if (showSuccessProfileNotification()) {
+    <div class="bg-white rounded-xl border border-neutral-200 p-4 flex items-center gap-3">
+      <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <span class="text-sm font-medium text-neutral-900">You have successfully created your profile</span>
+      <button type="button" (click)="showSuccessProfileNotification.set(false)" class="ml-auto text-neutral-400 hover:text-neutral-600">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  }
+
+  <!-- Header -->
+  <div>
+    @if (loading()) {
+      <div class="h-8 w-64 bg-neutral-200 rounded animate-pulse"></div>
+      <div class="h-5 w-80 bg-neutral-100 rounded animate-pulse mt-2"></div>
+    } @else {
+      <h1 class="text-2xl font-semibold text-neutral-900">Welcome back, {{ userName() }}!</h1>
+      <p class="text-neutral-500 mt-1">Here's what's happening with your account.</p>
+    }
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    @if (loading()) {
+      <!-- Stats Skeleton -->
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="bg-white p-6 rounded-xl border border-neutral-200">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-lg bg-neutral-200 animate-pulse"></div>
+          </div>
+          <div class="h-8 w-20 bg-neutral-200 rounded animate-pulse"></div>
+          <div class="h-4 w-32 bg-neutral-100 rounded animate-pulse mt-2"></div>
+        </div>
+      }
+    } @else {
+      @for (stat of stats(); track stat.label) {
+        <div class="bg-white p-6 rounded-xl border border-neutral-200">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center">
+              <ui-icon [name]="stat.icon" size="md" class="text-neutral-600" />
+            </div>
+          </div>
+          <p class="text-2xl font-bold text-neutral-900">{{ stat.value }}</p>
+          <p class="text-sm text-neutral-500 mt-1">{{ stat.label }}</p>
+        </div>
+      }
+    }
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Upcoming Bookings -->
+    <div class="lg:col-span-2 bg-white rounded-xl border border-neutral-200">
+      <div class="px-6 py-4 border-b border-neutral-200 flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-neutral-900">Upcoming Bookings</h2>
+        <a routerLink="../bookings" class="text-sm text-primary hover:underline">View all</a>
+      </div>
+
+      @if (loading()) {
+        <!-- Bookings Skeleton -->
+        <div class="divide-y divide-neutral-200">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="px-6 py-4 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-lg bg-neutral-200 animate-pulse"></div>
+                <div>
+                  <div class="h-5 w-40 bg-neutral-200 rounded animate-pulse"></div>
+                  <div class="h-4 w-24 bg-neutral-100 rounded animate-pulse mt-1"></div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="h-4 w-24 bg-neutral-200 rounded animate-pulse"></div>
+                <div class="h-3 w-32 bg-neutral-100 rounded animate-pulse mt-1"></div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (upcomingBookings().length === 0) {
+        <div class="text-center py-16">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-neutral-100 flex items-center justify-center">
+            <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p class="text-neutral-600">No upcoming bookings</p>
+          <a routerLink="/experiences" class="inline-block mt-4 text-sm text-primary hover:underline">
+            Browse experiences
+          </a>
+        </div>
+      } @else {
+        <div class="divide-y divide-neutral-200">
+          @for (booking of upcomingBookings(); track booking.id) {
+            <div class="px-6 py-4 flex items-center justify-between hover:bg-neutral-50 transition-colors">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-lg bg-neutral-200 flex-shrink-0 flex items-center justify-center">
+                  @if (booking.locationType === 'Online') {
+                    <svg class="w-6 h-6 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  } @else {
+                    <svg class="w-6 h-6 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  }
+                </div>
+                <div>
+                  <p class="font-medium text-neutral-900">{{ booking.serviceName }}</p>
+                  <p class="text-sm text-neutral-500">{{ booking.hubName }}</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-sm font-medium text-neutral-900">{{ booking.date }}</p>
+                <p class="text-xs text-neutral-500">{{ booking.time }} - {{ booking.location }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-white rounded-xl border border-neutral-200">
+      <div class="px-6 py-4 border-b border-neutral-200">
+        <h2 class="text-lg font-semibold text-neutral-900">Recent Activity</h2>
+      </div>
+
+      @if (recentActivity().length === 0) {
+        <div class="text-center py-16">
+          <p class="text-neutral-600">No recent activity</p>
+        </div>
+      } @else {
+        <div class="divide-y divide-neutral-200">
+          @for (activity of recentActivity(); track activity.id) {
+            <div class="px-6 py-4">
+              <div class="flex items-start gap-3">
+                <div
+                  class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                  [ngClass]="getActivityIconClass(activity.type)"
+                >
+                  <ui-icon [name]="getActivityIcon(activity.type)" size="xs" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-neutral-900">{{ activity.title }}</p>
+                  <p class="text-xs text-neutral-500 truncate">{{ activity.description }}</p>
+                </div>
+                <span class="text-xs text-neutral-400 whitespace-nowrap">{{ activity.date }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Saved Experiences -->
+  <div class="bg-white rounded-xl border border-neutral-200">
+    <div class="px-6 py-4 border-b border-neutral-200 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-neutral-900">Saved Experiences</h2>
+      <a routerLink="/experiences" class="text-sm text-primary hover:underline">Browse more</a>
+    </div>
+
+    @if (savedExperiences().length === 0) {
+      <div class="text-center py-16">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-neutral-100 flex items-center justify-center">
+          <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </div>
+        <p class="text-neutral-600">No saved experiences yet</p>
+        <a routerLink="/experiences" class="inline-block mt-4 text-sm text-primary hover:underline">
+          Discover experiences
+        </a>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-neutral-200">
+        @for (experience of savedExperiences(); track experience.id) {
+          <div class="p-6 hover:bg-neutral-50 transition-colors cursor-pointer">
+            <div class="flex items-start gap-4">
+              <div class="w-16 h-16 rounded-lg bg-neutral-200 flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <p class="font-medium text-neutral-900 truncate">{{ experience.name }}</p>
+                <p class="text-sm text-neutral-500">{{ experience.hubName }}</p>
+                <p class="text-sm font-medium text-primary mt-1">
+                  {{ experience.currency }} {{ experience.price | number:'1.0-0' }}
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Offer Services with Mereka Promo -->
+  <div class="bg-neutral-100 rounded-xl p-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h3 class="text-xl font-bold text-neutral-900 mb-2">Offer Services with Mereka</h3>
+        <p class="text-sm text-neutral-600 max-w-xl">
+          Creating a Hub is a unique chance to influence thousands of Learners and help them succeed in their educational and career journey. Find out what it means to be a Mereka Hub via our
+          <a href="https://help.mereka.io" target="_blank" class="text-primary underline hover:no-underline">Help Center</a>.
+        </p>
+      </div>
+      <button
+        type="button"
+        routerLink="/welcome/hub"
+        class="px-6 py-2.5 bg-neutral-900 text-white text-sm font-medium rounded-full hover:bg-neutral-800 transition-colors flex-shrink-0 self-start md:self-center"
+      >
+        Learn More
+      </button>
+    </div>
+  </div>
+</div>

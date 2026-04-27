@@ -1,0 +1,131 @@
+@if (hasReviews()) {
+  <section class="py-12 bg-neutral-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-neutral-900">Reviews</h2>
+      </div>
+
+      <!-- Reviews Summary & Filter -->
+      <div class="flex flex-wrap items-center gap-3 mb-6">
+        <!-- Summary -->
+        <div class="flex items-center gap-2 text-neutral-900">
+          <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+          <span class="font-medium">
+            {{ reviewsData().meta.average.toFixed(1) }}
+            ({{ reviewsData().meta.total }})
+          </span>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex flex-wrap gap-2">
+          <button
+            (click)="setFilter('All')"
+            class="px-3 py-1.5 text-sm font-medium rounded-full border transition-colors"
+            [class.bg-primary]="currentFilter() === 'All'"
+            [class.text-white]="currentFilter() === 'All'"
+            [class.border-primary]="currentFilter() === 'All'"
+            [class.bg-white]="currentFilter() !== 'All'"
+            [class.text-neutral-700]="currentFilter() !== 'All'"
+            [class.border-neutral-300]="currentFilter() !== 'All'"
+            [class.hover:border-neutral-400]="currentFilter() !== 'All'">
+            @if (currentFilter() === 'All') {
+              <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            }
+            All
+          </button>
+
+          @for (filter of ratingFilters(); track filter.rating) {
+            <button
+              (click)="setFilter(filter.rating)"
+              [disabled]="filter.count === 0"
+              class="px-3 py-1.5 text-sm font-medium rounded-full border transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              [class.bg-primary]="currentFilter() === filter.rating"
+              [class.text-white]="currentFilter() === filter.rating"
+              [class.border-primary]="currentFilter() === filter.rating"
+              [class.bg-white]="currentFilter() !== filter.rating"
+              [class.text-neutral-700]="currentFilter() !== filter.rating"
+              [class.border-neutral-300]="currentFilter() !== filter.rating"
+              [class.hover:border-neutral-400]="currentFilter() !== filter.rating && filter.count > 0">
+              @if (currentFilter() === filter.rating) {
+                <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              }
+              {{ filter.rating }} ({{ filter.count }})
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Reviews Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        @for (review of filteredReviews(); track review.id) {
+          <div class="bg-white rounded-xl border border-neutral-200 p-5">
+            <!-- User Info -->
+            <div class="flex items-center gap-3 mb-3">
+              @if (review.user.profileUrl) {
+                <img
+                  [src]="review.user.profileUrl"
+                  [alt]="review.user.name"
+                  class="w-10 h-10 rounded-full object-cover" />
+              } @else {
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm">
+                  {{ getInitials(review.user.name) }}
+                </div>
+              }
+              <div>
+                <h4 class="font-medium text-neutral-900">{{ review.user.name }}</h4>
+                <!-- Stars -->
+                <div class="flex gap-0.5">
+                  @for (star of getStars(review.rating); track $index) {
+                    <svg
+                      class="w-4 h-4"
+                      [class.text-yellow-400]="star === 1"
+                      [class.text-neutral-200]="star === 0"
+                      fill="currentColor"
+                      viewBox="0 0 24 24">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Review Text -->
+            <p class="text-neutral-600 text-sm line-clamp-4">
+              {{ review.reviewDescription }}
+            </p>
+
+            <!-- Review Photos -->
+            @if (review.photos.length > 0) {
+              <div class="flex gap-2 mt-3">
+                @for (photo of review.photos.slice(0, 3); track $index) {
+                  <img
+                    [src]="photo"
+                    alt="Review photo"
+                    class="w-16 h-16 rounded-lg object-cover" />
+                }
+                @if (review.photos.length > 3) {
+                  <div class="w-16 h-16 rounded-lg bg-neutral-100 flex items-center justify-center text-sm text-neutral-500">
+                    +{{ review.photos.length - 3 }}
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Empty State -->
+      @if (filteredReviews().length === 0) {
+        <div class="text-center py-8">
+          <p class="text-neutral-500">No reviews found for this rating.</p>
+        </div>
+      }
+    </div>
+  </section>
+}

@@ -1,0 +1,474 @@
+<div class="flex flex-col gap-6 animate-fade-in">
+  <!-- Header -->
+  <header class="flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold m-0">Plans Management</h1>
+      <p class="text-gray-500 mt-1">Manage subscription plans and pricing</p>
+    </div>
+    <button
+      class="px-4 py-2 bg-primary text-white border-none rounded-md cursor-pointer font-medium hover:opacity-90"
+      (click)="openAddModal()"
+    >
+      <span>+ Add Plan</span>
+    </button>
+  </header>
+
+  <!-- Plans Grid -->
+  @if (loading()) {
+    <div class="text-center py-10 text-gray-500">Loading...</div>
+  } @else if (plans().length === 0) {
+    <div class="bg-white border border-gray-200 rounded-lg p-10 text-center text-gray-500">
+      <p class="text-lg font-medium mb-2">No plans configured</p>
+      <p class="text-sm">Create your first subscription plan to get started.</p>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      @for (plan of plans(); track plan._id) {
+        <div
+          class="bg-white border rounded-lg overflow-hidden"
+          [class.border-gray-200]="plan.status === 'active'"
+          [class.border-yellow-200]="plan.status === 'inactive'"
+          [class.bg-yellow-50]="plan.status === 'inactive'"
+          [class.border-gray-300]="plan.status === 'archived'"
+          [class.bg-gray-50]="plan.status === 'archived'"
+        >
+          <!-- Plan Header -->
+          <div class="p-6 border-b border-gray-100">
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span
+                    class="px-2 py-0.5 text-xs font-medium rounded"
+                    [class]="getStatusClass(plan.status)"
+                  >
+                    {{ getStatusLabel(plan.status) }}
+                  </span>
+                </div>
+                <h2 class="text-xl font-bold m-0">{{ plan.name }}</h2>
+                <p class="text-xs font-mono text-gray-400 mt-0.5">{{ plan.planCode }}</p>
+                <p class="text-gray-500 text-sm mt-1">{{ plan.tagline }}</p>
+              </div>
+              <div class="text-right">
+                <div class="text-3xl font-bold text-gray-900">
+                  {{ formatPrice(plan.price, plan.currency) }}
+                </div>
+                <div class="text-sm text-gray-500">/month</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan Details -->
+          <div class="p-6">
+            <p class="text-gray-600 text-sm mb-4">{{ plan.description }}</p>
+
+            <!-- Features -->
+            <div class="mb-4">
+              <h4 class="text-sm font-semibold text-gray-700 mb-2">Features</h4>
+              @if (plan.features.length > 0) {
+                <ul class="space-y-1">
+                  @for (feature of plan.features; track feature) {
+                    <li class="flex items-start gap-2 text-sm text-gray-600">
+                      <svg class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      {{ feature }}
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="text-sm text-gray-400">No features listed</p>
+              }
+            </div>
+
+            <!-- Stripe Info -->
+            <div class="bg-gray-50 rounded p-3 text-xs space-y-1">
+              <div class="flex justify-between">
+                <span class="text-gray-500">Stripe Product ID:</span>
+                <span class="font-mono text-gray-700">{{ plan.stripeProductId }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Stripe Price ID:</span>
+                <span class="font-mono text-gray-700">{{ plan.stripePriceId }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Sort Order:</span>
+                <span class="text-gray-700">{{ plan.sortOrder }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan Actions -->
+          <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
+            <span class="text-xs text-gray-500">
+              Updated {{ plan.updatedAt | date:'short' }}
+            </span>
+            <div class="flex gap-2">
+              @if (plan.status !== 'active') {
+                <button
+                  class="px-3 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+                  (click)="activatePlan(plan)"
+                >
+                  Activate
+                </button>
+              } @else {
+                <button
+                  class="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                  (click)="deactivatePlan(plan)"
+                >
+                  Deactivate
+                </button>
+              }
+              <button
+                class="px-3 py-1.5 text-sm bg-primary text-white rounded hover:opacity-90"
+                (click)="openEditModal(plan)"
+              >
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Add Plan Modal -->
+  @if (showAddModal()) {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]" (click)="showAddModal.set(false)">
+      <div class="w-full max-w-[600px] mx-4 bg-white rounded-lg shadow-xl max-h-[90vh] overflow-auto" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center p-5 border-b border-gray-200 sticky top-0 bg-white">
+          <h3 class="m-0 font-bold">Add New Plan</h3>
+          <button class="p-2 rounded-md border-none bg-transparent cursor-pointer hover:bg-gray-100" (click)="showAddModal.set(false)">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="p-5 space-y-4">
+          <div>
+            <label class="block font-bold mb-2 text-sm">Plan Code *</label>
+            <input
+              type="text"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary font-mono"
+              placeholder="e.g., scale, soar, pro"
+              [value]="formData().planCode"
+              (input)="updateFormField('planCode', $any($event.target).value.toLowerCase().replace(/[^a-z0-9-]/g, ''))"
+            />
+            <p class="text-xs text-gray-500 mt-1">Unique identifier (lowercase, no spaces)</p>
+          </div>
+
+          <div>
+            <label class="block font-bold mb-2 text-sm">Name *</label>
+            <input
+              type="text"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+              placeholder="e.g., Scale Plan"
+              [value]="formData().name"
+              (input)="updateFormField('name', $any($event.target).value)"
+            />
+          </div>
+
+          <div>
+            <label class="block font-bold mb-2 text-sm">Tagline *</label>
+            <input
+              type="text"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+              placeholder="e.g., For solo experts"
+              [value]="formData().tagline"
+              (input)="updateFormField('tagline', $any($event.target).value)"
+            />
+          </div>
+
+          <div>
+            <label class="block font-bold mb-2 text-sm">Description *</label>
+            <textarea
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary resize-none"
+              rows="3"
+              placeholder="Plan description..."
+              [value]="formData().description"
+              (input)="updateFormField('description', $any($event.target).value)"
+            ></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block font-bold mb-2 text-sm">Price (in cents) *</label>
+              <input
+                type="number"
+                class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+                placeholder="9900"
+                [value]="formData().price"
+                (input)="updateFormField('price', +$any($event.target).value)"
+              />
+              <p class="text-xs text-gray-500 mt-1">e.g., 9900 = $99.00</p>
+            </div>
+            <div>
+              <label class="block font-bold mb-2 text-sm">Currency *</label>
+              <select
+                class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+                [value]="formData().currency"
+                (change)="updateFormField('currency', $any($event.target).value)"
+              >
+                <option value="USD">USD</option>
+                <option value="MYR">MYR</option>
+                <option value="SGD">SGD</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block font-bold mb-2 text-sm">Stripe Product ID *</label>
+              <input
+                type="text"
+                class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary font-mono"
+                placeholder="prod_xxx"
+                [value]="formData().stripeProductId"
+                (input)="updateFormField('stripeProductId', $any($event.target).value)"
+              />
+            </div>
+            <div>
+              <label class="block font-bold mb-2 text-sm">Stripe Price ID *</label>
+              <input
+                type="text"
+                class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary font-mono"
+                placeholder="price_xxx"
+                [value]="formData().stripePriceId"
+                (input)="updateFormField('stripePriceId', $any($event.target).value)"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold mb-2 text-sm">Sort Order</label>
+            <input
+              type="number"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+              placeholder="0"
+              [value]="formData().sortOrder"
+              (input)="updateFormField('sortOrder', +$any($event.target).value)"
+            />
+          </div>
+
+          <!-- Features -->
+          <div>
+            <label class="block font-bold mb-2 text-sm">Features</label>
+            <div class="flex gap-2 mb-2">
+              <input
+                type="text"
+                class="flex-1 px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+                placeholder="Add a feature..."
+                [(ngModel)]="featureInput"
+                (keyup.enter)="addFeature()"
+              />
+              <button
+                type="button"
+                class="px-4 py-2 bg-gray-100 border border-gray-200 rounded-md text-sm hover:bg-gray-200"
+                (click)="addFeature()"
+              >
+                Add
+              </button>
+            </div>
+            @if ((formData().features || []).length > 0) {
+              <ul class="space-y-1">
+                @for (feature of formData().features || []; track feature; let i = $index) {
+                  <li class="flex items-center justify-between px-3 py-2 bg-gray-50 rounded text-sm">
+                    <span>{{ feature }}</span>
+                    <button
+                      type="button"
+                      class="text-red-500 hover:text-red-700"
+                      (click)="removeFeature(i)"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 p-5 border-t border-gray-200 sticky bottom-0 bg-white">
+          <button class="px-4 py-2 bg-gray-100 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-200" (click)="showAddModal.set(false)">Cancel</button>
+          <button
+            class="px-4 py-2 bg-primary text-white border-none rounded-md cursor-pointer hover:opacity-90"
+            (click)="createPlan()"
+            [disabled]="loading()"
+          >
+            {{ loading() ? 'Creating...' : 'Create Plan' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Edit Plan Modal -->
+  @if (showEditModal()) {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]" (click)="showEditModal.set(false)">
+      <div class="w-full max-w-[600px] mx-4 bg-white rounded-lg shadow-xl max-h-[90vh] overflow-auto" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center p-5 border-b border-gray-200 sticky top-0 bg-white">
+          <h3 class="m-0 font-bold">Edit Plan</h3>
+          <button class="p-2 rounded-md border-none bg-transparent cursor-pointer hover:bg-gray-100" (click)="showEditModal.set(false)">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="p-5 space-y-4">
+          <div>
+            <label class="block font-bold mb-2 text-sm">Plan Code</label>
+            <input
+              type="text"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm bg-gray-100 text-gray-600 font-mono cursor-not-allowed"
+              [value]="formData().planCode"
+              disabled
+            />
+            <p class="text-xs text-gray-500 mt-1">Plan code cannot be changed</p>
+          </div>
+
+          <div>
+            <label class="block font-bold mb-2 text-sm">Name *</label>
+            <input
+              type="text"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+              placeholder="e.g., Scale Plan"
+              [value]="formData().name"
+              (input)="updateFormField('name', $any($event.target).value)"
+            />
+          </div>
+
+          <div>
+            <label class="block font-bold mb-2 text-sm">Tagline *</label>
+            <input
+              type="text"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+              placeholder="e.g., For solo experts"
+              [value]="formData().tagline"
+              (input)="updateFormField('tagline', $any($event.target).value)"
+            />
+          </div>
+
+          <div>
+            <label class="block font-bold mb-2 text-sm">Description *</label>
+            <textarea
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary resize-none"
+              rows="3"
+              placeholder="Plan description..."
+              [value]="formData().description"
+              (input)="updateFormField('description', $any($event.target).value)"
+            ></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block font-bold mb-2 text-sm">Price (in cents) *</label>
+              <input
+                type="number"
+                class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+                placeholder="9900"
+                [value]="formData().price"
+                (input)="updateFormField('price', +$any($event.target).value)"
+              />
+              <p class="text-xs text-gray-500 mt-1">e.g., 9900 = $99.00</p>
+            </div>
+            <div>
+              <label class="block font-bold mb-2 text-sm">Currency *</label>
+              <select
+                class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+                [value]="formData().currency"
+                (change)="updateFormField('currency', $any($event.target).value)"
+              >
+                <option value="USD">USD</option>
+                <option value="MYR">MYR</option>
+                <option value="SGD">SGD</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block font-bold mb-2 text-sm">Stripe Product ID *</label>
+              <input
+                type="text"
+                class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary font-mono"
+                placeholder="prod_xxx"
+                [value]="formData().stripeProductId"
+                (input)="updateFormField('stripeProductId', $any($event.target).value)"
+              />
+            </div>
+            <div>
+              <label class="block font-bold mb-2 text-sm">Stripe Price ID *</label>
+              <input
+                type="text"
+                class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary font-mono"
+                placeholder="price_xxx"
+                [value]="formData().stripePriceId"
+                (input)="updateFormField('stripePriceId', $any($event.target).value)"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold mb-2 text-sm">Sort Order</label>
+            <input
+              type="number"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+              placeholder="0"
+              [value]="formData().sortOrder"
+              (input)="updateFormField('sortOrder', +$any($event.target).value)"
+            />
+          </div>
+
+          <!-- Features -->
+          <div>
+            <label class="block font-bold mb-2 text-sm">Features</label>
+            <div class="flex gap-2 mb-2">
+              <input
+                type="text"
+                class="flex-1 px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+                placeholder="Add a feature..."
+                [(ngModel)]="featureInput"
+                (keyup.enter)="addFeature()"
+              />
+              <button
+                type="button"
+                class="px-4 py-2 bg-gray-100 border border-gray-200 rounded-md text-sm hover:bg-gray-200"
+                (click)="addFeature()"
+              >
+                Add
+              </button>
+            </div>
+            @if ((formData().features || []).length > 0) {
+              <ul class="space-y-1">
+                @for (feature of formData().features || []; track feature; let i = $index) {
+                  <li class="flex items-center justify-between px-3 py-2 bg-gray-50 rounded text-sm">
+                    <span>{{ feature }}</span>
+                    <button
+                      type="button"
+                      class="text-red-500 hover:text-red-700"
+                      (click)="removeFeature(i)"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 p-5 border-t border-gray-200 sticky bottom-0 bg-white">
+          <button class="px-4 py-2 bg-gray-100 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-200" (click)="showEditModal.set(false)">Cancel</button>
+          <button
+            class="px-4 py-2 bg-primary text-white border-none rounded-md cursor-pointer hover:opacity-90"
+            (click)="updatePlan()"
+            [disabled]="loading()"
+          >
+            {{ loading() ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

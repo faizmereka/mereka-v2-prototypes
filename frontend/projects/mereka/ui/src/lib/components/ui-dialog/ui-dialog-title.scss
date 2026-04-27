@@ -1,0 +1,13 @@
+.ui-dialog-title {
+  display: flex;
+  font-size: var(--h6, 1.375rem);
+  font-weight: 700;
+  margin-block-end: 0;
+  gap: 1rem;
+}
+
+@media only screen and (width >= 576px) {
+  .ui-dialog-title {
+    font-size: var(--h5, 1.75rem);
+  }
+}

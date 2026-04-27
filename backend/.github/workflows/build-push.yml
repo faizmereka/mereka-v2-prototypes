@@ -1,0 +1,140 @@
+name: Build and Push
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "src/**"
+      - "Dockerfile"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/build-push.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: biji-biji-initiative/mereka-backend
+
+jobs:
+  build:
+    runs-on: mereka-k8s-heavy-builders
+    outputs:
+      image_tag: ${{ steps.tag.outputs.tag }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.ORG_GHCR_TOKEN }}
+
+      - name: Generate image tag
+        id: tag
+        run: |
+          TS=$(date -u +%Y%m%d%H%M%S)
+          echo "tag=${GITHUB_SHA::7}-${TS}" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Mint GitOps writer app token
+        id: gitops-app-token
+        env:
+          GITHUB_APP_ID: ${{ secrets.GITOPS_GITHUB_APP_ID }}
+          GITHUB_APP_INSTALLATION_ID: ${{ secrets.GITOPS_GITHUB_APP_INSTALLATION_ID }}
+          GITHUB_APP_PRIVATE_KEY: ${{ secrets.GITOPS_GITHUB_APP_PRIVATE_KEY }}
+        if: ${{ env.GITHUB_APP_ID != '' && env.GITHUB_APP_INSTALLATION_ID != '' && env.GITHUB_APP_PRIVATE_KEY != '' }}
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349
+        with:
+          app-id: ${{ env.GITHUB_APP_ID }}
+          private-key: ${{ env.GITHUB_APP_PRIVATE_KEY }}
+          owner: Biji-Biji-Initiative
+          repositories: bbi-infrastructure
+
+      - name: Validate GitOps automation credential
+        env:
+          APP_TOKEN: ${{ steps.gitops-app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${APP_TOKEN}" ]]; then
+            echo "GitOps writer app credentials are required for bbi-infrastructure updates." >&2
+            exit 1
+          fi
+
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: Biji-Biji-Initiative/bbi-infrastructure
+          token: ${{ steps.gitops-app-token.outputs.token }}
+          path: gitops
+
+      - name: Determine target environment
+        id: env
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "target=prod" >> $GITHUB_OUTPUT
+          else
+            echo "target=dev" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update image tag in GitOps
+        run: |
+          cd gitops
+          TARGET_DIR="apps/mereka-backend/overlays/${{ steps.env.outputs.target }}"
+          if [ -f "${TARGET_DIR}/values.yaml" ]; then
+            sed -i "s/tag: .*/tag: \"${{ steps.tag.outputs.tag }}\"/" "${TARGET_DIR}/values.yaml"
+            echo "Updated ${{ steps.env.outputs.target }}: ${TARGET_DIR}/values.yaml"
+          else
+            echo "Warning: ${TARGET_DIR}/values.yaml not found"
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.gitops-app-token.outputs.token }}
+          path: gitops
+          commit-message: "chore(mereka-backend): update ${{ steps.env.outputs.target }} image to ${{ steps.tag.outputs.tag }}"
+          title: "chore(mereka-backend): update ${{ steps.env.outputs.target }} image to ${{ steps.tag.outputs.tag }}"
+          body: |
+            Automated image update from CI pipeline.
+
+            ## Changes
+            - Image: `${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}`
+            - Commit: ${{ github.sha }}
+            - Environment: **${{ steps.env.outputs.target }}**
+            - Branch: `${{ github.ref_name }}`
+
+            ## Validation
+            - CI build passed
+            - Docker image pushed to GHCR successfully
+          branch: automation/mereka-backend-${{ steps.env.outputs.target }}-${{ steps.tag.outputs.tag }}
+          base: main
+          delete-branch: true
+          labels: |
+            automation
+            mereka-backend
+            ${{ steps.env.outputs.target }}

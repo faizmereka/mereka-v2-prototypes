@@ -1,0 +1,103 @@
+/*
+* Chaining the class to ensure higher specificity for experience cards
+* and to limit the styles from affecting other card styles
+*/
+@layer mereka-ui {
+  .ui-card.ui-card-expert {
+    background-color: transparent;
+    border: none;
+
+    &:hover {
+      .ui-card-image img {
+        transform: scale(1.05);
+      }
+    }
+
+    .inner-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      gap: 12px;
+    }
+
+    .ui-card-body {
+      gap: 8px;
+      text-decoration: none;
+      padding: 0;
+    }
+    
+    .ui-card-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    
+    .ui-button-favourite {
+      position: absolute;
+      right: 0.75rem;
+      top: 0.75rem;
+      z-index: 2;
+
+      .ui-button-icon-wrapper {
+        width: 32px;
+        height: 32px;
+        background: rgba(0, 0, 0, 0.6);
+        color: #FFF;
+
+        svg {
+          fill: #FFF;
+        }
+      }
+
+      &:focus-visible {
+        outline: 2px solid #FFF;
+        border-radius: 50%;
+        box-shadow: 0px 0 8px 0px rgba(0, 0, 0, 1) !important;
+      }
+    }
+
+    .ui-card-image {   
+      border-radius: 12px;
+      background-color: #FFF;
+      overflow: hidden;
+      
+      img {
+        aspect-ratio: 1;
+        transition: transform 0.25s;
+      }
+    }
+
+    .ui-card-title {
+      font-weight: 700;
+      // Make whole card clickable
+      a {
+        &::before {
+          content: "";      
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+        }
+        &:active,
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+
+    .hub-image {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .expertise {
+      line-height: 1.25;
+    }
+
+    .ui-card-desc {
+      color: var(--color-tertiary, #7B7B7B);
+    }
+  }
+}

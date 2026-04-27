@@ -1,0 +1,20 @@
+<span
+  class="relative inline-flex items-center cursor-pointer"
+  (mouseenter)="show()"
+  (mouseleave)="hide()"
+>
+  <ng-content></ng-content>
+
+  @if (isVisible()) {
+    <div
+      class="absolute z-50 px-3 py-2 text-sm text-white bg-neutral-800 rounded-lg whitespace-nowrap max-w-[250px] text-center"
+      [class]="positionClasses"
+    >
+      {{ text() }}
+      <div
+        class="absolute w-0 h-0 border-4 border-transparent"
+        [class]="pointerClasses"
+      ></div>
+    </div>
+  }
+</span>

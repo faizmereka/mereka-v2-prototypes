@@ -1,0 +1,56 @@
+<!-- @covers AC-FEC-020 through AC-FEC-027 -->
+<div
+  #scrollContainer
+  class="flex-1 overflow-y-auto px-4 py-4"
+  (scroll)="onScroll($event)"
+  data-testid="message-list-container"
+>
+  <!-- @covers AC-FEC-025 - Loading spinner when fetching older messages -->
+  @if (isLoading() && hasMore()) {
+    <div class="flex justify-center py-4" data-testid="loading-more-spinner">
+      <div class="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent"></div>
+    </div>
+  }
+
+  <!-- @covers AC-FEC-027 - Empty state -->
+  @if (messages().length === 0 && !isLoading()) {
+    <div class="flex flex-col items-center justify-center h-full text-neutral-400" data-testid="empty-messages-state">
+      <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+      <p class="text-lg font-medium">No messages yet</p>
+      <p class="text-sm mt-1">Start the conversation!</p>
+    </div>
+  }
+
+  <!-- Message list -->
+  <div class="space-y-4" data-testid="messages-container">
+    @for (message of messages(); track message._id; let i = $index) {
+      <!-- @covers AC-FEC-022 - Date separator -->
+      @if (isNewDay(i)) {
+        <div class="flex items-center justify-center my-4" data-testid="date-separator">
+          <div class="flex-1 h-px bg-neutral-200"></div>
+          <span class="px-4 text-xs text-neutral-500 font-medium">
+            {{ formatDateHeader(message.createdAt) }}
+          </span>
+          <div class="flex-1 h-px bg-neutral-200"></div>
+        </div>
+      }
+
+      <!-- Event message or regular message -->
+      @if (isEventMessage(message)) {
+        <app-chat-event-message
+          [event]="message.event!"
+          [timestamp]="message.createdAt"
+        />
+      } @else {
+        <app-chat-message-bubble
+          [message]="message"
+          [isOwn]="isOwnMessage(message)"
+          [showAvatar]="true"
+          (deleteMessage)="onDeleteMessage($event)"
+        />
+      }
+    }
+  </div>
+</div>

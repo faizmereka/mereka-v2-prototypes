@@ -1,0 +1,120 @@
+<div class="inner-container">
+  @if (effectiveLayout() === '') {
+    <ng-container [ngTemplateOutlet]="cardImage"></ng-container>
+    <ng-container [ngTemplateOutlet]="cardBadge"></ng-container>
+    <div ui-card-body>
+      <div ui-card-row>
+        <ng-container [ngTemplateOutlet]="cardTitle"></ng-container>
+        <ng-container [ngTemplateOutlet]="cardExpertImage"></ng-container>
+        <ng-container [ngTemplateOutlet]="cardDescription"></ng-container>
+        <div class="separator"></div>
+        <ng-container [ngTemplateOutlet]="cardFooter"></ng-container>
+        <ng-container [ngTemplateOutlet]="cardBodyEndContent"></ng-container>
+      </div>
+    </div>
+  } @else if (effectiveLayout() === 'horizontal-reverse') {
+    <div ui-card-body>
+      <div ui-card-row>
+        <ng-container [ngTemplateOutlet]="cardBadge"></ng-container>
+        <ng-container [ngTemplateOutlet]="cardTitle"></ng-container>
+        <ng-container [ngTemplateOutlet]="cardExpertImage"></ng-container>
+        <ng-container [ngTemplateOutlet]="cardDescription"></ng-container>
+        <ng-container [ngTemplateOutlet]="cardFooter"></ng-container>
+      </div>
+      <div class="separator"></div>
+      <ng-container [ngTemplateOutlet]="cardImage"></ng-container>
+      <div class="spacer"></div>
+      <ng-container [ngTemplateOutlet]="cardBodyEndContent"></ng-container>
+    </div>
+  }
+  <ng-content select="[ui-inner-container-end]"></ng-content>
+  @if (!hideElements().includes('favourite')) {
+    <button ui-button-icon class="ui-button-favourite"
+      [attr.aria-label]="isFavourite() ? 'Remove expertise from favourites' : 'Add expertise to favourites'"
+      (click)="toggleFavourite()">
+      <span ui-button-icon-wrapper>
+        <mat-icon>{{ isFavourite() ? 'favorite' : 'favorite_border' }}</mat-icon>
+      </span>
+    </button>
+  }
+</div>
+
+<ng-template #cardTitle>
+  <h3 ui-card-title>
+    @if (url()) {
+      <a ui-card-link [routerLink]="url() ? [url()] : []" [title]="title()" [attr.target]="target() ?? null"
+        (click)="onClick()">
+        {{ title() }}
+      </a>
+    } @else if (href()) {
+      <a ui-card-link [href]="href() ?? null" [title]="title()" [attr.target]="target() ?? null"
+        (click)="onClick()">
+        {{ title() }}
+      </a>
+    } @else {
+      {{ title() }}
+    }
+  </h3>
+</ng-template>
+
+<ng-template #cardBadge>
+  @if (!hideElements().includes('badge') && isFeatured()) {
+    <div class="ui-card-badge">{{ badge() }}</div>
+  }
+</ng-template>
+
+<ng-template #cardImage>
+  @if (!hideElements().includes('image')) {
+    <div ui-card-image>
+      <img ui-image [src]="image()" alt loading="lazy" />
+    </div>
+  }
+</ng-template>
+
+<ng-template #cardExpertImage>
+  @if (!hideElements().includes('expert-image')) {
+    <img ui-image placeholder="user" [src]="expertImage()" class="expert-image" loading="lazy" alt />
+  }
+</ng-template>
+
+<ng-template #cardDescription>
+  @if (!hideElements().includes('description')) {
+    <p class="ui-card-desc">{{ displayDescription() }}</p>
+  }
+</ng-template>
+
+<ng-template #cardFooter>
+  <div class="ui-card-footer">
+    @if (!hideElements().includes('price')) {
+      <ng-container [ngTemplateOutlet]="cardPrice"></ng-container>
+    }
+    @if (!hideElements().includes('duration') && durationLabel()) {
+      <div class="ui-card-meta">
+        <mat-icon fontIcon="watch_later" />
+        <span>{{ durationLabel() }}</span>
+      </div>
+    }
+    @if (!hideElements().includes('location') && location()) {
+      <div class="ui-card-meta">
+        <mat-icon fontIcon="place" /><span>{{ location() }}</span>
+      </div>
+    }
+  </div>
+</ng-template>
+
+<ng-template #cardPrice>
+  <div class="ui-card-price"
+    [attr.aria-label]="'Experience price is ' + price().beforeLabel + ' ' + price().amount + ' ' + price().afterLabel">
+    @if (price().beforeLabel) {
+      <span class="ui-card-price__label-before">{{ price().beforeLabel }}</span>
+    }
+    <span class="ui-card-price__amount">{{ price().amount }}</span>
+    @if (price().afterLabel) {
+      <span class="ui-card-price__label-after">{{ price().afterLabel }}</span>
+    }
+  </div>
+</ng-template>
+
+<ng-template #cardBodyEndContent>
+  <ng-content select="[ui-card-body-end]"></ng-content>
+</ng-template>

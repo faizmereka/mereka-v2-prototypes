@@ -1,0 +1,354 @@
+### Variables
+@baseUrl = http://localhost:3000/api/v1
+@hubId = 6911c2e5a1bf597ffce83c8f
+@userId = 6911c2e5a1bf597ffce83c90
+@experienceId = replace-with-created-experience-id
+
+### ==============================================
+### Experience Endpoints - Test Updated Model
+### ==============================================
+
+### 1. Create Experience with Recurring Schedule (Weekly)
+# POST /experiences
+# Creates experience with weekly recurring events
+POST {{baseUrl}}/experiences
+Content-Type: application/json
+
+{
+  "experienceTitle": "Weekly Yoga Workshop",
+  "slug": "weekly-yoga-workshop-2025",
+  "experienceDescription": "Join our weekly yoga sessions for beginners and intermediate practitioners",
+  "experienceType": "Virtual",
+  "hubId": "{{hubId}}",
+  "timeZone": "America/Los_Angeles",
+  "meetingLink": "https://zoom.us/j/123456789",
+  "primaryLanguage": "English",
+  "audienceType": "Everyone",
+  "maximumCapacity": 20,
+  "experienceDuration": 3600000,
+  "feePaidBy": "learner",
+  "currency": "USD",
+  "coverPhoto": "https://example.com/yoga-cover.jpg",
+  "ticket": [
+    {
+      "id": "ticket1",
+      "ticketType": "Paid",
+      "ticketName": "Standard Ticket",
+      "ticketPrice": 25,
+      "ticketQty": 20,
+      "hasCutoffTime": true,
+      "cutoffNumber": 2,
+      "cutoffTime": "hours",
+      "cutoffBeforeAfter": "before",
+      "description": "Early bird pricing"
+    }
+  ],
+  "schedules": [
+    {
+      "uid": "weekly-yoga-schedule",
+      "recurringRule": [
+        "DTSTART:20251201T100000",
+        "RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=12"
+      ],
+      "startDate": "2025-12-01 10:00AM",
+      "recurringType": "weekly"
+    }
+  ],
+  "status": "ACTIVE",
+  "listingType": "platform",
+  "createdBy": "{{userId}}"
+}
+
+###
+
+### 2. Create Experience with Non-Repeating Schedule (Single Event)
+# POST /experiences
+# Creates a single one-time event
+POST {{baseUrl}}/experiences
+Content-Type: application/json
+
+{
+  "experienceTitle": "Introduction to Machine Learning",
+  "slug": "intro-ml-workshop-dec-2025",
+  "experienceDescription": "A comprehensive introduction to machine learning fundamentals",
+  "experienceType": "Virtual",
+  "hubId": "{{hubId}}",
+  "timeZone": "UTC",
+  "meetingLink": "https://meet.google.com/abc-defg",
+  "primaryLanguage": "English",
+  "audienceType": "Everyone",
+  "maximumCapacity": 50,
+  "experienceDuration": 7200000,
+  "feePaidBy": "learner",
+  "currency": "USD",
+  "coverPhoto": "https://example.com/ml-cover.jpg",
+  "ticket": [
+    {
+      "id": "free-ticket",
+      "ticketType": "Free",
+      "ticketName": "Free Admission",
+      "ticketPrice": 0,
+      "ticketQty": 50
+    }
+  ],
+  "schedules": [
+    {
+      "uid": "ml-workshop-single",
+      "recurringRule": [],
+      "startDate": "2025-12-15 02:00PM",
+      "recurringType": "no_repeat"
+    }
+  ],
+  "status": "ACTIVE",
+  "listingType": "platform",
+  "createdBy": "{{userId}}"
+}
+
+###
+
+### 3. Create Experience with Multiple Schedules
+# POST /experiences
+# Creates experience with multiple recurring patterns
+POST {{baseUrl}}/experiences
+Content-Type: application/json
+
+{
+  "experienceTitle": "Advanced JavaScript Bootcamp",
+  "slug": "advanced-js-bootcamp-2025",
+  "experienceDescription": "Master advanced JavaScript concepts with hands-on coding sessions",
+  "experienceType": "Virtual",
+  "hubId": "{{hubId}}",
+  "timeZone": "America/New_York",
+  "meetingLink": "https://zoom.us/j/987654321",
+  "primaryLanguage": "English",
+  "audienceType": "Everyone",
+  "maximumCapacity": 30,
+  "experienceDuration": 5400000,
+  "feePaidBy": "learner",
+  "currency": "USD",
+  "coverPhoto": "https://example.com/js-bootcamp.jpg",
+  "ticket": [
+    {
+      "id": "early-bird",
+      "ticketType": "Paid",
+      "ticketName": "Early Bird",
+      "ticketPrice": 199,
+      "ticketQty": 15,
+      "hasCutoffTime": true,
+      "cutoffNumber": 7,
+      "cutoffTime": "days",
+      "cutoffBeforeAfter": "before"
+    },
+    {
+      "id": "regular",
+      "ticketType": "Paid",
+      "ticketName": "Regular Price",
+      "ticketPrice": 299,
+      "ticketQty": 15
+    }
+  ],
+  "schedules": [
+    {
+      "uid": "weekday-morning",
+      "recurringRule": [
+        "DTSTART:20251203T090000",
+        "RRULE:FREQ=WEEKLY;BYDAY=TU,TH;COUNT=8"
+      ],
+      "startDate": "2025-12-03 09:00AM",
+      "recurringType": "weekly"
+    },
+    {
+      "uid": "weekend-intensive",
+      "recurringRule": [
+        "DTSTART:20251206T100000",
+        "RRULE:FREQ=WEEKLY;BYDAY=SA;COUNT=4"
+      ],
+      "startDate": "2025-12-06 10:00AM",
+      "recurringType": "weekly"
+    }
+  ],
+  "status": "ACTIVE",
+  "listingType": "platform",
+  "createdBy": "{{userId}}"
+}
+
+###
+
+### 4. Create Express Experience (Minimal Fields)
+# POST /experiences
+# Creates express experience with relaxed validation
+POST {{baseUrl}}/experiences
+Content-Type: application/json
+
+{
+  "experienceTitle": "Quick Coffee Chat",
+  "slug": "coffee-chat-express",
+  "experienceType": "Virtual",
+  "hubId": "{{hubId}}",
+  "schedules": [
+    {
+      "uid": "coffee-time",
+      "recurringRule": [],
+      "startDate": "2025-12-10 03:00PM",
+      "recurringType": "no_repeat"
+    }
+  ],
+  "status": "express",
+  "listingType": "express"
+}
+
+###
+
+### 5. Get Experience by ID or Slug (includes experienceEvents)
+# GET /experiences/:idOrSlug
+# Automatically detects if param is ObjectId or slug
+# Works with BOTH:
+# - MongoDB ObjectId (24 hex characters): GET /experiences/6911c9666705fd8f6e1acda7
+# - Slug string: GET /experiences/test-event-gen-debug-001
+#
+# Response includes:
+# - Experience details (all fields)
+# - experienceEvents[] - Array of generated events (sorted by startTime)
+# - eventStats - Summary { total, active, cancelled, locked }
+
+# Example with ID:
+GET {{baseUrl}}/experiences/{{experienceId}}
+
+###
+
+# Example with Slug:
+GET {{baseUrl}}/experiences/test-event-gen-debug-001
+
+###
+
+### 6. Check Slug Availability
+# GET /experiences/check/slug
+# Checks if slug is available
+GET {{baseUrl}}/experiences/check/slug?slug=weekly-yoga-workshop-2025
+
+###
+
+### 7. Update Experience - Modify Schedule
+# PATCH /experiences/:id
+# Updates experience schedule (triggers event regeneration)
+PATCH {{baseUrl}}/experiences/{{experienceId}}
+Content-Type: application/json
+
+{
+  "schedules": [
+    {
+      "uid": "weekly-yoga-schedule",
+      "recurringRule": [
+        "DTSTART:20251201T140000",
+        "RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=15"
+      ],
+      "startDate": "2025-12-01 02:00PM",
+      "recurringType": "weekly"
+    }
+  ]
+}
+
+###
+
+### 8. Update Experience - Add New Schedule
+# PATCH /experiences/:id
+# Adds a new schedule to existing experience
+PATCH {{baseUrl}}/experiences/{{experienceId}}
+Content-Type: application/json
+
+{
+  "schedules": [
+    {
+      "uid": "weekly-yoga-schedule",
+      "recurringRule": [
+        "DTSTART:20251201T100000",
+        "RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=12"
+      ],
+      "startDate": "2025-12-01 10:00AM",
+      "recurringType": "weekly"
+    },
+    {
+      "uid": "weekend-yoga-schedule",
+      "recurringRule": [
+        "DTSTART:20251207T090000",
+        "RRULE:FREQ=WEEKLY;BYDAY=SA,SU;COUNT=8"
+      ],
+      "startDate": "2025-12-07 09:00AM",
+      "recurringType": "weekly"
+    }
+  ]
+}
+
+###
+
+### 9. Update Experience - Remove All Schedules
+# PATCH /experiences/:id
+# Removes all schedules (soft deletes all events)
+PATCH {{baseUrl}}/experiences/{{experienceId}}
+Content-Type: application/json
+
+{
+  "schedules": []
+}
+
+###
+
+### 10. Update Experience - Change Status
+# PATCH /experiences/:id
+# Updates experience status
+PATCH {{baseUrl}}/experiences/{{experienceId}}
+Content-Type: application/json
+
+{
+  "status": "DRAFTED"
+}
+
+###
+
+### ==============================================
+### Query ExperienceEvents (Direct MongoDB Check)
+### These are for backend verification only
+### ==============================================
+
+### Note: Use MongoDB Compass or similar tool to query:
+# 1. Find all active events for an experience:
+#    db.experienceEvents.find({ experienceId: ObjectId("..."), status: "ACTIVE" })
+#
+# 2. Find deleted events:
+#    db.experienceEvents.find({ experienceId: ObjectId("..."), status: "DELETED" })
+#
+# 3. Find locked events:
+#    db.experienceEvents.find({ experienceId: ObjectId("..."), isLocked: true })
+#
+# 4. Count events by schedule:
+#    db.experienceEvents.aggregate([
+#      { $match: { experienceId: ObjectId("...") } },
+#      { $group: { _id: "$scheduleId", count: { $sum: 1 } } }
+#    ])
+
+### ==============================================
+### Testing Notes
+### ==============================================
+
+# After creating an experience:
+# 1. Wait 1-2 seconds for background job to generate events
+# 2. Check MongoDB for generated experienceEvents
+# 3. Verify events have:
+#    - experienceId: References created experience
+#    - scheduleId: Matches schedule UID
+#    - status: "ACTIVE" (default)
+#    - isLocked: false (default)
+#    - isRecurring: true (for recurring) or false (for single)
+#
+# Fields REMOVED from ExperienceEvent (now in Experience):
+# - hubId ❌
+# - title ❌
+# - maximumCapacity ❌
+# - normalSeat ❌
+# - totalAvailableQty ❌
+# - ticket[] ❌
+# - ticketQty{} ❌
+#
+# New Status Management:
+# - status: "ACTIVE" | "CANCELLED" | "DELETED" ✅
+# - isLocked: boolean (separate concern) ✅

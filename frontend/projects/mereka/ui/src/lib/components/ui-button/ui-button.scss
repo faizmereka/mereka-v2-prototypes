@@ -1,0 +1,434 @@
+/* Buttons */
+
+:root {
+  --ui-button-height: 32px;
+  --ui-button-padding: 6px 12px;
+  --ui-button-large-height: 44px;
+  --ui-button-large-padding: 8px 16px;
+}
+
+@media only screen and (width >= 576px) {
+  :root {
+    --ui-button-height: 36px;
+    --ui-button-padding: 6px 16px;
+    --ui-button-large-height: 50px;
+    --ui-button-large-padding: 10px 32px;
+  }
+}
+
+@mixin ui-button-size-default {
+  height: var(--ui-button-height);
+  padding: var(--ui-button-padding);
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+@mixin ui-button-size-large {
+  height: var(--ui-button-large-height);
+  padding: var(--ui-button-large-padding);
+  border-radius: 24px;
+  font-weight: 700;
+}
+
+@mixin ui-icon-white {
+  .ui-button-icon-wrapper svg {
+    fill: 0.38;
+  }
+}
+
+.ui-button-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+/** 
+  Set wrapper to full width for booking checkout button
+*/
+.booking-submit {
+  .ui-button-wrapper {
+    width: 100%;
+  }
+}
+
+/* Default Buttons Styles */
+.ui-button {
+  padding: 0;
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  background-color: transparent;
+  vertical-align: middle;
+  box-shadow: none;
+  transition-duration: 250ms;
+  transition-property: color, background-color, border-color, border-width;
+  cursor: pointer;
+
+  &:hover:not(.ui-button-disabled) {
+    color: #999;
+  }
+  *:first-child {
+    margin-left: 0;
+  }
+  *:last-child {
+    margin-right: 0;
+  }
+  /* Fade all icons when disabled */
+  &.ui-button-disabled,
+  &.ui-button-disabled:hover {
+    cursor: default;
+
+    .ui-icon-wrapper {
+      opacity: 0.38;
+    }
+  }
+  &.cdk-keyboard-focused {
+    outline: 1px solid var(--border-focus-color, #1A1623);
+  }
+}
+
+.ui-button-large {
+  @include ui-button-size-large;
+}
+.ui-button-fill,
+.ui-button-fill-large {
+  @include ui-icon-white;
+  @include ui-button-size-default;
+  color: #FFF;
+  background-color: #1A1623;
+  border: 1px solid #1A1623;
+
+  &.ui-button-focused:not(.ui-button-disabled-primary),
+  &:hover:not(.ui-button-disabled-primary) {
+    color: #FFF;
+    background-color: #36323E;
+    border: 1px solid #36323E;
+  }
+  &.ui-button-active {
+    background-color: #5A5760;
+    border: 1px solid #5A5760;
+  }
+  &.ui-button-active,
+  &.ui-button-disabled:not(.ui-button-disabled-primary),
+  &.ui-button-disabled:not(.ui-button-disabled-primary):hover {
+    color: #858585;
+    background-color: #D5D5D5;
+    border: 1px solid #D5D5D5;
+  }
+  &:hover {
+    text-decoration: none;
+  }
+  &.ui-button--invert {
+    color: #1A1623;
+    background-color: #FFF;
+    border: 1px solid #FFF;
+
+    &.ui-button-focused:not(.ui-button-disabled-primary),
+    &:hover:not(.ui-button-disabled-primary) {
+      color: #1A1623;
+      background-color: #D5D5D5;
+      border: 1px solid #D5D5D5;
+    }
+  }
+}
+.ui-button-fill-large {
+  @include ui-button-size-large;
+}
+
+/* Outline style */
+
+.ui-button-outline,
+.ui-button-outline-large {
+  @include ui-button-size-default;
+  color: #000;
+  border: 1px solid var(--border-solid, #DDDDDE);
+  background-color: #FFF;
+
+  &.ui-button-focused,
+  &:hover:not(.ui-button-disabled-primary) {
+    color: #000;
+    background-color: #FBFAFB;
+  }
+  &.ui-button-active {
+    background-color: #F5F5F5;
+  }
+  &.ui-button-disabled:not(.ui-button-disabled-primary),
+  &.ui-button-disabled:not(.ui-button-disabled-primary):hover {
+    background-color: #F5F5F5;
+    border: 1px solid #d7d7d7;
+    color: #9E9E9E;
+  }
+  &.ui-button-selected:not(.ui-button-disabled-primary),
+  &.ui-button-selected:not(.ui-button-disabled-primary):hover {
+    background-color: #EBEBEB;
+  }
+  .ui-button-label-wrapper {
+    color: #000;
+  }
+}
+.ui-button-outline-large {
+  @include ui-button-size-large;
+}
+
+/* ghost */
+
+.ui-button-ghost-inverse {
+  @include ui-icon-white;
+  @include ui-button-size-default;
+  color: #FFF;
+  background: none;
+
+  &.ui-button-focused,
+  &:hover:not(.ui-button-disabled-primary) {
+    color: #FFF;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  &.ui-button-selected:not(.ui-button-disabled-primary),
+  &.ui-button-selected:not(.ui-button-disabled-primary):hover,
+  &.ui-button-active {
+    background: rgba(255, 255, 255, 0.3);
+  }
+  &.ui-button-disabled:not(.ui-button-disabled-primary),
+  &.ui-button-disabled:not(.ui-button-disabled-primary):hover {
+    color: rgba(255, 255, 255, 0.4);
+    background-color: none;
+  }
+}
+
+.ui-button-ghost {
+  @include ui-button-size-default;
+  color: #000;
+  background: none;
+
+  &.ui-button-focused,
+  &:hover:not(.ui-button-disabled-primary) {
+    color: #000;
+    background: #EDEDEE;
+  }
+  &.ui-button-selected:not(.ui-button-disabled-primary),
+  &.ui-button-selected:not(.ui-button-disabled-primary):hover,
+  &.ui-button-active {
+    background: rgba(26, 22, 35, 0.12);
+  }
+  &.ui-button-disabled:not(.ui-button-disabled-primary),
+  &.ui-button-disabled:not(.ui-button-disabled-primary):hover {
+    color: rgba(0, 0, 0, 0.38);
+    background-color: none;
+  }
+}
+
+/* Underline */
+
+.ui-button-underline {
+  color: #000;
+  font-weight: 500;
+  border-radius: 0;
+  border-bottom: 2px solid var(--border-solid, #DDDDDE);
+  position: relative;
+  background: none;
+  padding: 0;
+
+  &:hover :not(.ui-button-disabled-primary) {
+    color: #000;
+  }
+  &.ui-button-focused,
+  &:focus {
+    color: #000;
+    border: none;
+    border-bottom: 2px solid #000;
+    background: none;
+  }
+  &:after {
+    content: "";
+    border-bottom: 2px solid #000;
+    position: absolute;
+    bottom: -2px;
+    right: 0;
+    width: 0;
+    transition: all 0.5s;
+  }
+  &:hover:after {
+    width: 100%;
+  }
+  &.ui-button-disabled:not(.ui-button-disabled-primary),
+  &.ui-button-disabled:not(.ui-button-disabled-primary):hover {
+    color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.ui-button-label-wrapper {
+  color: inherit;
+  display: inline-block;
+  margin: 0 0.25rem;
+  text-decoration: none;
+  line-height: 1;
+}
+.ui-button-icon-wrapper {
+  color: inherit;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0.25rem;
+  width: 24px;
+  height: 24px;
+}
+
+.ui-button-icon,
+.ui-button-icon-outline {
+  font-weight: 500;
+
+  .ui-button-wrapper {
+    gap: 10px;
+  }
+
+  .ui-button-icon-wrapper {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: #FFF;
+    overflow: hidden;
+
+    * {
+      width: 20px;
+      height: 20px;
+      transform-origin: center;
+      transition: transform 0.25s;
+      font-size: 20px;
+    }
+  }
+  &:hover {
+    .ui-button-icon-wrapper {
+      background-color: #F5F5F5;
+
+      * {
+        transform: scale(0.9, 0.9);
+      }
+    }
+  }
+  &.cdk-keyboard-focused {
+    border: none;
+
+    .ui-button-icon-wrapper {
+      border: 1px solid var(--border-focus-color, #1A1623);
+    }
+  }
+  &.ui-button-disabled,
+  &[disabled],
+  &[disabled]:hover,
+  &:disabled,
+  &:disabled:hover {
+    opacity: 0.5;
+
+    .ui-button-icon-wrapper {
+      background-color: #FFF;
+
+      * {
+        transform: none;
+      }
+      svg {
+        fill: #E0E0E0;
+      }
+    }
+  }
+}
+
+.ui-button-icon-outline {
+  .ui-button-icon-wrapper {
+    width: calc(2.5rem - 4px);
+    height: calc(2.5rem - 4px);
+    border: 1px solid var(--border-solid, #DDDDDE);
+    color: #000;
+
+    svg {
+      fill: #000;
+    }
+  }
+  &.cdk-keyboard-focused {
+    border: none;
+
+    .ui-button-icon-wrapper {
+      border: 1px solid var(--border-focus-color, #1A1623);
+    }
+  }
+  &:focus-visible {
+    outline: 3px solid var(--border-solid, #DDDDDE);
+    outline-offset: -1px;
+    border-radius: 50%;
+  }
+}
+
+@media screen and (width >= 576px) {
+  .ui-button-icon-outline {
+    .ui-button-icon-wrapper {
+      * {
+        width: 24px;
+        height: 24px;
+        font-size: 24px;
+      }
+    }
+  }
+}
+
+.ui-button-ai,
+.ui-button-ai-large {
+  @include ui-button-size-default;
+  color: #FFF;
+  background-color: #FFF;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    background: linear-gradient(93deg, #F36FB6 7.58%, #9747FF 100%);
+    position: absolute;
+    inset: 0;
+    opacity: 1;
+    transition: opacity 0.25s ease;    
+  }
+  
+  &:hover:not(.ui-button-disabled) {    
+    color: #FFF;
+
+    &::before {
+      opacity: 0.5;
+    }
+  }
+
+  &.ui-button-disabled {
+    background-color: #DDDCDE;
+    color: #AFADB2;
+
+    &::before {
+      opacity: 0;
+    }
+  }
+
+  & > * {
+    z-index: 1;
+  }
+}
+.ui-button-ai-large {
+  @include ui-button-size-large;
+}
+
+.ui-button-icon-rotate {
+  display: inline-block; /* Adjust as needed */
+  animation: ui-button-icon-rotate 1.5s linear infinite;
+}
+
+@keyframes ui-button-icon-rotate {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}

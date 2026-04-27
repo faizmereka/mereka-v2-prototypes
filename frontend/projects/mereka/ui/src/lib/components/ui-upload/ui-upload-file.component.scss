@@ -1,0 +1,17 @@
+@layer mereka-ui {
+  .ui-upload-file {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    input[type='file'] {
+      display: none;
+    }
+
+    &__desc {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--content-secondary);
+    }
+  }
+}

@@ -1,0 +1,51 @@
+# Mereka Web configuration
+image:
+  repository: gcr.io/mereka-dev/mereka-web
+  tag: "latest"
+  pullPolicy: Always
+
+replicaCount: 1
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  # SSR runner listens on an unprivileged port (see Dockerfile).
+  targetPort: 4000
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  host: ""  # Set in overlay (e.g., v2.mereka.dev)
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  tls:
+    enabled: true
+    secretName: ""
+
+# Resource limits (increased for SSR)
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+# Health check - use /health endpoint (fast, no SSR)
+healthCheck:
+  path: /health
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}

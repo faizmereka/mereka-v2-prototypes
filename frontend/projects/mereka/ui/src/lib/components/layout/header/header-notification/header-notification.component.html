@@ -1,0 +1,88 @@
+<div class="unread-badge"></div>
+
+<button ui-button [matMenuTriggerFor]="menu">
+  <mat-icon fontIcon="notifications" class="material-icons-outlined" />
+</button>
+
+
+<mat-menu #menu="matMenu" class="ui-dropmenu ui-dropmenu-notifications">
+  <mat-tab-group
+    class="ui-tab-group ui-tab-group-notifications"
+    animationDuration="0ms"
+    mat-stretch-tabs="false"
+    (click)="$event.stopPropagation();">
+    <div class="text"></div>
+    <!-- Notification -->
+    <mat-tab 
+      labelClass="ui-tab-label"
+      bodyClass="ui-tab-body">
+      <!-- Label -->
+      <ng-template matTabLabel>
+        Notifications         
+        @if (totalNewNotifications > 0) {
+          <span class="total-badge">
+            {{ totalNewNotifications}}
+          </span>
+        }
+      </ng-template>
+      <!-- Content -->
+      <ng-template matTabContent>
+        <div class="notification-body scrollbar">
+          <ul>
+            @for (notification of notifications | slice: 0 : 400; track $index) {
+              <li>
+                <common-header-notification-alert-card [notification]="notification" [user]="user" />
+              </li>
+            } @empty {
+              <li>
+                <div class="notification-empty">
+                  <div class="notification-empty__title">No notifications</div>
+                  <div class="notification-empty__desc">You currently do not have any notifications yet.</div>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+        <a class="notification-footer" [href]="merekaBaseUrl + '/notifications'">
+          View all notification
+        </a>
+      </ng-template>
+    </mat-tab>
+    <!-- Chat -->
+    <mat-tab
+      labelClass="ui-tab-label"
+      bodyClass="ui-tab-body">
+      <!-- Label -->
+      <ng-template matTabLabel>
+        Chat
+        @if (chatRooms.length > 0) {
+          <span class="total-badge">
+            {{ chatRooms.length }}
+          </span>
+        }
+      </ng-template>
+      <!-- Content -->
+      <ng-template matTabContent>
+        <div class="notification-body scrollbar">
+          <ul>
+            @for (chat of chatRooms; track $index) {
+              <li>
+                <common-header-notification-message-card [chat]="chat" [user]="user" />
+              </li>
+            } @empty {
+              <li>
+                <div class="notification-empty">
+                  <div class="notification-empty__title">No new messages</div>
+                  <div class="notification-empty__desc">You currently do not have any messages yet.</div>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+        <a class="notification-footer" [href]="getChatUrl()">
+          View all messages
+        </a>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</mat-menu>

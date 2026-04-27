@@ -1,0 +1,31 @@
+@if (enableSlider()) {
+  <swiper-container ui-swiper class="ui-gallery-swiper" [config]="config">
+    @for (image of images(); track $index; let i = $index) {
+      <swiper-slide ui-swiper-slide
+        tabindex="0"
+        (keyup.enter)="openGalleryLightbox()" 
+        (click)="openGalleryLightbox()">
+        <img
+          ui-image
+          [src]="image"
+          [attr.alt]="(altTitle() ? altTitle() : 'Gallery photo') + ' ' + i">
+      </swiper-slide>
+    }
+  </swiper-container>
+  <ui-swiper-pagination />
+  <button class="button-gallery" (keyup.enter)="openGalleryLightbox()" (click)="openGalleryLightbox()">Gallery <mat-icon fontIcon="image"></mat-icon></button>
+  
+} @else {
+  <!-- <div class="inner-container"> -->
+    <div class="ui-gallery-image" [class.preview-loading]="loading" [class.pristine]="pristine">
+      <div class="loading-overlay">
+        <!-- TODO: add ui-loader -->
+        <!-- <ui-loader></ui-loader> -->
+      </div>
+      <img [src]="getPreviewImage()" (load)="previewLoaded()" [alt]="altTitle()">
+    </div>
+  <!-- </div> -->
+  <div class="ui-gallery-all" tabindex="0" (keyup.enter)="openGalleryLightbox()" (click)="openGalleryLightbox()">
+    View All Photos
+  </div>
+}

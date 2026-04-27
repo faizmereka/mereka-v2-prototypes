@@ -1,0 +1,141 @@
+<div class="bg-white rounded-xl border border-neutral-200 p-6 shadow-sm">
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="flex items-center justify-center py-8">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  } @else {
+    <!-- Profile Picture -->
+    <div class="flex justify-center mb-8">
+      <div class="relative">
+        <!-- Orange warning badge when no image -->
+        @if (!hubLogo()) {
+          <div class="absolute -top-1 -right-1 z-10">
+            <div class="w-5 h-5 bg-orange-400 rounded-full flex items-center justify-center">
+              <span class="text-white text-xs font-bold">!</span>
+            </div>
+          </div>
+        }
+        <!-- Profile image upload -->
+        <ui-upload-image
+          [src]="hubLogo()"
+          (loaded)="onLogoLoaded($event)"
+          displayType="avatar"
+        ></ui-upload-image>
+      </div>
+    </div>
+
+    @if (logoError()) {
+      <div class="text-center text-sm text-red-600 -mt-4 mb-4">{{ logoError() }}</div>
+    }
+
+    <form [formGroup]="hubForm" class="space-y-5">
+      <!-- Hub Name -->
+      <div>
+        <label class="flex items-center gap-1.5 text-sm font-medium text-neutral-700 mb-2">
+          Hub Name<span class="text-red-500">*</span>
+          <div class="w-4 h-4 rounded-full border border-neutral-300 flex items-center justify-center cursor-help" title="Your business or brand name">
+            <span class="text-xs text-neutral-400">i</span>
+          </div>
+        </label>
+        <input
+          type="text"
+          formControlName="hubName"
+          placeholder="Your Hub or Agency name"
+          maxlength="40"
+          class="w-full px-4 py-3 border rounded-xl outline-none transition-colors bg-white"
+          [class.border-red-500]="hasError('hubName')"
+          [class.border-neutral-200]="!hasError('hubName')"
+          [class.focus:border-neutral-400]="!hasError('hubName')"
+        />
+        <div class="mt-1.5 flex justify-between">
+          @if (hasError('hubName')) {
+            <span class="text-sm text-red-600">{{ getErrorMessage('hubName') }}</span>
+          } @else {
+            <span></span>
+          }
+          <span class="text-sm text-neutral-400">{{ hubForm.get('hubName')?.value?.length || 0 }}/40</span>
+        </div>
+      </div>
+
+      <!-- URL (only when showUrlInput is true) -->
+      @if (showUrlInput) {
+        <div>
+          <label class="flex items-center gap-1.5 text-sm font-medium text-neutral-700 mb-2">
+            URL<span class="text-red-500">*</span>
+            <div class="w-4 h-4 rounded-full border border-neutral-300 flex items-center justify-center cursor-help" title="This URL is generated based on the name. You can edit it.">
+              <span class="text-xs text-neutral-400">i</span>
+            </div>
+          </label>
+          <div class="flex items-center border rounded-xl overflow-hidden bg-white"
+               [class.border-red-500]="getSlugError()"
+               [class.border-neutral-200]="!getSlugError()">
+            <span class="px-4 py-3 bg-neutral-50 text-sm text-neutral-500 border-r border-neutral-200">
+              mereka.io/hub/
+            </span>
+            <input
+              type="text"
+              formControlName="slug"
+              placeholder="your-hub-slug"
+              class="flex-1 px-4 py-3 bg-white outline-none text-sm"
+            />
+            <button
+              type="button"
+              (click)="copySlugUrl()"
+              class="px-3 py-3 text-neutral-400 hover:text-primary transition-colors"
+              title="Copy URL"
+            >
+              <ui-icon name="copy" class="w-5 h-5"></ui-icon>
+            </button>
+          </div>
+          @if (isSlugChecking()) {
+            <div class="mt-1.5 text-sm text-neutral-500">Checking availability...</div>
+          } @else if (getSlugError()) {
+            <div class="mt-1.5 text-sm text-red-600">{{ getSlugError() }}</div>
+          } @else if (hubForm.get('slug')?.value && isSlugAvailable()) {
+            <div class="mt-1.5 text-sm text-green-600">URL is available!</div>
+          }
+        </div>
+      }
+
+      <!-- Location -->
+      <div>
+        <label class="block text-sm font-medium text-neutral-700 mb-2">
+          Location<span class="text-red-500">*</span>
+        </label>
+        <ui-location-autocomplete
+          [apiKey]="googleMapsApiKey"
+          placeholder="Search for your city..."
+          [initialValue]="location()"
+          (locationSelected)="onLocationSelected($event)"
+          (locationCleared)="onLocationCleared()"
+        ></ui-location-autocomplete>
+        @if (locationError()) {
+          <div class="mt-1.5 text-sm text-red-600">{{ locationError() }}</div>
+        }
+      </div>
+
+      <!-- Phone Number -->
+      <div>
+        <label class="block text-sm font-medium text-neutral-700 mb-2">
+          Phone Number<span class="text-red-500">*</span>
+        </label>
+        <ui-phone-input
+          [initialValue]="hubForm.get('phoneNumber')?.value"
+          placeholder="Enter phone number"
+          (phoneChange)="onPhoneChange($event)"
+        ></ui-phone-input>
+        @if (hasError('phoneNumber')) {
+          <div class="mt-1.5 text-sm text-red-600">{{ getErrorMessage('phoneNumber') }}</div>
+        }
+      </div>
+    </form>
+
+    <!-- Save Error -->
+    @if (saveError()) {
+      <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+        {{ saveError() }}
+      </div>
+    }
+  }
+</div>

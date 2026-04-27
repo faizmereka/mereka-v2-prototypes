@@ -1,0 +1,20 @@
+<div class="min-h-full flex flex-col lg:flex-row">
+  <!-- Left Column - Black Panel with Text -->
+  <div class="lg:w-1/2 bg-primary text-white p-8 lg:p-12 flex items-center">
+    <div class="max-w-lg">
+      <h1 class="text-3xl lg:text-5xl font-bold mb-4 leading-tight">
+        Tell us a little<br />bit about you
+      </h1>
+      <p class="text-lg text-white/80">
+        To kickstart your journey, create your profile.
+      </p>
+    </div>
+  </div>
+
+  <!-- Right Column - Form -->
+  <div class="lg:w-1/2 p-8 lg:p-12 flex flex-col items-center overflow-y-auto">
+    <div class="w-full max-w-md flex-1">
+      <app-hub-profile-form [showUrlInput]="true"></app-hub-profile-form>
+    </div>
+  </div>
+</div>

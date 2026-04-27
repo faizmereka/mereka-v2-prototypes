@@ -1,0 +1,28 @@
+@layer mereka-ui {
+  .ui-loader-spinner {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+  }
+  .ui-loader-spinner-wrap {
+    width: 100%;
+    height: 100%;
+    display: inline-block;  
+    vertical-align: text-bottom;
+    border: .25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    -webkit-animation: ui-loader-spinner-wrap .75s linear infinite;
+    animation: ui-loader-spinner-wrap .75s linear infinite;
+  }
+
+  /* Safari */
+  @-webkit-keyframes ui-loader-spinner-wrap {
+    100% { -webkit-transform: rotate(360deg); }
+  }
+
+  @keyframes ui-loader-spinner-wrap {
+    100% { transform: rotate(360deg); }
+  }
+}

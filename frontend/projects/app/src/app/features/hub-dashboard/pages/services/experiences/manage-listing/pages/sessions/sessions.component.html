@@ -1,0 +1,260 @@
+<div>
+  <!-- Filter Tabs -->
+  <div class="flex items-center gap-2 mb-6">
+    <button
+      type="button"
+      (click)="setFilter('upcoming')"
+      class="px-4 py-2 text-sm font-medium rounded-full transition-colors"
+      [class.bg-[#1a1623]]="filter() === 'upcoming'"
+      [class.text-white]="filter() === 'upcoming'"
+      [class.bg-neutral-100]="filter() !== 'upcoming'"
+      [class.text-neutral-700]="filter() !== 'upcoming'"
+      [class.hover:bg-neutral-200]="filter() !== 'upcoming'"
+    >
+      Upcoming
+    </button>
+    <button
+      type="button"
+      (click)="setFilter('past')"
+      class="px-4 py-2 text-sm font-medium rounded-full transition-colors"
+      [class.bg-[#1a1623]]="filter() === 'past'"
+      [class.text-white]="filter() === 'past'"
+      [class.bg-neutral-100]="filter() !== 'past'"
+      [class.text-neutral-700]="filter() !== 'past'"
+      [class.hover:bg-neutral-200]="filter() !== 'past'"
+    >
+      Past
+    </button>
+    <button
+      type="button"
+      (click)="setFilter('all')"
+      class="px-4 py-2 text-sm font-medium rounded-full transition-colors"
+      [class.bg-[#1a1623]]="filter() === 'all'"
+      [class.text-white]="filter() === 'all'"
+      [class.bg-neutral-100]="filter() !== 'all'"
+      [class.text-neutral-700]="filter() !== 'all'"
+      [class.hover:bg-neutral-200]="filter() !== 'all'"
+    >
+      All Sessions
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="flex items-center justify-center h-48">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900"></div>
+    </div>
+  } @else {
+    <!-- Sessions List -->
+    @if (sessions().length === 0) {
+      <div class="bg-white border border-neutral-200 rounded-xl p-12 text-center">
+        <svg class="w-16 h-16 text-neutral-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <p class="text-neutral-500 text-lg mb-1">No sessions found</p>
+        <p class="text-sm text-neutral-400">
+          @if (filter() === 'upcoming') {
+            No upcoming sessions scheduled for this experience
+          } @else if (filter() === 'past') {
+            No past sessions for this experience
+          } @else {
+            No sessions have been created yet
+          }
+        </p>
+      </div>
+    } @else {
+      <!-- Desktop Table View -->
+      <div class="hidden lg:block space-y-4">
+        @for (session of sessions(); track session.id) {
+          <div class="bg-white border border-neutral-200 rounded-xl overflow-hidden">
+            <!-- Session Header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-100">
+              <div class="flex items-center gap-6">
+                <div>
+                  <div class="text-sm font-medium text-neutral-900">{{ formatDate(session.date) }}</div>
+                  <div class="text-xs text-neutral-500">{{ session.startTime }} - {{ session.endTime }}</div>
+                </div>
+                <span
+                  class="inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize"
+                  [class]="getStatusClass(session.status)"
+                >
+                  {{ session.status }}
+                </span>
+              </div>
+              <div class="flex items-center gap-6">
+                <div class="text-right">
+                  <div class="text-xs text-neutral-400 uppercase">Total / Booked / Available</div>
+                  <div class="text-sm font-medium">
+                    <span class="text-neutral-600">{{ session.totalSeats }}</span>
+                    <span class="text-neutral-400 mx-1">/</span>
+                    <span class="text-neutral-900">{{ session.bookedSeats }}</span>
+                    @if (session.heldSeats > 0) {
+                      <span class="text-orange-500"> (+{{ session.heldSeats }} held)</span>
+                    }
+                    <span class="text-neutral-400 mx-1">/</span>
+                    <span [class]="getAvailabilityClass(session)">{{ session.availableSeats }}</span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  (click)="viewBookings(session.id)"
+                  class="px-4 py-2 text-sm font-medium text-[#1a1623] border border-neutral-200 rounded-lg hover:bg-neutral-50"
+                >
+                  View Bookings
+                </button>
+              </div>
+            </div>
+
+            <!-- Per-Ticket Breakdown -->
+            @if (session.tickets.length > 0) {
+              <div class="px-6 py-3 bg-neutral-50/50">
+                <div class="text-xs font-medium text-neutral-500 uppercase mb-2">Tickets Breakdown</div>
+                <div class="grid grid-cols-1 gap-2">
+                  @for (ticket of session.tickets; track ticket.ticketId) {
+                    <div class="flex items-center justify-between py-2 px-3 bg-white rounded-lg border border-neutral-100">
+                      <div class="flex items-center gap-3">
+                        <span class="text-sm font-medium text-neutral-900">{{ ticket.ticketName }}</span>
+                        <span class="text-xs px-2 py-0.5 rounded-full"
+                          [class.bg-green-100]="ticket.ticketType === 'Free'"
+                          [class.text-green-700]="ticket.ticketType === 'Free'"
+                          [class.bg-blue-100]="ticket.ticketType !== 'Free'"
+                          [class.text-blue-700]="ticket.ticketType !== 'Free'"
+                        >
+                          {{ ticket.ticketType }}
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-4 text-sm">
+                        <div class="text-center">
+                          <div class="text-xs text-neutral-400">Total</div>
+                          <div class="font-medium text-neutral-600">{{ ticket.totalCapacity }}</div>
+                        </div>
+                        <div class="text-center">
+                          <div class="text-xs text-neutral-400">Booked</div>
+                          <div class="font-medium text-neutral-900">{{ ticket.booked }}</div>
+                        </div>
+                        <div class="text-center">
+                          <div class="text-xs text-neutral-400">Held</div>
+                          <div class="font-medium" [class.text-orange-500]="ticket.held > 0" [class.text-neutral-400]="ticket.held === 0">
+                            {{ ticket.held > 0 ? ticket.held : '-' }}
+                          </div>
+                        </div>
+                        <div class="text-center">
+                          <div class="text-xs text-neutral-400">Available</div>
+                          <div class="font-medium"
+                            [class.text-green-600]="ticket.available > 5"
+                            [class.text-orange-600]="ticket.available > 0 && ticket.available <= 5"
+                            [class.text-red-600]="ticket.available === 0"
+                          >
+                            {{ ticket.available }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Mobile Card View -->
+      <div class="lg:hidden space-y-4">
+        @for (session of sessions(); track session.id) {
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <div class="text-sm font-semibold text-neutral-900">{{ formatDate(session.date) }}</div>
+                <div class="text-xs text-neutral-500">{{ session.startTime }} - {{ session.endTime }}</div>
+              </div>
+              <span
+                class="inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize"
+                [class]="getStatusClass(session.status)"
+              >
+                {{ session.status }}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-4 gap-3 mb-4">
+              <div>
+                <div class="text-xs text-neutral-400 uppercase mb-1">Total</div>
+                <div class="text-sm font-medium text-neutral-900">{{ session.totalSeats }}</div>
+              </div>
+              <div>
+                <div class="text-xs text-neutral-400 uppercase mb-1">Booked</div>
+                <div class="text-sm font-medium text-neutral-900">{{ session.bookedSeats }}</div>
+              </div>
+              <div>
+                <div class="text-xs text-neutral-400 uppercase mb-1">Held</div>
+                <div class="text-sm font-medium text-orange-600">
+                  @if (session.heldSeats > 0) {
+                    {{ session.heldSeats }}
+                  } @else {
+                    <span class="text-neutral-400">-</span>
+                  }
+                </div>
+              </div>
+              <div>
+                <div class="text-xs text-neutral-400 uppercase mb-1">Available</div>
+                <div class="text-sm font-medium" [class]="getAvailabilityClass(session)">
+                  {{ session.availableSeats }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Availability Bar -->
+            <div class="mb-4">
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden flex">
+                <div
+                  class="h-full bg-[#1a1623] transition-all"
+                  [style.width.%]="session.totalSeats > 0 ? (session.bookedSeats / session.totalSeats) * 100 : 0"
+                ></div>
+                @if (session.heldSeats > 0) {
+                  <div
+                    class="h-full bg-orange-400 transition-all"
+                    [style.width.%]="session.totalSeats > 0 ? (session.heldSeats / session.totalSeats) * 100 : 0"
+                  ></div>
+                }
+              </div>
+              <div class="text-xs text-neutral-500 mt-1">
+                {{ session.totalSeats > 0 ? ((session.bookedSeats / session.totalSeats) * 100).toFixed(0) : 0 }}% booked
+                @if (session.heldSeats > 0) {
+                  <span class="text-orange-600">• {{ session.heldSeats }} held</span>
+                }
+              </div>
+            </div>
+
+            <!-- Per-Ticket Breakdown (Mobile) -->
+            @if (session.tickets.length > 0) {
+              <div class="mb-4 p-3 bg-neutral-50 rounded-lg">
+                <div class="text-xs font-medium text-neutral-500 uppercase mb-2">Tickets</div>
+                <div class="space-y-2">
+                  @for (ticket of session.tickets; track ticket.ticketId) {
+                    <div class="flex items-center justify-between text-sm">
+                      <span class="font-medium text-neutral-900">{{ ticket.ticketName }}</span>
+                      <span class="text-neutral-600">
+                        {{ ticket.booked }}
+                        @if (ticket.held > 0) {
+                          <span class="text-orange-500">(+{{ ticket.held }})</span>
+                        }
+                        / {{ ticket.totalCapacity }}
+                      </span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <button
+              type="button"
+              (click)="viewBookings(session.id)"
+              class="w-full px-4 py-2 text-sm font-medium border border-neutral-200 rounded-lg hover:bg-neutral-50"
+            >
+              View Bookings
+            </button>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

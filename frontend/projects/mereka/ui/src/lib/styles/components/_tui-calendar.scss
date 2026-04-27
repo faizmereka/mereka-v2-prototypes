@@ -1,0 +1,34 @@
+
+
+tui-calendar.ui-calendar {
+  min-block-size: auto;  
+
+  .t-calendar {
+    width: 100%;
+  }
+  
+  .t-cell {
+    font-size: 14px;
+    font-weight: 700;
+
+    &_disabled {
+      opacity: 0.2;
+    }
+    &:before,
+    &:after {
+      border-radius: 22px;
+    }
+    &:after {
+      mask: none;
+    }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .t-cell[_ngcontent-ng-c3320902275]:hover:not([data-range=start]):not([data-range=end]):before {
+        background: #EBEBEB;
+    }
+  }
+
+  [data-type=weekend] {
+    color: var(--content-primary, #1A1623);
+  }
+}

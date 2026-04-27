@@ -1,0 +1,350 @@
+<div class="min-h-screen bg-neutral-50 flex flex-col">
+  <!-- Loading State -->
+  @if (onboarding.isLoading()) {
+    <div class="flex-1 flex items-center justify-center">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  } @else {
+    <!-- Preview Banner -->
+    <div class="bg-neutral-900 text-white py-3 px-4">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <ui-icon name="info" class="w-5 h-5 text-neutral-400"></ui-icon>
+          <span class="text-sm">Preview of your Business page</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Banner -->
+    @if (error()) {
+      <div class="bg-red-50 border-b border-red-200 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-start gap-3">
+          <ui-icon name="error" class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5"></ui-icon>
+          <div class="flex-1">
+            <p class="text-red-700 font-medium">{{ error() }}</p>
+            @if (validationErrors().length > 0) {
+              <ul class="mt-2 space-y-1">
+                @for (err of validationErrors(); track $index) {
+                  <li class="text-sm text-red-600 flex items-center gap-2">
+                    <span>{{ err.message || err.field }}</span>
+                    <button
+                      type="button"
+                      (click)="goToStep(err.step)"
+                      class="text-red-700 underline hover:no-underline"
+                    >
+                      Fix in {{ err.step === 'profile' ? 'Your Business' : err.step === 'about' ? 'About Business' : 'Business Details' }}
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-y-auto">
+      <!-- Hero Section with Gradient Background -->
+      <div class="relative">
+        <!-- Gradient Background -->
+        @if (coverImage()) {
+          <div class="h-72 lg:h-96 w-full">
+            <img [src]="coverImage()" alt="Cover" class="w-full h-full object-cover" />
+          </div>
+        } @else {
+          <div class="h-72 lg:h-96 w-full bg-gradient-to-br from-pink-200 via-pink-300 to-purple-200"></div>
+        }
+
+        <!-- Profile Card Overlay -->
+        <div class="absolute left-1/2 -translate-x-1/2 -bottom-24 w-full max-w-md px-4">
+          <div class="bg-neutral-100 rounded-2xl p-6 shadow-xl">
+            <!-- Profile Image -->
+            <div class="mb-4">
+              @if (businessLogo()) {
+                <img
+                  [src]="businessLogo()"
+                  alt="Logo"
+                  class="w-20 h-20 rounded-full border-4 border-white object-cover shadow-lg"
+                />
+              } @else {
+                <div class="w-20 h-20 rounded-full border-4 border-white bg-white flex items-center justify-center shadow-lg">
+                  <svg class="w-10 h-10 text-neutral-800" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                </div>
+              }
+            </div>
+
+            <!-- Business Name -->
+            <h1 class="text-2xl font-bold text-neutral-900 mb-1">
+              {{ businessName() }}
+            </h1>
+
+            <!-- Plan Type -->
+            <p class="text-neutral-600 mb-2">
+              {{ onboarding.isScalePlan() ? 'Independent Expert' : 'Business Hub' }}
+            </p>
+
+            <!-- Location -->
+            @if (locationString()) {
+              <p class="text-neutral-500 flex items-center gap-1.5 text-sm mb-3">
+                <ui-icon name="location" class="w-4 h-4"></ui-icon>
+                {{ locationString() }}
+              </p>
+            }
+
+            <!-- Social Links -->
+            @if (hasSocialLinks()) {
+              <div class="flex items-center gap-3 pt-2 border-t border-neutral-200">
+                @if (socialLinks().website) {
+                  <a [href]="socialLinks().website" target="_blank" class="text-neutral-500 hover:text-neutral-700 transition-colors">
+                    <ui-icon name="website" class="w-5 h-5"></ui-icon>
+                  </a>
+                }
+                @if (socialLinks().linkedin) {
+                  <a [href]="socialLinks().linkedin" target="_blank" class="text-neutral-500 hover:text-neutral-700 transition-colors">
+                    <ui-icon name="linkedin" class="w-5 h-5"></ui-icon>
+                  </a>
+                }
+                @if (socialLinks().facebook) {
+                  <a [href]="socialLinks().facebook" target="_blank" class="text-neutral-500 hover:text-neutral-700 transition-colors">
+                    <ui-icon name="facebook" class="w-5 h-5"></ui-icon>
+                  </a>
+                }
+                @if (socialLinks().instagram) {
+                  <a [href]="socialLinks().instagram" target="_blank" class="text-neutral-500 hover:text-neutral-700 transition-colors">
+                    <ui-icon name="instagram" class="w-5 h-5"></ui-icon>
+                  </a>
+                }
+                @if (socialLinks().twitter) {
+                  <a [href]="socialLinks().twitter" target="_blank" class="text-neutral-500 hover:text-neutral-700 transition-colors">
+                    <ui-icon name="twitter" class="w-5 h-5"></ui-icon>
+                  </a>
+                }
+                @if (socialLinks().email) {
+                  <a [href]="'mailto:' + socialLinks().email" class="text-neutral-500 hover:text-neutral-700 transition-colors">
+                    <ui-icon name="email" class="w-5 h-5"></ui-icon>
+                  </a>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="pt-32 pb-12">
+        <div class="max-w-5xl mx-auto px-4 lg:px-8">
+          <!-- Tab Navigation -->
+          <div class="flex items-center gap-2 mb-8 border-b border-neutral-200">
+            <button
+              (click)="setActiveTab('profile')"
+              class="px-6 py-3 text-sm font-medium rounded-t-lg transition-colors"
+              [class.bg-neutral-100]="activeTab() === 'profile'"
+              [class.text-neutral-900]="activeTab() === 'profile'"
+              [class.text-neutral-500]="activeTab() !== 'profile'"
+            >
+              Business Profile
+            </button>
+            <button
+              (click)="setActiveTab('gallery')"
+              class="px-6 py-3 text-sm font-medium rounded-t-lg transition-colors"
+              [class.bg-neutral-100]="activeTab() === 'gallery'"
+              [class.text-neutral-900]="activeTab() === 'gallery'"
+              [class.text-neutral-500]="activeTab() !== 'gallery'"
+            >
+              Gallery
+            </button>
+          </div>
+
+          <!-- Tab Content -->
+          @if (activeTab() === 'profile') {
+            <!-- About Section -->
+            <section class="mb-10">
+              <h2 class="text-2xl font-bold text-neutral-900 mb-6">About</h2>
+              <div class="bg-white rounded-2xl border border-neutral-200 p-6">
+                <!-- Focus Area -->
+                @if (focusAreaLabel()) {
+                  <h3 class="text-lg font-bold text-neutral-900 mb-2">{{ focusAreaLabel() }}</h3>
+                }
+
+                <!-- Description -->
+                @if (description()) {
+                  <p class="text-neutral-600 mb-6 whitespace-pre-line">{{ description() }}</p>
+                }
+
+                <!-- What We Do -->
+                @if (hasExperiences() || hasTags()) {
+                  <h3 class="text-lg font-bold text-neutral-900 mb-4">What We Do</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Experience Types -->
+                    @if (hasExperiences()) {
+                      <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                          <ui-icon name="calendar" class="w-6 h-6 text-amber-700"></ui-icon>
+                        </div>
+                        <div>
+                          <p class="text-base font-semibold text-neutral-900">Experience</p>
+                          <p class="text-sm text-neutral-500">{{ experienceTypes().join(', ') }}</p>
+                        </div>
+                      </div>
+                    }
+
+                    <!-- Tags -->
+                    @if (hasTags()) {
+                      <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center flex-shrink-0">
+                          <ui-icon name="tag" class="w-6 h-6 text-cyan-600"></ui-icon>
+                        </div>
+                        <div>
+                          <p class="text-base font-semibold text-neutral-900">Tags</p>
+                          <p class="text-sm text-neutral-500">{{ tags().join(', ') }}</p>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </section>
+
+            <!-- My Background Section - Scale Plan Only -->
+            @if (onboarding.isScalePlan() && (employment().length > 0 || education().length > 0)) {
+              <section class="mb-10">
+                <h2 class="text-2xl font-bold text-neutral-900 mb-6">My Background</h2>
+
+                <!-- Work Experience -->
+                @if (employment().length > 0) {
+                  <div class="bg-white rounded-2xl border border-neutral-200 p-6 mb-4">
+                    <h3 class="text-lg font-bold text-neutral-900 mb-4">Work Experience</h3>
+                    @for (exp of employment(); track $index) {
+                      <div class="flex justify-between items-start py-4 border-b border-neutral-100 last:border-0 last:pb-0 first:pt-0">
+                        <div>
+                          <p class="font-semibold text-neutral-900">
+                            {{ exp.title }}
+                            @if (exp.company) {
+                              <span class="font-normal text-neutral-600"> | {{ exp.company }}</span>
+                            }
+                          </p>
+                          @if (exp.description) {
+                            <p class="text-neutral-600 text-sm mt-1">{{ exp.description }}</p>
+                          }
+                        </div>
+                        @if (exp.duration) {
+                          <span class="text-neutral-400 text-sm whitespace-nowrap ml-4">{{ exp.duration }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Education -->
+                @if (education().length > 0) {
+                  <div class="bg-white rounded-2xl border border-neutral-200 p-6">
+                    <h3 class="text-lg font-bold text-neutral-900 mb-4">Education</h3>
+                    @for (edu of education(); track $index) {
+                      <div class="flex justify-between items-start py-4 border-b border-neutral-100 last:border-0 last:pb-0 first:pt-0">
+                        <div>
+                          <p class="font-semibold text-neutral-900">{{ edu.degree }}</p>
+                          <p class="text-neutral-600 text-sm">{{ edu.institution }}</p>
+                        </div>
+                        @if (edu.year) {
+                          <span class="text-neutral-400 text-sm whitespace-nowrap ml-4">{{ edu.year }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </section>
+            }
+
+            <!-- Location Section -->
+            @if (fullLocationString()) {
+              <section class="mb-10">
+                <h2 class="text-2xl font-bold text-neutral-900 mb-6">Location</h2>
+                <p class="text-neutral-600 mb-4">{{ fullLocationString() }}</p>
+                @if (mapUrl()) {
+                  <div class="rounded-2xl overflow-hidden border border-neutral-200 h-80">
+                    <iframe
+                      [src]="mapUrl()"
+                      width="100%"
+                      height="100%"
+                      style="border: 0"
+                      allowfullscreen=""
+                      loading="lazy"
+                      referrerpolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                  </div>
+                }
+              </section>
+            }
+
+            <!-- Operating Hours Section -->
+            @if (hasOperatingHours()) {
+              <section class="mb-10">
+                <h2 class="text-2xl font-bold text-neutral-900 mb-6">Operating Hours</h2>
+                <div class="bg-white rounded-2xl border border-neutral-200 p-6">
+                  <div class="space-y-3">
+                    @for (dayInfo of getActiveDays(); track dayInfo.day) {
+                      <div class="flex items-center justify-between py-2 border-b border-neutral-100 last:border-0">
+                        <span class="font-medium text-neutral-900">{{ dayInfo.day }}</span>
+                        <span class="text-neutral-600">{{ dayInfo.hours.open }} - {{ dayInfo.hours.close }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </section>
+            }
+          }
+
+          @if (activeTab() === 'gallery') {
+            <!-- Gallery Content -->
+            <section>
+              <h2 class="text-2xl font-bold text-neutral-900 mb-6">Gallery</h2>
+
+              @if (galleryImages().length > 0) {
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  @for (image of galleryImages(); track $index) {
+                    <div class="aspect-square rounded-xl overflow-hidden">
+                      <img [src]="image" alt="Gallery" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="bg-white rounded-2xl border border-neutral-200 p-12 text-center">
+                  <ui-icon name="image" class="w-12 h-12 text-neutral-300 mx-auto mb-4"></ui-icon>
+                  <p class="text-neutral-500">No gallery images added yet</p>
+                </div>
+              }
+            </section>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Fixed Footer -->
+    <div class="sticky bottom-0 bg-white border-t border-neutral-200 px-4 lg:px-8 py-4">
+      <div class="max-w-4xl mx-auto flex items-center justify-between">
+        <button
+          type="button"
+          (click)="goBack()"
+          class="px-6 py-3 border border-neutral-300 rounded-full text-neutral-700 font-medium hover:bg-neutral-50 transition-colors"
+        >
+          Back
+        </button>
+
+        <button
+          type="button"
+          (click)="onPublish()"
+          [disabled]="isPublishing()"
+          class="px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+        >
+          @if (isPublishing()) {
+            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          }
+          Publish
+        </button>
+      </div>
+    </div>
+  }
+</div>

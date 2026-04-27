@@ -1,0 +1,241 @@
+<testsuites id="" name="" tests="26" failures="3" skipped="0" errors="0" time="111.25353600000001">
+<testsuite name="auth\auth-login.spec.ts" timestamp="2026-01-19T05:20:45.768Z" hostname="chromium" tests="8" failures="0" skipped="0" time="40.427" errors="0">
+<testcase name="Authentication E2E Tests - Login Flow › should successfully login with valid email and password" classname="auth\auth-login.spec.ts" time="6.674">
+</testcase>
+<testcase name="Authentication E2E Tests - Login Flow › should show error for invalid email format" classname="auth\auth-login.spec.ts" time="2.755">
+</testcase>
+<testcase name="Authentication E2E Tests - Login Flow › should show error for non-existent email" classname="auth\auth-login.spec.ts" time="6.855">
+</testcase>
+<testcase name="Authentication E2E Tests - Login Flow › should show error for incorrect password" classname="auth\auth-login.spec.ts" time="9.969">
+</testcase>
+<testcase name="Authentication E2E Tests - Login Flow › should display all social login options" classname="auth\auth-login.spec.ts" time="2.378">
+</testcase>
+<testcase name="Authentication E2E Tests - Login Flow › should handle empty email submission" classname="auth\auth-login.spec.ts" time="2.878">
+</testcase>
+<testcase name="Authentication E2E Tests - Login Flow › should handle empty password submission" classname="auth\auth-login.spec.ts" time="4.663">
+</testcase>
+<testcase name="Authentication E2E Tests - Login Flow › should show forgot password option" classname="auth\auth-login.spec.ts" time="4.255">
+</testcase>
+</testsuite>
+<testsuite name="auth\auth-logout.spec.ts" timestamp="2026-01-19T05:20:45.768Z" hostname="chromium" tests="3" failures="0" skipped="0" time="30.172" errors="0">
+<testcase name="Authentication E2E Tests - Logout Flow › should successfully logout after login" classname="auth\auth-logout.spec.ts" time="11.554">
+</testcase>
+<testcase name="Authentication E2E Tests - Logout Flow › should clear authentication tokens after logout" classname="auth\auth-logout.spec.ts" time="9.922">
+</testcase>
+<testcase name="Authentication E2E Tests - Logout Flow › should require login after logout to access protected pages" classname="auth\auth-logout.spec.ts" time="8.696">
+</testcase>
+</testsuite>
+<testsuite name="auth\auth-password-reset.spec.ts" timestamp="2026-01-19T05:20:45.768Z" hostname="chromium" tests="5" failures="2" skipped="0" time="80.462" errors="0">
+<testcase name="Authentication E2E Tests - Password Reset Flow › should navigate to password reset page" classname="auth\auth-password-reset.spec.ts" time="5.432">
+</testcase>
+<testcase name="Authentication E2E Tests - Password Reset Flow › should request password reset for valid email" classname="auth\auth-password-reset.spec.ts" time="30.219">
+<failure message="auth-password-reset.spec.ts:48:7 should request password reset for valid email" type="FAILURE">
+<![CDATA[  [chromium] › auth\auth-password-reset.spec.ts:48:7 › Authentication E2E Tests - Password Reset Flow › should request password reset for valid email 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.textContent: Target page, context or browser has been closed
+
+      82 |         // Check for success message - could be various formats
+      83 |         const successMessage = page.getByText(/sent|check your email|reset link|instructions|email has been sent|we've sent/i);
+    > 84 |         const pageText = await page.textContent('body') || '';
+         |                                     ^
+      85 |         const hasSuccess = /sent|check your email|reset link|instructions|email has been sent|we've sent/i.test(pageText);
+      86 |         
+      87 |         // Check if form is still visible
+        at C:\Users\ASUS\Documents\mereka-frontend-workspace-v2\tests\e2e-test\tests\auth\auth-password-reset.spec.ts:84:37
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-auth-password-reset-A-24060-sword-reset-for-valid-email-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-auth-password-reset-A-24060-sword-reset-for-valid-email-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-auth-password-reset-A-24060-sword-reset-for-valid-email-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\tests\e2e-test\test-results\auth-auth-password-reset-A-24060-sword-reset-for-valid-email-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|..\..\tests\e2e-test\test-results\auth-auth-password-reset-A-24060-sword-reset-for-valid-email-chromium\video.webm]]
+
+[[ATTACHMENT|..\..\tests\e2e-test\test-results\auth-auth-password-reset-A-24060-sword-reset-for-valid-email-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication E2E Tests - Password Reset Flow › should show error for invalid email format in password reset" classname="auth\auth-password-reset.spec.ts" time="6.575">
+</testcase>
+<testcase name="Authentication E2E Tests - Password Reset Flow › should handle password reset for non-existent email gracefully" classname="auth\auth-password-reset.spec.ts" time="30.211">
+<failure message="auth-password-reset.spec.ts:155:7 should handle password reset for non-existent email gracefully" type="FAILURE">
+<![CDATA[  [chromium] › auth\auth-password-reset.spec.ts:155:7 › Authentication E2E Tests - Password Reset Flow › should handle password reset for non-existent email gracefully 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.textContent: Target page, context or browser has been closed
+
+      183 |         
+      184 |         // Check page text for any message
+    > 185 |         const pageText = await page.textContent('body') || '';
+          |                                     ^
+      186 |         const hasMessage = /sent|check your email|reset link|not found|doesn't exist|invalid|error|email has been sent|we've sent/i.test(pageText);
+      187 |         
+      188 |         // Check if form is still visible
+        at C:\Users\ASUS\Documents\mereka-frontend-workspace-v2\tests\e2e-test\tests\auth\auth-password-reset.spec.ts:185:37
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-auth-password-reset-A-06eb4-n-existent-email-gracefully-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-auth-password-reset-A-06eb4-n-existent-email-gracefully-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-auth-password-reset-A-06eb4-n-existent-email-gracefully-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\tests\e2e-test\test-results\auth-auth-password-reset-A-06eb4-n-existent-email-gracefully-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|..\..\tests\e2e-test\test-results\auth-auth-password-reset-A-06eb4-n-existent-email-gracefully-chromium\video.webm]]
+
+[[ATTACHMENT|..\..\tests\e2e-test\test-results\auth-auth-password-reset-A-06eb4-n-existent-email-gracefully-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication E2E Tests - Password Reset Flow › should allow navigation back from password reset" classname="auth\auth-password-reset.spec.ts" time="8.025">
+</testcase>
+</testsuite>
+<testsuite name="auth\auth-registration.spec.ts" timestamp="2026-01-19T05:20:45.768Z" hostname="chromium" tests="5" failures="0" skipped="0" time="9.06" errors="0">
+<testcase name="Authentication E2E Tests - Registration Flow › should navigate to registration page" classname="auth\auth-registration.spec.ts" time="2.102">
+</testcase>
+<testcase name="Authentication E2E Tests - Registration Flow › should show registration form fields" classname="auth\auth-registration.spec.ts" time="2.406">
+</testcase>
+<testcase name="Authentication E2E Tests - Registration Flow › should validate email format during registration" classname="auth\auth-registration.spec.ts" time="1.6">
+</testcase>
+<testcase name="Authentication E2E Tests - Registration Flow › should validate password strength during registration" classname="auth\auth-registration.spec.ts" time="1.542">
+</testcase>
+<testcase name="Authentication E2E Tests - Registration Flow › should prevent registration with duplicate email" classname="auth\auth-registration.spec.ts" time="1.41">
+</testcase>
+</testsuite>
+<testsuite name="experience\create-physical-experience.spec.ts" timestamp="2026-01-19T05:20:45.768Z" hostname="chromium" tests="2" failures="0" skipped="0" time="25.229" errors="0">
+<testcase name="Physical Experience Creation › should navigate to experience creation page after login" classname="experience\create-physical-experience.spec.ts" time="14.871">
+<system-out>
+<![CDATA[🔐 Starting login flow...
+✅ Login link clicked
+✅ Login successful
+🔍 Looking for hub dashboard or experience creation link...
+✅ Found navigation path:  Post a Job 
+✅ Navigated to: https://v2.mereka.dev/
+📋 Current URL: https://v2.mereka.dev/
+⚠️ May not be on experience creation page
+ℹ️ Test may need adjustment based on actual v2 navigation structure
+]]>
+</system-out>
+</testcase>
+<testcase name="Physical Experience Creation › should verify experience creation page elements are accessible" classname="experience\create-physical-experience.spec.ts" time="10.358">
+<system-out>
+<![CDATA[🔐 Starting login flow...
+✅ Login successful
+✅ User menu found - logged in successfully
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="experience\home-to-experience-redirection.spec.ts" timestamp="2026-01-19T05:20:45.768Z" hostname="chromium" tests="2" failures="0" skipped="0" time="15.989" errors="0">
+<testcase name="Home to Experience Redirection Flow › should successfully navigate to experience detail page after login" classname="experience\home-to-experience-redirection.spec.ts" time="10.977">
+<system-out>
+<![CDATA[Starting login flow with valid credentials...
+✅ Login link clicked
+✅ Login successful
+✅ Navigated to homepage
+✅ Upcoming Experiences section verified
+✅ Clicked on first experience card
+✅ Successfully navigated to experience detail page
+✅ Current URL: https://v2.mereka.dev/experience/dsadasd3
+]]>
+</system-out>
+</testcase>
+<testcase name="Home to Experience Redirection Flow › should navigate to experience detail page without login" classname="experience\home-to-experience-redirection.spec.ts" time="5.012">
+<system-out>
+<![CDATA[Testing experience navigation without login...
+✅ Navigated to homepage
+✅ Upcoming Experiences section verified
+✅ Clicked on first experience card
+✅ Successfully navigated to experience detail page
+✅ Current URL: https://v2.mereka.dev/experience/dsadasd3
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="home\home-page-elements.spec.ts" timestamp="2026-01-19T05:20:45.768Z" hostname="chromium" tests="1" failures="1" skipped="0" time="8.581" errors="0">
+<testcase name="Home Page Elements › should display all key elements in a single flow" classname="home\home-page-elements.spec.ts" time="8.581">
+<failure message="home-page-elements.spec.ts:11:7 should display all key elements in a single flow" type="FAILURE">
+<![CDATA[  [chromium] › home\home-page-elements.spec.ts:11:7 › Home Page Elements › should display all key elements in a single flow 
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected pattern: /.*\/jobs/
+    Received string:  "https://v2.mereka.dev/"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 5000ms
+        9 × unexpected value "https://v2.mereka.dev/"
+
+
+       at ..\fixtures\home-page.ts:218
+
+      216 |     await expect(this.viewAllJobsLink).toBeVisible();
+      217 |     await this.viewAllJobsLink.click();
+    > 218 |     await expect(this.page).toHaveURL(/.*\/jobs/);
+          |                             ^
+      219 |   }
+      220 |
+      221 |   /**
+        at HomePage.clickViewAllJobs (C:\Users\ASUS\Documents\mereka-frontend-workspace-v2\tests\e2e-test\fixtures\home-page.ts:218:29)
+        at C:\Users\ASUS\Documents\mereka-frontend-workspace-v2\tests\e2e-test\tests\home\home-page-elements.spec.ts:105:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\home-home-page-elements-Ho-d5a5a-y-elements-in-a-single-flow-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\home-home-page-elements-Ho-d5a5a-y-elements-in-a-single-flow-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\home-home-page-elements-Ho-d5a5a-y-elements-in-a-single-flow-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[✅ Hero section verified
+✅ Featured Experts section verified
+✅ Found 4 expert cards
+✅ View all Experts navigation verified
+✅ Featured Hubs section verified
+✅ Found 4 hub cards
+✅ View all Hubs navigation verified
+✅ Browse Expertise section verified
+✅ Found 3 expertise cards
+✅ Expertise card price element verified
+✅ View all Expertise navigation verified
+✅ Upcoming Experiences section verified
+✅ Found 3 experience cards
+✅ Experience card elements verified
+✅ View all Experiences navigation verified
+✅ Latest Jobs section verified
+ℹ️ No job cards found (may be empty)
+
+[[ATTACHMENT|..\..\tests\e2e-test\test-results\home-home-page-elements-Ho-d5a5a-y-elements-in-a-single-flow-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|..\..\tests\e2e-test\test-results\home-home-page-elements-Ho-d5a5a-y-elements-in-a-single-flow-chromium\video.webm]]
+
+[[ATTACHMENT|..\..\tests\e2e-test\test-results\home-home-page-elements-Ho-d5a5a-y-elements-in-a-single-flow-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

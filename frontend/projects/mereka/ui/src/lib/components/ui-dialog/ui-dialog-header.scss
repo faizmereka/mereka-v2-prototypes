@@ -1,0 +1,45 @@
+
+.ui-dialog-header {
+  height: var(--ui-dialog-header-height);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+
+  &:not(.ui-dialog-header--disable-close) {
+    border-bottom: 1px solid var(--border-solid, #DDDDDE);
+  }
+
+  &__inner-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+  &__icon {
+    display: none;  
+  }
+  &__icon-mobile {
+    display: block;
+  }
+}
+
+@media screen and (width >= 576px) {
+  .ui-dialog-header {
+    padding-block: 2rem 1rem;
+    padding-inline: 2rem;
+    gap: 12px;
+    border-bottom: none !important;
+
+    &__inner-container {
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    &__icon {
+      display: block;  
+    }
+    &__icon-mobile {
+      display: none;
+    }
+  }
+}

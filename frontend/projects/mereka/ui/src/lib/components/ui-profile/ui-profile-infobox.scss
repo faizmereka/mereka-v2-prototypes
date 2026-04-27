@@ -1,0 +1,14 @@
+@layer mereka-ui {
+  @media (width >= 768px) {
+    .ui-profile-infobox {
+      width: 100%;
+      padding: 2em;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      background: var(--surface-primary, #FFF);
+      border-radius: 8px;
+      border: 1px solid var(--border-solid, #DDDDDE);
+    }
+  }
+}

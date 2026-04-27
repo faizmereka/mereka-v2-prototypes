@@ -1,0 +1,30 @@
+
+<a class="header-notification-message-card" [href]="getChatRoomUrl()">
+
+  <div class="header-notification-message-card__avatar">
+    <img ui-image [src]="chat.lastMessage?.sender?.profileUrl ?? '' | imageKit: { n: 'profile_avatar' }" placeholder="user" alt="" loading="lazy">
+  </div>
+  @if (chat.lastMessage) {
+    <div class="header-notification-message-card__content">
+      <div class="header-notification-message-card__name">
+        {{ chat.lastMessage.sender?.name }}
+      </div>
+      <div class="header-notification-message-card__description">
+        <span class="header-notification-message-card__message">
+          @if (!chat.lastMessage.files?.length) {
+            {{ message }}
+          } @else {      
+            {{ 'File ' + chat.lastMessage.files?.length }}      
+          }
+        </span>
+        <div class="dot-sep"></div>
+        <div class="header-notification-message-card__date">
+          {{ getCreatedDate(chat.lastMessage.createdAt ?? '', 'D MMM YYYY') }}
+        </div>
+      </div>
+      <div class="header-notification-message-card__date">
+      </div>
+    </div>
+  }
+  <div class="header-notification-message-card__status"></div>
+</a>

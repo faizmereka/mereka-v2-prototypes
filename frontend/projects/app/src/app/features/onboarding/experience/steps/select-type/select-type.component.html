@@ -1,0 +1,68 @@
+<div class="select-experience-type-page min-h-full bg-white">
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-12 lg:py-20">
+    <div class="text-center mb-12">
+      <h1 class="text-2xl lg:text-3xl font-bold text-neutral-900">How would you like to proceed?</h1>
+    </div>
+
+    <!-- Experience Options -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      @for (option of experienceOptions; track option.id) {
+        <button
+          type="button"
+          (click)="selectType(option.id)"
+          class="relative p-6 bg-white rounded-xl border text-left transition-all"
+          [class.border-neutral-900]="selectedType() === option.id"
+          [class.border-neutral-200]="selectedType() !== option.id"
+        >
+          <!-- Radio Indicator -->
+          <div class="absolute top-6 right-6">
+            <div
+              class="w-6 h-6 rounded-full border-2 flex items-center justify-center"
+              [class.border-neutral-900]="selectedType() === option.id"
+              [class.border-neutral-300]="selectedType() !== option.id"
+            >
+              @if (selectedType() === option.id) {
+                <div class="w-3 h-3 rounded-full bg-neutral-900"></div>
+              }
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <h2 class="text-lg font-bold text-neutral-900 mb-3 pr-10">{{ option.title }}</h2>
+          <p class="text-sm text-neutral-600 mb-6 leading-relaxed">{{ option.description }}</p>
+
+          <!-- Features -->
+          <div class="space-y-3">
+            @for (feature of option.features; track feature) {
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-neutral-900 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="text-sm text-neutral-700">{{ feature }}</span>
+              </div>
+            }
+          </div>
+        </button>
+      }
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center justify-center gap-4">
+      <button
+        type="button"
+        (click)="goBack()"
+        class="px-12 py-3 text-sm font-bold border border-neutral-200 rounded-full hover:bg-neutral-50 transition-colors"
+      >
+        Back
+      </button>
+      <button
+        type="button"
+        (click)="proceed()"
+        class="px-12 py-3 text-sm font-bold text-white bg-[#1a1623] rounded-full hover:bg-neutral-800 transition-colors"
+      >
+        Next
+      </button>
+    </div>
+  </main>
+</div>

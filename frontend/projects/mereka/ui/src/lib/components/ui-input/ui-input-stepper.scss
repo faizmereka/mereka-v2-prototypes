@@ -1,0 +1,25 @@
+@layer mereka-ui {
+  .ui-input-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &__wrap {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    &__label {
+      display: block;
+      min-width: 24px;    
+      font-size: 1.0625rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    &__max {
+      color: #B9B9BA
+    }
+  }
+}

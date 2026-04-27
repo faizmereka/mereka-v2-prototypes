@@ -1,0 +1,145 @@
+<!-- Loading State -->
+@if (loading()) {
+  <div class="min-h-screen bg-neutral-100 flex items-center justify-center">
+    <div class="text-center">
+      <svg class="animate-spin h-10 w-10 mx-auto text-black" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <p class="mt-4 text-neutral-600">Loading...</p>
+    </div>
+  </div>
+}
+
+<!-- Error State -->
+@else if (error()) {
+  <div class="min-h-screen bg-neutral-100 flex items-center justify-center">
+    <div class="text-center max-w-md mx-auto px-4">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
+        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+      <h1 class="text-xl font-semibold text-neutral-900 mb-2">Error</h1>
+      <p class="text-neutral-600 mb-6">{{ error() }}</p>
+    </div>
+  </div>
+}
+
+<!-- Success Content -->
+@else {
+  <div class="min-h-screen bg-neutral-100">
+    <main class="max-w-2xl mx-auto px-4 py-12">
+      <!-- Success Icon -->
+      <div class="text-center mb-8">
+        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
+          <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-neutral-900 mb-2">Proposal Submitted!</h1>
+        <p class="text-neutral-600">
+          Your proposal has been sent to the client. You'll be notified when they respond.
+        </p>
+      </div>
+
+      <!-- Proposal Summary Card -->
+      <section class="bg-white rounded-xl p-6 border border-neutral-200 mb-6">
+        <h2 class="text-lg font-semibold text-neutral-900 mb-4">Proposal Summary</h2>
+
+        <!-- Job Info -->
+        @if (job()) {
+          <div class="mb-4 pb-4 border-b border-neutral-100">
+            <p class="text-sm text-neutral-500 mb-1">Job</p>
+            <p class="font-medium text-neutral-900">{{ job()?.jobTitle }}</p>
+            <p class="text-sm text-neutral-600">
+              {{ job()?.client?.organizationName || job()?.client?.name }}
+            </p>
+          </div>
+        }
+
+        <!-- Budget -->
+        <div class="mb-4 pb-4 border-b border-neutral-100">
+          <p class="text-sm text-neutral-500 mb-1">Your Proposed Budget</p>
+          @if (proposal()?.priceType === 'fixed') {
+            <p class="text-lg font-semibold text-neutral-900">
+              {{ proposal()?.selectedCurrency }} {{ proposal()?.proposedPrice | number:'1.2-2' }}
+              <span class="text-sm font-normal text-neutral-500">(Fixed)</span>
+            </p>
+          } @else {
+            <p class="text-lg font-semibold text-neutral-900">
+              {{ proposal()?.selectedCurrency }} {{ proposal()?.hourlyProposedPrice | number:'1.2-2' }}/hr
+              <span class="text-sm font-normal text-neutral-500">
+                ({{ proposal()?.workingHours }} hrs = {{ proposal()?.selectedCurrency }} {{ totalPrice() | number:'1.2-2' }})
+              </span>
+            </p>
+          }
+        </div>
+
+        <!-- Status -->
+        <div>
+          <p class="text-sm text-neutral-500 mb-1">Status</p>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800">
+            {{ proposal()?.status | titlecase }}
+          </span>
+        </div>
+      </section>
+
+      <!-- What's Next -->
+      <section class="bg-white rounded-xl p-6 border border-neutral-200 mb-6">
+        <h2 class="text-lg font-semibold text-neutral-900 mb-4">What's Next?</h2>
+        <ul class="space-y-3">
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span class="text-xs font-medium text-neutral-600">1</span>
+            </div>
+            <div>
+              <p class="font-medium text-neutral-900">Wait for Client Review</p>
+              <p class="text-sm text-neutral-600">
+                The client will review your proposal and may reach out with questions.
+              </p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span class="text-xs font-medium text-neutral-600">2</span>
+            </div>
+            <div>
+              <p class="font-medium text-neutral-900">Get Notified</p>
+              <p class="text-sm text-neutral-600">
+                You'll receive an email notification when the client accepts or responds to your proposal.
+              </p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span class="text-xs font-medium text-neutral-600">3</span>
+            </div>
+            <div>
+              <p class="font-medium text-neutral-900">Start Working</p>
+              <p class="text-sm text-neutral-600">
+                Once accepted, you can start working on the project and track progress.
+              </p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a
+          [href]="proposalsUrl"
+          class="flex-1 py-4 px-6 bg-black text-white rounded-lg font-semibold text-center hover:bg-neutral-800 transition-colors"
+        >
+          View My Proposals
+        </a>
+        <a
+          [href]="browseJobsUrl"
+          class="flex-1 py-4 px-6 border border-neutral-300 text-neutral-700 rounded-lg font-semibold text-center hover:bg-neutral-50 transition-colors"
+        >
+          Browse More Jobs
+        </a>
+      </div>
+    </main>
+  </div>
+}

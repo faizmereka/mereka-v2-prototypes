@@ -1,0 +1,45 @@
+.ui-operating-hours {
+  --ui-operating-hours-border-color: var(--border-solid, #DDDDDE);
+  --ui-operating-hours-day-color: var(--content-secondary, #7B7B7B);
+  --ui-operating-hours-time-color: var(--content-secondary, #7B7B7B);
+
+  font-family: var(--font-secondary, 'Lato', sans-serif);
+  background-color: #FFF;
+  overflow: clip;
+
+  &[data-isToday="today"] {
+    --ui-operating-hours-border-color: var(--border-selected, #7B7B7C);
+    --ui-operating-hours-day-color: var(--content-primary, #1A1623);
+    --ui-operating-hours-time-color: var(--content-primary, #1A1623);
+  }
+
+  &[data-appearance="Closed"] {
+    --ui-operating-hours-time-color: var(--content-negative, #D44333);
+  }
+
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--ui-operating-hours-border-color);
+  border-radius: 12px;
+
+  .day {
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--ui-operating-hours-day-color);
+  }
+
+  .time {
+    padding: 10px;
+    font-size: 13px;
+    color: var(--ui-operating-hours-time-color);
+  }
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    background-color: var(--ui-operating-hours-border-color);
+  }
+}

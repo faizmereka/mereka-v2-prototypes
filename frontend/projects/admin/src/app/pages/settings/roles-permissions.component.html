@@ -1,0 +1,352 @@
+<div class="min-h-screen bg-gray-50 animate-fade-in">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Roles & Permissions</h1>
+    <p class="text-gray-500 mt-1">Manage user roles and their permissions</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-1 bg-white rounded-xl shadow-sm border border-gray-100 p-1.5 mb-6 w-fit">
+    <button
+      class="px-6 py-2.5 rounded-lg font-medium text-sm transition-all"
+      [class]="activeTab() === 'roles' ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'"
+      (click)="switchTab('roles')"
+    >
+      Roles
+    </button>
+    <button
+      class="px-6 py-2.5 rounded-lg font-medium text-sm transition-all"
+      [class]="activeTab() === 'permissions' ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'"
+      (click)="switchTab('permissions')"
+    >
+      Permissions
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  @if (rolesLoading() || permissionsLoading()) {
+    <div class="flex items-center justify-center py-12">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <span class="ml-3 text-gray-600">Loading...</span>
+    </div>
+  }
+
+  <!-- Roles Tab -->
+  @if (activeTab() === 'roles' && !rolesLoading()) {
+    <div class="space-y-6">
+      <!-- Actions Bar -->
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-lg w-80">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search roles..."
+            [(ngModel)]="searchQuery"
+            class="flex-1 bg-transparent border-none outline-none text-sm"
+          />
+        </div>
+        <button
+          class="px-4 py-2.5 bg-primary text-white rounded-lg font-medium text-sm hover:bg-primary-dark transition-colors flex items-center gap-2"
+          (click)="openCreateRoleModal()"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Add Role
+        </button>
+      </div>
+
+      <!-- Empty State -->
+      @if (filteredRoles().length === 0) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+          <svg class="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+          <p class="text-gray-500">No roles found</p>
+        </div>
+      }
+
+      <!-- Roles Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        @for (role of filteredRoles(); track role._id) {
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-bold text-gray-900">{{ role.name }}</h3>
+                  @if (role.isSystemRole) {
+                    <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded">System</span>
+                  }
+                  @if (!role.isActive) {
+                    <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-medium rounded">Inactive</span>
+                  }
+                </div>
+                <code class="text-xs text-gray-400 font-mono">{{ role.key }}</code>
+                <p class="text-sm text-gray-500 mt-1">{{ role.description }}</p>
+              </div>
+              @if (!role.isSystemRole) {
+                <div class="relative group">
+                  <button class="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                    </svg>
+                  </button>
+                  <!-- Dropdown Menu -->
+                  <div class="absolute right-0 top-full mt-1 w-32 bg-white rounded-lg shadow-lg border border-gray-100 py-1 hidden group-hover:block z-10">
+                    <button
+                      class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                      (click)="toggleRoleStatus(role)"
+                    >
+                      {{ role.isActive ? 'Deactivate' : 'Activate' }}
+                    </button>
+                    <button
+                      class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                      (click)="deleteRole(role)"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+                {{ role.memberCount || 0 }} members
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                {{ role.permissions.length }} permissions
+              </span>
+            </div>
+
+            <div class="flex gap-2">
+              <button
+                class="flex-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                (click)="editRole(role)"
+              >
+                Edit Permissions
+              </button>
+              @if (!role.isSystemRole) {
+                <button
+                  class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  (click)="deleteRole(role)"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Permissions Tab -->
+  @if (activeTab() === 'permissions' && !permissionsLoading()) {
+    <div class="space-y-6">
+      <!-- Module Filter -->
+      <div class="flex gap-2 flex-wrap">
+        <button
+          class="px-4 py-2 rounded-lg font-medium text-sm transition-all"
+          [class]="selectedModule() === 'all' ? 'bg-primary text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'"
+          (click)="selectedModule.set('all')"
+        >
+          All Modules
+        </button>
+        @for (module of modules(); track module) {
+          <button
+            class="px-4 py-2 rounded-lg font-medium text-sm transition-all"
+            [class]="selectedModule() === module ? 'bg-primary text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'"
+            (click)="selectedModule.set(module)"
+          >
+            {{ module }}
+          </button>
+        }
+      </div>
+
+      <!-- Empty State -->
+      @if (filteredPermissions().length === 0) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+          <svg class="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+          <p class="text-gray-500">No permissions found</p>
+        </div>
+      }
+
+      <!-- Permissions Table -->
+      @if (filteredPermissions().length > 0) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-100">
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Permission</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Key</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Description</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Category</th>
+                <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">Assigned To</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (permission of filteredPermissions(); track permission._id) {
+                <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-2">
+                      <span class="font-medium text-gray-900">{{ permission.name }}</span>
+                      @if (permission.isSystemPermission) {
+                        <span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">System</span>
+                      }
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <code class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">{{ permission.key }}</code>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="text-sm text-gray-500">{{ permission.description }}</span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full capitalize">
+                      {{ permission.category }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <span class="text-sm text-gray-500">{{ getRolesWithPermission(permission._id).length }} roles</span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Add/Edit Role Modal -->
+  @if (showRoleModal()) {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" (click)="closeRoleModal()">
+      <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden" (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 class="text-lg font-bold text-gray-900">{{ editingRole() ? 'Edit Role' : 'Create New Role' }}</h2>
+          <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors" (click)="closeRoleModal()">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+          <div class="space-y-4 mb-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Role Name</label>
+              <input
+                type="text"
+                [(ngModel)]="roleForm.name"
+                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                placeholder="Enter role name"
+              />
+            </div>
+            @if (!editingRole()) {
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Role Key</label>
+                <input
+                  type="text"
+                  [(ngModel)]="roleForm.key"
+                  class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-mono text-sm"
+                  placeholder="e.g., content-manager (auto-generated if empty)"
+                />
+                <p class="text-xs text-gray-500 mt-1">Unique identifier for this role. Use lowercase with hyphens.</p>
+              </div>
+            } @else {
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Role Key</label>
+                <div class="px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-lg">
+                  <code class="text-sm text-gray-600">{{ roleForm.key }}</code>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Role key cannot be changed after creation.</p>
+              </div>
+            }
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea
+                [(ngModel)]="roleForm.description"
+                rows="2"
+                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
+                placeholder="Enter role description"
+              ></textarea>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-semibold text-gray-700 mb-3">Permissions</h3>
+            @if (modules().length === 0) {
+              <p class="text-sm text-gray-500">No permissions available</p>
+            }
+            @for (module of modules(); track module) {
+              <div class="mb-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <input
+                    type="checkbox"
+                    [id]="'module-' + module"
+                    class="w-4 h-4 text-primary rounded"
+                    [checked]="isModuleFullySelected(module)"
+                    (change)="toggleModule(module)"
+                  />
+                  <label [for]="'module-' + module" class="font-medium text-gray-900">{{ module }}</label>
+                </div>
+                <div class="ml-6 grid grid-cols-2 gap-2">
+                  @for (permission of getPermissionsByModule(module); track permission._id) {
+                    <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        [checked]="roleForm.permissions.includes(permission._id)"
+                        (change)="togglePermission(permission._id)"
+                        class="w-4 h-4 text-primary rounded"
+                      />
+                      {{ permission.name }}
+                    </label>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
+          <button
+            class="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+            (click)="closeRoleModal()"
+          >
+            Cancel
+          </button>
+          <button
+            class="px-4 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+            (click)="saveRole()"
+            [disabled]="isSubmitting()"
+          >
+            @if (isSubmitting()) {
+              <span class="flex items-center gap-2">
+                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                </svg>
+                Saving...
+              </span>
+            } @else {
+              {{ editingRole() ? 'Update Role' : 'Create Role' }}
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

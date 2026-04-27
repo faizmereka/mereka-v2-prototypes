@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-11-01T05:33:56.002Z",
+  "filesScanned": 15,
+  "summary": {
+    "errors": 0,
+    "warnings": 0,
+    "passed": true
+  },
+  "issues": {
+    "errors": [],
+    "warnings": []
+  }
+}

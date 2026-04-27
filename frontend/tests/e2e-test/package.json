@@ -1,0 +1,29 @@
+{
+  "name": "mereka-e2e-tests",
+  "version": "1.0.0",
+  "description": "E2E tests for Mereka frontend authentication flows",
+  "scripts": {
+    "test": "node run-tests.js",
+    "test:direct": "playwright test --config=playwright.config.ts",
+    "test:headed": "cross-env REPORT_TIMESTAMP=\"$(node -e 'console.log(new Date().toISOString().replace(/[:.]/g,\"-\").slice(0,-5))')\" playwright test --config=playwright.config.ts --headed",
+    "test:ui": "playwright test --config=playwright.config.ts --ui",
+    "test:debug": "playwright test --config=playwright.config.ts --debug",
+    "bdd": "npx cucumber-js --config ../../tests/specs/bdd/config/cucumber.config.js",
+    "report": "playwright show-report ../../artifacts/playwright-report-e2e-*",
+    "report:latest": "node -e \"const fs=require('fs');const path=require('path');const dir='../../artifacts';const reports=fs.readdirSync(dir).filter(f=>f.startsWith('playwright-report-e2e-')).sort().reverse();if(reports.length>0){console.log('Opening latest report:',reports[0]);require('child_process').exec(`npx playwright show-report ${path.join(dir,reports[0])}`);}else{console.log('No reports found');}\"",
+    "report:list": "node -e \"const fs=require('fs');const dir='../../artifacts';const reports=fs.readdirSync(dir).filter(f=>f.startsWith('playwright-report-e2e-')).sort().reverse();console.log('Available reports:');reports.forEach((r,i)=>console.log(`  ${i+1}. ${r}`));\"",
+    "report:pdf": "node scripts/generate-pdf-report.js",
+    "report:pdf:latest": "node scripts/generate-pdf-report.js --latest",
+    "test:with-pdf": "npm test && npm run report:pdf"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^12.6.0",
+    "@cucumber/gherkin": "^38.0.0",
+    "@cucumber/messages": "^32.0.1",
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.0.0"
+  }
+}

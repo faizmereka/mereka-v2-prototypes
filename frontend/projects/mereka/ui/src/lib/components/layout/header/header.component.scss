@@ -1,0 +1,137 @@
+@use 'abstracts' as *;
+@use 'layout/pages' as *;
+
+:root {
+  --header-main-height: 70px;
+  --header-filter-bar-height: 70px;
+  --header-full-height: var(--header-main-height);
+  // :has checks if .common-header has a direct child with the class .common-header-filter-bar
+  // If it does, use the height of the header with the filter bar
+  &:has(.common-header > .common-header-filter-bar) {
+    --header-full-height: calc(var(--header-main-height) + var(--header-filter-bar-height));
+  }
+}
+
+.common-header {
+  display: block;
+  background-color: #FFF;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-back-icon,
+.header-icon-external {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.header-container {
+  padding-inline: $layout-section-padding;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  // Only have height if there are content
+  &:has(> *:not(:empty)) {
+    min-height: var(--header-main-height);
+  }
+  // Nested to increase specificity and ensure only the toggle in the header is affected
+  .common-header-search-panel-toggle {
+    display: block;
+    padding-block: 12px;
+  }
+
+  &.placeholder-header-desktop {
+    display: none;
+  }
+
+  .placeholder-search-box {
+    width: 100%;
+    height: 48px;
+    padding: 0.375rem 0.75rem 0.375rem 1.25rem;  
+    display: flex;
+    align-items: center;  
+    background: #FFF;
+    border-radius: 30px;
+    border: 1px solid #DDDDDE;
+    gap: 0.75rem;
+
+    > * {
+      flex: 0 1 auto !important;
+    }
+
+    &__icon {
+      width: 24px !important;
+      height: 24px !important;
+    }
+  }
+}
+
+
+@media (width >= $breakpoint-mobile) {
+  .header-container {
+    &.placeholder-header-desktop {
+      display: inherit;
+    }
+    
+    &.placeholder-header-mobile {
+      display: none;
+    }
+  }
+}
+
+@media screen and (width >= $breakpoint-tablet) {
+  :root {
+    --header-main-height: 80px;
+    --header-filter-bar-height: 80px;
+  }
+  
+  .common-header {
+    min-height: var(--header-main-height);     
+    border-bottom: none;
+    box-shadow: 0px 6px 16px 0px rgba(0, 0, 0, 0.06);
+    overflow: visible;
+
+    &:has(> *:not(:empty)) {
+      min-height: var(--header-main-height);
+    }
+  }
+  
+  .header-main {
+    max-width: $layout-container-width-wide;
+    margin: 0 auto;
+    padding: 16px 0;
+    display: grid;
+    grid-template-columns: 1fr minmax(auto, 420px) 1fr;
+    align-items: center;
+    gap: var(--space-s);
+    flex-basis: 100%;
+  }
+  
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+
+    a {
+      display: flex;
+      align-items: center;
+    }
+  }
+  
+  .common-logo {
+    width: 45px;  
+  }
+  
+  .header-user {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .common-header-search-panel-toggle {
+    display: none;
+  }
+}

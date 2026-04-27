@@ -1,0 +1,141 @@
+/*
+* Chaining the class to ensure higher specificity for experience cards
+* and to limit the styles from affecting other card styles
+*/
+@layer mereka-ui {
+  .ui-card.ui-card-job {
+
+    &--featured {
+      border-color: #42D7D7;
+    }
+
+    .inner-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .ui-card-body {
+      gap: 16px;
+      text-decoration: none;
+      padding: var(--space-m, 20px);
+    }
+
+    .ui-card-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .ui-card-title {
+      font-weight: 700;
+      // Make whole card clickable
+      a {
+        &::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+        }
+        &:active,
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+
+    .ui-card-image {
+      padding-bottom: 56% !important;
+      background-color: #FFF;
+    }
+
+    .ui-card-desc {
+      /* max-height = line-height * line-clamp */
+      margin-bottom: 0;
+      max-height: 6em;
+      display: -webkit-box;
+      overflow: hidden;
+      line-clamp: 4;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      font-size: var(--text-xs, 14px);
+    }
+
+    .ui-card-meta-list {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 0.5rem;
+
+      > .ui-card-meta {
+        display: grid;
+        grid-column: span 2;
+        grid-template-columns: subgrid;
+      }
+    }
+    .ui-card-job-meta {
+      :first-child {
+        text-wrap: balance;
+      }
+      
+      :last-child {
+        flex: 1 0 auto;
+        text-align: right;
+      }
+    }
+
+    .ui-card-meta {
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      line-height: 1.5em;    
+
+      .mat-icon,
+      svg-icon {
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
+      }
+
+      > span {
+        display: inline-block;
+      }
+    }
+
+    .job-label {
+      color: var(--content-secondary, #7B7B7B);
+    }
+
+    .job-info {
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .job-tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background-color: #8B3AEF;
+      font-size: 12px;
+      line-height: 1.25;
+      color: #FFF;
+    }
+
+    .job-tag--closed{
+      text-transform: uppercase;
+      background-color: #7B7B7B;
+    }
+
+    .separator {
+      width: 100%;
+      height: 1px;
+      margin-block-start: auto;
+      background-color: var(--border-solid, #DDDDDE);
+    }
+
+    .text-blur {
+      filter: blur(4px);
+      user-select: none;
+    }
+  }
+}

@@ -1,0 +1,891 @@
+<div class="min-h-screen bg-gray-50 animate-fade-in">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">API Monitoring</h1>
+    <p class="text-gray-500 mt-1">Monitor API usage, rate limits, and security alerts</p>
+  </div>
+
+  <!-- Stats Overview -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Total Requests (24h)</p>
+          <p class="text-2xl font-bold text-gray-900">{{ totalRequests() | number:'1.0-0' }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Error Rate</p>
+          <p class="text-2xl font-bold text-gray-900">{{ errorRate() }}%</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Avg Response Time</p>
+          <p class="text-2xl font-bold text-gray-900">{{ avgResponseTime() }}ms</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-yellow-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Blocked Attempts</p>
+          <p class="text-2xl font-bold text-gray-900">{{ blockedAttempts() }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-1 bg-white rounded-xl shadow-sm border border-gray-100 p-1.5 mb-6">
+    @for (tab of tabs; track tab.id) {
+      <button
+        class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm transition-all"
+        [class]="activeTab() === tab.id ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'"
+        (click)="setActiveTab(tab.id)"
+      >
+        {{ tab.label }}
+        @if (tab.id === 'alerts' && blockedAttempts() > 0) {
+          <span class="ml-2 px-2 py-0.5 rounded-full text-xs" [class]="activeTab() === tab.id ? 'bg-white/20 text-white' : 'bg-red-100 text-red-700'">
+            {{ suspiciousActivity().highVolumeIPs.length + suspiciousActivity().highErrorRateIPs.length }}
+          </span>
+        }
+      </button>
+    }
+  </div>
+
+  <!-- API Logs Tab -->
+  @if (activeTab() === 'logs') {
+    @if (logsLoading()) {
+      <div class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span class="ml-3 text-gray-500">Loading logs...</span>
+      </div>
+    } @else {
+    <div class="space-y-4">
+      <!-- Filters -->
+      <div class="flex justify-between items-center flex-wrap gap-4">
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-lg w-80">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input type="text" placeholder="Search by path, IP, email..." [(ngModel)]="searchQuery" (keyup.enter)="onSearchChange()" class="flex-1 bg-transparent border-none outline-none text-sm" />
+          </div>
+          <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90" (click)="onSearchChange()">
+            Search
+          </button>
+        </div>
+        <div class="flex gap-2">
+          <!-- Module Filter -->
+          <select
+            class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 outline-none"
+            [ngModel]="moduleFilter()"
+            (ngModelChange)="moduleFilter.set($event); onModuleChange()"
+          >
+            @for (module of modules; track module) {
+              <option [value]="module">{{ module === 'all' ? 'All Modules' : (module | titlecase) }}</option>
+            }
+          </select>
+          <!-- Status Code Filter -->
+          <select
+            class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 outline-none"
+            [ngModel]="statusCodeFilter()"
+            (ngModelChange)="statusCodeFilter.set($event); onStatusCodeChange()"
+          >
+            @for (status of statusCodes; track status) {
+              <option [value]="status">{{ status === 'all' ? 'All Status' : (status | titlecase) }}</option>
+            }
+          </select>
+          <!-- Log Level Filter -->
+          @for (level of logLevels; track level) {
+            <button
+              class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+              [class]="logLevelFilter() === level ? 'bg-primary text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'"
+              (click)="logLevelFilter.set(level); onLogLevelChange()"
+            >
+              {{ level | titlecase }}
+            </button>
+          }
+        </div>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50" (click)="refreshLogs()">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Refresh
+          </button>
+          <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50" (click)="exportLogs()">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Export
+          </button>
+        </div>
+      </div>
+
+      <!-- Logs Table -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-gray-50 border-b border-gray-100">
+              <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Timestamp</th>
+              <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Method</th>
+              <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Path</th>
+              <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">Module</th>
+              <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">Status</th>
+              <th class="text-right px-6 py-4 text-sm font-semibold text-gray-600">Time</th>
+              <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">IP / User</th>
+              <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (log of filteredLogs(); track log._id) {
+              <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-500">{{ log.createdAt | date:'MMM d, h:mm:ss a' }}</span>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2.5 py-1 rounded text-xs font-bold" [class]="getMethodClasses(log.method)">
+                    {{ log.method }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div>
+                    <p class="font-mono text-sm text-gray-900">{{ log.path }}</p>
+                    @if (log.errorMessage) {
+                      <p class="text-xs text-red-500 truncate max-w-[250px]" [title]="log.errorMessage">{{ log.errorMessage }}</p>
+                    }
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <span class="px-2.5 py-1 rounded text-xs font-medium" [class]="getModuleClasses(log.module)">
+                    {{ log.module || 'other' | titlecase }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getStatusCodeClasses(log.statusCode)">
+                    {{ log.statusCode }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <span class="text-sm font-mono" [class]="log.responseTime > 1000 ? 'text-red-600' : log.responseTime > 500 ? 'text-yellow-600' : 'text-gray-600'">
+                    {{ log.responseTime }}ms
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div>
+                    <p class="font-mono text-sm text-gray-900">{{ log.ip }}</p>
+                    @if (log.userEmail) {
+                      <p class="text-xs text-gray-500">{{ log.userEmail }}</p>
+                    }
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getLogLevelClasses(log.level)">
+                    {{ log.level | titlecase }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                  No logs found matching your criteria
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Logs Pagination -->
+      @if (logsPagination().totalPages > 0) {
+        <div class="flex justify-between items-center mt-4">
+          <span class="text-sm text-gray-500">
+            Showing {{ filteredLogs().length }} of {{ logsPagination().total }} logs
+          </span>
+          <div class="flex items-center gap-2">
+            <button
+              class="px-3 py-1.5 border border-gray-200 rounded-md text-sm cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              [disabled]="logsPagination().page === 1"
+              (click)="prevLogsPage()"
+            >
+              Previous
+            </button>
+            @for (page of getLogsPageNumbers(); track page) {
+              <button
+                class="w-8 h-8 rounded-md text-sm cursor-pointer border"
+                [class.bg-primary]="page === logsPagination().page"
+                [class.text-white]="page === logsPagination().page"
+                [class.border-primary]="page === logsPagination().page"
+                [class.border-gray-200]="page !== logsPagination().page"
+                [class.hover:bg-gray-50]="page !== logsPagination().page"
+                (click)="goToLogsPage(page)"
+              >
+                {{ page }}
+              </button>
+            }
+            <button
+              class="px-3 py-1.5 border border-gray-200 rounded-md text-sm cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              [disabled]="logsPagination().page === logsPagination().totalPages"
+              (click)="nextLogsPage()"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+    }
+  }
+
+  <!-- Alerts & Security Tab -->
+  @if (activeTab() === 'alerts') {
+    @if (suspiciousLoading()) {
+      <div class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span class="ml-3 text-gray-500">Loading alerts...</span>
+      </div>
+    } @else {
+    <div class="space-y-6">
+      <!-- Alert Banner -->
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+        <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div>
+          <p class="font-medium text-red-800">Security Alerts Active</p>
+          <p class="text-sm text-red-700 mt-0.5">{{ suspiciousActivity().highVolumeIPs.length + suspiciousActivity().highErrorRateIPs.length }} suspicious IPs detected in the last 15 minutes. Review and take action if necessary.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- High Volume IPs -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">High Volume IPs</h3>
+            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Last 15 min</span>
+          </div>
+          <div class="space-y-3">
+            @for (ip of suspiciousActivity().highVolumeIPs; track ip.ip) {
+              <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="font-mono font-medium text-gray-900">{{ ip.ip }}</p>
+                    <p class="text-sm text-gray-500">{{ ip.count | number:'1.0-0' }} requests</p>
+                  </div>
+                </div>
+                <div class="flex gap-2">
+                  <button class="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors" (click)="blockIP(ip.ip)">
+                    Block
+                  </button>
+                  <button class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors" (click)="investigateIP(ip.ip)">
+                    Investigate
+                  </button>
+                </div>
+              </div>
+            } @empty {
+              <div class="text-center py-8 text-gray-500">
+                <svg class="w-12 h-12 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p>No high volume IPs detected</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- High Error Rate IPs -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">High Error Rate IPs</h3>
+            <span class="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded">>50% errors</span>
+          </div>
+          <div class="space-y-3">
+            @for (ip of suspiciousActivity().highErrorRateIPs; track ip.ip) {
+              <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="font-mono font-medium text-gray-900">{{ ip.ip }}</p>
+                    <p class="text-sm text-gray-500">{{ ip.errorRate }}% error rate ({{ ip.count }} requests)</p>
+                  </div>
+                </div>
+                <div class="flex gap-2">
+                  <button class="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors" (click)="blockIP(ip.ip)">
+                    Block
+                  </button>
+                  <button class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors" (click)="investigateIP(ip.ip)">
+                    Investigate
+                  </button>
+                </div>
+              </div>
+            } @empty {
+              <div class="text-center py-8 text-gray-500">
+                <svg class="w-12 h-12 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p>No high error rate IPs detected</p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocked Attempts Summary -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Rate Limit Summary</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="text-center p-6 bg-red-50 rounded-lg">
+            <p class="text-4xl font-bold text-red-600">{{ suspiciousActivity().blockedAttempts }}</p>
+            <p class="text-sm text-gray-600 mt-2">Blocked Requests (429)</p>
+          </div>
+          <div class="text-center p-6 bg-yellow-50 rounded-lg">
+            <p class="text-4xl font-bold text-yellow-600">{{ suspiciousActivity().highVolumeIPs.length }}</p>
+            <p class="text-sm text-gray-600 mt-2">High Volume IPs</p>
+          </div>
+          <div class="text-center p-6 bg-orange-50 rounded-lg">
+            <p class="text-4xl font-bold text-orange-600">{{ suspiciousActivity().highErrorRateIPs.length }}</p>
+            <p class="text-sm text-gray-600 mt-2">High Error Rate IPs</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  }
+
+  <!-- Statistics Tab -->
+  @if (activeTab() === 'stats') {
+    @if (statsLoading()) {
+      <div class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    } @else if (stats()) {
+      <div class="space-y-6">
+        <!-- Status Code Distribution -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Status Code Distribution</h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            @for (entry of stats()!.statusCodeDistribution | keyvalue; track entry.key) {
+              <div class="text-center p-4 rounded-lg" [class]="getStatusCodeClasses(+entry.key)">
+                <p class="text-2xl font-bold">{{ entry.value | number:'1.0-0' }}</p>
+                <p class="text-sm font-medium mt-1">{{ entry.key }}</p>
+              </div>
+            } @empty {
+              <div class="col-span-6 text-center py-4 text-gray-500">No status code data</div>
+            }
+          </div>
+        </div>
+
+        <!-- Top Endpoints -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Endpoints</h3>
+          <div class="space-y-3">
+            @for (endpoint of stats()!.topPaths; track endpoint.path) {
+              <div class="flex items-center gap-4">
+                <div class="flex-1">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="font-mono text-sm text-gray-900">{{ endpoint.path }}</span>
+                    <span class="text-sm text-gray-500">{{ endpoint.count | number:'1.0-0' }}</span>
+                  </div>
+                  <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full" [style.width.%]="(endpoint.count / stats()!.totalRequests) * 100"></div>
+                  </div>
+                </div>
+              </div>
+            } @empty {
+              <div class="text-center py-4 text-gray-500">No endpoint data</div>
+            }
+          </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center">
+            <p class="text-3xl font-bold text-gray-900">{{ stats()!.totalRequests | number:'1.0-0' }}</p>
+            <p class="text-sm text-gray-500 mt-2">Total Requests</p>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center">
+            <p class="text-3xl font-bold text-gray-900">{{ stats()!.uniqueUsers | number:'1.0-0' }}</p>
+            <p class="text-sm text-gray-500 mt-2">Unique Users</p>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center">
+            <p class="text-3xl font-bold text-gray-900">{{ stats()!.uniqueIPs | number:'1.0-0' }}</p>
+            <p class="text-sm text-gray-500 mt-2">Unique IPs</p>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center">
+            <p class="text-3xl font-bold text-gray-900">{{ stats()!.avgResponseTime | number:'1.0-0' }}ms</p>
+            <p class="text-sm text-gray-500 mt-2">Avg Response Time</p>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="text-center py-12 text-gray-500">
+        <p>No statistics data available</p>
+        <button class="mt-4 px-4 py-2 bg-primary text-white rounded-lg" (click)="loadStats()">Refresh</button>
+      </div>
+    }
+  }
+
+  <!-- Cron Jobs Tab -->
+  @if (activeTab() === 'cron-jobs') {
+    @if (cronJobsLoading()) {
+      <div class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span class="ml-3 text-gray-500">Loading cron jobs...</span>
+      </div>
+    } @else {
+    <div class="space-y-6">
+      <!-- Registered Jobs with Run Buttons -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-gray-900">Registered Jobs</h3>
+          <div class="flex gap-2">
+            <button class="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium hover:bg-orange-200" (click)="resetStuckJobs()">
+              <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+              Reset Stuck
+            </button>
+            <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50" (click)="refreshCronJobs()">
+              <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          @for (job of registeredJobs(); track job.name) {
+            @let lastRun = getLastRunForJob(job.name);
+            <div class="flex flex-col p-4 bg-gray-50 rounded-lg">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-sm text-gray-900 font-medium">{{ job.name }}</span>
+                <button
+                  class="px-3 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                  [disabled]="cronJobTriggering() === job.name"
+                  (click)="triggerCronJob(job.name)"
+                >
+                  @if (cronJobTriggering() === job.name) {
+                    <svg class="w-4 h-4 inline animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Running...
+                  } @else {
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Run
+                  }
+                </button>
+              </div>
+              <!-- Last Run Info -->
+              <div class="flex items-center justify-between text-xs">
+                @if (lastRun) {
+                  <div class="flex items-center gap-2">
+                    <span class="text-gray-500">Last run:</span>
+                    <span class="text-gray-700">{{ lastRun.startedAt | date:'MMM d, h:mm a' }}</span>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full text-xs font-medium" [class]="getCronJobStatusClasses(lastRun.status)">
+                    {{ lastRun.status | titlecase }}
+                  </span>
+                } @else {
+                  <span class="text-gray-400">Never run</span>
+                }
+              </div>
+            </div>
+          } @empty {
+            <div class="col-span-3 text-center py-8 text-gray-500">
+              No registered jobs found
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="flex justify-between items-center flex-wrap gap-4">
+        <h3 class="text-lg font-semibold text-gray-900">Job Runs</h3>
+        <div class="flex gap-2">
+          <!-- Job Name Filter -->
+          <select
+            class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 outline-none"
+            [ngModel]="cronJobNameFilter()"
+            (ngModelChange)="cronJobNameFilter.set($event); onCronJobNameFilterChange()"
+          >
+            <option value="all">All Jobs</option>
+            @for (job of registeredJobs(); track job.name) {
+              <option [value]="job.name">{{ job.name }}</option>
+            }
+          </select>
+          <!-- Status Filter -->
+          <select
+            class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 outline-none"
+            [ngModel]="cronJobStatusFilter()"
+            (ngModelChange)="cronJobStatusFilter.set($event); onCronJobStatusFilterChange()"
+          >
+            @for (status of cronJobStatuses; track status) {
+              <option [value]="status">{{ status === 'all' ? 'All Status' : (status | titlecase) }}</option>
+            }
+          </select>
+          <!-- Category Filter -->
+          <select
+            class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 outline-none"
+            [ngModel]="cronJobCategoryFilter()"
+            (ngModelChange)="cronJobCategoryFilter.set($event); onCronJobCategoryFilterChange()"
+          >
+            @for (category of cronJobCategories; track category) {
+              <option [value]="category">{{ category === 'all' ? 'All Categories' : (category | titlecase) }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Job Runs Table -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-gray-50 border-b border-gray-100">
+              <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Job Name</th>
+              <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">Category</th>
+              <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">Status</th>
+              <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Started At</th>
+              <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Completed At</th>
+              <th class="text-right px-6 py-4 text-sm font-semibold text-gray-600">Duration</th>
+              <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">Triggered By</th>
+              <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Records</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (run of cronJobRuns(); track run._id) {
+              <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4">
+                  <div>
+                    <p class="font-mono text-sm text-gray-900">{{ run.jobName }}</p>
+                    @if (run.error) {
+                      <p class="text-xs text-red-500 truncate max-w-[250px]" [title]="run.error">{{ run.error }}</p>
+                    }
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <span class="px-2.5 py-1 rounded text-xs font-medium" [class]="getCronJobCategoryClasses(run.jobCategory)">
+                    {{ run.jobCategory | titlecase }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getCronJobStatusClasses(run.status)">
+                    {{ run.status | titlecase }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-500">{{ run.startedAt | date:'MMM d, h:mm:ss a' }}</span>
+                </td>
+                <td class="px-6 py-4">
+                  @if (run.completedAt) {
+                    <span class="text-sm text-gray-500">{{ run.completedAt | date:'MMM d, h:mm:ss a' }}</span>
+                  } @else {
+                    <span class="text-sm text-gray-400">-</span>
+                  }
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <span class="text-sm font-mono text-gray-600">{{ formatDuration(run.duration) }}</span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <span class="px-2.5 py-1 rounded text-xs font-medium" [class]="run.triggeredBy === 'manual' ? 'bg-purple-100 text-purple-700' : run.triggeredBy === 'retry' ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-700'">
+                    {{ run.triggeredBy | titlecase }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  @if (run.metadata?.recordsProcessed !== undefined) {
+                    <div class="text-sm">
+                      <span class="text-gray-600">{{ run.metadata?.recordsProcessed }} processed</span>
+                      @if (run.metadata?.recordsSucceeded !== undefined) {
+                        <span class="text-green-600 ml-1">({{ run.metadata?.recordsSucceeded }} ok)</span>
+                      }
+                      @if (run.metadata?.recordsFailed) {
+                        <span class="text-red-600 ml-1">({{ run.metadata?.recordsFailed }} failed)</span>
+                      }
+                    </div>
+                  } @else {
+                    <span class="text-sm text-gray-400">-</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                  No job runs found matching your criteria
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Cron Jobs Pagination -->
+      @if (cronJobsPagination().totalPages > 0) {
+        <div class="flex justify-between items-center mt-4">
+          <span class="text-sm text-gray-500">
+            Showing {{ cronJobRuns().length }} of {{ cronJobsPagination().total }} runs
+          </span>
+          <div class="flex items-center gap-2">
+            <button
+              class="px-3 py-1.5 border border-gray-200 rounded-md text-sm cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              [disabled]="cronJobsPagination().page === 1"
+              (click)="prevCronJobsPage()"
+            >
+              Previous
+            </button>
+            @for (page of getCronJobsPageNumbers(); track page) {
+              <button
+                class="w-8 h-8 rounded-md text-sm cursor-pointer border"
+                [class.bg-primary]="page === cronJobsPagination().page"
+                [class.text-white]="page === cronJobsPagination().page"
+                [class.border-primary]="page === cronJobsPagination().page"
+                [class.border-gray-200]="page !== cronJobsPagination().page"
+                [class.hover:bg-gray-50]="page !== cronJobsPagination().page"
+                (click)="goToCronJobsPage(page)"
+              >
+                {{ page }}
+              </button>
+            }
+            <button
+              class="px-3 py-1.5 border border-gray-200 rounded-md text-sm cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              [disabled]="cronJobsPagination().page === cronJobsPagination().totalPages"
+              (click)="nextCronJobsPage()"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+    }
+  }
+
+  <!-- Rate Limit Config Tab -->
+  @if (activeTab() === 'config') {
+    @if (configLoading()) {
+      <div class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span class="ml-3 text-gray-500">Loading configuration...</span>
+      </div>
+    } @else {
+    <div class="space-y-6">
+      <!-- Header with Save Button -->
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900">Rate Limit Configuration</h2>
+          <p class="text-sm text-gray-500 mt-1">Configure API rate limits for different user plans and unauthenticated requests</p>
+        </div>
+        <div class="flex gap-2">
+          <button
+            class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50"
+            (click)="refreshConfig()"
+          >
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Refresh
+          </button>
+          <button
+            class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
+            [disabled]="configSaving()"
+            (click)="saveRateLimitConfig()"
+          >
+            @if (configSaving()) {
+              <svg class="w-4 h-4 inline mr-1 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Saving...
+            } @else {
+              <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              Save Changes
+            }
+          </button>
+        </div>
+      </div>
+
+      <!-- Skip Paths Section -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Skip Paths (No Rate Limit)</h3>
+        <p class="text-sm text-gray-500 mb-4">These paths will not be rate limited. Use for health checks and public endpoints.</p>
+
+        <div class="flex gap-2 mb-4">
+          <input
+            type="text"
+            placeholder="/api/v1/public/..."
+            [(ngModel)]="newSkipPath"
+            (keyup.enter)="addSkipPath()"
+            class="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
+          />
+          <button
+            class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90"
+            (click)="addSkipPath()"
+          >
+            Add Path
+          </button>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          @for (path of rateLimitConfig().skipPaths; track path) {
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-mono">
+              {{ path }}
+              <button
+                class="text-gray-400 hover:text-red-500 transition-colors"
+                (click)="removeSkipPath(path)"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+            </span>
+          } @empty {
+            <span class="text-gray-400 text-sm">No skip paths configured</span>
+          }
+        </div>
+      </div>
+
+      <!-- Super Admin Exemption -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900">Super Admin Rate Limit Exemption</h3>
+            <p class="text-sm text-gray-500 mt-1">When enabled, super admin users are not subject to rate limiting</p>
+          </div>
+          <button
+            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+            [class]="rateLimitConfig().skipSuperAdmin ? 'bg-primary' : 'bg-gray-200'"
+            (click)="toggleSkipSuperAdmin()"
+          >
+            <span
+              class="inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+              [class]="rateLimitConfig().skipSuperAdmin ? 'translate-x-5' : 'translate-x-0'"
+            ></span>
+          </button>
+        </div>
+        @if (rateLimitConfig().skipSuperAdmin) {
+          <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
+            <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <p class="text-sm text-amber-700">Super admins currently have unlimited API access</p>
+          </div>
+        }
+      </div>
+
+      <!-- Unauthenticated Limits -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Unauthenticated Requests</h3>
+        <p class="text-sm text-gray-500 mb-4">Rate limits for requests without authentication. Tracked by IP address.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Per Minute</label>
+            <input
+              type="number"
+              [ngModel]="rateLimitConfig().unauthenticated.perMinute"
+              (ngModelChange)="updateLimit('unauthenticated', 'perMinute', $event)"
+              class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
+              min="1"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Per Day</label>
+            <input
+              type="number"
+              [ngModel]="rateLimitConfig().unauthenticated.perDay"
+              (ngModelChange)="updateLimit('unauthenticated', 'perDay', $event)"
+              class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
+              min="1"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Authenticated Limits -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Authenticated Users</h3>
+        <p class="text-sm text-gray-500 mb-4">Rate limits for all authenticated users. Tracked by user ID.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Per Minute</label>
+            <input
+              type="number"
+              [ngModel]="rateLimitConfig().authenticated.perMinute"
+              (ngModelChange)="updateLimit('authenticated', 'perMinute', $event)"
+              class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
+              min="1"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Per Day</label>
+            <input
+              type="number"
+              [ngModel]="rateLimitConfig().authenticated.perDay"
+              (ngModelChange)="updateLimit('authenticated', 'perDay', $event)"
+              class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-primary"
+              min="1"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Box -->
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+        <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div>
+          <p class="font-medium text-blue-800">How Rate Limiting Works</p>
+          <ul class="text-sm text-blue-700 mt-1 list-disc list-inside space-y-1">
+            <li><strong>Per Minute:</strong> Resets every 60 seconds. Prevents burst abuse.</li>
+            <li><strong>Per Day:</strong> Resets at midnight UTC. Controls daily usage.</li>
+            <li><strong>Unauthenticated:</strong> Tracked by IP address for anonymous requests.</li>
+            <li><strong>Authenticated:</strong> Tracked by user ID for logged-in users.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    }
+  }
+</div>

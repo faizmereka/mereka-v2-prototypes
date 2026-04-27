@@ -1,0 +1,68 @@
+<div class="layout-container hero-container">
+  <div class="hero-container__text">
+    <h1 class="hero-heading">
+      Book Leading <span class="heading-accent">Experts &amp; Services</span>
+    </h1>
+    <p class="section-subheading">Mereka connects you to leading experts and services to solve your most pressing
+      challenges. Gain insights from vetted professionals and organisations to work on your business, career, or personal well-being.</p>
+    <p class="section-subheading">Are you an Expert? <a href="/jobs">Explore Job Opportunites</a></p>
+  </div>
+  <!-- TODO: Mobile search panel toggle - HeaderSearchPanelToggleComponent not yet ported to v2
+    @if (view.isMobile) {
+      <common-header-search-panel-toggle />
+    }
+  -->
+  <div class="services-grid" role="list">
+    <a class="services-item" role="listitem" routerLink="/experts">
+      <img class="services-item__icon" src="/assets/feat/homepage/icons/services-experts.svg" width="32" height="32" alt />
+      <h2 class="services-item__title">Experts</h2>
+      <p>Schedule 1-on-1 sessions</p>
+    </a>
+    <a class="services-item" role="listitem" routerLink="/expertise">
+      <img class="services-item__icon" src="/assets/feat/homepage/icons/services-expertise.svg" width="32" height="32" alt />
+      <h2 class="services-item__title">Expertise</h2>
+      <p>Browse services by<br>our Experts</p>
+    </a>
+    <a class="services-item" role="listitem" routerLink="/jobs">
+      <img class="services-item__icon" src="/assets/feat/homepage/icons/services-jobs.svg" width="32" height="32" alt />
+      <h2 class="services-item__title">Jobs</h2>
+      <p>View available<br>jobs</p>
+    </a>
+    <a class="services-item" role="listitem" routerLink="/experiences">
+      <img class="services-item__icon" src="/assets/feat/homepage/icons/services-experiences.svg" width="32" height="32" alt />
+      <h2 class="services-item__title">Experiences</h2>
+      <p>Browse activities<br>by Hubs</p>
+    </a>
+    <!-- <a class="services-item" routerLink="/hubs">
+      <img class="services-item__icon" src="/assets/feat/homepage/icons/services-hubs.svg" width="32" height="32" alt />
+      <div class="services-item__title">Hubs</div>
+      <p>Resources on offer in your community</p>
+    </a> -->
+    <a class="services-item services-item--corporate" role="listitem" href="https://corporate.mereka.io" target="_blank">
+      <div class="services-item__icon-wrap">
+        <img class="services-item__icon" src="/assets/feat/homepage/icons/corporate-solutions.svg" width="32" height="32" alt />
+      </div>
+      <div class="services-item__text-wrap">
+        <h2 class="services-item__title">Corporate</h2>
+        <p>For all your corporate solutions from course creation, event management &amp; funding opportunities.</p>
+      </div>
+      <div>
+        <!-- TODO: MatIcon north_east - was from @angular/material/icon; replace with inline SVG when needed -->
+        <div class="services-item__link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  @if (!view.isMobile()) {
+    @defer (on immediate) {
+      <div class="hero-container__image">
+        <ng-lottie [options]="options" height="400px" [@fadeInOut] />
+      </div>
+    }
+  }
+</div>

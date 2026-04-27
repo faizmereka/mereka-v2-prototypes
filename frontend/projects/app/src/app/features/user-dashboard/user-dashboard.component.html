@@ -1,0 +1,48 @@
+<!-- Navbar - Hidden on mobile -->
+<app-user-dashboard-navbar class="hidden lg:block lg:sticky lg:top-0 lg:z-50" />
+
+<div class="dashboard-container flex-1 lg:flex lg:mt-[68px]">
+  <!-- Sidebar Menu - Sticky on desktop -->
+  <div class="dashboard-menu bg-[#eeeeee] lg:w-[300px] lg:flex-shrink-0 lg:sticky lg:top-0 lg:h-[calc(100vh-68px)] lg:overflow-y-auto">
+    <app-dashboard-menu
+      [menuItems]="menuItems()"
+      [isMobile]="isMobile()"
+      (mobileContentToggle)="toggleMobileContent()"
+    />
+  </div>
+
+  <!-- Main Content Area -->
+  @if (showMobileContent() || !isMobile()) {
+    <div
+      class="dashboard-main w-full min-h-[75svh] lg:py-10 lg:flex-1"
+      [class.fixed]="isMobile()"
+      [class.inset-0]="isMobile()"
+      [class.z-10]="isMobile()"
+      [class.bg-white]="isMobile()"
+      [class.overflow-auto]="isMobile()"
+    >
+      <!-- Mobile Header with Back Button -->
+      @if (isMobile()) {
+        <div class="dashboard-title flex items-center gap-4 p-6 bg-white sticky top-0 z-10 shadow-[0_4px_8px_rgba(0,0,0,0.05)]">
+          <button type="button" (click)="toggleMobileContent()" class="p-2 -ml-2 rounded-lg hover:bg-neutral-100">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 class="text-xl font-bold leading-none lg:text-[2.125rem]">{{ activePageTitle() }}</h1>
+        </div>
+      }
+
+      <!-- Page Content -->
+      <div class="dashboard-content p-6 lg:px-10">
+        <!-- User Banners -->
+        <app-dashboard-banners category="user" />
+
+        <router-outlet />
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Footer - Hidden on mobile, full width below sidebar and content -->
+<app-footer class="hidden lg:block" />

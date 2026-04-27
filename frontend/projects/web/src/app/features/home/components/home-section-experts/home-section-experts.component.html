@@ -1,0 +1,62 @@
+<div class="layout-container">
+  <h2 class="section-heading">
+    Browse Featured
+    <span class="heading-accent">Experts</span>
+  </h2>
+
+  @if (loading()) {
+    <!-- Loading State -->
+    <div class="placeholder-grid">
+      @for (item of placeholderList; track $index) {
+        <div ui-loader-skeleton-card-expert></div>
+      }
+    </div>
+  } @else if (experts().length > 0) {
+    @if (view.isMobile()) {
+      <!-- Mobile Swiper carousel -->
+      <swiper-container ui-swiper [config]="config">
+        @for (expert of experts(); track expert._id) {
+          <swiper-slide ui-swiper-slide>
+            <div ui-card-expert
+              [id]="expert._id"
+              [url]="'/experts/' + expert.username"
+              [title]="expert.name"
+              [image]="expert.profilePhoto ?? ''"
+              [expertise]="expert.professionalTitle ? [expert.professionalTitle] : []"
+              [description]="expert.bio ?? ''"
+              [isFavourite]="false"
+              [hideElements]="['hub-image']">
+            </div>
+          </swiper-slide>
+        }
+      </swiper-container>
+    } @else {
+      <!-- Desktop grid -->
+      <!-- TODO: isFavourite always false - ToggleFavouriteUseCase + IsFavouriteUseCase not yet ported to v2 -->
+      <!-- TODO: ImageKit optimization - no ImageKitPipe in v2 yet; images served directly -->
+      <div class="experts-grid">
+        @for (expert of experts(); track expert._id) {
+          <div ui-card-expert
+            [id]="expert._id"
+            [url]="'/experts/' + expert.username"
+            [title]="expert.name"
+            [image]="expert.profilePhoto ?? ''"
+            [expertise]="expert.professionalTitle ? [expert.professionalTitle] : []"
+            [description]="expert.bio ?? ''"
+            [isFavourite]="false"
+            [hideElements]="['hub-image']">
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <!-- Empty State -->
+    <div class="placeholder-grid">
+      @for (item of placeholderList; track $index) {
+        <div ui-loader-skeleton-card-expert></div>
+      }
+    </div>
+  }
+
+  <a ui-button-fill-large class="cta-button" routerLink="/experts">View all Experts</a>
+</div>

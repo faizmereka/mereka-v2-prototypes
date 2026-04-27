@@ -1,0 +1,66 @@
+@use 'abstracts' as *;
+
+.common-header-search {
+  display: block;
+  position: relative;
+}
+
+.header-search-container {
+  position: relative;
+}
+
+.header-search-back-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.header-search-panel-header {
+  display: flex;
+  gap: 16px;
+  padding: 20px 24px;
+
+  &__text {
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+  }
+  &__text-page {
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1em;
+    text-transform: uppercase;
+  }
+  &__text-title {
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1em;
+    letter-spacing: -0.15px;
+  }
+}
+
+@media screen and (width < $breakpoint-tablet) {
+  .common-header-search-panel {
+    width: 100%;
+    display: block;
+    overflow-y: auto;
+    height: 60svh;
+  }
+
+  .header-search-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background-color: #F5F6F7;
+    overflow: hidden;
+  }
+
+  .header-search-main {
+    padding: 1.5rem 0 0;
+    background-color: #FFF;
+    border-radius: var(--m, 1.25rem) var(--m, 1.25rem) 0rem 0rem;
+  }
+}

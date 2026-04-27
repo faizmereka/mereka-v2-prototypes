@@ -1,0 +1,35 @@
+<div class="bg-white rounded-xl border border-neutral-200 overflow-hidden my-4">
+  <!-- Header -->
+  <button
+    type="button"
+    (click)="toggle()"
+    class="w-full flex items-center justify-between p-6 text-left hover:bg-neutral-50 transition-colors"
+  >
+    <div class="flex items-center gap-3">
+      <!-- Custom header slot or default title -->
+      <ng-content select="[slot=header]"></ng-content>
+      @if (title()) {
+        <span class="text-lg font-semibold text-neutral-900">{{ title() }}</span>
+      }
+      @if (badge()) {
+        <span
+          class="px-2 py-0.5 text-xs font-semibold rounded uppercase"
+          [class]="badgeClass()"
+        >
+          {{ badge() }}
+        </span>
+      }
+    </div>
+    <ui-icon
+      [name]="isExpanded() ? 'chevron-up' : 'chevron-down'"
+      class="w-5 h-5 text-neutral-400"
+    ></ui-icon>
+  </button>
+
+  <!-- Content -->
+  @if (isExpanded()) {
+    <div class="px-6 pb-6 border-t border-neutral-100">
+      <ng-content></ng-content>
+    </div>
+  }
+</div>

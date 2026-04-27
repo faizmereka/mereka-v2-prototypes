@@ -1,0 +1,49 @@
+<section class="bg-neutral-50 py-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:rounded-xl">
+  <div class="max-w-7xl mx-auto lg:px-8">
+    <h2 class="text-lg font-semibold text-neutral-900 mb-6">Meet the Expert</h2>
+
+    <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+      <!-- Profile Image -->
+      <div class="flex-shrink-0">
+        @if (expert().photoUrl) {
+          <img
+            [src]="expert().photoUrl"
+            [alt]="expert().name"
+            class="w-20 h-20 rounded-full object-cover" />
+        } @else {
+          <div class="w-20 h-20 rounded-full bg-neutral-200 flex items-center justify-center">
+            <span class="text-xl font-medium text-neutral-600">{{ initials() }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Profile Info -->
+      <div class="flex-1">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+          <div>
+            <h3 class="text-lg font-semibold text-neutral-900">{{ expert().name }}</h3>
+            @if (expert().hubName && expert().hubName !== expert().name) {
+              <p class="text-sm text-neutral-600">{{ expert().hubName }}</p>
+            }
+            @if (hasLocation()) {
+              <p class="text-sm text-neutral-500">{{ expert().location }}</p>
+            }
+          </div>
+
+          <button
+            (click)="onViewProfile()"
+            class="px-4 py-2 border border-neutral-300 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-100 transition-colors self-start">
+            View Profile
+          </button>
+        </div>
+
+        @if (hasDescription()) {
+          <div
+            class="mt-4 text-neutral-600 prose prose-sm max-w-none"
+            [innerHTML]="expert().description">
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

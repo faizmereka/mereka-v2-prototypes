@@ -1,0 +1,56 @@
+@use 'abstracts' as *;
+@use '../../pages/home/home.page.scss' as *;
+
+:host {
+  /* Background underlay */
+  &:before {
+    background-color: #DEE7F7;
+  }
+}
+
+.heading-accent {
+  background-image: linear-gradient(90deg, #5C8DE7 66.61%, #37BFFA 100%);   
+}
+
+.expertise-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-m);
+}
+
+.placeholder-grid {
+  display: flex;
+  overflow: visible;
+  column-gap: var(--space-m);
+
+  > * {
+    min-width: get-clamp(370, 290);
+  }
+}
+
+@media (width >= $breakpoint-laptop) {
+  :host {
+    /* Background underlay */
+    &:before {
+      background-image: url('/assets/feat/homepage/images/bg-expertise.jpg');
+    }
+  }
+  
+  .expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: 1fr;
+    gap: var(--space-m);
+  }
+
+  .placeholder-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: 1fr;
+    gap: var(--space-m);
+
+    > * {
+      min-width: 0;
+    }
+  }
+}

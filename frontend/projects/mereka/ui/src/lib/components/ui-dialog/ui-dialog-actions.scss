@@ -1,0 +1,23 @@
+
+.ui-dialog-actions {
+  height: var(--ui-dialog-actions-height);
+  padding-inline: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+
+  .ui-button:only-child {
+    margin-inline-start: auto;
+  }
+}
+
+@media only screen and (width >= 576px) {
+
+  .ui-dialog-actions {
+    height: auto;
+    padding: 1rem 1.75rem;
+  }
+}

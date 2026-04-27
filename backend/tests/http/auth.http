@@ -1,0 +1,233 @@
+### Variables
+@baseUrl = http://localhost:3000/api/v1
+@email = test@example.com
+@password = Test123!@#
+@token = your-access-token-here
+@refreshToken = your-refresh-token-here
+
+### ==============================================
+### Authentication Endpoints
+### ==============================================
+
+### 1. Register New User
+# POST /auth/register
+# Creates a new user account with email/password
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "name": "Test User",
+  "role": "learner"
+}
+
+# Expected Response (201):
+# {
+#   "success": true,
+#   "data": {
+#     "user": { "id": "...", "email": "...", "name": "..." },
+#     "tokens": {
+#       "accessToken": "...",
+#       "refreshToken": "..."
+#     }
+#   }
+# }
+
+### 2. Login with Email/Password
+# POST /auth/login
+# Authenticate with email and password
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "user": { ... },
+#     "tokens": { "accessToken": "...", "refreshToken": "..." }
+#   }
+# }
+
+### 3. Social Login (Google/Facebook)
+# POST /auth/login/social
+# Authenticate using Firebase social auth token
+POST {{baseUrl}}/auth/login/social
+Content-Type: application/json
+
+{
+  "idToken": "firebase-id-token-from-google-or-facebook",
+  "provider": "google"
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "user": { ... },
+#     "tokens": { ... }
+#   }
+# }
+
+### 4. Refresh Access Token
+# POST /auth/refresh
+# Get new access token using refresh token
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "accessToken": "new-access-token",
+#     "refreshToken": "new-refresh-token"
+#   }
+# }
+
+### 5. Get Current User
+# GET /auth/me
+# Retrieve authenticated user's information
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "id": "...",
+#     "email": "...",
+#     "name": "...",
+#     "role": "learner",
+#     ...
+#   }
+# }
+
+### 6. Change Password
+# POST /auth/change-password
+# Change password for authenticated user
+POST {{baseUrl}}/auth/change-password
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "currentPassword": "{{password}}",
+  "newPassword": "NewPassword123!@#"
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "message": "Password changed successfully"
+# }
+
+### 7. Forgot Password Request
+# POST /auth/forgot-password
+# Request password reset email
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "{{email}}"
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "message": "Password reset email sent"
+# }
+
+### 8. Reset Password with Token
+# POST /auth/reset-password
+# Reset password using token from email
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "reset-token-from-email",
+  "newPassword": "NewPassword123!@#"
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "message": "Password reset successful"
+# }
+
+### 9. Check User Status
+# GET /auth/user-status?email=...
+# Check if user exists and their registration status
+GET {{baseUrl}}/auth/user-status?email={{email}}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "exists": true,
+#     "hasPassword": true,
+#     "hasSocialAuth": false
+#   }
+# }
+
+### ==============================================
+### Error Scenarios
+### ==============================================
+
+### Invalid Login Credentials
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "wrong-password"
+}
+
+# Expected Response (401):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "INVALID_CREDENTIALS",
+#     "message": "Invalid email or password"
+#   }
+# }
+
+### Duplicate Email Registration
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "name": "Duplicate User",
+  "role": "learner"
+}
+
+# Expected Response (400):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "USER_EXISTS",
+#     "message": "User with this email already exists"
+#   }
+# }
+
+### Invalid Token
+GET {{baseUrl}}/auth/me
+Authorization: Bearer invalid-token
+
+# Expected Response (401):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "INVALID_TOKEN",
+#     "message": "Invalid or expired token"
+#   }
+# }

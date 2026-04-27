@@ -1,0 +1,12 @@
+:host.ui-dialog {
+  max-width: 750px;
+  max-height: var(--max-viewport-height, 100svh);
+  display: block;
+  box-shadow: 0px 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (width >= 576px) {
+  :host.ui-dialog {
+    max-height: none;
+  }
+}

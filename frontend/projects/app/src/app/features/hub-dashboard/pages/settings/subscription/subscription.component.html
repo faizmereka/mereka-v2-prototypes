@@ -1,0 +1,274 @@
+<div class="hub-settings-subscription p-4 lg:p-8">
+  <div class="max-w-4xl">
+    <!-- Page Header -->
+    <div class="page-header mb-8">
+      <h1 class="text-2xl font-bold text-neutral-900">Subscription</h1>
+      <p class="text-neutral-500 mt-1">Manage your subscription plan and payment methods</p>
+    </div>
+
+    <!-- Loading State -->
+    @if (subscriptionLoading()) {
+      <div class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span class="ml-3 text-neutral-600">Loading subscription data...</span>
+      </div>
+    } @else {
+      <div class="space-y-8">
+        <!-- Current Plan -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-6">
+          <h2 class="text-lg font-semibold text-neutral-900 mb-6">Current Plan</h2>
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+              <div class="flex items-baseline gap-2 mb-2">
+                <h3 class="text-2xl font-bold text-neutral-900">{{ currentPlan().name }}</h3>
+                @if (hasActiveSubscription()) {
+                  @if (isCancelScheduled()) {
+                    <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
+                      Cancels {{ cancelDate() }}
+                    </span>
+                  } @else {
+                    <span class="px-2 py-0.5 bg-primary text-white text-xs font-medium rounded-full">Active</span>
+                  }
+                } @else {
+                  <span class="px-2 py-0.5 bg-neutral-100 text-neutral-600 text-xs font-medium rounded-full">Inactive</span>
+                }
+              </div>
+              @if (currentPlan().price > 0) {
+                <p class="text-neutral-500 mb-4">
+                  {{ currentPlan().currency }} {{ currentPlan().price }}/{{ currentPlan().billingCycle }}
+                </p>
+              }
+              @if (currentPlan().features.length > 0) {
+                <ul class="space-y-2">
+                  @for (feature of currentPlan().features; track feature) {
+                    <li class="flex items-center gap-2 text-sm text-neutral-700">
+                      <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      {{ feature }}
+                    </li>
+                  }
+                </ul>
+              } @else if (!hasActiveSubscription()) {
+                <p class="text-neutral-500 text-sm">
+                  You don't have an active subscription. Subscribe to a plan to access premium features.
+                </p>
+              }
+            </div>
+            <div class="flex flex-col gap-2">
+              @if (hasActiveSubscription()) {
+                <button
+                  type="button"
+                  (click)="openChangePlanModal()"
+                  [disabled]="availablePlans().length <= 1"
+                  class="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Change Plan
+                </button>
+                @if (isCancelScheduled()) {
+                  <button
+                    type="button"
+                    (click)="reactivateSubscription()"
+                    [disabled]="cancelLoading()"
+                    class="px-6 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
+                  >
+                    {{ cancelLoading() ? 'Processing...' : 'Reactivate Subscription' }}
+                  </button>
+                } @else {
+                  <button
+                    type="button"
+                    (click)="cancelSubscription()"
+                    [disabled]="cancelLoading()"
+                    class="px-6 py-2 border border-neutral-200 rounded-lg font-medium hover:bg-neutral-50 transition-colors disabled:opacity-50"
+                  >
+                    {{ cancelLoading() ? 'Processing...' : 'Cancel Subscription' }}
+                  </button>
+                }
+              } @else {
+                <a
+                  href="/subscribe"
+                  class="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors text-center"
+                >
+                  Subscribe Now
+                </a>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Trial Info -->
+        @if (trialInfo()?.isTrialing) {
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-semibold text-blue-900">Trial Period Active</h3>
+                <p class="text-blue-700 text-sm">
+                  {{ trialInfo()!.daysRemaining }} days remaining in your trial
+                  @if (trialInfo()!.trialEnd) {
+                    (ends {{ formatDate(trialInfo()!.trialEnd!) }})
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Upcoming Payment -->
+        @if (upcomingPayment()) {
+          <div class="bg-white rounded-xl border border-neutral-200 p-6">
+            <h2 class="text-lg font-semibold text-neutral-900 mb-4">Next Payment</h2>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-neutral-600">{{ upcomingPayment()!.description }}</p>
+                <p class="text-sm text-neutral-500">Due {{ formatDate(upcomingPayment()!.dueDate) }}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-2xl font-bold text-neutral-900">
+                  {{ upcomingPayment()!.currency }} {{ upcomingPayment()!.amount / 100 | number:'1.2-2' }}
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Payment Methods -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-semibold text-neutral-900">Payment Methods</h2>
+            <button
+              type="button"
+              (click)="addPaymentMethod()"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors"
+            >
+              <ui-icon name="plus" size="sm" />
+              Add Method
+            </button>
+          </div>
+
+          @if (paymentMethodsLoading()) {
+            <div class="flex items-center justify-center py-8">
+              <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+              <span class="ml-2 text-neutral-600">Loading payment methods...</span>
+            </div>
+          } @else if (paymentMethods().length === 0) {
+            <p class="text-neutral-500 text-center py-8">No payment methods added yet</p>
+          } @else {
+            <div class="space-y-4">
+              @for (method of paymentMethods(); track method.id) {
+                <div class="payment-method flex items-center justify-between p-4 border border-neutral-200 rounded-lg">
+                  <div class="flex items-center gap-4">
+                    @if (method.type === 'card') {
+                      <div class="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center">
+                        <ui-icon name="credit-card" size="md" class="text-neutral-600" />
+                      </div>
+                    } @else {
+                      <div class="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center">
+                        <ui-icon name="wallet" size="md" class="text-neutral-600" />
+                      </div>
+                    }
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="font-medium text-neutral-900 capitalize">{{ method.brand }} ****{{ method.last4 }}</span>
+                        @if (method.isDefault) {
+                          <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-medium rounded-full">Default</span>
+                        }
+                      </div>
+                      @if (method.expMonth && method.expYear) {
+                        <span class="text-sm text-neutral-500">Expires {{ method.expMonth }}/{{ method.expYear }}</span>
+                      }
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    @if (!method.isDefault) {
+                      <button
+                        type="button"
+                        (click)="setDefaultPayment(method.id)"
+                        class="px-3 py-1 text-sm font-medium text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors"
+                      >
+                        Set Default
+                      </button>
+                    }
+                    <button
+                      type="button"
+                      (click)="removePayment(method.id)"
+                      class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Invoices -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-6">
+          <h2 class="text-lg font-semibold text-neutral-900 mb-6">Invoice History</h2>
+
+          @if (invoicesLoading()) {
+            <div class="flex items-center justify-center py-8">
+              <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+              <span class="ml-2 text-neutral-600">Loading invoices...</span>
+            </div>
+          } @else if (invoices().length === 0) {
+            <p class="text-neutral-500 text-center py-8">No invoices yet</p>
+          } @else {
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-neutral-200">
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-neutral-700">Invoice</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-neutral-700">Description</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-neutral-700">Amount</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-neutral-700">Status</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-neutral-700">Date</th>
+                    <th class="text-right py-3 px-4 text-sm font-semibold text-neutral-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (invoice of invoices(); track invoice.id) {
+                    <tr class="border-b border-neutral-100 hover:bg-neutral-50">
+                      <td class="py-3 px-4 text-sm font-medium text-neutral-900">{{ invoice.number || invoice.id }}</td>
+                      <td class="py-3 px-4 text-sm text-neutral-700">{{ invoice.description }}</td>
+                      <td class="py-3 px-4 text-sm font-medium text-neutral-900">
+                        {{ invoice.currency }} {{ invoice.amount / 100 | number:'1.2-2' }}
+                      </td>
+                      <td class="py-3 px-4">
+                        <span
+                          class="px-2 py-0.5 rounded-full text-xs font-medium capitalize"
+                          [ngClass]="getStatusClass(invoice.status)"
+                        >
+                          {{ invoice.status }}
+                        </span>
+                      </td>
+                      <td class="py-3 px-4 text-sm text-neutral-500">{{ formatDate(invoice.date) }}</td>
+                      <td class="py-3 px-4 text-right">
+                        @if (invoice.pdfUrl) {
+                          <button
+                            type="button"
+                            (click)="downloadInvoice(invoice.id)"
+                            class="px-3 py-1 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                          >
+                            Download
+                          </button>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,21 @@
+/**
+ * Production TypeScript Config
+ * Uses built library output from dist/ folder
+ * Use this for production builds: ng build --configuration=production
+ */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@mereka/core": [
+        "./dist/mereka/core"
+      ],
+      "@mereka/models": [
+        "./dist/mereka/models"
+      ],
+      "@mereka/ui": [
+        "./dist/mereka/ui"
+      ]
+    }
+  }
+}

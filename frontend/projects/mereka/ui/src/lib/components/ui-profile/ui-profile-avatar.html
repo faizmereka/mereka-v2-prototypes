@@ -1,0 +1,5 @@
+@if (displayType() === 'image') {
+  <img ui-image [src]="src()" [placeholder]="placeholder()" alt="avatar" [width]="size()" [height]="size()" />
+} @else if (displayType() === 'initials') {
+  <div class="initials">{{ initials() }}</div>
+}

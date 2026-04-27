@@ -1,0 +1,423 @@
+<div class="reviews-list max-w-7xl mx-auto px-4 lg:px-8 py-6 lg:py-8">
+  <div class="review-header mb-8">
+    <button (click)="goToDashboard()" class="back-btn mb-4">
+      <a class="flex items-center gap-2 text-neutral-600 hover:text-neutral-900">
+        <ui-icon name="arrow-left" size="sm" />
+        <span>Back</span>
+      </a>
+    </button>
+
+    <div class="review-header__title flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <h4 class="text-2xl lg:text-3xl font-bold text-neutral-900">Reviews</h4>
+      <button
+        class="px-4 py-2 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+        (click)="openSelectReviewDialog()">
+        Share Review Link
+      </button>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-4 review-header__filter">
+      <div class="ui-card-header-review bg-white rounded-xl border border-neutral-200 p-6 w-full">
+        <div class="container-rating grid grid-cols-2 gap-6">
+          <div class="column text-center">
+            <div class="flex items-center justify-center gap-2 rating mb-2">
+              <div class="text-3xl font-bold text-neutral-900">{{ totalRating() | number:'1.1-1' }}</div>
+              <ui-icon name="star" size="lg" class="text-yellow-400" />
+            </div>
+            <div class="rating-sub text-sm text-neutral-600">Overall rating</div>
+          </div>
+          <div class="column text-center">
+            <div class="text-3xl font-bold text-neutral-900 rating mb-2">
+              {{ totalReviews() }}
+            </div>
+            <div class="rating-sub text-sm text-neutral-600">Total reviews</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="review-body">
+    <!-- Review Type Tabs: Booking / Contract -->
+    <div class="flex gap-4 mb-6 border-b border-neutral-200">
+      <button
+        class="px-4 py-2 font-medium transition-colors border-b-2"
+        [class.border-primary]="reviewTab() === 'booking'"
+        [class.text-primary]="reviewTab() === 'booking'"
+        [class.border-transparent]="reviewTab() !== 'booking'"
+        [class.text-neutral-600]="reviewTab() !== 'booking'"
+        (click)="switchReviewTab('booking')">
+        Booking Reviews
+      </button>
+      <button
+        class="px-4 py-2 font-medium transition-colors border-b-2"
+        [class.border-primary]="reviewTab() === 'contract'"
+        [class.text-primary]="reviewTab() === 'contract'"
+        [class.border-transparent]="reviewTab() !== 'contract'"
+        [class.text-neutral-600]="reviewTab() !== 'contract'"
+        (click)="switchReviewTab('contract')">
+        Contract Reviews
+      </button>
+    </div>
+
+    @if (reviewTab() === 'booking') {
+    <div class="review-body__filter flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div class="flex gap-2">
+        <button
+          class="px-4 py-2 rounded-lg transition-colors"
+          [class.bg-primary]="selectedService() === 'experience'"
+          [class.text-white]="selectedService() === 'experience'"
+          [class.bg-neutral-100]="selectedService() !== 'experience'"
+          [class.text-neutral-700]="selectedService() !== 'experience'"
+          (click)="selectedTab('experience')">
+          Experience
+        </button>
+        <button
+          class="px-4 py-2 rounded-lg transition-colors"
+          [class.bg-primary]="selectedService() === 'expertise'"
+          [class.text-white]="selectedService() === 'expertise'"
+          [class.bg-neutral-100]="selectedService() !== 'expertise'"
+          [class.text-neutral-700]="selectedService() !== 'expertise'"
+          (click)="selectedTab('expertise')">
+          Expertise
+        </button>
+      </div>
+      <div>
+        <ul class="flex gap-4 px-0 list-none">
+          <li
+            [class.font-semibold]="selectedFilter() === 'all'"
+            [class.text-primary]="selectedFilter() === 'all'"
+            [class.text-neutral-600]="selectedFilter() !== 'all'"
+            class="cursor-pointer hover:text-neutral-900 transition-colors"
+            (click)="filter('all')">
+            All
+          </li>
+          <li
+            [class.font-semibold]="selectedFilter() === 'notReplied'"
+            [class.text-primary]="selectedFilter() === 'notReplied'"
+            [class.text-neutral-600]="selectedFilter() !== 'notReplied'"
+            class="cursor-pointer hover:text-neutral-900 transition-colors"
+            (click)="filter('notReplied')">
+            Haven't replied
+          </li>
+          <li
+            [class.font-semibold]="selectedFilter() === 'replied'"
+            [class.text-primary]="selectedFilter() === 'replied'"
+            [class.text-neutral-600]="selectedFilter() !== 'replied'"
+            class="cursor-pointer hover:text-neutral-900 transition-colors"
+            (click)="filter('replied')">
+            Replied
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="review-body__section w-full">
+      <div class="review-header__sub-heading text-xl font-semibold text-neutral-900 mb-4">Reviews</div>
+
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+        <div class="section-container--tab flex flex-wrap gap-2">
+          <div class="section-container--tab__rating flex items-center gap-2 mb-2 lg:mb-0">
+            <ui-icon name="star" size="sm" class="text-yellow-400" />
+            <div class="font-semibold">{{ serviceRating() | number:'1.1-1' }}</div>
+            <div class="text-neutral-600">
+              ({{ starsCount().FiveStar + starsCount().FourStar + starsCount().ThreeStar + starsCount().TwoStar + starsCount().OneStar }})
+            </div>
+          </div>
+          <button
+            class="px-3 py-1.5 border rounded-lg transition-colors text-sm"
+            [class.bg-primary]="selectedCategory() === 0"
+            [class.text-white]="selectedCategory() === 0"
+            [class.border-primary]="selectedCategory() === 0"
+            [class.bg-white]="selectedCategory() !== 0"
+            [class.border-neutral-300]="selectedCategory() !== 0"
+            [class.text-neutral-700]="selectedCategory() !== 0"
+            (click)="changeCategory(0)">
+            @if (selectedCategory() === 0) {
+              <ui-icon name="check" size="xs" class="mr-1" />
+            }
+            All
+          </button>
+          @for (rating of [5, 4, 3, 2, 1]; track rating) {
+            <button
+              class="px-3 py-1.5 border rounded-lg transition-colors text-sm"
+              [class.bg-primary]="selectedCategory() === rating"
+              [class.text-white]="selectedCategory() === rating"
+              [class.border-primary]="selectedCategory() === rating"
+              [class.bg-white]="selectedCategory() !== rating"
+              [class.border-neutral-300]="selectedCategory() !== rating"
+              [class.text-neutral-700]="selectedCategory() !== rating"
+              (click)="changeCategory(rating)">
+              @if (selectedCategory() === rating) {
+                <ui-icon name="check" size="xs" class="mr-1" />
+              }
+              {{ rating }}({{
+                rating === 5 ? starsCount().FiveStar :
+                rating === 4 ? starsCount().FourStar :
+                rating === 3 ? starsCount().ThreeStar :
+                rating === 2 ? starsCount().TwoStar :
+                starsCount().OneStar
+              }})
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="review-body__section__review-list space-y-4">
+        @if (loading()) {
+          <div class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <p class="mt-4 text-neutral-600">Loading reviews...</p>
+          </div>
+        } @else {
+          @if (paginatedReviews().length === 0) {
+            <div class="text-center py-12 bg-white rounded-xl border border-neutral-200">
+              <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-neutral-100 flex items-center justify-center">
+                <ui-icon name="star" size="lg" class="text-neutral-400" />
+              </div>
+              <p class="text-neutral-600">No reviews found</p>
+              <p class="text-sm text-neutral-400 mt-1">Reviews from learners will appear here</p>
+            </div>
+          } @else {
+            @for (review of paginatedReviews(); track review._id) {
+              <div class="bg-white rounded-xl border border-neutral-200 p-6">
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-full bg-neutral-200 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                    @if (review.reviewer?.avatar) {
+                      <img [src]="review.reviewer.avatar" alt="" class="w-full h-full object-cover" />
+                    } @else {
+                      <span class="text-neutral-500 text-sm font-medium">
+                        {{ (review.reviewer?.name || 'U').charAt(0).toUpperCase() }}
+                      </span>
+                    }
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                      <div>
+                        <div class="font-semibold text-neutral-900">{{ review.reviewer?.name || 'Anonymous' }}</div>
+                        <div class="text-sm text-neutral-600">{{ formatDate(review.createdAt) }}</div>
+                      </div>
+                      <div class="text-sm text-neutral-500">
+                        {{ review.serviceName }}
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1 mb-3">
+                      @for (star of [1,2,3,4,5]; track star) {
+                        <svg
+                          class="w-4 h-4"
+                          [class.text-yellow-400]="star <= review.rating"
+                          [class.text-neutral-300]="star > review.rating"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      }
+                      <span class="ml-2 text-sm text-neutral-600">{{ review.rating }}.0</span>
+                    </div>
+                    <p class="text-neutral-700">{{ review.content }}</p>
+
+                    <!-- Photos -->
+                    @if (review.photos && review.photos.length > 0) {
+                      <div class="flex gap-2 mt-3 flex-wrap">
+                        @for (photo of review.photos; track photo) {
+                          <img [src]="photo" alt="Review photo" class="w-20 h-20 rounded-lg object-cover" />
+                        }
+                      </div>
+                    }
+
+                    <!-- Hub Reply Section -->
+                    @if (review.hubReply) {
+                      <div class="mt-4 p-4 bg-neutral-50 rounded-lg border-l-4 border-primary">
+                        <div class="flex items-center justify-between mb-2">
+                          <span class="font-semibold text-neutral-800">Your Reply</span>
+                          <div class="flex gap-2">
+                            <button
+                              class="text-sm text-primary hover:underline"
+                              (click)="startEditReply(review)">
+                              Edit
+                            </button>
+                            <button
+                              class="text-sm text-red-500 hover:underline"
+                              (click)="deleteReply(review)">
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                        <p class="text-neutral-700">{{ review.hubReply.content }}</p>
+                        <div class="text-xs text-neutral-500 mt-2">
+                          {{ formatDate(review.hubReply.createdAt) }}
+                          @if (review.hubReply.updatedAt) {
+                            <span class="ml-2">(edited)</span>
+                          }
+                        </div>
+                      </div>
+                    }
+
+                    <!-- Reply Form -->
+                    @if (isReplyFormOpen(review._id)) {
+                      <div class="mt-4 p-4 bg-neutral-50 rounded-lg">
+                        <label class="block text-sm font-medium text-neutral-700 mb-2">
+                          {{ editingReplyId() ? 'Edit your reply' : 'Write a reply' }}
+                        </label>
+                        <textarea
+                          class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                          rows="3"
+                          maxlength="500"
+                          placeholder="Write your reply (max 500 characters)"
+                          [ngModel]="replyContent()"
+                          (ngModelChange)="replyContent.set($event)"
+                        ></textarea>
+                        <div class="flex justify-end gap-2 mt-2">
+                          <button
+                            class="px-4 py-2 text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
+                            (click)="cancelReply()">
+                            Cancel
+                          </button>
+                          <button
+                            class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+                            [disabled]="!replyContent().trim() || replySubmitting()"
+                            (click)="submitReply(review)">
+                            @if (replySubmitting()) {
+                              Submitting...
+                            } @else {
+                              {{ editingReplyId() ? 'Update' : 'Reply' }}
+                            }
+                          </button>
+                        </div>
+                      </div>
+                    } @else if (!review.hubReply) {
+                      <!-- Reply Button -->
+                      <button
+                        class="mt-4 px-4 py-2 text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors"
+                        (click)="startReply(review._id)">
+                        Reply to this review
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- Pagination -->
+            @if (totalPages() > 1) {
+              <div class="flex items-center justify-center gap-2 mt-6">
+                <button
+                  class="px-3 py-1.5 border border-neutral-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50"
+                  [disabled]="currentPage() === 1"
+                  (click)="handlePagination(currentPage() - 1)"
+                >
+                  Previous
+                </button>
+                <span class="text-sm text-neutral-600">
+                  Page {{ currentPage() }} of {{ totalPages() }}
+                </span>
+                <button
+                  class="px-3 py-1.5 border border-neutral-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50"
+                  [disabled]="currentPage() >= totalPages()"
+                  (click)="handlePagination(currentPage() + 1)"
+                >
+                  Next
+                </button>
+              </div>
+            }
+          }
+        }
+      </div>
+    </div>
+    } @else {
+    <!-- Contract Reviews Tab -->
+    <div class="review-body__section w-full">
+      <div class="review-header__sub-heading text-xl font-semibold text-neutral-900 mb-4">Contract Reviews</div>
+
+      <div class="review-body__section__review-list space-y-4">
+        @if (loading()) {
+          <div class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <p class="mt-4 text-neutral-600">Loading contract reviews...</p>
+          </div>
+        } @else {
+          @if (contractReviews().length === 0) {
+            <div class="text-center py-12 bg-white rounded-xl border border-neutral-200">
+              <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-neutral-100 flex items-center justify-center">
+                <ui-icon name="briefcase" size="lg" class="text-neutral-400" />
+              </div>
+              <p class="text-neutral-600">No contract reviews found</p>
+              <p class="text-sm text-neutral-400 mt-1">Reviews from job contracts will appear here</p>
+            </div>
+          } @else {
+            @for (review of contractReviews(); track review._id) {
+              <div class="bg-white rounded-xl border border-neutral-200 p-6">
+                <div class="flex items-start gap-4">
+                  <div class="w-12 h-12 rounded-full bg-neutral-200 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                    @if (review.reviewerHub?.logo) {
+                      <img [src]="review.reviewerHub.logo" alt="" class="w-full h-full object-cover" />
+                    } @else {
+                      <span class="text-neutral-500 text-sm font-medium">
+                        {{ (review.reviewerHub?.name || 'H').charAt(0).toUpperCase() }}
+                      </span>
+                    }
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                      <div>
+                        <div class="font-semibold text-neutral-900">{{ review.reviewerHub?.name || 'Unknown Hub' }}</div>
+                        <div class="text-sm text-neutral-600">{{ formatDate(review.createdAt) }}</div>
+                      </div>
+                      <div class="text-sm text-neutral-500">
+                        Job: {{ review.job?.title || 'Unknown Job' }}
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1 mb-3">
+                      @for (star of [1,2,3,4,5]; track star) {
+                        <svg
+                          class="w-4 h-4"
+                          [class.text-yellow-400]="star <= review.rating"
+                          [class.text-neutral-300]="star > review.rating"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      }
+                      <span class="ml-2 text-sm text-neutral-600">{{ review.rating }}.0</span>
+                    </div>
+
+                    <!-- Criteria Ratings -->
+                    @if (review.criteriaRatings) {
+                      <div class="grid grid-cols-2 gap-2 mb-3 text-sm">
+                        <div class="flex items-center justify-between">
+                          <span class="text-neutral-600">Quality:</span>
+                          <span class="font-medium">{{ review.criteriaRatings.quality }}/5</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-neutral-600">Communication:</span>
+                          <span class="font-medium">{{ review.criteriaRatings.communication }}/5</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-neutral-600">Professionalism:</span>
+                          <span class="font-medium">{{ review.criteriaRatings.professionalism }}/5</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-neutral-600">Timeliness:</span>
+                          <span class="font-medium">{{ review.criteriaRatings.timeliness }}/5</span>
+                        </div>
+                      </div>
+                    }
+
+                    <p class="text-neutral-700">{{ review.content }}</p>
+
+                    @if (review.isEdited) {
+                      <span class="text-xs text-neutral-400 mt-2 block">(edited)</span>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          }
+        }
+      </div>
+    </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,56 @@
+@layer mereka-ui {
+  .ui-loader-skeleton {
+    display: inline-block;
+    animation: skeleton-animation 0.75s linear infinite alternate;
+    mix-blend-mode: multiply;
+
+    &[data-appearance="circle"] {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      aspect-ratio: 1;
+    }
+
+    &[data-appearance="square"] {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      aspect-ratio: 1;
+    }
+
+    &[data-appearance="square-rounded"] {
+      @extend [data-appearance="square"];
+      border-radius: 8px;
+    }
+
+    &[data-appearance="line"] {
+      display: block;
+      flex-grow: 1;
+      height: 12px;
+      border-radius: 8px;
+    }
+
+    &[data-tint="dark"] {
+      animation: skeleton-animation-dark 0.75s linear infinite alternate;
+    }
+  }
+
+  @keyframes skeleton-animation {
+    0% {
+      background-color: #F5F5F5;
+    }
+    100% {
+      background-color: #FBFBFB;
+    }
+  }
+
+  @keyframes skeleton-animation-dark {
+    0% {
+      background-color: #EDEDED;
+    }
+    100% {
+      background-color: #F8F8F8;
+    }
+  }
+}

@@ -1,0 +1,107 @@
+@if (isMobile()) {
+  <!-- Mobile Booking Bar (fixed at bottom) -->
+  <div class="bg-white shadow-[0_-1px_8px_2px_rgba(0,0,0,0.08)] px-6 py-4">
+    <div class="flex gap-2 items-center">
+      @if (isLoggedIn()) {
+        <button
+          (click)="sendProposal()"
+          class="flex-1 py-3 px-6 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg font-medium hover:opacity-90 transition">
+          Send Proposal
+        </button>
+      } @else {
+        <button
+          (click)="signUp()"
+          class="flex-1 py-3 px-6 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg font-medium hover:opacity-90 transition">
+          Sign up to apply
+        </button>
+      }
+      <button
+        (click)="contactHub()"
+        [disabled]="startingChat()"
+        class="w-12 h-12 flex items-center justify-center bg-white border border-neutral-200 rounded-lg hover:bg-neutral-50 transition disabled:opacity-50">
+        @if (startingChat()) {
+          <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        } @else {
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        }
+      </button>
+      <button
+        (click)="share()"
+        class="w-12 h-12 flex items-center justify-center bg-white border border-neutral-200 rounded-lg hover:bg-neutral-50 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+} @else {
+  <!-- Desktop Booking Widget (sidebar) -->
+  @if (job(); as jobData) {
+    <div class="w-full p-6 flex flex-col gap-4 rounded-xl border border-neutral-200 bg-white shadow-lg">
+      <!-- Category & Service Type -->
+      <div class="flex flex-col gap-2">
+        <span class="flex gap-2 items-center text-neutral-900">
+          <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+          </svg>
+          {{ jobData.serviceCategory?.category }}
+        </span>
+        <span class="flex gap-2 items-center text-neutral-900">
+          <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          {{ jobData.serviceCategory?.serviceType }}
+        </span>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="w-full flex flex-col gap-2">
+        @if (isLoggedIn()) {
+          <button
+            (click)="sendProposal()"
+            class="w-full py-3 px-6 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg font-medium hover:opacity-90 transition">
+            Send Proposal
+          </button>
+        } @else {
+          <button
+            (click)="signUp()"
+            class="w-full py-3 px-6 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg font-medium hover:opacity-90 transition">
+            Sign up to apply
+          </button>
+        }
+        <button
+          (click)="contactHub()"
+          [disabled]="startingChat()"
+          class="w-full py-3 px-6 bg-transparent border border-neutral-200 rounded-lg font-medium hover:bg-neutral-50 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+          @if (startingChat()) {
+            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          } @else {
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          }
+          Contact Hub
+        </button>
+        <button
+          (click)="share()"
+          class="w-full py-3 px-6 bg-transparent border border-neutral-200 rounded-lg font-medium hover:bg-neutral-50 transition">
+          Refer to network
+        </button>
+      </div>
+
+      <p class="mt-3 text-center text-sm text-neutral-500">
+        Not an Expert yet?
+        <a [href]="welcomeUrl" class="text-purple-600 underline cursor-pointer">Join us</a>
+        to view client details and apply.
+      </p>
+    </div>
+  }
+}

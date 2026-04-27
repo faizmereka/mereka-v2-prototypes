@@ -1,0 +1,46 @@
+@use 'abstracts' as *;
+@use '../../pages/home/home.page.scss' as *;
+
+:host {
+  /* Background underlay */
+  padding-block: get-clamp(110, 40);
+  background-image: url('/assets/feat/homepage/images/bg-marketplace.jpg');
+  background-size: cover;
+  background-position: top center;
+  text-align: center;
+}
+
+.marketplace-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.marketplace-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (width >= $breakpoint-laptop) {
+
+  .section-heading {
+    text-align: left;
+  }
+
+  .marketplace-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4rem;
+  }
+
+  .marketplace-image {
+    justify-self: flex-end;
+    position: relative;
+    width: 640px;    
+  }
+  
+  .ui-button {
+    align-self: flex-start;
+  }
+}

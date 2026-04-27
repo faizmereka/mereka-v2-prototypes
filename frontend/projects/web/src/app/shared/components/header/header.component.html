@@ -1,0 +1,398 @@
+<header class="sticky top-0 z-50 bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+    <div class="flex items-center justify-between h-[70px] lg:h-20">
+      <!-- Logo -->
+      <div class="flex items-center gap-6 lg:gap-8">
+        <a routerLink="/" class="flex-shrink-0">
+          <img src="/assets/images/mereka-logo.svg" alt="Mereka" class="h-10 lg:h-11" />
+        </a>
+
+        <!-- Corporate Button (Desktop) -->
+        <a href="https://corporate.mereka.io" target="_blank"
+           class="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-sm font-medium rounded-full hover:bg-primary/90 transition-colors">
+          Corporate
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Search Bar (Desktop) -->
+      <div class="hidden lg:flex flex-1 max-w-md mx-8">
+        <web-header-search class="w-full" />
+      </div>
+
+      <!-- Right Section -->
+      <div class="flex items-center gap-4">
+        <!-- Desktop Auth Section -->
+        <div class="hidden lg:flex items-center gap-3">
+          @if (hydrated() && (!isInitialized() || isLoading())) {
+            <!-- Skeleton loader while checking auth state (after hydration) -->
+            <div class="flex items-center gap-3 animate-pulse">
+              <div class="h-10 w-16 bg-gray-200 rounded"></div>
+              <div class="h-10 w-20 bg-gray-200 rounded-full"></div>
+            </div>
+          } @else if (user()) {
+            <!-- Hub Menu -->
+            @if (hubs().length === 0) {
+              <!-- No hubs - Show "List a service" -->
+              <a [href]="appUrl + '/welcome/hub'"
+                 class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-full hover:bg-gray-800 transition-colors">
+                List a service
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+              </a>
+            } @else if (hubs().length === 1) {
+              <!-- Single hub - Direct link with cookie caching -->
+              <button
+                type="button"
+                (click)="goToHubDashboard(hubs()[0])"
+                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-full hover:bg-gray-800 transition-colors">
+                Business Dashboard
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+              </button>
+            } @else {
+              <!-- Multiple hubs - Dropdown -->
+              <div class="relative">
+                <button
+                  type="button"
+                  (click)="toggleHubMenu()"
+                  class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-full hover:bg-gray-800 transition-colors"
+                  [attr.aria-expanded]="isHubMenuOpen">
+                  Business Dashboard
+                  <svg class="w-4 h-4 transition-transform" [class.rotate-180]="isHubMenuOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+
+                <!-- Hub Dropdown Menu -->
+                @if (isHubMenuOpen) {
+                  <div class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">Your Hubs</div>
+                    @for (hub of hubs(); track hub.hubId) {
+                      <button
+                        type="button"
+                        (click)="goToHubDashboard(hub)"
+                        class="flex items-center gap-3 px-4 py-2 w-full text-left hover:bg-gray-50 transition-colors">
+                        @if (hub.hubLogo) {
+                          <img [src]="hub.hubLogo" [alt]="hub.hubName" class="w-8 h-8 rounded-full object-cover" />
+                        } @else {
+                          <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span class="text-xs font-medium text-primary">{{ hub.hubName.charAt(0) }}</span>
+                          </div>
+                        }
+                        <span class="text-sm font-medium text-gray-700 flex-1 truncate">{{ hub.hubName }}</span>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Notification Bell -->
+            <div class="relative">
+              <button
+                type="button"
+                (click)="toggleNotificationMenu()"
+                class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                [attr.aria-expanded]="isNotificationMenuOpen"
+                aria-label="Notifications">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                @if (unreadCount() > 0) {
+                  <span class="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+                    {{ unreadCount() > 99 ? '99+' : unreadCount() }}
+                  </span>
+                }
+              </button>
+
+              <!-- Notification Dropdown -->
+              @if (isNotificationMenuOpen) {
+                <div class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">
+                  <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                    <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
+                    @if (unreadCount() > 0) {
+                      <button
+                        type="button"
+                        (click)="markAllNotificationsAsRead()"
+                        class="text-xs text-primary hover:underline">
+                        Mark all read
+                      </button>
+                    }
+                  </div>
+
+                  <div class="max-h-72 overflow-y-auto">
+                    @if (notifications().length === 0) {
+                      <div class="px-4 py-8 text-center text-gray-500">
+                        <svg class="w-8 h-8 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <p class="text-sm">No notifications</p>
+                      </div>
+                    } @else {
+                      @for (notification of notifications(); track notification._id) {
+                        <div
+                          (click)="markNotificationAsRead(notification)"
+                          class="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0"
+                          [class.bg-primary/5]="!notification.isRead">
+                          <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 mt-0.5">
+                              @if (!notification.isRead) {
+                                <span class="block w-2 h-2 bg-primary rounded-full"></span>
+                              } @else {
+                                <span class="block w-2 h-2"></span>
+                              }
+                            </div>
+                            <div class="flex-1 min-w-0">
+                              <p class="text-sm font-medium text-gray-900 truncate">{{ notification.title }}</p>
+                              <p class="text-xs text-gray-500 line-clamp-2 mt-0.5">{{ notification.message }}</p>
+                              <p class="text-xs text-gray-400 mt-1">{{ getTimeAgo(notification.createdAt) }}</p>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    }
+                  </div>
+
+                  @if (notifications().length > 0) {
+                    <div class="px-4 py-3 border-t border-gray-100">
+                      <a [href]="appUrl + '/dashboard/notifications'"
+                        (click)="closeNotificationMenu()"
+                        class="block w-full text-center text-sm text-primary hover:underline">
+                        View all notifications
+                      </a>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- User Avatar Menu -->
+            <div class="relative">
+              <button
+                type="button"
+                (click)="toggleUserMenu()"
+                class="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                [attr.aria-expanded]="isUserMenuOpen">
+                <ui-avatar
+                  [src]="user()?.profilePhoto || ''"
+                  [name]="user()?.name || ''"
+                  size="md"
+                />
+              </button>
+
+              <!-- User Dropdown Menu -->
+              @if (isUserMenuOpen) {
+                <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                  <div class="px-4 py-3 border-b border-gray-100">
+                    <p class="text-sm font-medium text-gray-900">{{ user()?.name }}</p>
+                    <p class="text-xs text-gray-500 truncate">{{ user()?.email }}</p>
+                  </div>
+                  <a [href]="appUrl + '/dashboard'"
+                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                    My Dashboard
+                  </a>
+                  <a [href]="appUrl + '/dashboard/bookings'"
+                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                    My Bookings
+                  </a>
+                  <a [href]="appUrl + '/dashboard/settings'"
+                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                    Settings
+                  </a>
+                  <div class="border-t border-gray-100 mt-2 pt-2">
+                    <button
+                      type="button"
+                      (click)="logout()"
+                      class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                      Log out
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <!-- Logged out - Auth Buttons -->
+            <a [href]="authUrl"
+               class="px-5 py-2.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+              Log in
+            </a>
+            <a [href]="authUrl + '?mode=register'"
+               class="px-5 py-2.5 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary/90 transition-colors">
+              Sign up
+            </a>
+          }
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button
+          type="button"
+          (click)="toggleMobileMenu()"
+          class="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors"
+          [attr.aria-expanded]="isMobileMenuOpen"
+          aria-label="Toggle menu">
+          @if (!isMobileMenuOpen) {
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          } @else {
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  @if (isMobileMenuOpen) {
+    <div class="lg:hidden border-t border-gray-100">
+      <div class="px-4 py-4 space-y-4">
+        <!-- Mobile User Info (if logged in) -->
+        @if (hydrated() && (!isInitialized() || isLoading())) {
+          <!-- Skeleton loader for mobile user info (after hydration) -->
+          <div class="flex items-center gap-3 pb-4 border-b border-gray-100 animate-pulse">
+            <div class="w-12 h-12 bg-gray-200 rounded-full"></div>
+            <div class="flex-1">
+              <div class="h-4 w-24 bg-gray-200 rounded mb-2"></div>
+              <div class="h-3 w-32 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        } @else if (user()) {
+          <div class="flex items-center gap-3 pb-4 border-b border-gray-100">
+            <ui-avatar
+              [src]="user()?.profilePhoto || ''"
+              [name]="user()?.name || ''"
+              size="lg"
+            />
+            <div class="flex-1">
+              <p class="text-base font-medium text-gray-900">{{ user()?.name }}</p>
+              <p class="text-sm text-gray-500">{{ user()?.email }}</p>
+            </div>
+            <!-- Mobile Notification Bell -->
+            <a [href]="appUrl + '/dashboard/notifications'"
+               class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+               (click)="closeMobileMenu()">
+              <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              @if (unreadCount() > 0) {
+                <span class="absolute top-0 right-0 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+                  {{ unreadCount() > 99 ? '99+' : unreadCount() }}
+                </span>
+              }
+            </a>
+          </div>
+        }
+
+        <!-- Mobile Search -->
+        <button
+          type="button"
+          (click)="openMobileSearch()"
+          class="flex items-center w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-full hover:border-gray-300 transition-colors">
+          <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <span class="flex-1 text-left text-sm text-gray-500">What are you looking for?</span>
+        </button>
+
+        <!-- Mobile Search Overlay (rendered by search service) -->
+        <web-header-search class="lg:hidden" />
+
+        <!-- Mobile Nav Links -->
+        <nav class="space-y-1">
+          @if (user()) {
+            <a [href]="appUrl + '/dashboard'" (click)="closeMobileMenu()"
+               class="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+              My Dashboard
+            </a>
+            <a [href]="appUrl + '/dashboard/bookings'" (click)="closeMobileMenu()"
+               class="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+              My Bookings
+            </a>
+          }
+          <a routerLink="/experiences" (click)="closeMobileMenu()"
+             class="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+            Experiences
+          </a>
+          <a routerLink="/experts" (click)="closeMobileMenu()"
+             class="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+            Experts
+          </a>
+          <a routerLink="/expertise" (click)="closeMobileMenu()"
+             class="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+            Expertise
+          </a>
+          <a routerLink="/jobs" (click)="closeMobileMenu()"
+             class="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+            Jobs
+          </a>
+          <a routerLink="/hubs" (click)="closeMobileMenu()"
+             class="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+            Hubs
+          </a>
+          <a href="https://corporate.mereka.io" target="_blank"
+             class="flex items-center gap-2 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+            Corporate
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </a>
+        </nav>
+
+        <!-- Mobile Auth Section -->
+        <div class="pt-4 border-t border-gray-100 space-y-3">
+          @if (hydrated() && (!isInitialized() || isLoading())) {
+            <!-- Skeleton loader for mobile (after hydration) -->
+            <div class="animate-pulse space-y-3">
+              <div class="h-12 w-full bg-gray-200 rounded-full"></div>
+              <div class="h-12 w-full bg-gray-200 rounded-full"></div>
+            </div>
+          } @else if (user()) {
+            <button
+              type="button"
+              (click)="logout()"
+              class="block w-full px-4 py-3 text-center text-base font-medium text-red-600 border border-red-200 rounded-full hover:bg-red-50 transition-colors">
+              Log out
+            </button>
+          } @else {
+            <a [href]="authUrl"
+               class="block w-full px-4 py-3 text-center text-base font-medium text-primary border border-primary rounded-full hover:bg-primary/5 transition-colors">
+              Log in
+            </a>
+            <a [href]="authUrl + '?mode=register'"
+               class="block w-full px-4 py-3 text-center text-base font-medium text-white bg-primary rounded-full hover:bg-primary/90 transition-colors">
+              Sign up
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</header>
+
+<!-- Click outside to close user menu -->
+@if (isUserMenuOpen) {
+  <div class="fixed inset-0 z-40" (click)="closeUserMenu()"></div>
+}
+
+<!-- Click outside to close hub menu -->
+@if (isHubMenuOpen) {
+  <div class="fixed inset-0 z-40" (click)="closeHubMenu()"></div>
+}
+
+<!-- Click outside to close notification menu -->
+@if (isNotificationMenuOpen) {
+  <div class="fixed inset-0 z-40" (click)="closeNotificationMenu()"></div>
+}

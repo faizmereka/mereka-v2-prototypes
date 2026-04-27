@@ -1,0 +1,219 @@
+  <footer class="footer-main">
+    <div class="footer-container">
+      <div class="footer-row-1">
+        <a [href]="siteBaseUrl" class="footer-logo" aria-label="Mereka Connect"><site-logo /></a>
+        <ul class="nav-general">
+          <li><a href="https://corporate.mereka.io/about-us" target="mereka">About</a></li>
+          <li><a href="https://corporate.mereka.io/andragogy" target="mereka">Andragogy</a></li>
+          <li><a href="https://corporate.mereka.io/portfolio" target="mereka">Portfolio</a></li>
+          <li><a href="https://corporate.mereka.io/our-team" target="mereka">Team</a></li>
+          <li><a href="https://corporate.mereka.io/work-with-us" target="mereka">Careers</a></li>
+          <li><a href="https://corporate.mereka.io/ecosystem" target="mereka">Ecosystem</a></li>
+          <li><a href="https://corporate.mereka.io/blog" target="mereka">Blog</a></li>
+          <li><a href="https://help.mereka.io/" target="mereka">Help Centre</a></li>
+        </ul>
+        <div class="nav-contact">
+          <a href="https://corporate.mereka.io/contact" target="mereka" ui-button-outline-large>Contact Us</a>
+        </div>
+        <ul class="nav-socmed">
+          <li>
+            <a href="https://www.tiktok.com/@mereka.io" aria-label="Tiktok" rel="me" target="socmed">
+              <mat-icon svgIcon="brand-tiktok" aria-hidden="true" />
+            </a>
+          </li>
+          <li>
+            <a href="https://www.instagram.com/mereka.io/" aria-label="Instagram" rel="me" target="socmed">
+              <mat-icon svgIcon="brand-instagram" aria-hidden="true" />
+            </a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/mereka.io" aria-label="Facebook" rel="me" target="socmed">
+              <mat-icon svgIcon="brand-facebook-circle" aria-hidden="true" />
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/company/mereka/" aria-label="LinkedIn" rel="me" target="socmed">
+              <mat-icon svgIcon="brand-linkedin" aria-hidden="true" />
+            </a>
+          </li>
+          <li>
+            <a href="https://www.youtube.com/channel/UCCyMH5KIZeCMchjMKl7RWxg" aria-label="YouTube" rel="me" target="socmed">
+              <mat-icon svgIcon="brand-youtube" aria-hidden="true" />
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer-separator"></div>
+      <div class="footer-row-2">
+        @defer (on immediate) {
+          <div
+            class="footer-panel footer-column"
+            [class.collapsed]="view.isMobile() && isPanelCollapsed('corporate')"
+            [attr.aria-expanded]="view.isMobile() ? !isPanelCollapsed('corporate') : null"
+          >
+            <div
+              class="footer-panel-header"
+              role="button"
+              tabindex="0"
+              (click)="togglePanel('corporate')"
+              (keyup.enter)="togglePanel('corporate')"
+            >
+              <h3>Corporate</h3>
+              <mat-icon fontIcon="add" aria-hidden="true" />
+            </div>
+            <div class="footer-panel-content">
+              <ng-container *ngTemplateOutlet="corporate"></ng-container>
+            </div>
+          </div>
+          <div
+            class="footer-panel footer-column"
+            [class.collapsed]="view.isMobile() && isPanelCollapsed('marketplace')"
+            [attr.aria-expanded]="view.isMobile() ? !isPanelCollapsed('marketplace') : null"
+          >
+            <div
+              class="footer-panel-header"
+              role="button"
+              tabindex="0"
+              (click)="togglePanel('marketplace')"
+              (keyup.enter)="togglePanel('marketplace')"
+            >
+              <h3>Marketplace</h3>
+              <mat-icon fontIcon="add" aria-hidden="true" />
+            </div>
+            <div class="footer-panel-content">
+              <ng-container *ngTemplateOutlet="marketplace"></ng-container>
+            </div>
+          </div>
+          <div
+            class="footer-panel footer-column"
+            [class.collapsed]="view.isMobile() && isPanelCollapsed('academy')"
+            [attr.aria-expanded]="view.isMobile() ? !isPanelCollapsed('academy') : null"
+          >
+            <div
+              class="footer-panel-header"
+              role="button"
+              tabindex="0"
+              (click)="togglePanel('academy')"
+              (keyup.enter)="togglePanel('academy')"
+            >
+              <h3>Academy</h3>
+              <mat-icon fontIcon="add" aria-hidden="true" />
+            </div>
+            <div class="footer-panel-content">
+              <ng-container *ngTemplateOutlet="academy"></ng-container>
+            </div>
+          </div>
+          <div
+            class="footer-panel footer-column"
+            [class.collapsed]="view.isMobile() && isPanelCollapsed('space')"
+            [attr.aria-expanded]="view.isMobile() ? !isPanelCollapsed('space') : null"
+          >
+            <div
+              class="footer-panel-header"
+              role="button"
+              tabindex="0"
+              (click)="togglePanel('space')"
+              (keyup.enter)="togglePanel('space')"
+            >
+              <h3>Space</h3>
+              <mat-icon fontIcon="add" aria-hidden="true" />
+            </div>
+            <div class="footer-panel-content">
+              <ng-container *ngTemplateOutlet="space"></ng-container>
+            </div>
+          </div>
+
+          <ng-template #corporate>
+            <ul class="nav-list">
+              <li><a href="https://corporate.mereka.io/academy/funders" target="corporate">Accelerate Talent</a></li>
+              <li><a href="https://corporate.mereka.io/academy/create-online-courses" target="corporate">Create Online Course</a></li>
+              <li><a href="https://corporate.mereka.io/academy/makerspace" target="corporate">Build a Makerspace</a></li>
+            </ul>
+          </ng-template>
+          <ng-template #marketplace>
+            <ul class="nav-row">
+              <li>
+                <h4 class="footer-subheading">Users</h4>
+                <ul class="nav-list">
+                  <li><a href="/experiences">Experiences</a></li>
+                  <li><a href="/experts">Experts</a></li>
+                  <li><a href="/expertise">Expertise</a></li>
+                  <li><a href="/hubs">Hubs</a></li>
+                  <li><a href="https://corporate.mereka.io/space" target="_blank">Spaces</a></li>
+                </ul>
+              </li>
+              <li>
+                <h4 class="footer-subheading">Business</h4>
+                <ul class="nav-list">
+                  <li><a href="https://hubs.mereka.io/pricing" target="hub">Pricing</a></li>
+                  <li><a href="https://hubs.mereka.io/howitworks" target="hub">Solutions</a></li>
+                  <li>Manage your bookings
+                    <div class="nav-apps">
+                      <a href="https://apps.apple.com/id/app/mereka-hubs/id6473277964" ref="noopener noreferrer" target="_blank"><img src="assets/feat/footer/badge-app-store.png" alt="App store" loading="lazy" width="120" height="40"></a>
+                      <a href="https://play.google.com/store/apps/details?id=io.mereka.hubs" ref="noopener noreferrer" target="_blank"><img src="assets/feat/footer/badge-google-play.png" alt="Google Play" loading="lazy" width="120" height="40"></a>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </ng-template>
+          <ng-template #academy>
+            <ul class="nav-list">
+              <li><a href="https://corporate.mereka.io/academy/future-of-work" target="academy">Future of Work</a></li>
+              <li><a href="https://corporate.mereka.io/academy/digital-entrepreneur" target="academy">Become a Digital Entrepreneur</a></li>
+              <li><a href="https://corporate.mereka.io/academy/all-courses" target="academy">All Courses</a></li>
+            </ul>
+          </ng-template>
+          <ng-template #space>
+            <ul class="nav-list">
+              <li><a href="https://corporate.mereka.io/publika" target="space">Mereka &commat; Publika</a></li>
+              <li><a href="https://corporate.mereka.io/space#labs" target="space">Our Labs</a></li>
+              <li><a href="https://corporate.mereka.io/space/innovate#products" target="space">Bespoke Design Services</a></li>
+              <li><a href="https://corporate.mereka.io/space#event-cta" target="space">Co-host Creative Events / Talks / Workshops</a></li>
+            </ul>
+          </ng-template>
+        }
+      </div>
+      <div class="footer-separator"></div>
+      <div class="footer-row-3">      
+        <ul class="nav-legal">
+          <li>
+            <span>&copy; {{ currentYear }} Mereka</span>
+            <mat-icon 
+              svgIcon="mrk-circle-info-o-italic"
+              tabindex="0"
+              #tooltip="matTooltip"
+              matTooltip="© 2024 Mereka Innovative Education Sdn Bhd 201701025231(1239397-T)"
+              matTooltipPosition="above"
+              matTooltipClass="footer-tooltip-info"
+              aria-label="Mereka company info"
+            />
+          </li>
+          <li><a href="https://legal.mereka.io/" target="_blank">Terms of Use</a></li>
+          <li><a href="https://legal.mereka.io/privacy-policy/" target="_blank">Privacy Policy</a></li>
+          <li><a href="https://legal.mereka.io/#cookie-policy" target="_blank">Cookies Policy</a></li>
+        </ul>      
+        <!-- @TODO: Currency Conversion -->
+
+        <!-- Sameer Currency Work -->
+        <!-- 
+        <div class="nav-currency">
+
+          @if (allCurrency$ | async; as allCurrency) {
+
+              
+              @for (item of allCurrency.currencies;track item.population) {
+                {{item.countryName}}
+              }
+          
+          }
+
+        </div>  -->
+     
+        
+
+        <!-- Currency Work End -->
+
+      </div>
+    </div>
+  </footer>

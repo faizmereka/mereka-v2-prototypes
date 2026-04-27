@@ -1,0 +1,244 @@
+<div class="flex flex-col gap-5 animate-fade-in">
+  <!-- Calendar Header -->
+  <div class="flex justify-between items-center">
+    <div class="flex items-center gap-4">
+      <button (click)="goBack()" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span class="text-sm font-medium">Back to List</span>
+      </button>
+      <div class="w-px h-6 bg-gray-200"></div>
+      <button class="w-9 h-9 flex items-center justify-center bg-white border border-gray-200 rounded-xl cursor-pointer text-lg hover:bg-gray-100" (click)="previous()">
+        <span>&#8592;</span>
+      </button>
+      @if (viewMode() === 'month') {
+        <h2 class="text-xl font-bold min-w-[200px] text-center">{{ currentDate() | date:'MMMM yyyy' }}</h2>
+      } @else {
+        <h2 class="text-xl font-bold min-w-[200px] text-center">{{ weekDateRange() }}</h2>
+      }
+      <button class="w-9 h-9 flex items-center justify-center bg-white border border-gray-200 rounded-xl cursor-pointer text-lg hover:bg-gray-100" (click)="next()">
+        <span>&#8594;</span>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button class="px-4 py-2 bg-primary text-white border-none rounded-xl cursor-pointer font-medium hover:opacity-90" (click)="goToToday()">Today</button>
+      <div class="flex bg-gray-100 rounded-xl p-0.5">
+        <button
+          class="px-4 py-2 bg-transparent border-none rounded-sm cursor-pointer text-sm"
+          [class.bg-white]="viewMode() === 'month'"
+          [class.shadow-sm]="viewMode() === 'month'"
+          (click)="viewMode.set('month')"
+        >
+          Month
+        </button>
+        <button
+          class="px-4 py-2 bg-transparent border-none rounded-sm cursor-pointer text-sm"
+          [class.bg-white]="viewMode() === 'week'"
+          [class.shadow-sm]="viewMode() === 'week'"
+          (click)="viewMode.set('week')"
+        >
+          Week
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  @if (isLoading()) {
+    <div class="flex items-center justify-center py-4">
+      <div class="animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full"></div>
+      <span class="ml-2 text-gray-500">Loading events...</span>
+    </div>
+  }
+
+  <!-- Month View Calendar Grid -->
+  @if (viewMode() === 'month') {
+    <ui-card [padding]="'p-0'">
+      <!-- Weekday Headers -->
+      <div class="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+        @for (day of weekDays; track day) {
+          <div class="p-3 text-center font-bold text-sm text-gray-500">{{ day }}</div>
+        }
+      </div>
+
+      <!-- Calendar Days -->
+      <div class="grid grid-cols-7">
+        @for (day of calendarDays(); track day.date.getTime()) {
+          <div
+            class="min-h-[120px] p-2 border-r border-b border-gray-200 cursor-pointer transition-colors last:border-r-0 hover:bg-gray-50"
+            [class.bg-gray-50]="!day.isCurrentMonth"
+            [class.bg-primary/5]="day.isToday"
+            (click)="selectDay(day)"
+          >
+            <span
+              class="font-bold text-sm mb-2 inline-flex"
+              [class.text-gray-400]="!day.isCurrentMonth"
+              [class.bg-primary]="day.isToday"
+              [class.text-white]="day.isToday"
+              [class.w-7]="day.isToday"
+              [class.h-7]="day.isToday"
+              [class.items-center]="day.isToday"
+              [class.justify-center]="day.isToday"
+              [class.rounded-full]="day.isToday"
+            >{{ day.date | date:'d' }}</span>
+            @if (day.bookings.length > 0) {
+              <div class="flex flex-col gap-0.5 mt-1">
+                @for (booking of day.bookings.slice(0, 3); track booking.id) {
+                  <div
+                    class="flex items-center gap-1 px-1.5 py-1 rounded text-[10px] overflow-hidden cursor-pointer hover:opacity-80 transition-opacity {{ getStatusClass(booking.status) }}"
+                    (click)="viewBookingDetail(booking, $event)"
+                    title="Click to view details"
+                  >
+                    <span class="font-bold flex-shrink-0">{{ formatTime(booking.start) }}</span>
+                    <span class="overflow-hidden text-ellipsis whitespace-nowrap flex-1">{{ booking.title || booking.serviceName }}</span>
+                  </div>
+                }
+                @if (day.bookings.length > 3) {
+                  <div class="text-[10px] text-gray-500 px-1 py-0.5 font-medium">
+                    +{{ day.bookings.length - 3 }} more
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </ui-card>
+  }
+
+  <!-- Week View Calendar Grid -->
+  @if (viewMode() === 'week') {
+    <ui-card [padding]="'p-0'">
+      <div class="flex">
+        <!-- Time Column -->
+        <div class="flex-shrink-0 w-16 border-r border-gray-200">
+          <div class="h-14 border-b border-gray-200 bg-gray-50"></div>
+          @for (slot of timeSlots; track slot.hour) {
+            <div class="h-14 border-b border-gray-100 px-2 py-1 text-xs text-gray-500 text-right">
+              {{ slot.label }}
+            </div>
+          }
+        </div>
+
+        <!-- Days Grid -->
+        <div class="flex-1 grid grid-cols-7">
+          <!-- Day Headers -->
+          @for (day of weekViewDays(); track day.date.getTime()) {
+            <div
+              class="h-14 p-2 border-r border-b border-gray-200 bg-gray-50 text-center last:border-r-0"
+              [class.bg-primary/5]="day.isToday"
+            >
+              <div class="text-xs text-gray-500">{{ day.date | date:'EEE' }}</div>
+              <div
+                class="font-bold text-lg inline-flex items-center justify-center"
+                [class.bg-primary]="day.isToday"
+                [class.text-white]="day.isToday"
+                [class.w-8]="day.isToday"
+                [class.h-8]="day.isToday"
+                [class.rounded-full]="day.isToday"
+              >{{ day.date | date:'d' }}</div>
+            </div>
+          }
+
+          <!-- Time Slots Grid -->
+          @for (slot of timeSlots; track slot.hour) {
+            @for (day of weekViewDays(); track day.date.getTime()) {
+              <div
+                class="h-14 border-r border-b border-gray-100 p-0.5 last:border-r-0 hover:bg-gray-50 cursor-pointer relative"
+                [class.bg-primary/5]="day.isToday"
+                (click)="selectDay(day)"
+              >
+                @for (booking of getBookingsForHour(day, slot.hour); track booking.id) {
+                  <div
+                    class="absolute inset-x-0.5 px-1 py-0.5 rounded text-[10px] overflow-hidden cursor-pointer hover:opacity-80 transition-opacity {{ getStatusClass(booking.status) }}"
+                    [style.top.px]="2"
+                    (click)="viewBookingDetail(booking, $event)"
+                    title="{{ booking.title || booking.serviceName }} - Click to view details"
+                  >
+                    <span class="font-bold">{{ formatTime(booking.start) }}</span>
+                    <span class="ml-1 overflow-hidden text-ellipsis whitespace-nowrap">{{ booking.title || booking.serviceName }}</span>
+                  </div>
+                }
+              </div>
+            }
+          }
+        </div>
+      </div>
+    </ui-card>
+  }
+
+  <!-- Selected Day Details -->
+  @if (selectedDay()) {
+    <ui-card>
+      <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
+        <h3 class="text-lg font-bold">{{ selectedDay()!.date | date:'EEEE, MMMM d, yyyy' }}</h3>
+        <span class="text-gray-500 text-sm">
+          {{ selectedDay()!.bookings.length }} booking(s)
+        </span>
+      </div>
+
+      @if (selectedDay()!.bookings.length > 0) {
+        <div class="flex flex-col gap-3">
+          @for (booking of selectedDay()!.bookings; track booking.id) {
+            <div
+              class="p-4 rounded-xl border-l-4 cursor-pointer hover:shadow-md transition-shadow {{ getStatusBorderClass(booking.status) }}"
+              (click)="viewBookingDetail(booking, $event)"
+            >
+              <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-sm">{{ formatTime(booking.start) }} - {{ formatTime(booking.end) }}</span>
+                  @if (booking.bookingType) {
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-gray-600 uppercase">{{ booking.bookingType }}</span>
+                  }
+                </div>
+                <span
+                  class="text-xs px-2 py-0.5 rounded-[10px] capitalize {{ getStatusClass(booking.status) }}"
+                >{{ booking.status }}</span>
+              </div>
+              <h4 class="text-base font-bold mb-1">{{ booking.title || booking.serviceName || 'Booking' }}</h4>
+              <p class="text-sm text-gray-600 mb-3">
+                {{ booking.serviceName }}
+                @if (booking.hubName) {
+                  <span>&#8226; {{ booking.hubName }}</span>
+                }
+              </p>
+              <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-600">{{ booking.learnerCount }} participant(s)</span>
+                <div class="flex items-center gap-3">
+                  <span class="font-bold">{{ formatCurrency(booking.totalCost, booking.currency) }}</span>
+                  <span class="text-primary text-xs">View details &rarr;</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="text-center py-8 text-gray-500">
+          <p>No bookings for this day</p>
+        </div>
+      }
+    </ui-card>
+  }
+
+  <!-- Legend -->
+  <div class="flex justify-center gap-6">
+    <div class="flex items-center gap-2 text-sm text-gray-600">
+      <span class="w-3 h-3 rounded-sm bg-blue-500"></span>
+      <span>Active</span>
+    </div>
+    <div class="flex items-center gap-2 text-sm text-gray-600">
+      <span class="w-3 h-3 rounded-sm bg-orange-500"></span>
+      <span>Pending</span>
+    </div>
+    <div class="flex items-center gap-2 text-sm text-gray-600">
+      <span class="w-3 h-3 rounded-sm bg-green-500"></span>
+      <span>Completed</span>
+    </div>
+    <div class="flex items-center gap-2 text-sm text-gray-600">
+      <span class="w-3 h-3 rounded-sm bg-red-500"></span>
+      <span>Cancelled</span>
+    </div>
+  </div>
+</div>

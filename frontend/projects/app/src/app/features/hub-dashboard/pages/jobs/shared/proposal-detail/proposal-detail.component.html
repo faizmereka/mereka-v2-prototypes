@@ -1,0 +1,351 @@
+<div class="min-h-screen bg-neutral-50">
+  <!-- Header -->
+  <div class="bg-white border-b border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="flex items-center justify-between">
+        <button
+          (click)="goBack()"
+          class="inline-flex items-center gap-3 group"
+        >
+          <div class="p-2 rounded-lg border border-neutral-200 group-hover:bg-neutral-50 transition-colors">
+            <svg class="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </div>
+          <h1 class="text-2xl font-bold text-neutral-900">
+            {{ isHubView() ? 'Review Proposal' : 'Proposal Details' }}
+          </h1>
+        </button>
+
+        @if (proposal()?.status; as status) {
+          <span
+            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+            [ngClass]="getProposalStatus(status).color"
+          >
+            {{ getProposalStatus(status).text }}
+          </span>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="bg-white rounded-xl border border-neutral-200 p-12 text-center">
+        <div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+        <p class="text-neutral-600">Loading proposal details...</p>
+      </div>
+    } @else if (!proposal()) {
+      <!-- Error State -->
+      <div class="bg-white rounded-xl border border-neutral-200 p-12 text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">Proposal not found</h3>
+        <p class="text-neutral-600 mb-6">This proposal may have been deleted or you don't have access to view it.</p>
+        <button
+          (click)="goBack()"
+          class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+        >
+          Go Back
+        </button>
+      </div>
+    } @else {
+      <div class="space-y-6">
+        <!-- Job Information Card -->
+        @if (job(); as jobData) {
+          <div class="bg-white rounded-xl border border-neutral-200 p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary mb-2">
+                  {{ jobData.serviceCategory?.serviceType || 'Job' }}
+                </span>
+                <h2 class="text-xl font-semibold text-neutral-900">{{ jobData.jobTitle }}</h2>
+              </div>
+              <button
+                (click)="viewJobPost()"
+                class="px-4 py-2 text-sm font-medium text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors"
+              >
+                View Job Post
+              </button>
+            </div>
+            <div class="flex flex-wrap gap-4 text-sm text-neutral-600">
+              <span>
+                @if (jobData.jobBudget?.pricingType === 'fixed') {
+                  Fixed: {{ jobData.jobCurrency }} {{ jobData.jobBudget?.upToAmount?.toLocaleString() || jobData.jobBudget?.fromAmount?.toLocaleString() }}
+                } @else {
+                  Hourly: {{ jobData.jobCurrency }} {{ jobData.jobBudget?.fromAmount }} - {{ jobData.jobBudget?.upToAmount }}/hr
+                }
+              </span>
+              <span class="text-neutral-300">|</span>
+              <span>{{ jobData.status === 'published' ? 'Open' : jobData.status }}</span>
+            </div>
+          </div>
+        }
+
+        <!-- Expert Profile Section (Hub View) -->
+        @if (isHubView()) {
+          <div class="bg-white rounded-xl border border-neutral-200 p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div class="flex items-center gap-4 flex-1">
+                <img
+                  [src]="getExpertImage()"
+                  [alt]="getExpertName()"
+                  class="w-16 h-16 rounded-full object-cover border border-neutral-200"
+                />
+                <div class="flex-1">
+                  <h2 class="text-lg font-semibold text-neutral-900 mb-1">{{ getExpertName() }}</h2>
+                  @if (getExpertHubName()) {
+                    <p class="text-sm text-neutral-600 mb-2">{{ getExpertHubName() }}</p>
+                  }
+                  <button
+                    (click)="viewExpertProfile()"
+                    class="text-sm text-primary hover:text-primary-dark underline"
+                  >
+                    View profile
+                  </button>
+                </div>
+              </div>
+
+              <!-- Hub Action Buttons (Desktop) -->
+              @if (canTakeAction()) {
+                <div class="hidden sm:flex items-center gap-3">
+                  <button
+                    (click)="messageExpert()"
+                    class="px-4 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors font-medium"
+                  >
+                    Message
+                  </button>
+                  <button
+                    (click)="sendOffer()"
+                    class="px-6 py-2 bg-gradient-to-r from-primary to-primary-dark text-white rounded-lg hover:opacity-90 transition-opacity font-medium shadow-sm"
+                  >
+                    {{ hasOffer() ? 'Edit Offer' : 'Send Offer' }}
+                  </button>
+                </div>
+              }
+            </div>
+
+            <!-- Hub Action Buttons (Mobile) -->
+            @if (canTakeAction()) {
+              <div class="flex sm:hidden gap-3 mt-4 pt-4 border-t border-neutral-200">
+                <button
+                  (click)="messageExpert()"
+                  class="flex-1 px-4 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors font-medium"
+                >
+                  Message
+                </button>
+                <button
+                  (click)="sendOffer()"
+                  class="flex-1 px-4 py-2 bg-gradient-to-r from-primary to-primary-dark text-white rounded-lg hover:opacity-90 transition-opacity font-medium"
+                >
+                  {{ hasOffer() ? 'Edit Offer' : 'Send Offer' }}
+                </button>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Client Info Section (Expert View) -->
+        @if (isExpertView() && getClientHubName()) {
+          <div class="bg-white rounded-xl border border-neutral-200 p-6">
+            <h3 class="text-lg font-semibold text-neutral-900 mb-3">Client</h3>
+            <p class="text-neutral-700">{{ getClientHubName() }}</p>
+          </div>
+        }
+
+        <!-- Proposal Details Section -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-6">
+          <h3 class="text-lg font-semibold text-neutral-900 mb-4">Proposal Details</h3>
+
+          <!-- Proposed Bid -->
+          <div class="mb-6">
+            <p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Proposed Bid</p>
+            <p class="text-2xl font-bold text-neutral-900">{{ formatPrice() }}</p>
+          </div>
+
+          <!-- Milestones -->
+          @if (milestones().length > 0) {
+            <div class="mb-6 pb-6 border-b border-neutral-200">
+              <h4 class="text-base font-semibold text-neutral-900 mb-4">Milestone Breakdown</h4>
+              <div class="relative">
+                <div class="absolute left-4 top-8 bottom-4 w-0.5 bg-neutral-200"></div>
+                <div class="space-y-4">
+                  @for (milestone of milestones(); track $index; let i = $index) {
+                    <div class="relative flex gap-4">
+                      <div class="relative z-10 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-medium flex-shrink-0">
+                        {{ i + 1 }}
+                      </div>
+                      <div class="flex-1 pb-4">
+                        <p class="font-medium text-neutral-900">{{ milestone.taskName }}</p>
+                        @if (milestone.taskDescription) {
+                          <p class="text-sm text-neutral-600 mt-1">{{ milestone.taskDescription }}</p>
+                        }
+                        <p class="text-base font-semibold text-neutral-900 mt-2">
+                          {{ proposal()?.selectedCurrency }} {{ milestone.amount?.toLocaleString() }}
+                        </p>
+                        @if (milestone.dueDate) {
+                          <p class="text-xs text-neutral-500 mt-1">Due {{ formatDate(milestone.dueDate) }}</p>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="flex justify-end mt-4 pt-4 border-t border-neutral-100">
+                <p class="text-sm text-neutral-600">
+                  Total: <span class="font-semibold text-neutral-900">{{ proposal()?.selectedCurrency }} {{ getMilestoneTotal().toLocaleString() }}</span>
+                </p>
+              </div>
+            </div>
+          }
+
+          <!-- Cover Letter -->
+          @if (proposal()?.proposalDetails) {
+            <div class="mb-6">
+              <h4 class="text-sm font-medium text-neutral-700 mb-2">Cover Letter</h4>
+              <p class="text-neutral-600 whitespace-pre-wrap">{{ proposal()?.proposalDetails }}</p>
+            </div>
+          }
+
+          <!-- Attachments -->
+          @if (proposal()?.files && proposal()!.files!.length > 0) {
+            <div>
+              <h4 class="text-sm font-medium text-neutral-700 mb-2">Attachments</h4>
+              <div class="space-y-2">
+                @for (fileUrl of proposal()?.files; track $index) {
+                  <a
+                    [href]="fileUrl"
+                    target="_blank"
+                    class="flex items-center gap-2 p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition-colors"
+                  >
+                    <svg class="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="text-sm text-neutral-700 truncate">{{ getFileName(fileUrl) }}</span>
+                    <svg class="w-4 h-4 text-neutral-400 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                  </a>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Status Actions -->
+        @switch (proposal()?.status) {
+          @case ('pending') {
+            <div class="bg-white rounded-xl border border-neutral-200 p-6">
+              @if (isHubView()) {
+                <!-- Hub Actions -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                  <button
+                    (click)="rejectProposal()"
+                    class="px-6 py-3 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors font-medium"
+                  >
+                    Reject Proposal
+                  </button>
+                  <div class="flex-1"></div>
+                  <button
+                    (click)="messageExpert()"
+                    class="px-6 py-3 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors font-medium"
+                  >
+                    Message Expert
+                  </button>
+                  <button
+                    (click)="sendOffer()"
+                    class="px-8 py-3 bg-gradient-to-r from-primary to-primary-dark text-white rounded-lg hover:opacity-90 transition-opacity font-medium shadow-sm"
+                  >
+                    {{ hasOffer() ? 'Edit Offer' : 'Send Offer' }}
+                  </button>
+                </div>
+              } @else {
+                <!-- Expert Actions -->
+                <div class="flex flex-wrap gap-3">
+                  <button
+                    (click)="withdrawProposal()"
+                    class="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                  >
+                    Withdraw Proposal
+                  </button>
+                  <p class="text-sm text-neutral-500 flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Waiting for client to review your proposal
+                  </p>
+                </div>
+              }
+            </div>
+          }
+          @case ('accepted') {
+            <div class="bg-white rounded-xl border border-neutral-200 p-6">
+              <div class="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div class="flex-1">
+                  <p class="font-medium text-green-800">Proposal Accepted</p>
+                  <p class="text-sm text-green-700">
+                    {{ isHubView() ? 'An offer has been sent to this expert.' : 'Your proposal has been accepted!' }}
+                  </p>
+                </div>
+                @if (proposal()?.contractId) {
+                  <div class="flex gap-2">
+                    <button
+                      (click)="viewOffer()"
+                      class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                    >
+                      View Offer
+                    </button>
+                    <button
+                      (click)="viewContract()"
+                      class="px-4 py-2 border border-green-600 text-green-700 rounded-lg hover:bg-green-50 transition-colors text-sm font-medium"
+                    >
+                      View Contract
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          @case ('rejected') {
+            <div class="bg-white rounded-xl border border-neutral-200 p-6">
+              <div class="flex items-center gap-3 p-4 bg-red-50 rounded-lg">
+                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div>
+                  <p class="font-medium text-red-800">Proposal Rejected</p>
+                  <p class="text-sm text-red-700">
+                    {{ isExpertView() ? 'This proposal was not selected by the client.' : 'This proposal has been rejected.' }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          }
+          @case ('withdrawn') {
+            <div class="bg-white rounded-xl border border-neutral-200 p-6">
+              <div class="flex items-center gap-3 p-4 bg-neutral-100 rounded-lg">
+                <svg class="w-6 h-6 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                </svg>
+                <div>
+                  <p class="font-medium text-neutral-800">Proposal Withdrawn</p>
+                  <p class="text-sm text-neutral-600">
+                    {{ isExpertView() ? 'You have withdrawn this proposal.' : 'The expert has withdrawn this proposal.' }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    }
+  </div>
+</div>

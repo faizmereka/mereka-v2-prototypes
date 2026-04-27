@@ -1,0 +1,71 @@
+<div class="layout-container">
+  <h2 class="section-heading">
+    Explore
+    <span class="heading-accent">Job Opportunities</span>
+  </h2>
+
+  @if (loading()) {
+    <!-- Loading State -->
+    <div class="placeholder-grid">
+      @for (item of placeholderList; track $index) {
+        <div ui-loader-skeleton-card-job></div>
+      }
+    </div>
+  } @else if (jobs().length > 0) {
+    @if (view.isMobile()) {
+      <!-- Mobile Swiper carousel -->
+      <swiper-container ui-swiper [config]="config">
+        @for (job of jobs(); track job._id) {
+          <swiper-slide ui-swiper-slide>
+            <div ui-card-job
+              [id]="job._id"
+              [url]="'/jobs/' + job._id"
+              [title]="job.jobTitle"
+              [description]="job.jobSummary ?? ''"
+              [createdDate]="job.createdAt"
+              [startDate]="job.jobStartDate"
+              [location]="job.jobLocation ?? ''"
+              [client]="job.organizationName ?? ''"
+              [experienceLevel]="job.expertLevel ?? ''"
+              [currency]="{ value: job.jobCurrency }"
+              [budget]="{ pricingType: job.jobBudget.pricingType, fromAmount: job.jobBudget.fromAmount, upToAmount: job.jobBudget.upToAmount }"
+              [tag]="job.employmentType"
+              [isPrivate]="false">
+            </div>
+          </swiper-slide>
+        }
+      </swiper-container>
+    } @else {
+      <!-- Desktop grid -->
+      <!-- TODO: isPrivate always false - client visibility gating (GetAuthStateUseCase) not yet ported to v2 -->
+      <div class="jobs-grid">
+        @for (job of jobs(); track job._id) {
+          <div ui-card-job
+            [id]="job._id"
+            [url]="'/jobs/' + job._id"
+            [title]="job.jobTitle"
+            [description]="job.jobSummary ?? ''"
+            [createdDate]="job.createdAt"
+            [startDate]="job.jobStartDate"
+            [location]="job.jobLocation ?? ''"
+            [client]="job.organizationName ?? ''"
+            [experienceLevel]="job.expertLevel ?? ''"
+            [currency]="{ value: job.jobCurrency }"
+            [budget]="{ pricingType: job.jobBudget.pricingType, fromAmount: job.jobBudget.fromAmount, upToAmount: job.jobBudget.upToAmount }"
+            [tag]="job.employmentType"
+            [isPrivate]="false">
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <!-- Empty State -->
+    <div class="placeholder-grid">
+      @for (item of placeholderList; track $index) {
+        <div ui-loader-skeleton-card-job></div>
+      }
+    </div>
+  }
+
+  <a ui-button-fill-large class="cta-button" routerLink="/jobs">View all Jobs</a>
+</div>

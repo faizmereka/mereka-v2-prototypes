@@ -1,0 +1,24 @@
+:root {
+  --ui-dialog-actions-height: 84px !important;
+  --ui-dialog-header-height: 60px !important;
+}
+@media screen and (width < 575px) {
+
+  .ui-dialog-overlay-pane--mobile-window {
+
+    .ui-dialog-container {
+      height: auto;
+      border-radius: 12px;      
+    }
+  }
+}
+@media screen and (width >= 576px) {
+  :root {
+    --ui-dialog-header-height: auto !important;
+  }
+  .ui-dialog-container {
+    height: auto;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+}

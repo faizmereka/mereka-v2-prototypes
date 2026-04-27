@@ -1,0 +1,12 @@
+apiVersion: v2
+name: mereka-backend
+description: Mereka Backend API Server
+type: application
+version: 1.0.0
+appVersion: "latest"
+keywords:
+  - mereka
+  - backend
+  - api
+maintainers:
+  - name: BBI Team

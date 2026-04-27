@@ -1,0 +1,196 @@
+name: Build and Push
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "projects/**"
+      - "Dockerfile"
+      - "package.json"
+      - "package-lock.json"
+      - "angular.json"
+      - ".github/workflows/build-push.yml"
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "App to build (leave empty for all)"
+        required: false
+        type: choice
+        options:
+          - all
+          - admin
+          - app
+          - auth
+          - checkout
+          - web
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: biji-biji-initiative/mereka
+
+jobs:
+  detect-changes:
+    runs-on: mereka-k8s-runners
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed apps
+        id: set-matrix
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ inputs.app }}" != "all" ]; then
+            echo "matrix={\"app\":[\"${{ inputs.app }}\"]}" >> $GITHUB_OUTPUT
+          else
+            CHANGED_APPS=()
+            for app in admin app auth checkout web; do
+              if git diff --name-only HEAD~1 HEAD | grep -q "projects/$app/\|projects/mereka/"; then
+                CHANGED_APPS+=("$app")
+              fi
+            done
+            # If common files changed, build all
+            if git diff --name-only HEAD~1 HEAD | grep -qE "^(Dockerfile|package\.json|package-lock\.json|angular\.json)$"; then
+              CHANGED_APPS=(admin app auth checkout web)
+            fi
+            # If no apps detected, build all on main
+            if [ ${#CHANGED_APPS[@]} -eq 0 ]; then
+              CHANGED_APPS=(admin app auth checkout web)
+            fi
+            JSON=$(printf '%s\n' "${CHANGED_APPS[@]}" | jq -R . | jq -s -c '{app: .}')
+            echo "matrix=$JSON" >> $GITHUB_OUTPUT
+          fi
+
+  build:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.matrix != '{"app":[]}' }}
+    runs-on: mereka-k8s-heavy-builders
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
+    outputs:
+      image_tag: ${{ steps.tag.outputs.tag }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate image tag
+        id: tag
+        run: |
+          TS=$(date -u +%Y%m%d%H%M%S)
+          echo "tag=${GITHUB_SHA::7}-${TS}" >> $GITHUB_OUTPUT
+          # Set target based on app type (web uses SSR, others use nginx)
+          if [ "${{ matrix.app }}" == "web" ]; then
+            echo "target=ssr-runner" >> $GITHUB_OUTPUT
+          else
+            echo "target=nginx-runner" >> $GITHUB_OUTPUT
+          fi
+          # Set build config based on branch (dev branch -> dev, main branch -> production)
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "build_config=production" >> $GITHUB_OUTPUT
+          else
+            echo "build_config=dev" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          target: ${{ steps.tag.outputs.target }}
+          build-args: |
+            APP_NAME=${{ matrix.app }}
+            BUILD_CONFIG=${{ steps.tag.outputs.build_config }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-${{ matrix.app }}:${{ steps.tag.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-${{ matrix.app }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Mint GitOps token
+        id: gitops_token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.GITOPS_GITHUB_APP_ID }}
+          private-key: ${{ secrets.GITOPS_GITHUB_APP_PRIVATE_KEY }}
+          owner: Biji-Biji-Initiative
+          repositories: bbi-infrastructure
+
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: Biji-Biji-Initiative/bbi-infrastructure
+          token: ${{ steps.gitops_token.outputs.token }}
+          path: gitops
+
+      - name: Determine target environment
+        id: env
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "target=prod" >> $GITHUB_OUTPUT
+          else
+            echo "target=dev" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update image tag in GitOps
+        run: |
+          cd gitops
+          TARGET_DIR="apps/mereka-${{ matrix.app }}/overlays/${{ steps.env.outputs.target }}"
+          if [ -f "${TARGET_DIR}/values.yaml" ]; then
+            sed -i "s/tag: .*/tag: \"${{ steps.tag.outputs.tag }}\"/" "${TARGET_DIR}/values.yaml"
+            echo "Updated ${{ steps.env.outputs.target }}: ${TARGET_DIR}/values.yaml"
+          else
+            echo "Warning: ${TARGET_DIR}/values.yaml not found"
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          # App token has contents:write (push branch) but not pull-requests:write.
+          # Use PAT for PR creation API call; App token handles the git push via
+          # the earlier checkout credential.
+          token: ${{ secrets.GITOPS_TOKEN_BBI_KUBERNATE }}
+          path: gitops
+          commit-message: "chore(mereka-${{ matrix.app }}): update ${{ steps.env.outputs.target }} image to ${{ steps.tag.outputs.tag }}"
+          title: "chore(mereka-${{ matrix.app }}): update ${{ steps.env.outputs.target }} image to ${{ steps.tag.outputs.tag }}"
+          body: |
+            Automated image update from CI pipeline.
+
+            ## Changes
+            - Image: `${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-${{ matrix.app }}:${{ steps.tag.outputs.tag }}`
+            - Commit: ${{ github.sha }}
+            - Environment: **${{ steps.env.outputs.target }}**
+            - Branch: `${{ github.ref_name }}`
+
+            ## Validation
+            - CI build passed
+            - Docker image pushed to GHCR successfully
+          branch: automation/mereka-${{ matrix.app }}-${{ steps.env.outputs.target }}-${{ steps.tag.outputs.tag }}
+          base: main
+          delete-branch: true
+          labels: |
+            automation
+            mereka-${{ matrix.app }}
+            ${{ steps.env.outputs.target }}

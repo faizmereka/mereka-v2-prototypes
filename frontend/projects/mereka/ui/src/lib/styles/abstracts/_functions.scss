@@ -1,0 +1,34 @@
+@use 'sass:math';
+
+@function get-clamp($max-font-size, $min-font-size) {
+  $min-viewport: 576;
+  $max-viewport: 1280;
+
+  $min-size: round-to(math.div($min-font-size, 16) * 1rem, 3);
+  $max-size: round-to(math.div($max-font-size, 16) * 1rem, 3);
+
+  $size-range: $max-font-size - $min-font-size;
+  $viewport-range: $max-viewport - $min-viewport;
+  $slope: math.div($size-range * 100, $viewport-range);
+  $base: math.div($min-font-size - math.div($slope * $min-viewport, 100), 16);
+
+  // Apply rounding to 3 decimal places
+  $slope: round-to($slope, 3);
+  $base: round-to($base, 3);
+
+  $fluid-size: $slope * 1vw;
+
+  @return clamp(#{$min-size}, #{$base}rem + #{$fluid-size}, #{$max-size});
+}
+
+@function get-rem($px, $base: 16) {
+  $rem-value: math.div($px, $base);
+  @return $rem-value * 1rem;
+}
+
+@function round-to($number, $decimals: 2) {
+  $factor: if($decimals == 3, 1000, 1); // Adjusted for simplicity; extend as needed
+  $n: $number * $factor;
+  $n: math.round($n);
+  @return math.div($n, $factor);
+}

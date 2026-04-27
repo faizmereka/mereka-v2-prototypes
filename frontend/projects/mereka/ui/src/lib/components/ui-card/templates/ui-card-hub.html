@@ -1,0 +1,80 @@
+<div class="inner-container">
+  @if (!(rating() === undefined || rating() === 0 || effectiveLayout() !== 'compact' || hideElements().includes('rating'))) {
+    <div class="ui-card-rating" [attr.aria-label]="rating() + ' of 5 stars'">
+      <mat-icon>star</mat-icon>
+      <span>{{ rating().toFixed(1) }}</span>
+    </div>
+  }
+
+  <div ui-card-body>
+    @if (!hideElements().includes('image')) {
+      <div ui-card-image [aspectRatio]="1">
+        <img ui-image [src]="image()" [alt]="title() + ' profile image'" loading="lazy" />
+      </div>
+    }
+    @if (!hideElements().includes('title')) {
+      <h3 ui-card-title>
+        @if (url()) {
+          <a ui-card-link
+            [title]="title()"
+            [routerLink]="url() ? [url()] : []"
+            [attr.target]="target() ?? null"
+            (click)="onClick()">
+            {{ title() }}
+          </a>
+        } @else if (href()) {
+          <a ui-card-link
+            [title]="title()"
+            [href]="href() ?? null"
+            [attr.target]="target() ?? null"
+            (click)="onClick()">
+            {{ title() }}
+          </a>
+        }
+      </h3>
+    }
+    @if (!(effectiveLayout() === 'compact' || hideElements().includes('category'))) {
+      <div class="ui-card-category">
+        {{ category() }}
+      </div>
+    }
+    @if (!(isEmpty(location()) || effectiveLayout() === 'compact' || hideElements().includes('location'))) {
+      <div class="ui-card-location">
+        <mat-icon>place</mat-icon> {{ location() }}
+      </div>
+    }
+    @if (!(isEmpty(metadata()) || effectiveLayout() !== 'compact' || hideElements().includes('metadata'))) {
+      <div class="ui-card-meta separator">
+        @for (data of metadata(); track $index) {
+          @if (data) {
+            <span>{{ data }}</span>
+          }
+        }
+      </div>
+    }
+    @if (!(isEmpty(rating()) || rating() === 0 || effectiveLayout() === 'compact' || hideElements().includes('rating'))) {
+      <div class="ui-card-rating" [attr.aria-label]="rating() + ' of 5 stars'">
+        <mat-icon>star</mat-icon>
+        <span>{{ rating().toFixed(1) }}</span>
+      </div>
+    }
+  </div>
+  <div class="ui-card-icons">
+    @if (!hideElements().includes('favourite')) {
+      <button
+        ui-button
+        class="ui-button--favourite"
+        [attr.aria-label]="isFavourite() ? 'Remove hub from favourites' : 'Add hub to favourites'"
+        (click)="toggleFavourite()">
+        <mat-icon>{{ isFavourite() ? 'favorite' : 'favorite_border' }}</mat-icon>
+      </button>
+    }
+    @if (!(effectiveLayout() === 'compact' || hideElements().includes('chat'))) {
+      <button ui-button
+        [attr.aria-label]="'Chat with ' + title() + ' hub'"
+        (click)="onChat()">
+        <mat-icon>message</mat-icon>
+      </button>
+    }
+  </div>
+</div>

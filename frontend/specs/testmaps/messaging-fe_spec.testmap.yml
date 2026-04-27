@@ -1,0 +1,243 @@
+# specs/testmaps/messaging-fe_spec.testmap.yml
+spec: "messaging-fe-*.md"
+version: "1.0.0"
+last_updated: "2026-02-17"
+
+acceptance_criteria:
+  # Shared UI Components
+  AC-FE-COMP-001:
+    description: "ChatMessageBubble displays text messages"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/components/chat-message-bubble/chat-message-bubble.component.spec.ts"
+    priority: P0
+    covers_spec_section: "messaging-fe-components > ChatMessageBubble"
+
+  AC-FE-COMP-002:
+    description: "ChatMessageBubble displays event messages"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/components/chat-message-bubble/chat-message-bubble.component.spec.ts"
+    priority: P1
+
+  AC-FE-COMP-003:
+    description: "ChatMessageBubble shows sender avatar and name"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/components/chat-message-bubble/chat-message-bubble.component.spec.ts"
+    priority: P1
+
+  AC-FE-COMP-010:
+    description: "ChatInput supports text input"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/components/chat-input/chat-input.component.spec.ts"
+    priority: P0
+
+  AC-FE-COMP-011:
+    description: "ChatInput supports file attachments"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/components/chat-input/chat-input.component.spec.ts"
+    priority: P1
+
+  AC-FE-COMP-012:
+    description: "ChatInput emits send event on submit"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/components/chat-input/chat-input.component.spec.ts"
+    priority: P0
+
+  AC-FE-COMP-020:
+    description: "ChatRoomListItem displays room preview"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/components/chat-room-list-item/chat-room-list-item.component.spec.ts"
+    priority: P0
+
+  AC-FE-COMP-021:
+    description: "ChatRoomListItem shows unread badge"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/components/chat-room-list-item/chat-room-list-item.component.spec.ts"
+    priority: P0
+
+  AC-FE-COMP-022:
+    description: "ChatRoomListItem shows last message preview"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/components/chat-room-list-item/chat-room-list-item.component.spec.ts"
+    priority: P1
+
+  AC-FE-COMP-030:
+    description: "TypingIndicator shows when other user typing"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/components/typing-indicator/typing-indicator.component.spec.ts"
+    priority: P1
+
+  # Hub Inbox Page
+  AC-FE-HUB-001:
+    description: "Hub inbox displays room list"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/hub-dashboard/pages/chat/chat.component.spec.ts"
+    priority: P0
+    covers_spec_section: "messaging-fe-hub-inbox"
+
+  AC-FE-HUB-002:
+    description: "Hub inbox supports filtering by context type"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/hub-dashboard/pages/chat/chat.component.spec.ts"
+    priority: P0
+
+  AC-FE-HUB-003:
+    description: "Hub inbox supports filtering by assigned"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/hub-dashboard/pages/chat/chat.component.spec.ts"
+    priority: P1
+
+  AC-FE-HUB-004:
+    description: "Hub inbox shows total unread count"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/hub-dashboard/pages/chat/chat.component.spec.ts"
+    priority: P0
+
+  AC-FE-HUB-010:
+    description: "Chat detail loads messages on room select"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/hub-dashboard/pages/chat-detail/chat-detail.component.spec.ts"
+    priority: P0
+
+  AC-FE-HUB-011:
+    description: "Chat detail supports infinite scroll for messages"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/hub-dashboard/pages/chat-detail/chat-detail.component.spec.ts"
+    priority: P1
+
+  AC-FE-HUB-012:
+    description: "Chat detail shows context info panel"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/hub-dashboard/pages/chat-detail/chat-detail.component.spec.ts"
+    priority: P1
+
+  AC-FE-HUB-020:
+    description: "Hub member can send message"
+    method: e2e
+    automation: automated
+    test_file: "e2e/chat/hub-send-message.spec.ts"
+    priority: P0
+
+  AC-FE-HUB-021:
+    description: "Hub member can assign room to self"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/hub-dashboard/pages/chat-detail/chat-detail.component.spec.ts"
+    priority: P1
+
+  AC-FE-HUB-022:
+    description: "Hub member can archive room"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/hub-dashboard/pages/chat-detail/chat-detail.component.spec.ts"
+    priority: P2
+
+  # Learner Inbox Page
+  AC-FE-LEARN-001:
+    description: "Learner inbox displays room list"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/user-dashboard/pages/chat/chat.component.spec.ts"
+    priority: P0
+    covers_spec_section: "messaging-fe-learner-inbox"
+
+  AC-FE-LEARN-002:
+    description: "Learner inbox shows hub name (not individual)"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/user-dashboard/pages/chat/chat.component.spec.ts"
+    priority: P0
+
+  AC-FE-LEARN-003:
+    description: "Learner inbox shows context title"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/user-dashboard/pages/chat/chat.component.spec.ts"
+    priority: P1
+
+  AC-FE-LEARN-010:
+    description: "Learner can send message"
+    method: e2e
+    automation: automated
+    test_file: "e2e/chat/learner-send-message.spec.ts"
+    priority: P0
+
+  AC-FE-LEARN-011:
+    description: "Learner sees messages from hub team"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/user-dashboard/pages/chat-detail/chat-detail.component.spec.ts"
+    priority: P0
+
+  # Real-time
+  AC-FE-RT-001:
+    description: "New messages appear in real-time"
+    method: e2e
+    automation: automated
+    test_file: "e2e/chat/realtime-messages.spec.ts"
+    priority: P0
+
+  AC-FE-RT-002:
+    description: "Typing indicator updates in real-time"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/services/chat-websocket.service.spec.ts"
+    priority: P1
+
+  AC-FE-RT-003:
+    description: "Unread count updates in real-time"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/services/chat-websocket.service.spec.ts"
+    priority: P1
+
+  AC-FE-RT-004:
+    description: "WebSocket reconnects on disconnect"
+    method: integration
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/services/chat-websocket.service.spec.ts"
+    priority: P1
+
+  # State Management
+  AC-FE-STATE-001:
+    description: "ChatStore manages room list state"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/stores/chat.store.spec.ts"
+    priority: P0
+
+  AC-FE-STATE-002:
+    description: "ChatStore manages active room state"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/stores/chat.store.spec.ts"
+    priority: P0
+
+  AC-FE-STATE-003:
+    description: "ChatStore manages messages state"
+    method: unit
+    automation: automated
+    test_file: "projects/app/src/app/features/chat/stores/chat.store.spec.ts"
+    priority: P0
+
+coverage:
+  total_acs: 35
+  automated: 35
+  manual: 0
+  coverage_percent: 100

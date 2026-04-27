@@ -1,0 +1,13 @@
+apiVersion: v2
+name: mereka-checkout
+description: Mereka Checkout Application (SSR)
+type: application
+version: 1.0.0
+appVersion: "latest"
+keywords:
+  - mereka
+  - checkout
+  - angular
+  - ssr
+maintainers:
+  - name: BBI Team

@@ -1,0 +1,67 @@
+:root {
+  --mdc-checkbox-selected-checkmark-color: #000;
+  
+  --mdc-checkbox-selected-icon-color: #FFF;
+  --mdc-checkbox-selected-hover-icon-color: #FFF;
+  --mdc-checkbox-selected-focus-icon-color: #FFF;
+  --mdc-checkbox-selected-pressed-icon-color: #FAFAFA;
+
+  --mdc-checkbox-unselected-icon-color: var(--border-solid, #DDDDDE);
+  --mdc-checkbox-unselected-hover-icon-color: #9E9E9E;
+  --mdc-checkbox-unselected-focus-icon-color: #9E9E9E;
+  --mdc-checkbox-unselected-pressed-icon-color:var(--border-solid, #DDDDDE);
+
+  --mdc-checkbox-disabled-selected-icon-color: #9E9E9E;
+  --mdc-checkbox-disabled-selected-checkmark-color: #9B9B9B;
+  --mdc-checkbox-disabled-unselected-icon-color: #9E9E9E;
+  }
+
+.ui-checkbox {
+  .mdc-checkbox {
+    padding-left: 0;
+
+    .mdc-checkbox__background {
+      top: unset;
+      left: unset;
+    }
+  }
+}
+.mat-mdc-checkbox {
+  --mat-checkbox-label-text-size: 1rem;
+}
+.mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background,
+.mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background,
+.mdc-checkbox .mdc-checkbox__native-control[data-indeterminate=true]:enabled~.mdc-checkbox__background {
+  border-color: var(--border-solid, #DDDDDE) !important;
+}
+
+.mdc-checkbox .mdc-checkbox__native-control[disabled]:checked~.mdc-checkbox__background,
+.mdc-checkbox .mdc-checkbox__native-control[disabled]:indeterminate~.mdc-checkbox__background,
+.mdc-checkbox .mdc-checkbox__native-control[data-indeterminate=true][disabled]~.mdc-checkbox__background {
+  border-color: #9B9B9B !important;
+  background-color: #FFF !important;
+}
+
+.mdc-checkbox .mdc-checkbox__native-control[disabled]:not(:checked):not(:indeterminate):not([data-indeterminate=true])~.mdc-checkbox__background {
+
+}
+
+.mdc-checkbox__background {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 4px !important;
+}
+
+.mat-mdc-checkbox-ripple, 
+.mdc-checkbox__ripple {
+  display: none;
+}
+
+.mdc-checkbox__checkmark {
+  transform: scale(0.8);
+}
+
+.mdc-checkbox__checkmark-path {
+  stroke-width: 4px !important
+}
+

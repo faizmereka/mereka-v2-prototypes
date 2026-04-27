@@ -1,0 +1,33 @@
+
+@use 'abstracts' as *;
+@use '../../pages/home/home.page.scss' as *;
+
+/* Background underlay */
+:host {
+  padding-block: get-clamp(110, 40) !important;
+  background-color: var(--color-primary-1, #1A1623);
+  color: #FFF;
+
+  &:before {
+    background-image: url('/assets/feat/homepage/images/bg-corporate.jpg');
+  }
+}
+
+@media (width >= $breakpoint-laptop) {
+  :host {
+    text-align: center;
+    
+    /* Background underlay */
+    &:before {
+      margin-block: 30px;
+    }
+  }
+
+  .layout-container {
+    max-width: var(--layout-container-width-small);
+  }
+  
+  .section-subheading {
+    text-align: inherit;
+  }
+}

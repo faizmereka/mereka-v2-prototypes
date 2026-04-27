@@ -1,0 +1,62 @@
+@layer mereka-ui {
+  .ui-swiper-navigation {
+    position: absolute;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    color: #000;
+    display: inline-flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    text-decoration: none;
+    border-radius: 50%;
+    background-color: #FFF;
+    overflow: hidden;
+    border: 1px solid var(--border-solid, #DDDDDE);
+    color: #000;
+    vertical-align: middle;
+    box-shadow: 0px 2px 16px 0px rgba(85, 85, 85, 0.14);
+    transition-duration: 250ms;
+    transition-property: color, background-color, border-color, border-width;
+    transform-origin: center center;
+    cursor: pointer; 
+
+    > * {
+      width: 2rem;
+      height: 2rem;        
+    }
+
+    &[disabled] {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    &[hidden] {
+      display: none;
+    }
+    
+    &:hover:not([disabled]) {
+      .ui-swiper-button-wrapper {
+        transform: scale(0.8);
+      }
+    }
+
+    &:focus {
+      outline: 1px solid #000;
+    }
+    
+    .ui-swiper-button-wrapper {
+      display: inline-block;
+      flex: 0 0 auto;
+      transition: 0.25s transform;
+    }
+    
+    .mat-icon {
+      font-size: 2rem;
+    }
+  }
+}
+

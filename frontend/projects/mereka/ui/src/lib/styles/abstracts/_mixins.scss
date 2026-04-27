@@ -1,0 +1,20 @@
+@mixin layout-section {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@mixin layout-container($width: "") {
+  width: min(100%, calc(100% - (var(--layout-section-padding) * 2)));
+  @if $width == "" {
+    max-width: var(--layout-container-width);
+  } @else {
+    max-width: var(--layout-container-width-#{$width});
+  }
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}

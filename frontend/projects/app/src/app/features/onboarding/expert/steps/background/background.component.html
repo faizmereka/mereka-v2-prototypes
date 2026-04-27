@@ -1,0 +1,204 @@
+<div class="font-sans">
+  <form [formGroup]="backgroundForm()">
+        <!-- Portfolio Section -->
+        <ui-collapsible title="Portfolio">
+          <div class="flex items-center gap-2 mb-2">
+            <p class="text-base font-medium text-neutral-800">Add details of your previous projects</p>
+            <span class="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-xs font-medium rounded">OPTIONAL</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-4">
+            Build your credibility by showcasing the relevant projects/achievements/experiences you have completed in the field of your expertise. This is what will be displayed in the "Portfolio" section of your Expert page.
+          </p>
+
+          <div class="space-y-4">
+            @for (portfolio of portfolioArray().controls; track $index) {
+              <div class="border border-neutral-200 rounded-lg p-4 bg-white hover:shadow-sm transition-shadow">
+                <div class="flex gap-4">
+                  <!-- Thumbnail -->
+                  <div class="w-16 h-16 flex-shrink-0">
+                    @if (getPortfolioImages($index).length > 0) {
+                      <img [src]="getPortfolioImages($index)[0]" alt="Portfolio image" class="w-full h-full object-cover rounded-lg" />
+                    } @else {
+                      <div class="w-full h-full bg-neutral-100 rounded-lg flex items-center justify-center">
+                        <ui-icon name="file" class="w-6 h-6 text-neutral-400"></ui-icon>
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Content -->
+                  <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <h4 class="text-base font-medium text-neutral-900">{{ getPortfolioFormGroup($index).get('title')?.value || 'Untitled Project' }}</h4>
+                        @if (getPortfolioFormGroup($index).get('year')?.value) {
+                          <p class="text-sm text-neutral-500">{{ getPortfolioFormGroup($index).get('year')?.value }}</p>
+                        }
+                      </div>
+                      <div class="flex items-center gap-1">
+                        <button
+                          type="button"
+                          (click)="openPortfolioDialog($index)"
+                          class="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded transition-colors"
+                          title="Edit project"
+                        >
+                          <ui-icon name="edit" class="w-4 h-4"></ui-icon>
+                        </button>
+                        <button
+                          type="button"
+                          (click)="removePortfolio($index)"
+                          class="p-1.5 text-neutral-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                          title="Remove project"
+                        >
+                          <ui-icon name="trash" class="w-4 h-4"></ui-icon>
+                        </button>
+                      </div>
+                    </div>
+                    @if (getPortfolioFormGroup($index).get('description')?.value) {
+                      <p class="text-sm text-neutral-600 mt-2 line-clamp-2">{{ getPortfolioFormGroup($index).get('description')?.value }}</p>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+
+            <button
+              type="button"
+              (click)="openPortfolioDialog()"
+              class="flex items-center gap-2 text-neutral-600 hover:text-neutral-900 text-sm font-medium"
+            >
+              <ui-icon name="plus" class="w-5 h-5"></ui-icon>
+              Add Projects
+            </button>
+          </div>
+        </ui-collapsible>
+
+        <!-- Employment Section -->
+        <ui-collapsible class="mt-4" title="Employment">
+          <div class="flex items-center gap-2 mb-4">
+            <p class="text-base font-medium text-neutral-800">Share with us your employment history</p>
+            <span class="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-xs font-medium rounded">OPTIONAL</span>
+          </div>
+
+          <div class="space-y-4">
+            @for (employment of employmentArray().controls; track $index) {
+              <div class="border border-neutral-200 rounded-lg p-4 bg-white hover:shadow-sm transition-shadow">
+                <div class="flex justify-between items-start">
+                  <div class="flex gap-3">
+                    <!-- Company Icon -->
+                    <div class="w-10 h-10 flex-shrink-0 bg-neutral-100 rounded-lg flex items-center justify-center">
+                      <ui-icon name="briefcase" class="w-5 h-5 text-neutral-500"></ui-icon>
+                    </div>
+                    <div>
+                      <h4 class="text-base font-medium text-neutral-900">{{ getEmploymentFormGroup($index).get('company')?.value || 'Company Name' }}</h4>
+                      <p class="text-sm text-neutral-700">{{ getEmploymentFormGroup($index).get('title')?.value || 'Job Title' }}</p>
+                      <p class="text-sm text-neutral-500">
+                        @if (getEmploymentFormGroup($index).get('city')?.value || getEmploymentFormGroup($index).get('country')?.value) {
+                          {{ getEmploymentFormGroup($index).get('city')?.value }}@if (getEmploymentFormGroup($index).get('city')?.value && getEmploymentFormGroup($index).get('country')?.value) {, }{{ getEmploymentFormGroup($index).get('country')?.value }} •
+                        }
+                        {{ formatEmploymentDate(getEmploymentFormGroup($index).get('startDate')?.value) }}
+                        - {{ getEmploymentFormGroup($index).get('isOngoing')?.value ? 'Present' : formatEmploymentDate(getEmploymentFormGroup($index).get('endDate')?.value) }}
+                      </p>
+                      @if (getEmploymentFormGroup($index).get('description')?.value) {
+                        <p class="text-sm text-neutral-600 mt-2 line-clamp-2">{{ getEmploymentFormGroup($index).get('description')?.value }}</p>
+                      }
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <button
+                      type="button"
+                      (click)="openEmploymentDialog($index)"
+                      class="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded transition-colors"
+                      title="Edit employment"
+                    >
+                      <ui-icon name="edit" class="w-4 h-4"></ui-icon>
+                    </button>
+                    <button
+                      type="button"
+                      (click)="removeEmployment($index)"
+                      class="p-1.5 text-neutral-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                      title="Remove employment"
+                    >
+                      <ui-icon name="trash" class="w-4 h-4"></ui-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <button
+              type="button"
+              (click)="openEmploymentDialog()"
+              class="flex items-center gap-2 text-neutral-600 hover:text-neutral-900 text-sm font-medium"
+            >
+              <ui-icon name="plus" class="w-5 h-5"></ui-icon>
+              Add Employment
+            </button>
+          </div>
+        </ui-collapsible>
+
+        <!-- Education Section -->
+        <ui-collapsible class="mt-4" title="Education">
+          <div class="flex items-center gap-2 mb-4">
+            <p class="text-base font-medium text-neutral-800">Share your educational background</p>
+            <span class="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-xs font-medium rounded">OPTIONAL</span>
+          </div>
+
+          <div class="space-y-4">
+            @for (education of educationArray().controls; track $index) {
+              <div class="border border-neutral-200 rounded-lg p-4 bg-white hover:shadow-sm transition-shadow">
+                <div class="flex justify-between items-start">
+                  <div class="flex gap-3">
+                    <!-- Education Icon -->
+                    <div class="w-10 h-10 flex-shrink-0 bg-neutral-100 rounded-lg flex items-center justify-center">
+                      <ui-icon name="book" class="w-5 h-5 text-neutral-500"></ui-icon>
+                    </div>
+                    <div>
+                      <h4 class="text-base font-medium text-neutral-900">{{ getEducationFormGroup($index).get('institution')?.value || 'Institution' }}</h4>
+                      <p class="text-sm text-neutral-700">{{ getEducationFormGroup($index).get('degree')?.value || 'Degree/Certification' }}</p>
+                      <p class="text-sm text-neutral-500">
+                        @if (getEducationFormGroup($index).get('year')?.value) {
+                          {{ getEducationFormGroup($index).get('year')?.value }}
+                        } @else {
+                          {{ formatEmploymentDate(getEducationFormGroup($index).get('startDate')?.value) }}
+                          - {{ formatEmploymentDate(getEducationFormGroup($index).get('endDate')?.value) }}
+                        }
+                      </p>
+                      @if (getEducationFormGroup($index).get('description')?.value) {
+                        <p class="text-sm text-neutral-600 mt-2 line-clamp-2">{{ getEducationFormGroup($index).get('description')?.value }}</p>
+                      }
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <button
+                      type="button"
+                      (click)="openEducationDialog($index)"
+                      class="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded transition-colors"
+                      title="Edit education"
+                    >
+                      <ui-icon name="edit" class="w-4 h-4"></ui-icon>
+                    </button>
+                    <button
+                      type="button"
+                      (click)="removeEducation($index)"
+                      class="p-1.5 text-neutral-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                      title="Remove education"
+                    >
+                      <ui-icon name="trash" class="w-4 h-4"></ui-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <button
+              type="button"
+              (click)="openEducationDialog()"
+              class="flex items-center gap-2 text-neutral-600 hover:text-neutral-900 text-sm font-medium"
+            >
+              <ui-icon name="plus" class="w-5 h-5"></ui-icon>
+              Add Education
+            </button>
+          </div>
+        </ui-collapsible>
+  </form>
+</div>

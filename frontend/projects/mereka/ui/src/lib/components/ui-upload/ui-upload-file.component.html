@@ -1,0 +1,31 @@
+<div class="ui-upload-file">
+  <div
+    ui-upload-drop
+    (fileDrop)="onFileDrop($event)"
+    [multiple]="false"
+    [allowedMimeType]="['All']"
+  >
+    <a
+      ui-button-outline
+      (click)="upload()"
+      (keyup.enter)="upload()"
+      tabindex="0"
+      [disabled]="disabled()"
+    >
+      Select File
+      <mat-icon fontIcon="upload_file"></mat-icon>
+    </a>
+
+    <input
+      #inputFile
+      hidden
+      class="ui-upload-file__input"
+      type="file"
+      [disabled]="disabled()"
+      [attr.multiple]="null"
+      (change)="onFileSelected($event)"
+    />
+  </div>
+
+  <span class="ui-upload-file__desc">Max file size: {{ maxFileSize() }} MB</span>
+</div>

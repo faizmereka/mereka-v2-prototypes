@@ -1,0 +1,38 @@
+# specdocs.config.yml — mereka-frontend-workspace-v2
+# Project-specific configuration for spec-driven development
+
+project:
+  name: "mereka-frontend-workspace-v2"
+  vehicle: "marketplace_platform"
+  description: "Angular 21 frontend for Mereka marketplace"
+
+paths:
+  specs_root: "specs/"
+  docs_root: "docs/"
+  testmaps_dir: "specs/testmaps/"
+
+defaults:
+  require_testmap: true
+
+quality_gates:
+  specs:
+    require_frontmatter: true
+    require_human_summary: true
+    max_ac_count: 50
+    ac_id_format: "AC-{PREFIX}-{NNN}"
+
+verification:
+  scan_dirs:
+    - "projects/app/src/"
+    - "projects/app/tests/"
+  annotation_format:
+    covers: "// @covers AC-001, AC-002"
+    spec: "// @spec: feature_spec.md"
+  fail_under_coverage: 50
+
+lint_rules:
+  enabled:
+    - "SPEC-FM-001"
+    - "SPEC-FM-002"
+    - "SPEC-AC-001"
+    - "SPEC-AC-002"

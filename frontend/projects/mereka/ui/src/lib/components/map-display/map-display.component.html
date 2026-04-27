@@ -1,0 +1,47 @@
+<div class="relative rounded-xl overflow-hidden">
+  @if (isLoading()) {
+    <!-- Loading State -->
+    <div
+      class="flex items-center justify-center bg-neutral-100"
+      [style.height]="height()">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  } @else if (useEmbed() || mapError()) {
+    <!-- Embed/Fallback Map -->
+    <div class="relative group cursor-pointer" (click)="openInGoogleMaps()">
+      <iframe
+        [src]="embedUrl()"
+        [style.height]="height()"
+        class="w-full border-0"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen>
+      </iframe>
+      <!-- Hover Overlay -->
+      <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center pointer-events-none">
+        <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-white px-4 py-2 rounded-lg shadow-md text-sm font-medium text-neutral-700">
+          Open in Google Maps
+        </span>
+      </div>
+    </div>
+  } @else {
+    <!-- Native Google Maps -->
+    <div
+      class="relative group cursor-pointer"
+      (click)="openInGoogleMaps()">
+      <div
+        #mapContainer
+        [style.height]="height()"
+        class="w-full">
+      </div>
+      <!-- Hover Overlay (only if not interactive) -->
+      @if (!interactive()) {
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center pointer-events-none">
+          <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-white px-4 py-2 rounded-lg shadow-md text-sm font-medium text-neutral-700">
+            Open in Google Maps
+          </span>
+        </div>
+      }
+    </div>
+  }
+</div>

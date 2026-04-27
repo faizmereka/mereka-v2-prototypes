@@ -1,0 +1,187 @@
+.ui-dropmenu-overlay {
+  transform: translateY(12px);
+}
+
+.ui-dropmenu {  
+  --mat-menu-item-label-text-tracking: -0.15px;
+
+  &::-webkit-scrollbar {
+    transition: 250ms;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #E3E3E4;
+    border: 6px solid #FFF;
+    border-radius: 10px;
+    transition: 250ms;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    transition: 250ms;
+  }
+
+  &--onhover:not(:hover) {
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
+
+  &.mat-mdc-menu-panel {
+    min-width: 12.5rem;
+    padding: 0;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-solid, #DDDDDE);
+    background: var(--surface-primary, #FFF);
+    box-shadow: 0px 2px 16px 0px rgba(85, 85, 85, 0.14) !important;
+    
+    .mat-mdc-menu-content {
+      padding: 0;
+    }
+  }
+
+  &--padded {
+    &.mat-mdc-menu-panel {
+      
+      .mat-mdc-menu-content {
+        padding: 12px;
+      }
+    }
+  }  
+
+  /**
+   * Auto width dropmenu disables min-width and max-width.
+   * The dropmenu width is determined by the maximum width of the child element.
+   */
+  &--auto-width {  
+    &.mat-mdc-menu-panel {
+      min-width: 0;
+      max-width: none;
+    }
+  }
+
+  /** Default menu **/
+  .ui-dropmenu-item {
+    --mat-menu-item-leading-spacing: 12px;
+    --mat-menu-item-trailing-spacing: 12px;
+    --mat-menu-item-label-text-line-height: 1.6;
+    --mat-menu-item-label-text-size: var(--subtitle-2, 15px);    
+    --mat-menu-item-label-text-weight: 600;
+
+    min-height: 36px;
+    border-radius: var(--space-l, 1.25rem);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+  }
+  
+  .ui-dropmenu-separator {
+    display: block;
+    margin: 0.5rem 0;
+    height: 1px;
+    background: var(--border-solid, #DDDDDE);
+  }
+}
+
+.ui-dropmenu-notifications {
+  &.mat-mdc-menu-panel {
+    width: 400px;
+    max-width: 400px;
+  }
+}
+
+/** For checkbox/radio select **/
+.ui-dropmenu-options {
+  &.mat-mdc-menu-panel {
+    min-width: 16.5rem;
+    max-height: 320px;
+    padding: 0;
+
+    .mat-mdc-menu-content {
+      padding: 8px 0;
+    }
+  }  
+}
+
+.ui-dropmenu-options-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  
+  .mat-mdc-checkbox,
+  .mat-mdc-radio-button {
+    width: 100%;
+
+    .mdc-form-field {
+      width: inherit;
+      
+      label {
+        width: 100%;
+        display: flex;
+        align-self: stretch;
+        align-items: center;
+        padding-right: 1rem;
+      }
+    }
+  }
+  .mat-mdc-menu-item-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap !important;
+  }
+}
+
+.ui-dropmenu-options-item {
+  height: auto;
+  min-height: auto;
+  padding: 0;
+  border-radius: 0;
+  line-height: normal;
+
+  .mat-icon {
+    margin-right: 0;
+  }
+}
+
+.ui-dropmenu-item {
+  height: auto;
+  padding: 0.75rem 1rem;
+  border-radius: 0;
+  line-height: normal;
+
+  .mat-icon {
+    margin-right: 0;
+  }
+}
+
+/** For Hub Menu **/
+
+.ui-dropmenu-hub {
+  &.mat-mdc-menu-panel {
+    min-width: 16.5rem;
+    padding: 0;
+
+    .mat-mdc-menu-content {
+      padding: 8px 0;
+    }
+  }
+
+  .ui-dropmenu-item {
+    height: auto;
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+    line-height: normal;
+
+    .mat-icon {
+      margin-right: 0;
+    }
+  }  
+}

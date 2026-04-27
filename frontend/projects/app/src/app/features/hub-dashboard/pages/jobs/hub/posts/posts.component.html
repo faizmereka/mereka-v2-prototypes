@@ -1,0 +1,1033 @@
+<div class="hub-job-posts-page max-w-7xl mx-auto px-4 lg:px-8 py-6 lg:py-8">
+  <!-- Desktop View -->
+  <div class="hidden lg:block">
+    <!-- Header with Title and Create Button -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-neutral-900">
+        {{ activeTab() === 'jobs' ? 'All Job Posts' : activeTab() === 'proposals' ? 'All Proposals' : 'All Hires' }}
+      </h2>
+      <button
+        type="button"
+        (click)="createJob()"
+        class="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-dark transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Create job post
+      </button>
+    </div>
+
+    <!-- Tab Navigation -->
+    <nav class="flex border-b border-neutral-200 mb-6">
+      @for (tab of tabs(); track tab.key) {
+        <button
+          type="button"
+          (click)="setActiveTab(tab.key)"
+          class="px-6 py-3 text-sm font-medium border-b-2 transition-colors -mb-px"
+          [class.border-primary]="activeTab() === tab.key"
+          [class.text-primary]="activeTab() === tab.key"
+          [class.border-transparent]="activeTab() !== tab.key"
+          [class.text-neutral-500]="activeTab() !== tab.key"
+          [class.hover:text-neutral-700]="activeTab() !== tab.key"
+        >
+          {{ tab.label }}
+          @if (tab.count !== undefined && tab.count > 0) {
+            <span class="ml-1 text-xs px-1.5 py-0.5 rounded-full"
+              [class.bg-primary-100]="activeTab() === tab.key"
+              [class.text-primary]="activeTab() === tab.key"
+              [class.bg-neutral-100]="activeTab() !== tab.key"
+              [class.text-neutral-600]="activeTab() !== tab.key"
+            >{{ tab.count }}</span>
+          }
+        </button>
+      }
+    </nav>
+
+    <!-- Jobs Tab Content -->
+    @if (activeTab() === 'jobs') {
+      <!-- Jobs Table -->
+      @if (jobsLoading()) {
+        <div class="flex items-center justify-center py-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      } @else if (jobs().length === 0) {
+        <!-- Empty State -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-12 text-center">
+          <div class="flex flex-col items-center">
+            <img src="/assets/images/job-posts.png" alt="No Jobs" class="w-32 h-32 mb-4 opacity-80" />
+            <h3 class="text-lg font-semibold text-neutral-900 mb-2">No Job Posts Yet!</h3>
+            <p class="text-neutral-500 mb-6">It looks like you haven't created any job posts. Let's get started!</p>
+            <button
+              type="button"
+              (click)="createJob()"
+              class="px-6 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-dark transition-colors"
+            >
+              Create job post
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="bg-white border border-neutral-200 rounded-xl">
+          <table class="w-full">
+            <thead class="bg-neutral-50 border-b border-neutral-200 rounded-t-xl">
+              <tr>
+                @for (menu of jobMenus; track menu) {
+                  <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700">
+                    {{ menu }}
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-neutral-100">
+              @for (job of jobs(); track job._id) {
+                <tr
+                  class="hover:bg-neutral-50 transition-colors cursor-pointer"
+                  (click)="viewProposals(job)"
+                >
+                  <!-- Job Details -->
+                  <td class="px-4 py-4">
+                    <div class="job-listing__title">
+                      <a
+                        (click)="$event.stopPropagation(); viewJobPost(job._id)"
+                        class="font-medium text-primary hover:underline cursor-pointer"
+                      >
+                        {{ job.jobTitle || '-' }}
+                      </a>
+                      <span class="block text-sm text-neutral-500 mt-0.5">Created by {{ job.name || '-' }}</span>
+                    </div>
+                  </td>
+                  <!-- Service Type -->
+                  <td class="px-4 py-4 text-sm text-neutral-600">
+                    {{ job.serviceCategory?.serviceType || '-' }}
+                  </td>
+                  <!-- Posted On -->
+                  <td class="px-4 py-4 text-sm text-neutral-600">
+                    {{ formatDate(job.createdAt) }}
+                  </td>
+                  <!-- Proposals -->
+                  <td class="px-4 py-4 text-sm font-medium text-neutral-900">
+                    {{ job.proposalCount || 0 }}
+                  </td>
+                  <!-- Status -->
+                  <td class="px-4 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                      [ngClass]="getJobStatus(job.status).color"
+                    >
+                      {{ getJobStatus(job.status).text }}
+                    </span>
+                  </td>
+                  <!-- Actions -->
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-2">
+                      @if (job.status === 'published') {
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); viewProposals(job)"
+                          class="px-3 py-1.5 text-sm font-medium border border-neutral-200 rounded-lg hover:bg-neutral-50"
+                        >
+                          View Proposal
+                        </button>
+                      }
+                      @if (job.status === 'draft') {
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); editJob(job)"
+                          class="px-3 py-1.5 text-sm font-medium border border-neutral-200 rounded-lg hover:bg-neutral-50"
+                        >
+                          Edit draft
+                        </button>
+                      }
+                      @if (job.status === 'closed') {
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); reusePost(job)"
+                          class="px-3 py-1.5 text-sm font-medium border border-neutral-200 rounded-lg hover:bg-neutral-50"
+                        >
+                          Re-use Post
+                        </button>
+                      }
+
+                      <!-- Dropdown Menu -->
+                      <div class="relative">
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); toggleActionsDropdown(job._id)"
+                          class="p-1.5 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+                        >
+                          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                        </button>
+
+                        @if (showActionsDropdown() === job._id) {
+                          <!-- Backdrop -->
+                          <div class="fixed inset-0 z-10" (click)="closeActionsDropdown()"></div>
+
+                          <!-- Dropdown -->
+                          <div class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-20">
+                            <!-- Edit - show for draft and published (not closed) -->
+                            @if (job.status?.toUpperCase() !== 'CLOSED') {
+                              <button
+                                type="button"
+                                (click)="$event.stopPropagation(); editJob(job); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-50"
+                              >
+                                Edit
+                              </button>
+                            }
+                            <!-- Re-use post -->
+                            <button
+                              type="button"
+                              (click)="$event.stopPropagation(); reusePost(job); closeActionsDropdown()"
+                              class="w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-50"
+                            >
+                              Re-use post
+                            </button>
+                            <!-- Mark as closed - only for published/active -->
+                            @if (job.status?.toUpperCase() === 'ACTIVE' || job.status?.toUpperCase() === 'PUBLISHED') {
+                              <button
+                                type="button"
+                                (click)="$event.stopPropagation(); markAsClosed(job); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-50"
+                              >
+                                Mark as closed
+                              </button>
+                            }
+                            <!-- Delete -->
+                            <button
+                              type="button"
+                              (click)="$event.stopPropagation(); deleteJob(job); closeActionsDropdown()"
+                              class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Jobs Pagination -->
+        @if (jobsTotalPages() > 1) {
+          <div class="flex items-center justify-between mt-4 px-2">
+            <div class="text-sm text-neutral-500">
+              Showing {{ (jobsPage() - 1) * jobsLimit() + 1 }} to {{ Math.min(jobsPage() * jobsLimit(), jobsTotal()) }} of {{ jobsTotal() }} entries
+            </div>
+            <div class="flex items-center gap-1">
+              <button
+                type="button"
+                [disabled]="jobsPage() === 1"
+                (click)="handleJobsPageChange(jobsPage() - 1)"
+                class="px-3 py-1.5 text-sm border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              @for (page of [].constructor(jobsTotalPages()); track $index) {
+                <button
+                  type="button"
+                  (click)="handleJobsPageChange($index + 1)"
+                  class="w-8 h-8 text-sm rounded-lg"
+                  [class.bg-primary]="jobsPage() === $index + 1"
+                  [class.text-white]="jobsPage() === $index + 1"
+                  [class.hover:bg-neutral-50]="jobsPage() !== $index + 1"
+                >
+                  {{ $index + 1 }}
+                </button>
+              }
+              <button
+                type="button"
+                [disabled]="jobsPage() === jobsTotalPages()"
+                (click)="handleJobsPageChange(jobsPage() + 1)"
+                class="px-3 py-1.5 text-sm border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        }
+      }
+    }
+
+    <!-- Proposals Tab Content -->
+    @if (activeTab() === 'proposals') {
+      @if (proposalsLoading()) {
+        <div class="flex items-center justify-center py-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      } @else if (proposals().length === 0) {
+        <!-- Empty State -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-12 text-center">
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full bg-neutral-100 flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-neutral-900 mb-2">No Proposals Yet!</h3>
+            <p class="text-neutral-500 mb-6">Post a job to start receiving proposals from experts.</p>
+            <button
+              type="button"
+              (click)="createJob()"
+              class="px-6 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-dark transition-colors"
+            >
+              Create job post
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="bg-white border border-neutral-200 rounded-xl overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-neutral-50 border-b border-neutral-200">
+              <tr>
+                @for (menu of proposalsMenus; track menu) {
+                  <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700">
+                    {{ menu }}
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-neutral-100">
+              @for (proposal of proposals(); track proposal._id) {
+                <tr
+                  class="hover:bg-neutral-50 transition-colors cursor-pointer"
+                  (click)="viewProposalDetail(proposal)"
+                >
+                  <!-- Expert -->
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-full bg-neutral-200 overflow-hidden flex-shrink-0">
+                        @if (getExpertImage(proposal)) {
+                          <img [src]="getExpertImage(proposal)" alt="" class="w-full h-full object-cover" />
+                        } @else {
+                          <div class="w-full h-full flex items-center justify-center text-neutral-500 text-sm font-medium">
+                            {{ getExpertName(proposal).charAt(0).toUpperCase() }}
+                          </div>
+                        }
+                      </div>
+                      <div>
+                        <span class="font-medium text-neutral-900 block">{{ getExpertName(proposal) }}</span>
+                        <span class="text-sm text-neutral-500">{{ getExpertEmail(proposal) }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <!-- Job -->
+                  <td class="px-4 py-4">
+                    <span class="font-medium text-neutral-900">{{ getJobTitle(proposal) }}</span>
+                  </td>
+                  <!-- Proposed Price -->
+                  <td class="px-4 py-4 text-sm text-neutral-900">
+                    {{ formatProposalPrice(proposal) }}
+                  </td>
+                  <!-- Submitted -->
+                  <td class="px-4 py-4 text-sm text-neutral-600">
+                    {{ formatDate(proposal.createdAt) }}
+                  </td>
+                  <!-- Status -->
+                  <td class="px-4 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                      [ngClass]="getProposalStatus(proposal.status).color"
+                    >
+                      {{ getProposalStatus(proposal.status).text }}
+                    </span>
+                  </td>
+                  <!-- Actions -->
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-2">
+                      @if (proposal.status === 'pending') {
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); sendOffer(proposal)"
+                          class="px-3 py-1.5 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-dark"
+                        >
+                          Send Offer
+                        </button>
+                      }
+
+                      <!-- Dropdown Menu -->
+                      <div class="relative">
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); toggleActionsDropdown(proposal._id)"
+                          class="p-1.5 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+                        >
+                          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                        </button>
+
+                        @if (showActionsDropdown() === proposal._id) {
+                          <!-- Backdrop -->
+                          <div class="fixed inset-0 z-10" (click)="closeActionsDropdown()"></div>
+
+                          <!-- Dropdown -->
+                          <div class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-20">
+                            <button
+                              type="button"
+                              (click)="$event.stopPropagation(); viewProposalDetail(proposal); closeActionsDropdown()"
+                              class="w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-50"
+                            >
+                              View Details
+                            </button>
+                            @if (proposal.status === 'pending') {
+                              <button
+                                type="button"
+                                (click)="$event.stopPropagation(); sendOffer(proposal); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-50"
+                              >
+                                Send Offer
+                              </button>
+                              <button
+                                type="button"
+                                (click)="$event.stopPropagation(); rejectProposalItem(proposal); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                              >
+                                Reject
+                              </button>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Proposals Pagination -->
+        @if (proposalsTotalPages() > 1) {
+          <div class="flex items-center justify-between mt-4 px-2">
+            <div class="text-sm text-neutral-500">
+              Showing {{ (proposalsPage() - 1) * proposalsLimit() + 1 }} to {{ Math.min(proposalsPage() * proposalsLimit(), proposalsTotal()) }} of {{ proposalsTotal() }} entries
+            </div>
+            <div class="flex items-center gap-1">
+              <button
+                type="button"
+                [disabled]="proposalsPage() === 1"
+                (click)="handleProposalsPageChange(proposalsPage() - 1)"
+                class="px-3 py-1.5 text-sm border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              @for (page of [].constructor(proposalsTotalPages()); track $index) {
+                <button
+                  type="button"
+                  (click)="handleProposalsPageChange($index + 1)"
+                  class="w-8 h-8 text-sm rounded-lg"
+                  [class.bg-primary]="proposalsPage() === $index + 1"
+                  [class.text-white]="proposalsPage() === $index + 1"
+                  [class.hover:bg-neutral-50]="proposalsPage() !== $index + 1"
+                >
+                  {{ $index + 1 }}
+                </button>
+              }
+              <button
+                type="button"
+                [disabled]="proposalsPage() === proposalsTotalPages()"
+                (click)="handleProposalsPageChange(proposalsPage() + 1)"
+                class="px-3 py-1.5 text-sm border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        }
+      }
+    }
+
+    <!-- Hires/Contracts Tab Content -->
+    @if (activeTab() === 'hires') {
+      @if (contractsLoading()) {
+        <div class="flex items-center justify-center py-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      } @else if (contracts().length === 0) {
+        <!-- Empty State -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-12 text-center">
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full bg-neutral-100 flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-neutral-900 mb-2">No Hires Yet!</h3>
+            <p class="text-neutral-500 mb-6">Post a job to start receiving proposals and hire experts.</p>
+            <button
+              type="button"
+              (click)="createJob()"
+              class="px-6 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-dark transition-colors"
+            >
+              Create job post
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="bg-white border border-neutral-200 rounded-xl overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-neutral-50 border-b border-neutral-200">
+              <tr>
+                @for (menu of hiresMenus; track menu) {
+                  <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700">
+                    {{ menu }}
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-neutral-100">
+              @for (contract of contracts(); track contract._id) {
+                <tr
+                  class="hover:bg-neutral-50 transition-colors cursor-pointer"
+                  (click)="viewContract(contract)"
+                >
+                  <!-- Expert Information -->
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-full bg-neutral-200 overflow-hidden flex-shrink-0">
+                        @if (contract.expert?.profileImage) {
+                          <img [src]="contract.expert?.profileImage" alt="" class="w-full h-full object-cover" />
+                        } @else {
+                          <div class="w-full h-full flex items-center justify-center text-neutral-500 text-sm font-medium">
+                            {{ (contract.expert?.name || 'E').charAt(0).toUpperCase() }}
+                          </div>
+                        }
+                      </div>
+                      <div>
+                        <span class="font-medium text-neutral-900 block">{{ contract.expert?.name || '-' }}</span>
+                        <span class="text-sm text-neutral-500">{{ contract.clientHub?.name || '-' }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <!-- Job Detail -->
+                  <td class="px-4 py-4">
+                    <div>
+                      <a class="font-medium text-neutral-900 hover:text-primary cursor-pointer">
+                        {{ contract.contractTitle || '-' }}
+                      </a>
+                      <div class="text-sm text-neutral-500 mt-0.5">
+                        @if (contract.priceType === 'fixed') {
+                          Project price: {{ formatCurrency(contract.proposedPrice, contract.selectedCurrency) }}
+                        } @else {
+                          Rate: {{ formatCurrency(contract.hourlyProposedPrice, contract.selectedCurrency) }}/hr, {{ contract.weeklyLimit || 0 }} hrs weekly limit
+                        }
+                      </div>
+                      <div class="text-sm text-neutral-400 mt-0.5">
+                        {{ formatDate(contract.createdAt) }}
+                        @if (contract.status !== 'completed' && contract.status !== 'cancelled') {
+                          <span> - Present</span>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                  <!-- In Escrow -->
+                  <td class="px-4 py-4">
+                    @if (contract.priceType === 'fixed') {
+                      <span class="text-sm text-neutral-900">
+                        {{ contract.escrowAmount ? formatCurrency(contract.escrowAmount, contract.selectedCurrency) : '-' }}
+                      </span>
+                    } @else {
+                      <div class="text-sm text-neutral-900">
+                        {{ formatCurrency(contract.escrowAmount, contract.selectedCurrency) }}
+                      </div>
+                      <div class="text-sm text-neutral-500">
+                        ({{ contract.escrowHours || 0 }} hrs)
+                      </div>
+                    }
+                  </td>
+                  <!-- Paid to Date -->
+                  <td class="px-4 py-4">
+                    @if (contract.priceType === 'fixed') {
+                      <span class="text-sm text-neutral-900">
+                        {{ formatCurrency(contract.paidAmount, contract.selectedCurrency) }}
+                      </span>
+                    } @else {
+                      <div class="text-sm text-neutral-900">
+                        {{ formatCurrency(contract.paidAmount, contract.selectedCurrency) }}
+                      </div>
+                      <div class="text-sm text-neutral-500">
+                        ({{ contract.paidHours || 0 }} hrs)
+                      </div>
+                    }
+                  </td>
+                  <!-- Status -->
+                  <td class="px-4 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                      [ngClass]="getContractStatus(contract).color"
+                    >
+                      {{ getContractStatus(contract).text }}
+                    </span>
+                    @if (contract.milestonesCount && contract.priceType === 'fixed') {
+                      <div class="text-xs text-neutral-500 mt-1">
+                        Milestone: {{ contract.completedMilestonesCount || 1 }}/{{ contract.milestonesCount }}
+                      </div>
+                    }
+                  </td>
+                  <!-- Actions -->
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-2">
+                      @if (contract.status === 'active') {
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); messageExpert(contract)"
+                          class="px-3 py-1.5 text-sm font-medium border border-neutral-200 rounded-lg hover:bg-neutral-50"
+                        >
+                          Message
+                        </button>
+                      }
+                      @if (contract.status === 'completed') {
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); markContractAsClosed(contract)"
+                          class="px-3 py-1.5 text-sm font-medium text-green-700 bg-green-100 rounded-lg hover:bg-green-200"
+                        >
+                          Mark as closed
+                        </button>
+                      }
+                      @if (contract.status === 'pending') {
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); viewContract(contract)"
+                          class="px-3 py-1.5 text-sm font-medium text-primary border border-primary rounded-lg hover:bg-primary-50"
+                        >
+                          View Offer
+                        </button>
+                      }
+
+                      <!-- Dropdown Menu -->
+                      <div class="relative">
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); toggleActionsDropdown(contract._id)"
+                          class="p-1.5 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+                        >
+                          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                        </button>
+
+                        @if (showActionsDropdown() === contract._id) {
+                          <!-- Backdrop -->
+                          <div class="fixed inset-0 z-10" (click)="closeActionsDropdown()"></div>
+
+                          <!-- Dropdown -->
+                          <div class="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-20">
+                            <button
+                              type="button"
+                              (click)="$event.stopPropagation(); viewContract(contract); closeActionsDropdown()"
+                              class="w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-50"
+                            >
+                              {{ contract.status === 'pending' ? 'View offer' : 'View contract' }}
+                            </button>
+                            @if (contract.status === 'active') {
+                              <button
+                                type="button"
+                                (click)="$event.stopPropagation(); messageExpert(contract); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-50"
+                              >
+                                Message
+                              </button>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Contracts Pagination -->
+        @if (contractsTotalPages() > 1) {
+          <div class="flex items-center justify-between mt-4 px-2">
+            <div class="text-sm text-neutral-500">
+              Showing {{ (contractsPage() - 1) * contractsLimit() + 1 }} to {{ Math.min(contractsPage() * contractsLimit(), contractsTotal()) }} of {{ contractsTotal() }} entries
+            </div>
+            <div class="flex items-center gap-1">
+              <button
+                type="button"
+                [disabled]="contractsPage() === 1"
+                (click)="handleContractsPageChange(contractsPage() - 1)"
+                class="px-3 py-1.5 text-sm border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              @for (page of [].constructor(contractsTotalPages()); track $index) {
+                <button
+                  type="button"
+                  (click)="handleContractsPageChange($index + 1)"
+                  class="w-8 h-8 text-sm rounded-lg"
+                  [class.bg-primary]="contractsPage() === $index + 1"
+                  [class.text-white]="contractsPage() === $index + 1"
+                  [class.hover:bg-neutral-50]="contractsPage() !== $index + 1"
+                >
+                  {{ $index + 1 }}
+                </button>
+              }
+              <button
+                type="button"
+                [disabled]="contractsPage() === contractsTotalPages()"
+                (click)="handleContractsPageChange(contractsPage() + 1)"
+                class="px-3 py-1.5 text-sm border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        }
+      }
+    }
+  </div>
+
+  <!-- Mobile View -->
+  <div class="lg:hidden">
+    <!-- Mobile Header -->
+    <div class="flex items-center justify-between mb-4">
+      <h1 class="text-xl font-bold text-neutral-900">
+        {{ activeTab() === 'jobs' ? 'Job Posts' : activeTab() === 'proposals' ? 'Proposals' : 'Hires' }}
+      </h1>
+      <button
+        type="button"
+        (click)="createJob()"
+        class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Create
+      </button>
+    </div>
+
+    <!-- Mobile Tab Navigation -->
+    <div class="flex gap-2 mb-4 overflow-x-auto">
+      @for (tab of tabs(); track tab.key) {
+        <button
+          type="button"
+          (click)="setActiveTab(tab.key)"
+          class="flex-shrink-0 px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
+          [class.bg-primary]="activeTab() === tab.key"
+          [class.text-white]="activeTab() === tab.key"
+          [class.bg-neutral-100]="activeTab() !== tab.key"
+          [class.text-neutral-700]="activeTab() !== tab.key"
+        >
+          {{ tab.label }}
+          @if (tab.count !== undefined && tab.count > 0) {
+            <span class="ml-1 text-xs">
+              ({{ tab.count }})
+            </span>
+          }
+        </button>
+      }
+    </div>
+
+    <!-- Mobile Jobs Content -->
+    @if (activeTab() === 'jobs') {
+      @if (jobsLoading()) {
+        <div class="flex items-center justify-center py-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      } @else if (jobs().length === 0) {
+        <div class="bg-white rounded-xl border border-neutral-200 p-8 text-center">
+          <h3 class="text-lg font-semibold text-neutral-900 mb-2">No Job Posts Yet!</h3>
+          <p class="text-neutral-500 mb-4">Let's get started!</p>
+          <button
+            type="button"
+            (click)="createJob()"
+            class="px-6 py-2.5 bg-primary text-white rounded-full text-sm font-semibold"
+          >
+            Create job post
+          </button>
+        </div>
+      } @else {
+        <div class="space-y-4">
+          @for (job of jobs(); track job._id) {
+            <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+              <!-- Status Row -->
+              <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-100">
+                <span
+                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                  [ngClass]="getJobStatus(job.status).color"
+                >
+                  {{ getJobStatus(job.status).text }}
+                </span>
+                <button
+                  type="button"
+                  (click)="toggleActionsDropdown(job._id)"
+                  class="p-1.5 text-neutral-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Content -->
+              <div class="p-4">
+                <div class="job-listing__title mb-3">
+                  <a (click)="viewJobPost(job._id)" class="font-semibold text-neutral-900 hover:text-primary cursor-pointer">
+                    {{ job.jobTitle || '-' }}
+                  </a>
+                  <span class="block text-sm text-neutral-500 mt-0.5">Created by {{ job.name || '-' }}</span>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <div class="text-neutral-400 text-xs uppercase tracking-wide mb-1">Service Type</div>
+                    <div class="text-neutral-700 text-xs">{{ job.serviceCategory?.serviceType || '-' }}</div>
+                  </div>
+                  <div>
+                    <div class="text-neutral-400 text-xs uppercase tracking-wide mb-1">Posted On</div>
+                    <div class="text-neutral-700 text-xs">{{ formatDate(job.createdAt) }}</div>
+                  </div>
+                  <div>
+                    <div class="text-neutral-400 text-xs uppercase tracking-wide mb-1">Proposals</div>
+                    <div class="text-neutral-700 font-medium">{{ job.proposalCount || 0 }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions Footer -->
+              <div class="flex items-center gap-2 px-4 py-3 bg-neutral-50 border-t border-neutral-100">
+                @if (job.status === 'published') {
+                  <button
+                    type="button"
+                    (click)="viewProposals(job)"
+                    class="flex-1 px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-dark"
+                  >
+                    View Proposal
+                  </button>
+                }
+                @if (job.status === 'draft') {
+                  <button
+                    type="button"
+                    (click)="editJob(job)"
+                    class="flex-1 px-4 py-2 text-sm font-medium border border-neutral-200 rounded-lg hover:bg-white"
+                  >
+                    Edit draft
+                  </button>
+                }
+                @if (job.status === 'closed') {
+                  <button
+                    type="button"
+                    (click)="reusePost(job)"
+                    class="flex-1 px-4 py-2 text-sm font-medium border border-neutral-200 rounded-lg hover:bg-white"
+                  >
+                    Re-use Post
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+
+    <!-- Mobile Proposals Content -->
+    @if (activeTab() === 'proposals') {
+      @if (proposalsLoading()) {
+        <div class="flex items-center justify-center py-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      } @else if (proposals().length === 0) {
+        <div class="bg-white rounded-xl border border-neutral-200 p-8 text-center">
+          <h3 class="text-lg font-semibold text-neutral-900 mb-2">No Proposals Yet!</h3>
+          <p class="text-neutral-500 mb-4">Post a job to start receiving proposals.</p>
+          <button
+            type="button"
+            (click)="createJob()"
+            class="px-6 py-2.5 bg-primary text-white rounded-full text-sm font-semibold"
+          >
+            Create job post
+          </button>
+        </div>
+      } @else {
+        <div class="space-y-4">
+          @for (proposal of proposals(); track proposal._id) {
+            <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden" (click)="viewProposalDetail(proposal)">
+              <!-- Expert Info -->
+              <div class="flex items-center gap-3 px-4 py-3 border-b border-neutral-100">
+                <div class="w-10 h-10 rounded-full bg-neutral-200 overflow-hidden flex-shrink-0">
+                  @if (getExpertImage(proposal)) {
+                    <img [src]="getExpertImage(proposal)" alt="" class="w-full h-full object-cover" />
+                  } @else {
+                    <div class="w-full h-full flex items-center justify-center text-neutral-500 text-sm font-medium">
+                      {{ getExpertName(proposal).charAt(0).toUpperCase() }}
+                    </div>
+                  }
+                </div>
+                <div class="flex-1">
+                  <span class="font-medium text-neutral-900 block">{{ getExpertName(proposal) }}</span>
+                  <span class="text-sm text-neutral-500">{{ getExpertEmail(proposal) }}</span>
+                </div>
+                <span
+                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                  [ngClass]="getProposalStatus(proposal.status).color"
+                >
+                  {{ getProposalStatus(proposal.status).text }}
+                </span>
+              </div>
+
+              <!-- Proposal Details -->
+              <div class="p-4">
+                <div class="mb-3">
+                  <a class="font-semibold text-neutral-900">{{ getJobTitle(proposal) }}</a>
+                  <div class="text-sm text-neutral-500 mt-0.5">
+                    Proposed: {{ formatProposalPrice(proposal) }}
+                  </div>
+                  <div class="text-sm text-neutral-400 mt-0.5">
+                    Submitted {{ formatDate(proposal.createdAt) }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions Footer -->
+              <div class="flex items-center gap-2 px-4 py-3 bg-neutral-50 border-t border-neutral-100">
+                @if (proposal.status === 'pending') {
+                  <button
+                    type="button"
+                    (click)="$event.stopPropagation(); sendOffer(proposal)"
+                    class="flex-1 px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-dark"
+                  >
+                    Send Offer
+                  </button>
+                  <button
+                    type="button"
+                    (click)="$event.stopPropagation(); rejectProposalItem(proposal)"
+                    class="px-4 py-2 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50"
+                  >
+                    Reject
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+
+    <!-- Mobile Hires Content -->
+    @if (activeTab() === 'hires') {
+      @if (contractsLoading()) {
+        <div class="flex items-center justify-center py-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      } @else if (contracts().length === 0) {
+        <div class="bg-white rounded-xl border border-neutral-200 p-8 text-center">
+          <h3 class="text-lg font-semibold text-neutral-900 mb-2">No Hires Yet!</h3>
+          <p class="text-neutral-500 mb-4">Post a job to start hiring experts.</p>
+          <button
+            type="button"
+            (click)="createJob()"
+            class="px-6 py-2.5 bg-primary text-white rounded-full text-sm font-semibold"
+          >
+            Create job post
+          </button>
+        </div>
+      } @else {
+        <div class="space-y-4">
+          @for (contract of contracts(); track contract._id) {
+            <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden" (click)="viewContract(contract)">
+              <!-- Expert Info -->
+              <div class="flex items-center gap-3 px-4 py-3 border-b border-neutral-100">
+                <div class="w-10 h-10 rounded-full bg-neutral-200 overflow-hidden flex-shrink-0">
+                  @if (contract.expert?.profileImage) {
+                    <img [src]="contract.expert?.profileImage" alt="" class="w-full h-full object-cover" />
+                  } @else {
+                    <div class="w-full h-full flex items-center justify-center text-neutral-500 text-sm font-medium">
+                      {{ (contract.expert?.name || 'E').charAt(0).toUpperCase() }}
+                    </div>
+                  }
+                </div>
+                <div class="flex-1">
+                  <span class="font-medium text-neutral-900 block">{{ contract.expert?.name || '-' }}</span>
+                  <span class="text-sm text-neutral-500">{{ contract.clientHub?.name || '-' }}</span>
+                </div>
+                <span
+                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                  [ngClass]="getContractStatus(contract).color"
+                >
+                  {{ getContractStatus(contract).text }}
+                </span>
+              </div>
+
+              <!-- Contract Details -->
+              <div class="p-4">
+                <div class="mb-3">
+                  <a class="font-semibold text-neutral-900">{{ contract.contractTitle || '-' }}</a>
+                  <div class="text-sm text-neutral-500 mt-0.5">
+                    @if (contract.priceType === 'fixed') {
+                      Project price: {{ formatCurrency(contract.proposedPrice, contract.selectedCurrency) }}
+                    } @else {
+                      Rate: {{ formatCurrency(contract.hourlyProposedPrice, contract.selectedCurrency) }}/hr, {{ contract.weeklyLimit || 0 }} hrs weekly limit
+                    }
+                  </div>
+                  <div class="text-sm text-neutral-400 mt-0.5">
+                    {{ formatDate(contract.createdAt) }}
+                    @if (contract.status !== 'completed' && contract.status !== 'cancelled') {
+                      <span> - Present</span>
+                    }
+                  </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <div class="text-neutral-400 text-xs uppercase tracking-wide mb-1">In Escrow</div>
+                    @if (contract.priceType === 'fixed') {
+                      <div class="text-neutral-700">{{ contract.escrowAmount ? formatCurrency(contract.escrowAmount, contract.selectedCurrency) : '-' }}</div>
+                    } @else {
+                      <div class="text-neutral-700">{{ formatCurrency(contract.escrowAmount, contract.selectedCurrency) }}</div>
+                      <div class="text-neutral-500 text-xs">({{ contract.escrowHours || 0 }} hrs)</div>
+                    }
+                  </div>
+                  <div>
+                    <div class="text-neutral-400 text-xs uppercase tracking-wide mb-1">Paid to Date</div>
+                    @if (contract.priceType === 'fixed') {
+                      <div class="text-neutral-700">{{ formatCurrency(contract.paidAmount, contract.selectedCurrency) }}</div>
+                    } @else {
+                      <div class="text-neutral-700">{{ formatCurrency(contract.paidAmount, contract.selectedCurrency) }}</div>
+                      <div class="text-neutral-500 text-xs">({{ contract.paidHours || 0 }} hrs)</div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions Footer -->
+              <div class="flex items-center gap-2 px-4 py-3 bg-neutral-50 border-t border-neutral-100">
+                @if (contract.status === 'active') {
+                  <button
+                    type="button"
+                    (click)="$event.stopPropagation(); messageExpert(contract)"
+                    class="flex-1 px-4 py-2 text-sm font-medium border border-neutral-200 rounded-lg hover:bg-white"
+                  >
+                    Message
+                  </button>
+                }
+                @if (contract.status === 'pending') {
+                  <button
+                    type="button"
+                    (click)="$event.stopPropagation(); viewContract(contract)"
+                    class="flex-1 px-4 py-2 text-sm font-medium text-primary border border-primary rounded-lg hover:bg-primary-50"
+                  >
+                    View Offer
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

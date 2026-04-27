@@ -1,0 +1,261 @@
+<nav class="navbar-dashboard h-[84px] px-8 bg-white flex items-center border-b border-neutral-200">
+  <div class="flex items-center justify-between w-full">
+    <!-- Left: Logo + Navigation Menu -->
+    <div class="flex items-center">
+      <!-- Logo - Links to main website -->
+      <a [href]="webUrl" class="navbar-brand flex items-center mr-8">
+        <img src="/assets/images/mereka-logo-symbol.svg" alt="Mereka" class="w-[45px] h-9" />
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <div class="navbar-hub-menu flex items-center">
+        <ul class="flex items-center gap-1">
+          @for (menu of menuItems(); track menu.routerLink) {
+          <li class="relative">
+            @if (menu.items && menu.items.length > 0) {
+            <!-- Menu with dropdown -->
+            <button type="button" (click)="toggleDropdown(menu.title)"
+              class="navbar-button flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm text-black hover:bg-[#eaeaea] transition-colors"
+              [class.bg-[#eaeaea]]="activeDropdown() === menu.title">
+              <span>{{ menu.title }}</span>
+              <ui-icon name="chevron-down" size="xs" class="text-neutral-500" />
+            </button>
+
+            <!-- Dropdown Menu -->
+            @if (activeDropdown() === menu.title) {
+            <div
+              class="dropdown-menu absolute top-full left-0 mt-1 py-2 bg-white rounded-lg shadow-lg border border-neutral-200 min-w-[200px] z-50">
+              @for (subMenu of menu.items; track subMenu.routerLink) {
+              <a [routerLink]="subMenu.routerLink" (click)="closeDropdowns()"
+                class="block px-4 py-2 text-sm font-semibold text-black hover:bg-[#eaeaea] transition-colors">
+                {{ subMenu.title }}
+              </a>
+              }
+            </div>
+            }
+            } @else {
+            <!-- Simple menu link -->
+            <a [routerLink]="menu.routerLink" routerLinkActive="bg-[#eaeaea]"
+              [routerLinkActiveOptions]="{ exact: menu.routerLink === '/hub/overview' }"
+              class="navbar-button flex items-center px-4 py-2 rounded-full font-bold text-sm text-black hover:bg-[#eaeaea] transition-colors">
+              {{ menu.title }}
+            </a>
+            }
+          </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right: Actions -->
+    <div class="flex items-center gap-3">
+      <!-- Switch Organization Dropdown -->
+      @if (allHubs().length > 1) {
+      <div class="relative">
+        <button type="button" (click)="toggleSwitchOrg()"
+          class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-black hover:bg-neutral-100 transition-colors border border-neutral-200">
+          @if (hubLogo()) {
+          <img [src]="hubLogo()" alt="Hub" class="w-5 h-5 rounded-full object-cover" />
+          } @else {
+          <div class="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+            <span class="text-white text-[10px] font-medium">{{ hubInitials() }}</span>
+          </div>
+          }
+          <span class="max-w-[120px] truncate">{{ hubName() }}</span>
+          <ui-icon name="chevron-down" size="xs" class="text-neutral-500" />
+        </button>
+
+        <!-- Switch Organization Dropdown -->
+        @if (showSwitchOrg()) {
+        <div
+          class="absolute right-0 top-12 w-[280px] bg-white rounded-lg shadow-lg border border-neutral-200 py-2 z-50 max-h-[400px] overflow-y-auto">
+          <div class="px-4 py-2 border-b border-neutral-200">
+            <p class="text-[11px] font-bold uppercase text-neutral-500">Switch Organization</p>
+            <p class="text-xs text-neutral-500 mt-1">Currently: {{ hubName() }}</p>
+          </div>
+
+          @for (hub of allHubs(); track hub.hubId) {
+          <button type="button" (click)="switchToHub(hub.hubId)"
+            class="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-neutral-50 transition-colors"
+            [class.bg-primary/5]="isCurrentHub(hub.hubId)">
+            @if (hub.hubLogo) {
+            <img [src]="hub.hubLogo" alt="Hub" class="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+            } @else {
+            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+              <span class="text-white text-xs font-medium">
+                {{ getHubInitials(hub.hubName) }}
+              </span>
+            </div>
+            }
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-black truncate">{{ hub.hubName }}</p>
+              @if (hub.roles && hub.roles.length > 0) {
+              <p class="text-xs text-neutral-500 mt-0.5">
+                {{ getHubRolesText(hub.roles) }}
+              </p>
+              }
+            </div>
+            @if (isCurrentHub(hub.hubId)) {
+            <ui-icon name="check" size="sm" class="text-primary flex-shrink-0" />
+            }
+          </button>
+          }
+        </div>
+        }
+      </div>
+      }
+
+      <!-- Notifications -->
+      <div class="relative">
+        <button type="button" (click)="toggleNotifications()"
+          class="p-2 rounded-lg hover:bg-neutral-100 transition-colors relative">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          @if (unreadCount() > 0) {
+            <span class="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+              {{ unreadCount() > 99 ? '99+' : unreadCount() }}
+            </span>
+          }
+        </button>
+
+        <!-- Notifications Dropdown -->
+        @if (showNotifications()) {
+          <div class="absolute right-0 top-12 w-[380px] bg-white rounded-xl shadow-lg border border-neutral-200 z-50 overflow-hidden">
+            <!-- Header -->
+            <div class="px-4 py-3 border-b border-neutral-200 flex items-center justify-between">
+              <h3 class="font-semibold text-neutral-900">Notifications</h3>
+              @if (unreadCount() > 0) {
+                <span class="text-xs text-neutral-500">{{ unreadCount() }} unread</span>
+              }
+            </div>
+
+            <!-- Notification List -->
+            <div class="max-h-[400px] overflow-y-auto">
+              @if (recentNotifications().length === 0) {
+                <div class="py-12 px-4 text-center">
+                  <svg class="w-10 h-10 text-neutral-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                  <p class="text-sm text-neutral-500">No notifications yet</p>
+                </div>
+              } @else {
+                @for (notification of recentNotifications(); track notification._id) {
+                  <div
+                    (click)="markNotificationAsRead(notification._id)"
+                    class="px-4 py-3 hover:bg-neutral-50 cursor-pointer transition-colors border-b border-neutral-100 last:border-b-0"
+                    [class.bg-primary/5]="!notification.isRead"
+                  >
+                    <div class="flex gap-3">
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-neutral-900 truncate">{{ notification.title }}</p>
+                        <p class="text-xs text-neutral-600 mt-0.5 line-clamp-2">{{ notification.message }}</p>
+                        <p class="text-[11px] text-neutral-400 mt-1">{{ getTimeAgo(notification.createdAt) }}</p>
+                      </div>
+                      @if (!notification.isRead) {
+                        <div class="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-1.5"></div>
+                      }
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+
+            <!-- Footer -->
+            <div class="px-4 py-3 border-t border-neutral-200 bg-neutral-50">
+              <button
+                type="button"
+                (click)="viewAllNotifications()"
+                class="w-full text-center text-sm font-medium text-primary hover:text-primary-dark transition-colors"
+              >
+                View all notifications
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Hub Profile Dropdown -->
+      <div class="relative">
+        <button type="button" (click)="toggleHubMenu()"
+          class="flex items-center gap-2 p-1 rounded-full hover:bg-neutral-100 transition-colors">
+          @if (userProfilePhoto()) {
+          <img [src]="userProfilePhoto()" alt="Profile" class="w-9 h-9 rounded-full object-cover" />
+          } @else {
+          <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
+            <span class="text-white text-sm font-medium">{{ userInitials() }}</span>
+          </div>
+          }
+        </button>
+
+        <!-- Profile Dropdown -->
+        @if (showHubMenu()) {
+        <div
+          class="absolute right-0 top-12 w-[220px] bg-white rounded-lg shadow-lg border border-neutral-200 py-2 z-50">
+          <!-- Signed in as -->
+          <div class="px-4 py-2 border-b border-neutral-200">
+            <p class="text-[11px] font-bold uppercase text-neutral-500">Signed in as</p>
+            <p class="text-sm font-semibold truncate">{{ userName() }}</p>
+          </div>
+
+          <!-- Switch to User -->
+          <button type="button" (click)="switchToUser(); showHubMenu.set(false)"
+            class="w-full text-left px-4 py-2 text-sm font-semibold text-black hover:bg-neutral-50 transition-colors flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>Switch to User</span>
+          </button>
+
+          <!-- Hide profile/settings links for collaborators -->
+          @if (!isCollaboratorOnly()) {
+          <hr class="my-1 border-neutral-200" />
+
+          <button type="button" (click)="navigateToExpertProfile()"
+            class="w-full text-left px-4 py-2 text-sm font-semibold text-black hover:bg-neutral-50 transition-colors">
+            My Expert Profile
+          </button>
+
+          <hr class="my-1 border-neutral-200" />
+
+          <a [href]="hubProfileUrl()" target="_blank" (click)="showHubMenu.set(false)"
+            class="block px-4 py-2 text-sm font-semibold text-black hover:bg-neutral-50 transition-colors">
+            Business Profile
+          </a>
+          <a routerLink="/hub/settings" (click)="showHubMenu.set(false)"
+            class="block px-4 py-2 text-sm font-semibold text-black hover:bg-neutral-50 transition-colors">
+            Settings
+          </a>
+          }
+
+          <hr class="my-1 border-neutral-200" />
+
+          <a href="http://resources.mereka.io/" target="_blank"
+            class="block px-4 py-2 text-sm font-semibold text-black hover:bg-neutral-50 transition-colors">
+            Resources
+          </a>
+          <a href="https://help.mereka.io/hc/" target="_blank"
+            class="block px-4 py-2 text-sm font-semibold text-black hover:bg-neutral-50 transition-colors">
+            Help Center
+          </a>
+
+          <hr class="my-1 border-neutral-200" />
+
+          <button type="button" (click)="logout()"
+            class="w-full text-left px-4 py-2 text-sm font-semibold text-black hover:bg-neutral-50 transition-colors">
+            Log Out
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Click outside to close dropdowns -->
+@if (activeDropdown() || showHubMenu() || showNotifications() || showSwitchOrg()) {
+<div class="fixed inset-0 z-40"
+  (click)="closeDropdowns(); showHubMenu.set(false); showNotifications.set(false); showSwitchOrg.set(false)"></div>
+}

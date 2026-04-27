@@ -1,0 +1,138 @@
+<form [formGroup]="form" class="space-y-8">
+  <!-- Job Title -->
+  <div class="space-y-2">
+    <h3 class="text-lg font-semibold text-neutral-900">Give your job brief a title</h3>
+    <p class="text-sm text-neutral-500">Keep it short and simple.</p>
+    <div class="relative">
+      <input
+        type="text"
+        formControlName="jobTitle"
+        (input)="onTitleInput($event)"
+        placeholder="Job Title"
+        class="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        [class.border-red-500]="form.get('jobTitle')?.invalid && form.get('jobTitle')?.touched"
+      />
+    </div>
+    <span class="text-sm text-neutral-400">{{ titleLength() }} / {{ maxTitleLength }}</span>
+    @if (form.get('jobTitle')?.invalid && form.get('jobTitle')?.touched) {
+      <p class="text-sm text-red-500">Job title is required</p>
+    }
+  </div>
+
+  <!-- Employment Type -->
+  <div class="space-y-3">
+    <h3 class="text-lg font-semibold text-neutral-900">What type of employment does this job offer?</h3>
+    <div class="space-y-3">
+      @for (option of employmentTypeOptions; track option.value) {
+        <label
+          class="flex items-start gap-3 cursor-pointer"
+        >
+          <input
+            type="radio"
+            formControlName="employmentType"
+            [value]="option.value"
+            class="w-5 h-5 mt-0.5 text-neutral-900 focus:ring-neutral-900 accent-neutral-900"
+          />
+          <span class="text-sm text-neutral-700">
+            <strong>{{ option.label }}.</strong> {{ option.description }}
+          </span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <!-- Category & Service Type -->
+  <div class="space-y-3">
+    <h3 class="text-lg font-semibold text-neutral-900">What does your job fall under?</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Category -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-neutral-700">Select Category</label>
+        <select
+          formControlName="categoryId"
+          (change)="onCategoryChange($event)"
+          class="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+          [class.border-red-500]="form.get('categoryId')?.invalid && form.get('categoryId')?.touched"
+        >
+          <option value="">Choose Category</option>
+          @for (category of categories(); track category.id) {
+            <option [value]="category.id">{{ category.name }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Service Type -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-neutral-700">Select Service Type</label>
+        <select
+          formControlName="serviceTypeId"
+          class="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white disabled:bg-neutral-100 disabled:cursor-not-allowed"
+          [class.border-red-500]="form.get('serviceTypeId')?.invalid && form.get('serviceTypeId')?.touched"
+          [disabled]="!form.get('categoryId')?.value"
+        >
+          <option value="">Choose Service Type</option>
+          @for (serviceType of serviceTypesForCategory(); track serviceType.id) {
+            <option [value]="serviceType.id">{{ serviceType.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expert Level -->
+  <div class="space-y-2">
+    <h3 class="text-lg font-semibold text-neutral-900">What level of expert are you looking for?</h3>
+    <select
+      formControlName="expertLevelId"
+      class="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+      [class.border-red-500]="form.get('expertLevelId')?.invalid && form.get('expertLevelId')?.touched"
+    >
+      <option value="">Choose Expert level</option>
+      @for (level of expertLevelOptions; track level.id) {
+        <option [value]="level.id">{{ level.name }}</option>
+      }
+    </select>
+    @if (form.get('expertLevelId')?.invalid && form.get('expertLevelId')?.touched) {
+      <p class="text-sm text-red-500">Please select an expert level</p>
+    }
+  </div>
+
+  <!-- Job Location -->
+  <div class="space-y-3">
+    <h3 class="text-lg font-semibold text-neutral-900">Where will the job take place?</h3>
+    <p class="text-sm text-neutral-500">The specific location can be discussed with the Expert through further communication.</p>
+    <div class="space-y-3">
+      @for (option of jobLocationOptions; track option.value) {
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input
+            type="radio"
+            formControlName="jobLocation"
+            [value]="option.value"
+            class="w-5 h-5 text-neutral-900 focus:ring-neutral-900 accent-neutral-900"
+          />
+          <span class="text-sm text-neutral-700">{{ option.label }}</span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <!-- Access Mode / Who can see this job -->
+  <div class="space-y-3">
+    <h3 class="text-lg font-semibold text-neutral-900">Who can see this job?</h3>
+    <div class="space-y-3">
+      @for (option of accessModeOptions; track option.value) {
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input
+            type="radio"
+            formControlName="accessMode"
+            [value]="option.value"
+            class="w-5 h-5 mt-0.5 text-neutral-900 focus:ring-neutral-900 accent-neutral-900"
+          />
+          <span class="text-sm text-neutral-700">
+            <strong>{{ option.label }}.</strong> {{ option.description }}
+          </span>
+        </label>
+      }
+    </div>
+  </div>
+</form>

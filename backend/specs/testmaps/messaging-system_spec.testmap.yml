@@ -1,0 +1,313 @@
+# specs/testmaps/messaging-system_spec.testmap.yml
+spec: "messaging-system_spec.md"
+version: "1.0.0"
+last_updated: "2026-02-17"
+
+acceptance_criteria:
+  # ChatRoom Management
+  AC-MSG-001:
+    description: "Create ChatRoom on learner contact about expertise"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatRoom.create.test.ts"
+    priority: P0
+    covers_spec_section: "Requirements > ChatRoom Management"
+
+  AC-MSG-002:
+    description: "Create ChatRoom on job proposal submission"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatRoom.create.test.ts"
+    priority: P0
+
+  AC-MSG-003:
+    description: "Create ChatRoom on contract creation"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatRoom.create.test.ts"
+    priority: P0
+
+  AC-MSG-004:
+    description: "Support ChatRoom contexts"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatRoom.model.test.ts"
+    priority: P0
+
+  AC-MSG-005:
+    description: "Link ChatRoom to context entity"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatRoom.model.test.ts"
+    priority: P0
+
+  AC-MSG-006:
+    description: "Prevent duplicate ChatRooms"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatRoom.duplicate.test.ts"
+    priority: P0
+
+  AC-MSG-007:
+    description: "Track room members with roles"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatRoom.members.test.ts"
+    priority: P1
+
+  AC-MSG-008:
+    description: "Auto-add hub owner to new rooms"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatRoom.create.test.ts"
+    priority: P1
+
+  # Messaging
+  AC-MSG-010:
+    description: "Support text messages up to 10k chars"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatMessage.validation.test.ts"
+    priority: P0
+
+  AC-MSG-011:
+    description: "Support file attachments"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatMessage.files.test.ts"
+    priority: P1
+
+  AC-MSG-012:
+    description: "Track message sender"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatMessage.model.test.ts"
+    priority: P0
+
+  AC-MSG-013:
+    description: "Timestamp messages with server time"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatMessage.model.test.ts"
+    priority: P0
+
+  AC-MSG-014:
+    description: "Support message types"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatMessage.model.test.ts"
+    priority: P0
+
+  AC-MSG-015:
+    description: "Allow message deletion by sender"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatMessage.delete.test.ts"
+    priority: P1
+
+  AC-MSG-016:
+    description: "Soft delete messages"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatMessage.delete.test.ts"
+    priority: P1
+
+  # Event Messages
+  AC-MSG-020:
+    description: "Create events for booking status changes"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatEvent.booking.test.ts"
+    priority: P1
+
+  AC-MSG-021:
+    description: "Create events for proposal status changes"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatEvent.proposal.test.ts"
+    priority: P1
+
+  AC-MSG-022:
+    description: "Create events for contract status changes"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatEvent.contract.test.ts"
+    priority: P1
+
+  AC-MSG-023:
+    description: "Create events for payment events"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatEvent.payment.test.ts"
+    priority: P1
+
+  AC-MSG-024:
+    description: "Create events for milestone completions"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatEvent.milestone.test.ts"
+    priority: P2
+
+  AC-MSG-025:
+    description: "Event messages include structured data"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatEvent.model.test.ts"
+    priority: P1
+
+  # Hub Inbox
+  AC-MSG-030:
+    description: "Hub members see all rooms"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/hubInbox.list.test.ts"
+    priority: P0
+
+  AC-MSG-031:
+    description: "Show unread count per room"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/hubInbox.unread.test.ts"
+    priority: P0
+
+  AC-MSG-032:
+    description: "Support inbox filtering"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/hubInbox.filter.test.ts"
+    priority: P0
+
+  AC-MSG-033:
+    description: "Support search"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/hubInbox.search.test.ts"
+    priority: P1
+
+  AC-MSG-034:
+    description: "Assign members to rooms"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/hubInbox.assign.test.ts"
+    priority: P1
+
+  AC-MSG-035:
+    description: "Archive rooms per user"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/hubInbox.settings.test.ts"
+    priority: P2
+
+  AC-MSG-036:
+    description: "Show last message preview"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatRoom.preview.test.ts"
+    priority: P1
+
+  AC-MSG-037:
+    description: "Sort by last activity"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/hubInbox.list.test.ts"
+    priority: P1
+
+  # Learner Inbox
+  AC-MSG-040:
+    description: "Learners see their rooms"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/learnerInbox.list.test.ts"
+    priority: P0
+
+  AC-MSG-041:
+    description: "Show hub name and logo"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatRoom.learnerView.test.ts"
+    priority: P1
+
+  AC-MSG-042:
+    description: "Show context label"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/chatRoom.learnerView.test.ts"
+    priority: P1
+
+  AC-MSG-043:
+    description: "Learner unread count"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/learnerInbox.unread.test.ts"
+    priority: P0
+
+  # Real-time Features
+  AC-MSG-050:
+    description: "Real-time message delivery < 500ms"
+    method: e2e
+    automation: automated
+    test_file: "tests/e2e/chat/realtime.delivery.test.ts"
+    priority: P0
+
+  AC-MSG-051:
+    description: "Typing indicators"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/websocket.typing.test.ts"
+    priority: P1
+
+  AC-MSG-052:
+    description: "Real-time unread updates"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/websocket.unread.test.ts"
+    priority: P1
+
+  AC-MSG-053:
+    description: "WebSocket reconnection"
+    method: e2e
+    automation: automated
+    test_file: "tests/e2e/chat/websocket.reconnect.test.ts"
+    priority: P1
+
+  AC-MSG-054:
+    description: "Message pagination"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/chatMessage.pagination.test.ts"
+    priority: P0
+
+  # Unread Tracking
+  AC-MSG-060:
+    description: "Track unread per user per room"
+    method: unit
+    automation: automated
+    test_file: "tests/unit/chat/unreadTracking.test.ts"
+    priority: P0
+
+  AC-MSG-061:
+    description: "Increment unread on new message"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/unreadTracking.increment.test.ts"
+    priority: P0
+
+  AC-MSG-062:
+    description: "Reset unread on room open"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/unreadTracking.reset.test.ts"
+    priority: P0
+
+  AC-MSG-063:
+    description: "Total unread across rooms"
+    method: integration
+    automation: automated
+    test_file: "tests/integration/chat/unreadTracking.total.test.ts"
+    priority: P1
+
+coverage:
+  total_acs: 45
+  automated: 45
+  manual: 0
+  coverage_percent: 100

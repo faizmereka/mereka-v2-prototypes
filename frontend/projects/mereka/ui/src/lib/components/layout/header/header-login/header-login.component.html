@@ -1,0 +1,10 @@
+@defer {
+    @if (user) {
+    <common-header-hub-menu [user]="user" />
+    <common-header-notification [user]="user" />  
+    <common-header-user-menu [user]="user" />
+  } @else {
+    <a ui-button-outline href="{{ baseUrl }}/welcome/hub" target="_blank">Sign up <mat-icon fontIcon="add" /></a>
+    <a ui-button-fill href="{{ authBaseUrl }}?redirect_url={{ redirectUrl }}">Log In</a>
+  }
+}

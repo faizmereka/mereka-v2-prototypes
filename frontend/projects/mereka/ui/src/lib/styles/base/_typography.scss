@@ -1,0 +1,306 @@
+@use '../abstracts/functions' as *;
+
+@layer mereka-base {
+  /* Poppins */
+  @font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/assets/fonts/Poppins-Regular.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+
+  @font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/Poppins-SemiBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 600;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+
+  @font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/Poppins-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 700;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+
+  @font-face {
+    font-family: 'InterVariable';
+    font-style: normal;
+    font-weight: 300 400 500 600 700 800 900;
+    font-display: swap;
+    src: url("/assets/fonts/InterVariable.woff2") format("woff2"),
+        url("/assets/fonts/InterVariable.ttf") format("truetype");
+  }
+  @font-face {
+    font-family: 'InterVariable';
+    font-style: italic;
+    font-weight: 300 400 500 600 700 800 900;
+    font-display: swap;
+    src: url("/assets/fonts/InterVariable-Italic.woff2") format("woff2"),
+      url("/assets/fonts/InterVariable-Italic.ttf") format("truetype");
+  }
+
+  // /* Black */
+  // @font-face {
+  //   font-family: 'Lato';
+  //   src: url('/assets/fonts/Lato-Black.woff2') format('woff2'),
+  //     url('/assets/fonts/Lato-Black.woff') format('woff'),
+  //     url('/assets/fonts/Lato-Black.ttf') format('truetype');
+  //   font-weight: 900;
+  //   font-style: normal;
+  // }
+
+  // @font-face {
+  //   font-family: 'Lato';
+  //   src: url('/assets/fonts/Lato-BlackItalic.woff2') format('woff2'),
+  //     url('/assets/fonts/Lato-BlackItalic.woff') format('woff'),
+  //     url('/assets/fonts/Lato-BlackItalic.ttf') format('truetype');
+  //   font-weight: 900;
+  //   font-style: italic;
+  // }
+
+  // /* Bold */
+  // @font-face {
+  //   font-family: 'Lato';
+  //   src: url('/assets/fonts/Lato-Bold.woff2') format('woff2'),
+  //     url('/assets/fonts/Lato-Bold.woff') format('woff'),
+  //     url('/assets/fonts/Lato-Bold.ttf') format('truetype');
+  //   font-weight: 700;
+  //   font-style: normal;
+  // }
+
+  // @font-face {
+  //   font-family: 'Lato';
+  //   src: url('/assets/fonts/Lato-BoldItalic.woff2') format('woff2'),
+  //     url('/assets/fonts/Lato-BoldItalic.woff') format('woff'),
+  //     url('/assets/fonts/Lato-BoldItalic.ttf') format('truetype');
+  //   font-weight: 700;
+  //   font-style: italic;
+  // }
+
+  /* Semi-bold */
+  // @font-face {
+  //   font-family: 'Lato';
+  //   src: url('/assets/fonts/Lato-Semibold.woff2') format('woff2'), url('/assets/fonts/Lato-Semibold.woff') format('woff'),
+  //     url('/assets/fonts/Lato-Semibold.ttf') format('truetype');
+  //   font-weight: 600;
+  //   font-style: normal;
+  // }
+
+  /* Medium */
+  // @font-face {
+  //   font-family: 'Lato';
+  //   src: url('/assets/fonts/Lato-Medium.woff2') format('woff2'), url('/assets/fonts/Lato-Medium.woff') format('woff'),
+  //     url('/assets/fonts/Lato-Medium.ttf') format('truetype');
+  //   font-weight: 500;
+  //   font-style: normal;
+  // }
+
+  /* Regular */
+  // @font-face {
+  //   font-family: 'Lato';
+  //   src: url('/assets/fonts/Lato-Regular.woff2') format('woff2'),
+  //     url('/assets/fonts/Lato-Regular.woff') format('woff'),
+  //     url('/assets/fonts/Lato-Regular.ttf') format('truetype');
+  //   font-weight: 400;
+  //   font-style: normal;
+  // }
+
+  // @font-face {
+  //   font-family: 'Lato';
+  //   src: url('/assets/fonts/Lato-Italic.woff2') format('woff2'),
+  //     url('/assets/fonts/Lato-Italic.woff') format('woff'),
+  //     url('/assets/fonts/Lato-Italic.ttf') format('truetype');
+  //   font-weight: 400;
+  //   font-style: italic;
+  // }
+
+  /* Material Icons */
+  @font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/assets/fonts/Material-Icons.woff2') format('woff2');
+  }
+
+  @font-face {
+    font-family: 'Material Icons Outlined';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/assets/fonts/Material-Icons-Outlined.woff2') format('woff2');
+  }
+
+  body {
+    font-family: var(--font-secondary);
+    font-size: var(--text-m);
+    color: var(--color-primary);
+    line-height: 1.5;
+    font-variant-alternates: styleset(round-quotes-and-commas, disambiguation-except-zero);
+    text-wrap: balance;
+  }
+
+  @supports (text-wrap: pretty) {
+    body {
+      text-wrap: pretty;
+    }
+  }
+
+  .material-icons {
+    width: max-content;
+    height: max-content;
+    scale: 1.001;
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .material-icons-outlined {
+    font-family: 'Material Icons Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :root {
+    --font-primary: 'Poppins', sans-serif;
+    --font-secondary: 'InterVariable', sans-serif;
+    --text-6xl: #{get-clamp(70, 52.5)}; /* 70px - 52.5px */
+    --text-5xl: #{get-clamp(60, 42)}; /* 60px - 42px */
+    --text-4xl: #{get-clamp(48, 36)}; /* 48px - 36px */
+    --text-3xl: #{get-clamp(34, 28)}; /* 34px - 28px */
+    --text-2xl: #{get-clamp(28, 22)}; /* 28px - 22px */
+    --text-xl: #{get-rem(20)}; /* 20px */
+    --text-l: #{get-rem(17)}; /* 17px */
+    --text-m: #{get-rem(16)}; /* 16px */
+    --text-s: #{get-rem(15)}; /* 15px */
+    --text-xs: #{get-rem(14)}; /* 14px */
+    --text-2xs: #{get-rem(13)}; /* 13px */
+    --text-3xs: #{get-rem(12)}; /* 12px */
+    --text-4xs: #{get-rem(11)}; /* 11px */
+
+    --h1: var(--text-6xl);
+    --h2: var(--text-5xl);
+    --h3: var(--text-4xl);
+    --h4: var(--text-3xl);
+    --h5: var(--text-2xl);
+    --h6: var(--text-xl);
+    --body: var(--text-m);
+    --body-2: var(--text-xs);
+    --subtitle: var(--text-l);
+    --subtitle-2: var(--text-s);
+    --caption: var(--text-4xs);
+    --overline: var(--text-2xs);
+
+
+    --display-1: #{get-clamp(76, 25)}; 
+    --display-2: #{get-clamp(49, 22)};
+    --heading-1: #{get-clamp(39, 21)}; 
+    --heading-2: #{get-clamp(31, 19)};
+    --heading-3: #{get-clamp(25, 18)};
+    --heading-4: #{get-clamp(20, 17)};
+  }
+
+  h1, .h1 {
+    font-size: var(--h1);
+    font-weight: 900;
+    line-height: 1.15em;
+    letter-spacing: -0.75px;
+    text-wrap: balance;
+  }
+
+  h2, .h2 {
+    font-size: var(--h2);
+    font-weight: 900;
+    line-height: 1.15em;
+    letter-spacing: -0.5px;
+    text-wrap: balance;
+  }
+
+  h3, .h3 {
+    font-size: var(--h3);
+    line-height: 1.25em;
+    letter-spacing: -0.25px;
+    text-wrap: balance;
+  }
+
+  h4, .h4 {
+    font-size: var(--h4);
+    line-height: 1.25em;
+    letter-spacing: -0.25px;
+  }
+
+  h5, .h5 {
+    font-size: var(--h5);
+    line-height: 1.25em;
+  }
+
+  h6, .h6 {
+    font-size: var(--h6);
+    line-height: 1.5em;
+  }
+
+  .subtitle {
+    font-size: var(--subtitle);
+  }
+
+  .subtitle-2 {
+    font-size: var(--subtitle-2);
+  }
+
+  .caption {
+    font-size: var(--caption);
+  }
+}
+
+@font-feature-values InterVariable {
+  @character-variant {
+    cv01: 1; cv02: 2; cv03: 3; cv04: 4; cv05: 5; cv06: 6; cv07: 7; cv08: 8;
+    cv09: 9; cv10: 10; cv11: 11; cv12: 12; cv13: 13;
+    alt-1:            1; /* Alternate one */
+    alt-3:            9; /* Flat-top three */
+    open-4:           2; /* Open four */
+    open-6:           3; /* Open six */
+    open-9:           4; /* Open nine */
+    lc-l-with-tail:   5; /* Lower-case L with tail */
+    simplified-u:     6; /* Simplified u */
+    alt-double-s:     7; /* Alternate German double s */
+    uc-i-with-serif:  8; /* Upper-case i with serif */
+    uc-g-with-spur:  10; /* Capital G with spur */
+    single-story-a:  11; /* Single-story a */
+    compact-lc-f:    12; /* Compact f */
+    compact-lc-t:    13; /* Compact t */
+  }
+  @styleset {
+    ss01: 1; ss02: 2; ss03: 3; ss04: 4; ss05: 5; ss06: 6; ss07: 7; ss08: 8;
+    open-digits: 1;                /* Open digits */
+    disambiguation: 2;             /* Disambiguation (with zero) */
+    disambiguation-except-zero: 4; /* Disambiguation (no zero) */
+    round-quotes-and-commas: 3;    /* Round quotes &amp; commas */
+    square-punctuation: 7;         /* Square punctuation */
+    square-quotes: 8;              /* Square quotes */
+    circled-characters: 5;         /* Circled characters */
+    squared-characters: 6;         /* Squared characters */
+  }
+}

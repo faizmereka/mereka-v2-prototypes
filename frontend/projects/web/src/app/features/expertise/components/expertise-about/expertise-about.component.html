@@ -1,0 +1,44 @@
+<section>
+  <h2 class="text-lg font-semibold text-neutral-900 mb-4">About the Expertise</h2>
+
+  <!-- Duration & Language -->
+  <div class="space-y-3 mb-6">
+    <!-- Duration -->
+    <div class="flex items-center gap-3">
+      <svg class="w-5 h-5 text-neutral-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span class="text-neutral-700">Duration: {{ about().duration }}</span>
+    </div>
+
+    <!-- Language -->
+    <div class="flex items-center gap-3">
+      <svg class="w-5 h-5 text-neutral-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+      </svg>
+      <span class="text-neutral-700">Language: {{ languagesText() }}</span>
+    </div>
+  </div>
+
+  <!-- Expertise Types -->
+  @if (hasTypes()) {
+    <div class="flex flex-wrap gap-2 mb-6">
+      @for (type of about().types; track type) {
+        <span class="px-3 py-1.5 bg-neutral-100 text-neutral-700 text-sm rounded-full">
+          {{ type }}
+        </span>
+      }
+    </div>
+  }
+
+  <!-- Description -->
+  @if (hasDescription()) {
+    <div class="border-t border-neutral-200 pt-6 mt-6">
+      <h3 class="text-base font-medium text-neutral-900 mb-3">Description</h3>
+      <div
+        class="text-neutral-600 prose prose-sm max-w-none"
+        [innerHTML]="about().description">
+      </div>
+    </div>
+  }
+</section>

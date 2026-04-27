@@ -1,0 +1,80 @@
+:host {
+  display: block;  
+}
+
+.header-notification-message-card {
+  padding: 12px 20px;
+  display: grid;
+  grid-template-columns: 40px 1fr 12px;
+  gap: 12px;
+  transition: 0.25s background-color;
+  text-decoration: none;
+  
+  &:hover {
+    background: var(--surface-tertiary, #F5F5F5);
+  }
+
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F5F5F5;
+    border: 1px solid var(--border-solid, #DDDDDE);
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  &__name {
+    max-width: 30ch;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--content-primary, #000000);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__description {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.812rem;
+  }
+
+  &__message {
+    max-width: 20ch;
+    font-size: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__date {
+    font-size: inherit;
+    line-height: 20px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  &__status {
+    grid-column: 3;
+    width: 12px;
+    height: 12px;
+    display: flex;
+    align-self: center;
+    border-radius: 50%;
+    background-color: var(--surface-notification, #5B91F4);
+  }
+}
+
+.dot-sep {
+  width: 3px;
+  height: 3px;
+  display: flex;
+  flex-shrink: 0;
+  align-self: center;
+  background: var(--content-secondary, #7B7B7C);
+  border-radius: 50%;
+}

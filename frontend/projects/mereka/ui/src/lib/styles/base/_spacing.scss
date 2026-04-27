@@ -1,0 +1,54 @@
+// Define SASS Variables with the new space scale
+$spaces: (
+  "none": 0,
+  "3xs": 1px,
+  "2xs": 2px,
+  "xs": 4px,
+  "s": 8px,
+  "m": 16px,
+  "l": 20px,
+  "xl": 24px,
+  "2xl": 28px,
+  "3xl": 32px,
+  "4xl ": 36px,
+  "5xl": 40px,
+  "6xl": 44px,
+  "7xl": 48px,
+  "8xl": 52px,
+);
+
+// Generate CSS Variables
+// Example: var(--space-m);
+@layer mereka-base {
+  :root {
+    @each $name, $value in $spaces {
+      --space-#{$name}: #{$value};
+    }
+  }
+
+  // Generate utility classes for padding, margin and gap
+  @each $name, $value in $spaces {
+    // Padding Utilities
+    .p-#{$name} { padding: var(--space-#{$name}); }
+    .pt-#{$name}, .py-#{$name} { padding-top: var(--space-#{$name}); }
+    .pr-#{$name}, .px-#{$name} { padding-right: var(--space-#{$name}); }
+    .pb-#{$name}, .py-#{$name} { padding-bottom: var(--space-#{$name}); }
+    .pl-#{$name}, .px-#{$name} { padding-left: var(--space-#{$name}); }
+    .ps-#{$name} { padding-inline-start: var(--space-#{$name}); }
+    .pe-#{$name} { padding-inline-end: var(--space-#{$name}); }
+
+    // Margin Utilities
+    .m-#{$name} { margin: var(--space-#{$name}); }
+    .mt-#{$name}, .my-#{$name} { margin-top: var(--space-#{$name}); }
+    .mr-#{$name}, .mx-#{$name} { margin-right: var(--space-#{$name}); }
+    .mb-#{$name}, .my-#{$name} { margin-bottom: var(--space-#{$name}); }
+    .ml-#{$name}, .mx-#{$name} { margin-left: var(--space-#{$name}); }
+    .ms-#{$name} { margin-inline-start: var(--space-#{$name}); }
+    .me-#{$name} { margin-inline-end: var(--space-#{$name}); }
+
+    // Gap Utilities
+    .gap-#{$name} {
+      gap: var(--space-#{$name});
+    }
+  }
+}

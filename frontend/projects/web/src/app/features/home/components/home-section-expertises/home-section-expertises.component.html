@@ -1,0 +1,65 @@
+<div class="layout-container">
+  <h2 class="section-heading">
+    ..or book their
+    <span class="heading-accent">Expertise</span>
+  </h2>
+
+  @if (loading()) {
+    <!-- Loading State -->
+    <div class="placeholder-grid">
+      @for (item of placeholderList; track $index) {
+        <div ui-loader-skeleton-card-expertise></div>
+      }
+    </div>
+  } @else if (expertises().length > 0) {
+    @if (view.isMobile()) {
+      <!-- Mobile Swiper carousel -->
+      <swiper-container ui-swiper [config]="config">
+        @for (expertise of expertises(); track expertise._id) {
+          <swiper-slide ui-swiper-slide>
+            <div ui-card-expertise
+              [id]="expertise._id"
+              [title]="expertise.expertiseTitle"
+              [description]="expertise.expertiseSummary ?? ''"
+              [url]="'/expertise/' + expertise.slug"
+              [image]="expertise.coverPhoto ?? ''"
+              [price]="formatPrice(expertise)"
+              [location]="expertise.location?.city ?? ''"
+              [isFavourite]="false"
+              [hideElements]="['expert-image']">
+            </div>
+          </swiper-slide>
+        }
+      </swiper-container>
+    } @else {
+      <!-- Desktop grid -->
+      <!-- TODO: isFavourite always false - ToggleFavouriteUseCase + IsFavouriteUseCase not yet ported to v2 -->
+      <!-- TODO: expertImage not yet available in HomeExpertiseItem API response -->
+      <!-- TODO: ImageKit optimization - no ImageKitPipe in v2 yet; images served directly -->
+      <div class="expertise-grid">
+        @for (expertise of expertises(); track expertise._id) {
+          <div ui-card-expertise
+            [id]="expertise._id"
+            [title]="expertise.expertiseTitle"
+            [description]="expertise.expertiseSummary ?? ''"
+            [url]="'/expertise/' + expertise.slug"
+            [image]="expertise.coverPhoto ?? ''"
+            [price]="formatPrice(expertise)"
+            [location]="expertise.location?.city ?? ''"
+            [isFavourite]="false"
+            [hideElements]="['expert-image']">
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <!-- Empty State -->
+    <div class="placeholder-grid">
+      @for (item of placeholderList; track $index) {
+        <div ui-loader-skeleton-card-expertise></div>
+      }
+    </div>
+  }
+
+  <a ui-button-fill-large class="cta-button" routerLink="/expertise">View all Expertise</a>
+</div>

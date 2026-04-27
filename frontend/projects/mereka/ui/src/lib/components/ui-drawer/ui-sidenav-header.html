@@ -1,0 +1,7 @@
+<div class="ui-sidenav-header__inner-container">
+  <button ui-button (click)="onBackClick()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <ng-content></ng-content>
+</div>
+<ng-content select="[ui-sidenav-header-bottom]"></ng-content>

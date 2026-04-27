@@ -1,0 +1,97 @@
+@if (loading() || reviews().length > 0) {
+<div class="layout-container">
+  <h2 class="section-heading">What users have to say</h2>
+
+  @if (loading()) {
+    <!-- Loading State -->
+    <div ui-loader-skeleton-group class="review-slide">
+      <div class="review-card">
+        <div class="review-card__rating">
+          <div ui-loader-skeleton appearance="square-rounded"></div>
+          <div ui-loader-skeleton appearance="square-rounded"></div>
+          <div ui-loader-skeleton appearance="square-rounded"></div>
+          <div ui-loader-skeleton appearance="square-rounded"></div>
+          <div ui-loader-skeleton appearance="square-rounded"></div>
+        </div>
+        <div class="review-card__desc">
+          <div ui-loader-skeleton appearance="line"></div>
+          <div ui-loader-skeleton appearance="line"></div>
+          <div ui-loader-skeleton appearance="line"></div>
+          <div ui-loader-skeleton appearance="line"></div>
+          <div ui-loader-skeleton appearance="line" width="50"></div>
+        </div>
+        <div class="review-card__reviewer">
+          <div ui-loader-skeleton appearance="line" tint="dark" width="66"></div>
+        </div>
+        <div class="review-card-host">
+          <div ui-loader-skeleton appearance="circle" class="review-card-host__image"></div>
+          <div class="review-card-host__content">
+            <div ui-loader-skeleton appearance="line" tint="dark" width="40"></div>
+            <div ui-loader-skeleton appearance="line" width="60"></div>
+          </div>
+        </div>
+      </div>
+      <div ui-loader-skeleton class="review-slide__image" appearance="custom" tint="dark"></div>
+    </div>
+  } @else if (reviews().length > 0) {
+    <!-- Reviews Swiper -->
+    <div class="review-slider-container">
+      <swiper-container ui-swiper [config]="configReviews" [overflow]="true">
+        @for (item of reviews(); track $index) {
+          <swiper-slide ui-swiper-slide>
+            <div class="review-slide">
+              <div class="review-card">
+                <div class="review-card__rating">
+                  @for (star of ratingRange(item.reviewRating); track $index) {
+                    <mat-icon fontIcon="star" />
+                  }
+                </div>
+
+                <!-- TODO: Mobile read-more/read-less truncation - TruncatePipe not available in v2.
+                     Currently: full review text always shown. -->
+                <p class="review-card__desc">{{ item.reviewDescription }}</p>
+
+                <div class="review-card__reviewer">
+                  {{ item.reviewerName }} tried
+                  @if (item.serviceSlug) {
+                    <a class="review-card__service-link" routerLink="/{{ item.serviceType }}/{{ item.serviceSlug }}">{{ item.serviceName }}</a>
+                  } @else {
+                    <span class="review-card__service-link">{{ item.serviceName }}</span>
+                  }
+                </div>
+
+                <div class="review-card__host-by">Hosted by:</div>
+                <div class="review-card__hub">
+                  <div class="review-card-host">
+                    <div class="review-card-host__image">
+                      <!-- TODO: ImageKit optimization - ImageKitPipe not available in v2 yet; images served directly -->
+                      <img [src]="item.hubLogo" width="40" height="40" [alt]="item.hubName + ' avatar'">
+                    </div>
+                    <div class="review-card-host__content">
+                      <div class="review-card-host__title">{{ item.hubName }}</div>
+                      <div class="review-card-host__location">at {{ item.hubLocation }}</div>
+                    </div>
+                  </div>
+                  <div class="review-card__actions">
+                    <a ui-anchor routerLink="/hub/{{ item.hubSlug }}">View {{ item.hostType === 'hub' ? 'Hub' : 'Expert' }}</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TODO: Mobile/desktop detection - ViewBreakpointService not yet ported.
+                   Currently: review image always shown (desktop layout). -->
+              @if (item.reviewPhoto) {
+                <div class="review-slide__image">
+                  <!-- TODO: ImageKit optimization - ImageKitPipe not available in v2 yet -->
+                  <img [src]="item.reviewPhoto" alt>
+                </div>
+              }
+            </div>
+          </swiper-slide>
+        }
+      </swiper-container>
+      <ui-swiper-pagination />
+    </div>
+  }
+</div>
+}

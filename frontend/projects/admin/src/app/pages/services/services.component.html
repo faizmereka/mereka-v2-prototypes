@@ -1,0 +1,554 @@
+<div class="flex flex-col gap-6 animate-fade-in">
+  <!-- Header -->
+  <header class="flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold m-0">Service Management</h1>
+      <p class="text-gray-500 mt-1">Manage experiences and expertise on the platform</p>
+    </div>
+  </header>
+
+  <!-- Service Type Tabs -->
+  <div class="flex gap-4 border-b border-gray-200">
+    <button class="px-6 py-3 font-semibold border-b-2 transition-colors"
+      [class.border-primary]="activeServiceTab() === 'experiences'"
+      [class.text-primary]="activeServiceTab() === 'experiences'"
+      [class.border-transparent]="activeServiceTab() !== 'experiences'"
+      [class.text-gray-500]="activeServiceTab() !== 'experiences'" (click)="setServiceTab('experiences')">
+      Experiences
+      @if (tabStats()?.experiences?.total) {
+      <span class="ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs">{{
+        tabStats()?.experiences?.total }}</span>
+      }
+    </button>
+    <button class="px-6 py-3 font-semibold border-b-2 transition-colors"
+      [class.border-primary]="activeServiceTab() === 'expertise'"
+      [class.text-primary]="activeServiceTab() === 'expertise'"
+      [class.border-transparent]="activeServiceTab() !== 'expertise'"
+      [class.text-gray-500]="activeServiceTab() !== 'expertise'" (click)="setServiceTab('expertise')">
+      Expertise
+      @if (tabStats()?.expertise?.total) {
+      <span class="ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs">{{
+        tabStats()?.expertise?.total }}</span>
+      }
+    </button>
+  </div>
+
+  <!-- Stats Cards -->
+  @if (activeServiceTab() === 'experiences' && experienceStats()) {
+  <div class="grid grid-cols-5 gap-4">
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Total Experiences</p>
+      <p class="text-2xl font-bold m-0 mt-1">{{ experienceStats()?.total }}</p>
+    </div>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Active</p>
+      <p class="text-2xl font-bold m-0 mt-1 text-green-600">{{ experienceStats()?.byStatus?.ACTIVE }}</p>
+    </div>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Draft</p>
+      <p class="text-2xl font-bold m-0 mt-1 text-amber-600">{{ experienceStats()?.byStatus?.DRAFTED }}</p>
+    </div>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Featured</p>
+      <p class="text-2xl font-bold m-0 mt-1 text-purple-600">{{ experienceStats()?.featured }}</p>
+    </div>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Expired</p>
+      <p class="text-2xl font-bold m-0 mt-1 text-gray-500">{{ experienceStats()?.byStatus?.EXPIRED }}</p>
+    </div>
+  </div>
+  }
+
+  @if (activeServiceTab() === 'expertise' && expertiseStats()) {
+  <div class="grid grid-cols-5 gap-4">
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Total Expertise</p>
+      <p class="text-2xl font-bold m-0 mt-1">{{ expertiseStats()?.total }}</p>
+    </div>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Published</p>
+      <p class="text-2xl font-bold m-0 mt-1 text-green-600">{{ expertiseStats()?.byStatus?.published }}</p>
+    </div>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Draft</p>
+      <p class="text-2xl font-bold m-0 mt-1 text-amber-600">{{ expertiseStats()?.byStatus?.draft }}</p>
+    </div>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Archived</p>
+      <p class="text-2xl font-bold m-0 mt-1 text-gray-500">{{ expertiseStats()?.byStatus?.archived }}</p>
+    </div>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
+      <p class="text-gray-500 text-sm m-0">Disabled</p>
+      <p class="text-2xl font-bold m-0 mt-1 text-red-600">{{ expertiseStats()?.disabled }}</p>
+    </div>
+  </div>
+  }
+
+  <!-- Filter Tabs -->
+  @if (activeServiceTab() === 'experiences') {
+  <div class="flex gap-4 border-b border-gray-200">
+    @for (tab of experienceFilterTabs; track tab.value) {
+    <button class="px-4 py-3 font-medium border-b-2 transition-colors"
+      [class.border-primary]="experienceFilter() === tab.value" [class.text-primary]="experienceFilter() === tab.value"
+      [class.border-transparent]="experienceFilter() !== tab.value"
+      [class.text-gray-500]="experienceFilter() !== tab.value" (click)="setExperienceFilter(tab.value)">
+      {{ tab.label }}
+      @if (tab.value === 'DRAFTED' && experienceStats()?.toReview) {
+      <span class="ml-1 px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs">{{
+        experienceStats()?.toReview }}</span>
+      }
+    </button>
+    }
+  </div>
+  } @else {
+  <div class="flex gap-4 border-b border-gray-200">
+    @for (tab of expertiseFilterTabs; track tab.value) {
+    <button class="px-4 py-3 font-medium border-b-2 transition-colors"
+      [class.border-primary]="expertiseFilter() === tab.value" [class.text-primary]="expertiseFilter() === tab.value"
+      [class.border-transparent]="expertiseFilter() !== tab.value"
+      [class.text-gray-500]="expertiseFilter() !== tab.value" (click)="setExpertiseFilter(tab.value)">
+      {{ tab.label }}
+      @if (tab.value === 'draft' && expertiseStats()?.toReview) {
+      <span class="ml-1 px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs">{{
+        expertiseStats()?.toReview }}</span>
+      }
+    </button>
+    }
+  </div>
+  }
+
+  <!-- Table Controls -->
+  <div class="flex flex-col gap-4">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <!-- Bulk Actions -->
+        <div class="relative">
+          <button
+            class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium disabled:opacity-50"
+            [disabled]="!hasSelection()" (click)="toggleActionsMenu()">
+            Actions ({{ selectedIds().size }})
+            <img src="icons/icon-dropmenu.svg" alt="" class="w-3 h-3" />
+          </button>
+          @if (showActionsMenu() && hasSelection()) {
+          <div
+            class="absolute top-full left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[180px] mt-1 py-1">
+            @if (activeServiceTab() === 'experiences') {
+            <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+              (click)="bulkUpdateExperienceStatus('ACTIVE')">
+              <span class="w-2 h-2 bg-green-500 rounded-full"></span> Set Active
+            </button>
+            <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+              (click)="bulkUpdateExperienceStatus('DRAFTED')">
+              <span class="w-2 h-2 bg-amber-500 rounded-full"></span> Set Draft
+            </button>
+            <hr class="my-1 border-gray-200" />
+            <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left text-red-600 hover:bg-gray-50"
+              (click)="bulkUpdateExperienceStatus('DELETED')">
+              <img src="icons/delete.png" alt="" class="w-4 h-4" /> Delete
+            </button>
+            } @else {
+            <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+              (click)="bulkUpdateExpertiseStatus('published')">
+              <span class="w-2 h-2 bg-green-500 rounded-full"></span> Publish
+            </button>
+            <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+              (click)="bulkUpdateExpertiseStatus('draft')">
+              <span class="w-2 h-2 bg-amber-500 rounded-full"></span> Set Draft
+            </button>
+            <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+              (click)="bulkUpdateExpertiseStatus('archived')">
+              <span class="w-2 h-2 bg-gray-500 rounded-full"></span> Archive
+            </button>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Search -->
+        <div class="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-xl bg-white w-[280px]">
+          <img src="icons/icon-search.svg" alt="" class="w-4 h-4 opacity-50" />
+          <input type="text" [placeholder]="activeServiceTab() === 'experiences' ? 'Search experiences...' : 'Search expertise...'"
+            [value]="searchQuery()" (input)="onSearchInput($event)"
+            class="border-none outline-none w-full text-sm bg-transparent" />
+        </div>
+
+        <!-- Filter Toggle -->
+        <button class="flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium transition-colors"
+          [class.border-primary]="showFilters() || hasActiveFilters()"
+          [class.bg-primary/5]="showFilters() || hasActiveFilters()"
+          [class.text-primary]="showFilters() || hasActiveFilters()"
+          [class.border-gray-300]="!showFilters() && !hasActiveFilters()"
+          [class.hover:bg-gray-50]="!showFilters() && !hasActiveFilters()" (click)="toggleFilters()">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          </svg>
+          Filters
+          @if (hasActiveFilters()) {
+          <span class="w-2 h-2 bg-primary rounded-full"></span>
+          }
+        </button>
+
+        <span class="text-sm text-gray-500">{{ paginationStart() }}-{{ paginationEnd() }} of {{ totalItems() }}
+          items</span>
+      </div>
+
+      <!-- Page Size -->
+      <select class="px-3 py-2 border border-gray-200 rounded-lg bg-white text-sm cursor-pointer" [ngModel]="pageSize()"
+        (ngModelChange)="setPageSize($event)">
+        <option [value]="10">10 per page</option>
+        <option [value]="20">20 per page</option>
+        <option [value]="50">50 per page</option>
+        <option [value]="100">100 per page</option>
+      </select>
+    </div>
+
+    <!-- Expanded Filters -->
+    @if (showFilters()) {
+    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+      <!-- Date From -->
+      <div class="flex flex-col gap-1">
+        <label class="text-xs text-gray-500 font-medium">From Date</label>
+        <input type="date" class="px-3 py-2 border border-gray-200 rounded-lg bg-white text-sm" [ngModel]="dateFrom()"
+          (ngModelChange)="setDateRange($event, dateTo())" />
+      </div>
+
+      <!-- Date To -->
+      <div class="flex flex-col gap-1">
+        <label class="text-xs text-gray-500 font-medium">To Date</label>
+        <input type="date" class="px-3 py-2 border border-gray-200 rounded-lg bg-white text-sm" [ngModel]="dateTo()"
+          (ngModelChange)="setDateRange(dateFrom(), $event)" />
+      </div>
+
+      <!-- Clear Filters -->
+      @if (hasActiveFilters()) {
+      <button class="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors self-end"
+        (click)="clearFilters()">
+        Clear Filters
+      </button>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- Experiences Table -->
+  @if (activeServiceTab() === 'experiences') {
+  @if (experienceLoading()) {
+  <div class="text-center py-16 text-gray-500">
+    <div class="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+    <p class="mt-4">Loading experiences...</p>
+  </div>
+  } @else {
+  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <table class="w-full">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="w-12 px-4 py-3">
+            <input type="checkbox" [checked]="allSelected()" (change)="toggleSelectAll($event)"
+              class="w-4 h-4 cursor-pointer rounded" />
+          </th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Experience</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Hub</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Type</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Price</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Status</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Featured</th>
+          <th class="text-center px-4 py-3 font-semibold text-sm text-gray-600">Priority</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Created</th>
+          <th class="text-right px-4 py-3 font-semibold text-sm text-gray-600">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (exp of experiences(); track exp._id) {
+        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
+          [class.bg-primary/5]="isSelected(exp._id)" (click)="navigateToDetail(exp._id)">
+          <td class="px-4 py-3" (click)="$event.stopPropagation()">
+            <input type="checkbox" [checked]="isSelected(exp._id)" (change)="toggleSelect(exp._id)"
+              class="w-4 h-4 cursor-pointer rounded" />
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-3">
+              <ui-avatar [imageUrl]="exp.coverPhoto" [name]="exp.experienceTitle" size="md" />
+              <div>
+                <p class="font-medium m-0 line-clamp-1">{{ exp.experienceTitle }}</p>
+                <p class="text-sm text-gray-500 m-0">{{ exp.slug }}</p>
+              </div>
+            </div>
+          </td>
+          <td class="px-4 py-3">
+            @if (exp.hub) {
+            <div>
+              <p class="m-0 text-sm">{{ exp.hub.name }}</p>
+            </div>
+            } @else {
+            <span class="text-gray-400">-</span>
+            }
+          </td>
+          <td class="px-4 py-3">
+            <span class="px-2 py-1 rounded text-xs font-medium" [ngClass]="getTypeColor(exp.experienceType)">
+              {{ exp.experienceType }}
+            </span>
+          </td>
+          <td class="px-4 py-3 text-sm">
+            {{ getTicketPrice(exp) }}
+          </td>
+          <td class="px-4 py-3">
+            <span class="px-2 py-1 rounded text-xs font-medium" [ngClass]="getExperienceStatusColor(exp.status)">
+              {{ formatStatus(exp.status) }}
+            </span>
+          </td>
+          <td class="px-4 py-3">
+            @if (exp.isFeatured) {
+            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">Featured</span>
+            } @else {
+            <span class="text-gray-400">-</span>
+            }
+          </td>
+          <td class="px-4 py-3 text-center" (click)="$event.stopPropagation()">
+            @if (editingPriorityId() === exp._id) {
+            <div class="flex items-center justify-center gap-1">
+              <input type="number" min="1" [ngModel]="editingPriorityValue()"
+                (ngModelChange)="editingPriorityValue.set($event)" (keydown)="onPriorityKeydown($event, exp)"
+                (blur)="savePriority(exp)"
+                class="w-20 px-2 py-1 text-center text-sm border border-primary rounded focus:outline-none focus:ring-1 focus:ring-primary"
+                autofocus />
+            </div>
+            } @else {
+            <button
+              class="inline-flex items-center gap-1 px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded transition-colors"
+              (click)="startEditPriority(exp, $event)" title="Click to edit priority">
+              {{ exp.priority || 1000 }}
+              <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </button>
+            }
+          </td>
+          <td class="px-4 py-3 text-gray-600 text-sm">
+            {{ exp.createdAt | date:'MMM d, y' }}
+          </td>
+          <td class="px-4 py-3 text-right" (click)="$event.stopPropagation()">
+            <div class="relative inline-block">
+              <button class="p-2 rounded hover:bg-gray-100" (click)="toggleRowActions(exp._id)">
+                <img src="icons/icon-3dots.svg" alt="Actions" class="w-5 h-5" />
+              </button>
+              @if (activeRowMenu() === exp._id) {
+              <div
+                class="absolute top-full right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[180px] mt-1 py-1">
+                <a [routerLink]="['/dashboard/services/experiences', exp._id]"
+                  class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50">
+                  <img src="icons/view-eye.png" alt="" class="w-4 h-4" /> View Details
+                </a>
+                <hr class="my-1 border-gray-200" />
+                @if (exp.status !== 'ACTIVE') {
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+                  (click)="updateExperienceStatus(exp, 'ACTIVE')">
+                  <span class="w-2 h-2 bg-green-500 rounded-full"></span> Set Active
+                </button>
+                }
+                @if (exp.status !== 'DRAFTED') {
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+                  (click)="updateExperienceStatus(exp, 'DRAFTED')">
+                  <span class="w-2 h-2 bg-amber-500 rounded-full"></span> Set Draft
+                </button>
+                }
+                @if (exp.status === 'ACTIVE' && !exp.isFeatured) {
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+                  (click)="toggleExperienceFeatured(exp)">
+                  <img src="icons/featured.png" alt="" class="w-4 h-4" /> Make Featured
+                </button>
+                }
+                @if (exp.isFeatured) {
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+                  (click)="toggleExperienceFeatured(exp)">
+                  <img src="icons/featured.png" alt="" class="w-4 h-4 opacity-50" /> Remove Featured
+                </button>
+                }
+                <hr class="my-1 border-gray-200" />
+                <button
+                  class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left text-red-600 hover:bg-gray-50"
+                  (click)="deleteExperience(exp)">
+                  <img src="icons/delete.png" alt="" class="w-4 h-4" /> Delete
+                </button>
+              </div>
+              }
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="10" class="text-center py-16 text-gray-500">
+            <img src="icons/no-data.svg" alt="" class="w-16 h-16 mx-auto mb-4 opacity-30" />
+            <p class="m-0">No experiences found</p>
+            <p class="text-sm text-gray-400 mt-1">Try adjusting your search or filter</p>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+  }
+
+  <!-- Expertise Table -->
+  @if (activeServiceTab() === 'expertise') {
+  @if (expertiseLoading()) {
+  <div class="text-center py-16 text-gray-500">
+    <div class="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+    <p class="mt-4">Loading expertise...</p>
+  </div>
+  } @else {
+  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <table class="w-full">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="w-12 px-4 py-3">
+            <input type="checkbox" [checked]="allSelected()" (change)="toggleSelectAll($event)"
+              class="w-4 h-4 cursor-pointer rounded" />
+          </th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Expertise</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Hub</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Host</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Price</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Status</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Disabled</th>
+          <th class="text-left px-4 py-3 font-semibold text-sm text-gray-600">Created</th>
+          <th class="text-right px-4 py-3 font-semibold text-sm text-gray-600">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (exp of expertises(); track exp._id) {
+        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
+          [class.bg-primary/5]="isSelected(exp._id)" (click)="navigateToDetail(exp._id)">
+          <td class="px-4 py-3" (click)="$event.stopPropagation()">
+            <input type="checkbox" [checked]="isSelected(exp._id)" (change)="toggleSelect(exp._id)"
+              class="w-4 h-4 cursor-pointer rounded" />
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-3">
+              <ui-avatar [imageUrl]="exp.coverPhoto" [name]="exp.expertiseTitle" size="md" />
+              <div>
+                <p class="font-medium m-0 line-clamp-1">{{ exp.expertiseTitle }}</p>
+                <p class="text-sm text-gray-500 m-0">{{ exp.slug }}</p>
+              </div>
+            </div>
+          </td>
+          <td class="px-4 py-3">
+            @if (exp.hub) {
+            <div>
+              <p class="m-0 text-sm">{{ exp.hub.name }}</p>
+            </div>
+            } @else {
+            <span class="text-gray-400">-</span>
+            }
+          </td>
+          <td class="px-4 py-3">
+            @if (exp.host) {
+            <p class="m-0 text-sm">{{ exp.host.name }}</p>
+            } @else {
+            <span class="text-gray-400">-</span>
+            }
+          </td>
+          <td class="px-4 py-3 text-sm">
+            {{ getTicketPrice(exp) }}
+          </td>
+          <td class="px-4 py-3">
+            <span class="px-2 py-1 rounded text-xs font-medium capitalize" [ngClass]="getExpertiseStatusColor(exp.status)">
+              {{ exp.status }}
+            </span>
+          </td>
+          <td class="px-4 py-3">
+            @if (exp.isDisabled) {
+            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium">Disabled</span>
+            } @else {
+            <span class="text-gray-400">-</span>
+            }
+          </td>
+          <td class="px-4 py-3 text-gray-600 text-sm">
+            {{ exp.createdAt | date:'MMM d, y' }}
+          </td>
+          <td class="px-4 py-3 text-right" (click)="$event.stopPropagation()">
+            <div class="relative inline-block">
+              <button class="p-2 rounded hover:bg-gray-100" (click)="toggleRowActions(exp._id)">
+                <img src="icons/icon-3dots.svg" alt="Actions" class="w-5 h-5" />
+              </button>
+              @if (activeRowMenu() === exp._id) {
+              <div
+                class="absolute top-full right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[180px] mt-1 py-1">
+                <a [routerLink]="['/dashboard/services/expertise', exp._id]"
+                  class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50">
+                  <img src="icons/view-eye.png" alt="" class="w-4 h-4" /> View Details
+                </a>
+                <hr class="my-1 border-gray-200" />
+                @if (exp.status !== 'published') {
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+                  (click)="updateExpertiseStatus(exp, 'published')">
+                  <span class="w-2 h-2 bg-green-500 rounded-full"></span> Publish
+                </button>
+                }
+                @if (exp.status !== 'draft') {
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+                  (click)="updateExpertiseStatus(exp, 'draft')">
+                  <span class="w-2 h-2 bg-amber-500 rounded-full"></span> Set Draft
+                </button>
+                }
+                @if (exp.status !== 'archived') {
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+                  (click)="updateExpertiseStatus(exp, 'archived')">
+                  <span class="w-2 h-2 bg-gray-500 rounded-full"></span> Archive
+                </button>
+                }
+                <button class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50"
+                  (click)="toggleExpertiseDisabled(exp)">
+                  @if (exp.isDisabled) {
+                  <span class="w-2 h-2 bg-green-500 rounded-full"></span> Enable
+                  } @else {
+                  <span class="w-2 h-2 bg-red-500 rounded-full"></span> Disable
+                  }
+                </button>
+                <hr class="my-1 border-gray-200" />
+                <button
+                  class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left text-red-600 hover:bg-gray-50"
+                  (click)="deleteExpertise(exp)">
+                  <img src="icons/delete.png" alt="" class="w-4 h-4" /> Delete
+                </button>
+              </div>
+              }
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="9" class="text-center py-16 text-gray-500">
+            <img src="icons/no-data.svg" alt="" class="w-16 h-16 mx-auto mb-4 opacity-30" />
+            <p class="m-0">No expertise found</p>
+            <p class="text-sm text-gray-400 mt-1">Try adjusting your search or filter</p>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+  }
+
+  <!-- Pagination -->
+  @if (totalPages() > 1) {
+  <div class="flex justify-between items-center">
+    <span class="text-sm text-gray-500">Page {{ currentPage() }} of {{ totalPages() }}</span>
+    <div class="flex gap-2">
+      <button
+        class="flex items-center justify-center w-9 h-9 border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="currentPage() === 1" (click)="prevPage()">
+        <img src="icons/icon-leftArrow-small.svg" alt="Previous" class="w-4 h-4" />
+      </button>
+      <button
+        class="flex items-center justify-center w-9 h-9 border border-gray-200 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="currentPage() === totalPages()" (click)="nextPage()">
+        <img src="icons/icon-rightArrow-small.svg" alt="Next" class="w-4 h-4" />
+      </button>
+    </div>
+  </div>
+  }
+</div>

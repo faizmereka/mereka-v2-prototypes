@@ -1,0 +1,54 @@
+@use '@angular/material' as mat;
+
+@use 'abstracts';
+@use 'base';
+@use 'components';
+@use 'layout';
+@use 'utilities';
+@forward 'components';
+
+@layer mereka-base, mereka-layout, mereka-ui;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  // NOTE: 100vh on mobile is unreliable as some mobile browser's viewport height does not take into account browser UI elements such as the address bar (iOS) or the bottom navigation bar (Android).
+  // This results in the mobile browser viewport height being larger than the actual height of the browser window, and thus 100vh is larger than the actual height of the browser window. (https://css-tricks.com/the-trick-to-viewport-units-on-mobile/)
+  // Alternative workaround is 100svh or 100dvh but current browser usage only 87% support as of May 2023. (https://caniuse.com/mdn-css_types_length_viewport_percentage_units_dynamic)
+  // 'max-viewport-height' is workaround to get a fixed value for mobile viewport height and bind it to a global CSS var.
+  --max-viewport-height: 100svh;
+  // Height of the navbar
+  --navbar-height: 70px;
+  --navbar-z-index: 100;
+  color-scheme: light only;
+}
+
+@media screen and (width >= 991px) {
+  :root {
+    --navbar-height: 84px;
+  }
+}
+
+body {
+  /* To prevent body from scrolling when the a custom dialog is opened */
+  &.no-scroll {
+    position: fixed;
+    overflow: hidden;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    inset-inline-end: 0px;
+    --scrollbar-gutter: 0px;
+  }
+
+  // 1. Scale the icon prevent aliased pixel rendering, especially on Windows and Chrome
+  .material-icons {
+    width: max-content;
+    height: max-content;
+    line-height: 1;
+    scale: 1.001;
+  }
+}

@@ -1,0 +1,24 @@
+@layer mereka-ui {
+  :root {
+    --swiper-pagination-bullet-horizontal-gap: 3px;
+    --swiper-pagination-bullet-width: 8px;
+    --swiper-pagination-bullet-height: 8px;
+  }
+
+  .ui-swiper {
+    [slot="container-start"] {
+      .ui-swiper-navigation {
+        top: calc(50% - 24px);
+        z-index: 5;
+        
+        &.ui-swiper-navigation-prev {
+          left: calc(0px - 24px);
+        }
+        
+        &.ui-swiper-navigation-next {
+          right: calc(0px - 24px);
+        }
+      }
+    }
+  }
+}

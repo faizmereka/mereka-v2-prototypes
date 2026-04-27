@@ -1,0 +1,59 @@
+@if (hasAnyContent()) {
+  <section>
+    <!-- Materials Section -->
+    @if (hasMaterialProvided() || hasMaterialToBring()) {
+      <h2 class="text-lg font-semibold text-neutral-900 mb-4">Instructions</h2>
+
+      <!-- Material Provided -->
+      @if (hasMaterialProvided()) {
+        <div class="mb-6">
+          <h3 class="text-base font-medium text-neutral-800 mb-3">
+            The Expert will provide
+          </h3>
+          <ul class="space-y-2">
+            @for (item of instructions().materialProvided; track item) {
+              <li class="flex items-start gap-2 text-neutral-600">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ item }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      <!-- Material to Bring -->
+      @if (hasMaterialToBring()) {
+        <div class="mb-6">
+          <h3 class="text-base font-medium text-neutral-800 mb-3">
+            What to bring
+          </h3>
+          <ul class="space-y-2">
+            @for (item of instructions().materialToBring; track item) {
+              <li class="flex items-start gap-2 text-neutral-600">
+                <svg class="w-5 h-5 text-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <span>{{ item }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    }
+
+    <!-- FAQ Section -->
+    @if (hasFaq()) {
+      <div class="border-t border-neutral-200 pt-6 mt-6">
+        <h2 class="text-lg font-semibold text-neutral-900 mb-4">
+          Frequently Asked Questions
+        </h2>
+        <div
+          class="text-neutral-600 prose prose-sm max-w-none"
+          [innerHTML]="instructions().faq">
+        </div>
+      </div>
+    }
+  </section>
+}

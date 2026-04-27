@@ -1,0 +1,242 @@
+<div class="min-h-screen bg-neutral-50">
+  <!-- Header -->
+  <div class="bg-white border-b border-neutral-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <!-- Back button and title -->
+      <div class="flex items-center gap-4 mb-4">
+        <button
+          (click)="goBack()"
+          class="p-2 rounded-lg hover:bg-neutral-100 transition-colors"
+        >
+          <svg class="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <div>
+          <h1 class="text-2xl font-bold text-neutral-900">
+            @if (jobLoading()) {
+              Loading...
+            } @else {
+              {{ job()?.jobTitle || 'Job Proposals' }}
+            }
+          </h1>
+          @if (job()) {
+            <p class="text-sm text-neutral-500 mt-1">
+              {{ total() }} proposal{{ total() !== 1 ? 's' : '' }} received
+            </p>
+          }
+        </div>
+      </div>
+
+      <!-- Job Info Card -->
+      @if (job(); as jobData) {
+        <div class="bg-neutral-50 rounded-lg p-4 flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="flex-shrink-0">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                {{ jobData.serviceCategory?.serviceType || 'Job' }}
+              </span>
+            </div>
+            <div>
+              <p class="text-sm text-neutral-600">
+                @if (jobData.jobBudget?.pricingType === 'fixed') {
+                  Fixed Price: {{ jobData.jobCurrency }} {{ jobData.jobBudget?.upToAmount?.toLocaleString() || jobData.jobBudget?.fromAmount?.toLocaleString() }}
+                } @else {
+                  Hourly: {{ jobData.jobCurrency }} {{ jobData.jobBudget?.fromAmount }} - {{ jobData.jobBudget?.upToAmount }}/hr
+                }
+              </p>
+              <p class="text-xs text-neutral-500">
+                Posted {{ formatDate(jobData.createdAt) }}
+              </p>
+            </div>
+          </div>
+          <button
+            (click)="viewJobPost()"
+            class="px-4 py-2 text-sm font-medium text-primary hover:text-primary-dark transition-colors"
+          >
+            View Job Post
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="bg-white rounded-xl border border-neutral-200 p-12 text-center">
+        <div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+        <p class="text-neutral-600">Loading proposals...</p>
+      </div>
+    } @else if (proposals().length === 0) {
+      <!-- Empty State -->
+      <div class="bg-white rounded-xl border border-neutral-200 p-12 text-center">
+        <div class="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">No proposals yet</h3>
+        <p class="text-neutral-600 mb-6">This job hasn't received any proposals yet.</p>
+        <button
+          (click)="goBack()"
+          class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+        >
+          Back to Jobs
+        </button>
+      </div>
+    } @else {
+      <!-- Proposals Table -->
+      <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-neutral-50 border-b border-neutral-200">
+              <tr>
+                @for (header of tableHeaders; track header) {
+                  <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700">
+                    {{ header }}
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-neutral-100">
+              @for (proposal of proposals(); track proposal._id) {
+                <tr
+                  class="hover:bg-neutral-50 transition-colors cursor-pointer"
+                  (click)="viewProposalDetail(proposal)"
+                >
+                  <!-- Expert -->
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-full bg-neutral-200 overflow-hidden flex-shrink-0">
+                        @if (getExpertImage(proposal)) {
+                          <img [src]="getExpertImage(proposal)" alt="" class="w-full h-full object-cover" />
+                        } @else {
+                          <div class="w-full h-full flex items-center justify-center text-neutral-500 text-sm font-medium">
+                            {{ getExpertName(proposal).charAt(0).toUpperCase() }}
+                          </div>
+                        }
+                      </div>
+                      <div>
+                        <span class="font-medium text-neutral-900 block">{{ getExpertName(proposal) }}</span>
+                        <span class="text-sm text-neutral-500">{{ getExpertEmail(proposal) }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <!-- Proposed Price -->
+                  <td class="px-4 py-4">
+                    <span class="font-semibold text-neutral-900">{{ formatProposalPrice(proposal) }}</span>
+                  </td>
+                  <!-- Cover Letter -->
+                  <td class="px-4 py-4 max-w-xs">
+                    <p class="text-sm text-neutral-600 truncate">{{ getCoverLetterPreview(proposal) }}</p>
+                  </td>
+                  <!-- Submitted -->
+                  <td class="px-4 py-4 text-sm text-neutral-600">
+                    {{ formatDate(proposal.createdAt) }}
+                  </td>
+                  <!-- Status -->
+                  <td class="px-4 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                      [ngClass]="getProposalStatus(proposal.status).color"
+                    >
+                      {{ getProposalStatus(proposal.status).text }}
+                    </span>
+                  </td>
+                  <!-- Actions -->
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-2">
+                      @if (proposal.status === 'pending') {
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); sendOffer(proposal)"
+                          class="px-3 py-1.5 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-dark"
+                        >
+                          Send Offer
+                        </button>
+                      }
+
+                      <!-- Dropdown Menu -->
+                      <div class="relative">
+                        <button
+                          type="button"
+                          (click)="$event.stopPropagation(); toggleActionsDropdown(proposal._id)"
+                          class="p-1.5 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+                        >
+                          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                        </button>
+
+                        @if (showActionsDropdown() === proposal._id) {
+                          <!-- Backdrop -->
+                          <div class="fixed inset-0 z-10" (click)="closeActionsDropdown()"></div>
+
+                          <!-- Dropdown -->
+                          <div class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-20">
+                            <button
+                              type="button"
+                              (click)="$event.stopPropagation(); viewProposalDetail(proposal); closeActionsDropdown()"
+                              class="w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-50"
+                            >
+                              View Details
+                            </button>
+                            @if (proposal.status === 'pending') {
+                              <button
+                                type="button"
+                                (click)="$event.stopPropagation(); sendOffer(proposal); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-50"
+                              >
+                                Send Offer
+                              </button>
+                              <button
+                                type="button"
+                                (click)="$event.stopPropagation(); rejectProposal(proposal); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                              >
+                                Reject Proposal
+                              </button>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        @if (totalPages() > 1) {
+          <div class="px-4 py-3 border-t border-neutral-200 flex items-center justify-between">
+            <p class="text-sm text-neutral-600">
+              Showing {{ (page() - 1) * limit() + 1 }} to {{ Math.min(page() * limit(), total()) }} of {{ total() }} proposals
+            </p>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                [disabled]="page() === 1"
+                (click)="handlePageChange(page() - 1)"
+                class="px-3 py-1.5 text-sm border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                [disabled]="page() >= totalPages()"
+                (click)="handlePageChange(page() + 1)"
+                class="px-3 py-1.5 text-sm border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

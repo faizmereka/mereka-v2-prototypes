@@ -1,0 +1,337 @@
+<div class="font-sans">
+  <form [formGroup]="skillsForm()">
+        <!-- Languages Section -->
+        <ui-collapsible title="Language">
+          <p class="text-sm text-neutral-600 mb-4">What languages do you speak?</p>
+
+          <div class="space-y-3">
+            @for (lang of languagesArray().controls; track $index) {
+              <div class="flex items-center gap-3" [formGroup]="getLanguageFormGroup($index)">
+                <div class="flex-1">
+                  <label class="block text-xs text-neutral-500 mb-1">Language</label>
+                  <select
+                    formControlName="languageId"
+                    class="w-full px-4 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+                  >
+                    <option value="">Select language</option>
+                    @for (opt of getAvailableLanguagesForRow($index); track opt.value) {
+                      <option [value]="opt.value">{{ opt.label }}</option>
+                    }
+                    @if (getLanguageFormGroup($index).get('languageId')?.value) {
+                      <option [value]="getLanguageFormGroup($index).get('languageId')?.value" selected>
+                        {{ getLanguageName(getLanguageFormGroup($index).get('languageId')?.value) }}
+                      </option>
+                    }
+                  </select>
+                </div>
+
+                <div class="w-48">
+                  <label class="block text-xs text-neutral-500 mb-1">Proficiency</label>
+                  <select
+                    formControlName="proficiency"
+                    class="w-full px-4 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+                  >
+                    @for (level of proficiencyLevels; track level.value) {
+                      <option [value]="level.value">{{ level.label }}</option>
+                    }
+                  </select>
+                </div>
+
+                <button
+                  type="button"
+                  (click)="removeLanguage($index)"
+                  class="p-2 mt-5 text-neutral-400 hover:text-red-500 transition-colors"
+                  title="Remove language"
+                >
+                  <ui-icon name="close" class="w-5 h-5"></ui-icon>
+                </button>
+              </div>
+            }
+
+            <button
+              type="button"
+              (click)="addLanguage()"
+              class="flex items-center gap-2 text-neutral-600 hover:text-neutral-900 text-sm font-medium"
+            >
+              <ui-icon name="plus" class="w-5 h-5"></ui-icon>
+              Add Language
+            </button>
+          </div>
+        </ui-collapsible>
+
+        <!-- Focus Area Section -->
+        <ui-collapsible class="mt-4" title="Focus Area" badge="USED FOR JOB MATCHING" badgeVariant="neutral">
+          <p class="text-sm text-neutral-600 mb-2">What would you say is your primary focus area as an Expert?</p>
+          <p class="text-sm text-neutral-500 mb-4">
+            Choose one of the following categories. This information may be used to match you with relevant opportunities on the platform.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            @for (area of focusAreaCards(); track area.id) {
+              <button
+                type="button"
+                (click)="selectFocusArea(area.id)"
+                class="flex items-center justify-between p-4 border rounded-xl transition-all"
+                [class.border-neutral-900]="isFocusAreaSelected(area.id)"
+                [class.bg-neutral-900]="isFocusAreaSelected(area.id)"
+                [class.text-white]="isFocusAreaSelected(area.id)"
+                [class.border-neutral-200]="!isFocusAreaSelected(area.id)"
+                [class.hover:border-neutral-400]="!isFocusAreaSelected(area.id)"
+              >
+                <span class="font-medium">{{ area.name }}</span>
+                <div class="flex items-center gap-2">
+                  <ui-icon [name]="area.icon" class="w-5 h-5"></ui-icon>
+                  @if (isFocusAreaSelected(area.id)) {
+                    <ui-icon name="check" class="w-5 h-5"></ui-icon>
+                  }
+                </div>
+              </button>
+            }
+          </div>
+        </ui-collapsible>
+
+        <!-- Skills Section -->
+        <ui-collapsible class="mt-4" title="Skills">
+          <div class="flex items-center gap-2 mb-4">
+            <p class="text-sm text-neutral-600">What skills do you have as an Expert?</p>
+            <span class="text-xs text-neutral-400">OPTIONAL</span>
+          </div>
+          <p class="text-sm text-neutral-500 mb-4">Add some tags to your profile.</p>
+
+          <!-- Primary Skills -->
+          <div class="mb-6">
+            <h4 class="text-sm font-medium text-neutral-700 mb-2">Primary Skills</h4>
+            <p class="text-xs text-neutral-500 mb-3">Based on your selected focus area</p>
+
+            <!-- Selected Primary Skills -->
+            @if (selectedPrimarySkills().length > 0) {
+              <div class="flex flex-wrap gap-2 mb-3">
+                @for (skill of selectedPrimarySkills(); track skill._id) {
+                  <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-neutral-100 text-neutral-700 rounded-full text-sm">
+                    <button
+                      type="button"
+                      (click)="removeSkill(skill._id)"
+                      class="hover:text-red-500"
+                    >
+                      <ui-icon name="close" class="w-4 h-4"></ui-icon>
+                    </button>
+                    {{ skill.name }}
+                  </span>
+                }
+              </div>
+            }
+
+            <!-- Primary Skill Search -->
+            <div class="relative">
+              <input
+                type="text"
+                [value]="primarySkillInput()"
+                (input)="onPrimarySkillInputChange($any($event.target).value)"
+                placeholder="Type to search for skills..."
+                class="w-full px-4 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              @if (primarySkillInput() && filteredPrimarySkills().length > 0) {
+                <div class="absolute z-10 w-full mt-1 bg-white border border-neutral-200 rounded-lg shadow-lg max-h-48 overflow-auto">
+                  @for (skill of filteredPrimarySkills(); track skill._id) {
+                    <button
+                      type="button"
+                      (click)="onPrimarySkillSelect(skill._id)"
+                      class="w-full px-4 py-2 text-left hover:bg-neutral-50 text-sm"
+                    >
+                      {{ skill.name }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Additional Skills -->
+          <div class="mb-6">
+            <h4 class="text-sm font-medium text-neutral-700 mb-2">Additional Skills</h4>
+            <p class="text-xs text-neutral-500 mb-3">If you provide services outside of your selected focus area, use these to highlight them.</p>
+
+            <!-- Selected Additional Skills -->
+            @if (selectedAdditionalSkills().length > 0) {
+              <div class="flex flex-wrap gap-2 mb-3">
+                @for (skill of selectedAdditionalSkills(); track skill._id) {
+                  <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-neutral-100 text-neutral-700 rounded-full text-sm">
+                    <button
+                      type="button"
+                      (click)="removeSkill(skill._id)"
+                      class="hover:text-red-500"
+                    >
+                      <ui-icon name="close" class="w-4 h-4"></ui-icon>
+                    </button>
+                    {{ skill.name }}
+                  </span>
+                }
+              </div>
+            }
+
+            <!-- Additional Skill Search -->
+            <div class="relative">
+              <input
+                type="text"
+                [value]="additionalSkillInput()"
+                (input)="onAdditionalSkillInputChange($any($event.target).value)"
+                placeholder="Type to search for additional skills..."
+                class="w-full px-4 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              @if (additionalSkillInput() && filteredAdditionalSkills().length > 0) {
+                <div class="absolute z-10 w-full mt-1 bg-white border border-neutral-200 rounded-lg shadow-lg max-h-48 overflow-auto">
+                  @for (skill of filteredAdditionalSkills(); track skill._id) {
+                    <button
+                      type="button"
+                      (click)="onAdditionalSkillSelect(skill._id)"
+                      class="w-full px-4 py-2 text-left hover:bg-neutral-50 text-sm"
+                    >
+                      {{ skill.name }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Custom Tags -->
+          <div>
+            <h4 class="text-sm font-medium text-neutral-700 mb-2">Create custom tags</h4>
+
+            <!-- Selected Custom Tags -->
+            @if (customTags().length > 0) {
+              <div class="flex flex-wrap gap-2 mb-3">
+                @for (tag of customTags(); track tag) {
+                  <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-primary-50 text-primary-700 rounded-full text-sm">
+                    {{ tag }}
+                    <button
+                      type="button"
+                      (click)="removeCustomTag(tag)"
+                      class="hover:text-primary-900"
+                    >
+                      <ui-icon name="close" class="w-4 h-4"></ui-icon>
+                    </button>
+                  </span>
+                }
+              </div>
+            }
+
+            <!-- Custom Tag Input -->
+            <div class="flex gap-2">
+              <input
+                type="text"
+                [value]="customTagInput()"
+                (input)="onCustomTagInputChange($any($event.target).value)"
+                (keydown)="onCustomTagKeydown($event)"
+                placeholder="Type a custom skill and press Enter..."
+                class="flex-1 px-4 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <button
+                type="button"
+                (click)="addCustomTag()"
+                [disabled]="!customTagInput()"
+                class="px-4 py-2.5 bg-neutral-100 text-neutral-700 rounded-lg hover:bg-neutral-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </ui-collapsible>
+
+        <!-- Job Preferences Section -->
+        <ui-collapsible class="mt-4" title="Job Preferences" badge="USED FOR JOB MATCHING" badgeVariant="neutral">
+          <p class="text-sm text-neutral-600 mb-4">
+            Would you like to indicate on your profile that you are open to offering the following professional services?
+          </p>
+          <p class="text-sm text-neutral-500 mb-4">
+            By selecting any of these options, you will let clients know that you are available for these services. Additionally, this information may be used to match you with relevant opportunities on the platform.
+          </p>
+
+          <div class="space-y-3">
+            <div class="flex items-center gap-3 p-3 border border-neutral-200 rounded-lg">
+              <input
+                type="radio"
+                name="jobPreferenceMode"
+                value="none"
+                class="w-4 h-4 text-primary-600"
+              />
+              <span class="text-sm">No, I am not currently seeking opportunities</span>
+            </div>
+
+            <div class="p-3 border border-neutral-200 rounded-lg">
+              <div class="flex items-center gap-3 mb-3">
+                <input
+                  type="radio"
+                  name="jobPreferenceMode"
+                  value="available"
+                  checked
+                  class="w-4 h-4 text-primary-600"
+                />
+                <span class="text-sm font-medium">Yes, I am available for the following:</span>
+              </div>
+
+              <div class="ml-7 space-y-2">
+                @for (pref of jobPreferenceOptions(); track pref.value) {
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      [checked]="isJobPreferenceSelected(pref.value)"
+                      (change)="toggleJobPreference(pref.value)"
+                      class="w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary"
+                    />
+                    <span class="text-sm">{{ pref.label }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Tips -->
+          <div class="mt-4 p-4 bg-neutral-50 rounded-lg">
+            <div class="flex items-start gap-2">
+              <ui-icon name="info" class="w-5 h-5 text-neutral-500 flex-shrink-0 mt-0.5"></ui-icon>
+              <div>
+                <p class="text-sm font-medium text-neutral-700">TIPS</p>
+                <p class="text-sm text-neutral-600 mt-1">
+                  Remember to update your availability on your listing once you have confirmed these projects.
+                </p>
+              </div>
+            </div>
+          </div>
+        </ui-collapsible>
+
+        <!-- Intro Video Section -->
+        <ui-collapsible class="mt-4" title="Intro Video">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-xs text-neutral-400">OPTIONAL</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-4">
+            Spruce up your Hub profile by adding an intro video to establish connection with your User community. You may insert a YouTube link or any other source where your video is stored.
+          </p>
+
+          <div class="mb-4">
+            <input
+              type="url"
+              formControlName="introVideo"
+              placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..."
+              class="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
+
+          <!-- Tips -->
+          <div class="p-4 bg-neutral-50 rounded-lg">
+            <div class="flex items-start gap-2">
+              <ui-icon name="info" class="w-5 h-5 text-neutral-500 flex-shrink-0 mt-0.5"></ui-icon>
+              <div>
+                <p class="text-sm font-medium text-neutral-700">TIPS</p>
+                <p class="text-sm text-neutral-600 mt-1">An intro video may include:</p>
+                <ul class="text-sm text-neutral-600 mt-1 list-disc list-inside">
+                  <li>Greetings from the team</li>
+                  <li>Footage from your Hub's Experiences and Spaces</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </ui-collapsible>
+  </form>
+</div>

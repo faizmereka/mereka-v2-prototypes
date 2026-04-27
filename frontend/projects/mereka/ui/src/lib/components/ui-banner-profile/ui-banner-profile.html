@@ -1,0 +1,33 @@
+
+  <div class="banner">
+    <div class="update-profile">
+      <div class="text-preview">
+        @if (!view.isMobile()) {
+        <div><mat-icon svgIcon="mrk-circle-info-o-italic"></mat-icon></div> 
+        }
+        @else {
+          <a [routerLink]="backUrl()"  ui-button-icon-outline>
+            <span ui-button-icon-wrapper>
+              <mat-icon class="icon-back" fontIcon="arrow_back"></mat-icon>
+            </span>
+          </a>
+        }
+        <div class="align-center">{{ previewText() }}</div>
+        @if (view.isMobile()) {
+          <a [href]="url()" class="align-center"><mat-icon class="icon-edit"  fontIcon="edit"></mat-icon></a> 
+        }
+      </div> 
+      @if (!view.isMobile()) {
+      <div>
+        <a ui-button-outline 
+         [href]="url()"
+         >{{ btnUpdateText() }}</a>
+      </div>
+      }
+    </div>  
+    @if (!view.isMobile()) {
+    <div class="share">
+      <ng-content></ng-content>     
+    </div> 
+   } 
+</div>

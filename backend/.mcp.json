@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "twin": {
+      "command": "/Users/hiramaniupadhyay/Documents/forpeople/apps/desktop/src-tauri/target/release/twin-mcp",
+      "args": ["--stdio"],
+      "env": {
+        "TWIN_FAST_MODE": "1"
+      }
+    }
+  }
+}

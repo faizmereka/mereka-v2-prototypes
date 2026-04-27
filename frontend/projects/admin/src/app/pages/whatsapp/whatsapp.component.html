@@ -1,0 +1,660 @@
+<div class="flex flex-col gap-6 animate-fade-in">
+  <!-- Header Navigation -->
+  <header class="flex justify-between items-center">
+    <nav class="flex items-center gap-3">
+      <a
+        routerLink="/dashboard/whatsapp/templates"
+        class="font-bold p-2 transition-colors no-underline"
+        [class.text-primary]="activeTab() === 'templates'"
+        [class.text-gray-400]="activeTab() !== 'templates'"
+        [class.hover:text-gray-600]="activeTab() !== 'templates'"
+        (click)="onTabChange('templates')"
+      >
+        Templates
+      </a>
+      <span class="text-gray-300">|</span>
+      <a
+        routerLink="/dashboard/whatsapp/logs"
+        class="font-bold p-2 transition-colors no-underline"
+        [class.text-primary]="activeTab() === 'logs'"
+        [class.text-gray-400]="activeTab() !== 'logs'"
+        [class.hover:text-gray-600]="activeTab() !== 'logs'"
+        (click)="onTabChange('logs')"
+      >
+        Logs
+      </a>
+    </nav>
+    @if (activeTab() === 'templates') {
+      <button class="px-4 py-2 bg-primary text-white border-none rounded-md cursor-pointer font-medium hover:opacity-90" (click)="openAddModal()">
+        <span>+ New Template</span>
+      </button>
+    }
+  </header>
+
+  <!-- Overview Stats -->
+  <section>
+    <h2 class="text-xl font-bold mb-5">Overview</h2>
+    <div class="flex gap-5 flex-wrap">
+      <div class="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm min-w-[180px]">
+        <div class="w-12 h-12 rounded-md flex items-center justify-center bg-green-100">
+          <img src="icons/whatsapp.svg" alt="" class="w-6 h-6" />
+        </div>
+        <div class="flex flex-col">
+          @if (statsLoading()) {
+            <span class="text-2xl font-black">...</span>
+          } @else {
+            <span class="text-2xl font-black">{{ totalTemplates() | number }}</span>
+          }
+          <span class="text-sm text-gray-500">Total Templates</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm min-w-[180px]">
+        <div class="w-12 h-12 rounded-md flex items-center justify-center bg-[rgba(52,168,83,0.1)]">
+          <img src="icons/check.svg" alt="" class="w-6 h-6" />
+        </div>
+        <div class="flex flex-col">
+          @if (statsLoading()) {
+            <span class="text-2xl font-black">...</span>
+          } @else {
+            <span class="text-2xl font-black">{{ activeTemplates() | number }}</span>
+          }
+          <span class="text-sm text-gray-500">Active</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm min-w-[180px]">
+        <div class="w-12 h-12 rounded-md flex items-center justify-center bg-[rgba(168,9,9,0.1)]">
+          <img src="icons/error.svg" alt="" class="w-6 h-6" />
+        </div>
+        <div class="flex flex-col">
+          @if (statsLoading()) {
+            <span class="text-2xl font-black">...</span>
+          } @else {
+            <span class="text-2xl font-black">{{ inactiveTemplates() }}</span>
+          }
+          <span class="text-sm text-gray-500">Inactive</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Templates Tab -->
+  @if (activeTab() === 'templates') {
+    <section>
+      <div class="flex justify-between items-center flex-wrap gap-4 mb-5">
+        <h2 class="text-xl font-bold m-0">WhatsApp Templates</h2>
+        <div class="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-xl bg-white w-[250px]">
+          <img src="icons/icon-search.svg" alt="" class="w-4 h-4 opacity-50" />
+          <input
+            type="text"
+            placeholder="Search templates..."
+            [(ngModel)]="searchQuery"
+            class="border-none outline-none w-full text-sm bg-transparent"
+          />
+        </div>
+      </div>
+
+      @if (templatesLoading()) {
+        <div class="flex justify-center py-8">
+          <span class="text-gray-500">Loading templates...</span>
+        </div>
+      } @else if (templatesError()) {
+        <div class="p-4 bg-red-50 border border-red-200 rounded-md text-red-700">
+          {{ templatesError() }}
+        </div>
+      } @else {
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5">
+          @for (template of filteredTemplates(); track template._id) {
+            <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+              <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <div class="px-3 py-1 rounded-md text-xs font-bold bg-green-100 text-green-700 font-mono">
+                    {{ template.templateId }}
+                  </div>
+                  <div class="px-2 py-1 rounded-md text-xs font-medium"
+                       [class.bg-orange-100]="template.scope === 'hub'"
+                       [class.text-orange-700]="template.scope === 'hub'"
+                       [class.bg-teal-100]="template.scope !== 'hub'"
+                       [class.text-teal-700]="template.scope !== 'hub'">
+                    {{ template.scope === 'hub' ? 'Hub' : 'User' }}
+                  </div>
+                </div>
+                <span
+                  class="px-3 py-1 rounded-md text-xs font-bold capitalize cursor-pointer"
+                  [class.bg-green-100]="template.isActive"
+                  [class.text-green-700]="template.isActive"
+                  [class.bg-gray-100]="!template.isActive"
+                  [class.text-gray-600]="!template.isActive"
+                  (click)="toggleTemplateStatus(template)"
+                >
+                  {{ template.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </div>
+              <div class="mb-3">
+                <h3 class="font-bold mb-1">{{ template.name }}</h3>
+                <p class="text-sm text-gray-600 m-0 mb-2">{{ template.title }}</p>
+                <span class="px-2 py-1 rounded text-xs font-medium capitalize" [class]="getCategoryBadgeClass(template.category)">
+                  {{ template.category }}
+                </span>
+              </div>
+              <div class="mb-3">
+                <p class="text-xs text-gray-500 m-0 font-mono bg-gray-50 p-2 rounded">{{ template.whatsAppTemplateName }}</p>
+              </div>
+              <div class="mb-3">
+                <p class="text-sm text-gray-600 m-0 line-clamp-2">{{ template.bodyPreview }}</p>
+                @if (template.targetUserTypes && template.targetUserTypes.length > 0) {
+                  <p class="text-xs text-gray-500 m-0 mt-2">
+                    <span class="font-medium">Target:</span> {{ getTargetUserTypesLabel(template.targetUserTypes) }}
+                  </p>
+                }
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-400">
+                  Modified {{ template.updatedAt | date:'MMM d, y' }}
+                </span>
+                <div class="flex gap-2">
+                  <button class="w-8 h-8 rounded-md flex items-center justify-center border-none bg-transparent cursor-pointer hover:bg-gray-100" title="Edit" (click)="openEditModal(template)">
+                    <img src="icons/edit.svg" alt="Edit" class="w-4 h-4" />
+                  </button>
+                  <button class="w-8 h-8 rounded-md flex items-center justify-center border-none bg-transparent cursor-pointer hover:bg-gray-100" title="Delete" (click)="deleteTemplate(template)">
+                    <img src="icons/delete.png" alt="Delete" class="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <div class="col-span-full text-center py-8 text-gray-500">
+              No templates found. Create your first WhatsApp template!
+            </div>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  <!-- Logs Tab -->
+  @if (activeTab() === 'logs') {
+    <!-- Log Stats Overview -->
+    <section>
+      <h2 class="text-xl font-bold mb-5">WhatsApp Stats</h2>
+      <div class="flex gap-5 flex-wrap">
+        <div class="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm min-w-[180px]">
+          <div class="w-12 h-12 rounded-md flex items-center justify-center bg-green-100">
+            <img src="icons/whatsapp.svg" alt="" class="w-6 h-6" />
+          </div>
+          <div class="flex flex-col">
+            @if (logStatsLoading()) {
+              <span class="text-2xl font-black">...</span>
+            } @else {
+              <span class="text-2xl font-black">{{ totalLogs() | number }}</span>
+            }
+            <span class="text-sm text-gray-500">Total Messages</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm min-w-[180px]">
+          <div class="w-12 h-12 rounded-md flex items-center justify-center bg-blue-100">
+            <img src="icons/clock.svg" alt="" class="w-6 h-6" />
+          </div>
+          <div class="flex flex-col">
+            @if (logStatsLoading()) {
+              <span class="text-2xl font-black">...</span>
+            } @else {
+              <span class="text-2xl font-black">{{ logsLast24Hours() | number }}</span>
+            }
+            <span class="text-sm text-gray-500">Last 24 Hours</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm min-w-[180px]">
+          <div class="w-12 h-12 rounded-md flex items-center justify-center bg-[rgba(52,168,83,0.1)]">
+            <img src="icons/check.svg" alt="" class="w-6 h-6" />
+          </div>
+          <div class="flex flex-col">
+            @if (logStatsLoading()) {
+              <span class="text-2xl font-black">...</span>
+            } @else {
+              <span class="text-2xl font-black">{{ deliveredLogs() | number }}</span>
+            }
+            <span class="text-sm text-gray-500">Delivered</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm min-w-[180px]">
+          <div class="w-12 h-12 rounded-md flex items-center justify-center bg-[rgba(168,9,9,0.1)]">
+            <img src="icons/error.svg" alt="" class="w-6 h-6" />
+          </div>
+          <div class="flex flex-col">
+            @if (logStatsLoading()) {
+              <span class="text-2xl font-black">...</span>
+            } @else {
+              <span class="text-2xl font-black">{{ failedLogs() | number }}</span>
+            }
+            <span class="text-sm text-gray-500">Failed</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Logs Table -->
+    <section>
+      <div class="flex justify-between items-center flex-wrap gap-4 mb-5">
+        <h2 class="text-xl font-bold m-0">WhatsApp Logs</h2>
+        <div class="flex items-center gap-3 flex-wrap">
+          <!-- Date Range Filters -->
+          <div class="flex items-center gap-2">
+            <label class="text-sm text-gray-600">From:</label>
+            <input
+              type="date"
+              [(ngModel)]="logStartDate"
+              class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-primary"
+            />
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-sm text-gray-600">To:</label>
+            <input
+              type="date"
+              [(ngModel)]="logEndDate"
+              class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-primary"
+            />
+          </div>
+          <button
+            class="px-4 py-2 bg-primary text-white border-none rounded-lg cursor-pointer text-sm font-medium hover:opacity-90"
+            (click)="applyLogFilters()"
+          >
+            Apply
+          </button>
+          <button
+            class="px-4 py-2 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg cursor-pointer text-sm hover:bg-gray-200"
+            (click)="clearLogFilters()"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+
+      @if (logsLoading()) {
+        <div class="flex justify-center py-8">
+          <span class="text-gray-500">Loading WhatsApp logs...</span>
+        </div>
+      } @else if (logsError()) {
+        <div class="p-4 bg-red-50 border border-red-200 rounded-md text-red-700">
+          {{ logsError() }}
+        </div>
+      } @else {
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+          <table class="w-full border-collapse text-sm">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-200">
+                <th class="text-left p-4 font-semibold text-gray-600">Recipient</th>
+                <th class="text-left p-4 font-semibold text-gray-600">Template</th>
+                <th class="text-left p-4 font-semibold text-gray-600">Status</th>
+                <th class="text-left p-4 font-semibold text-gray-600">Sent At</th>
+                <th class="text-left p-4 font-semibold text-gray-600">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (log of logs(); track log._id) {
+                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                  <td class="p-4">
+                    <div class="font-medium">{{ log.toPhone }}</div>
+                    @if (log.userId) {
+                      <div class="text-xs text-gray-400">{{ log.userId.email }}</div>
+                    }
+                  </td>
+                  <td class="p-4">
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700">
+                      {{ log.templateId }}
+                    </span>
+                    <div class="text-xs text-gray-400 mt-1 font-mono">{{ log.whatsAppTemplateName }}</div>
+                  </td>
+                  <td class="p-4">
+                    <span class="px-2 py-1 rounded text-xs font-bold" [class]="getStatusBadgeClass(log.status)">
+                      {{ log.status }}
+                    </span>
+                  </td>
+                  <td class="p-4 text-gray-600">
+                    @if (log.sentAt) {
+                      {{ log.sentAt | date:'MMM d, y h:mm a' }}
+                    } @else {
+                      <span class="text-gray-400">Not sent</span>
+                    }
+                  </td>
+                  <td class="p-4">
+                    <div class="flex gap-2">
+                      <button
+                        class="w-8 h-8 rounded-md flex items-center justify-center border-none bg-transparent cursor-pointer hover:bg-gray-100"
+                        title="View Details"
+                        (click)="viewLogDetails(log)"
+                      >
+                        <img src="icons/icon-search.svg" alt="View" class="w-4 h-4" />
+                      </button>
+                      <button
+                        class="w-8 h-8 rounded-md flex items-center justify-center border-none bg-transparent cursor-pointer hover:bg-gray-100"
+                        title="Delete"
+                        (click)="deleteLog(log)"
+                      >
+                        <img src="icons/delete.png" alt="Delete" class="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="5" class="p-8 text-center text-gray-500">
+                    No WhatsApp logs found.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        @if (logsMeta()) {
+          <div class="flex justify-between items-center mt-4">
+            <span class="text-sm text-gray-500">
+              Showing {{ logs().length }} of {{ logsMeta()?.total }} messages
+            </span>
+            <div class="flex items-center gap-2">
+              <button
+                class="px-3 py-1.5 border border-gray-200 rounded-md text-sm cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="logCurrentPage === 1"
+                (click)="prevPage()"
+              >
+                Previous
+              </button>
+              @for (page of getPageNumbers(); track page) {
+                <button
+                  class="w-8 h-8 rounded-md text-sm cursor-pointer border"
+                  [class.bg-primary]="page === logCurrentPage"
+                  [class.text-white]="page === logCurrentPage"
+                  [class.border-primary]="page === logCurrentPage"
+                  [class.border-gray-200]="page !== logCurrentPage"
+                  [class.hover:bg-gray-50]="page !== logCurrentPage"
+                  (click)="goToPage(page)"
+                >
+                  {{ page }}
+                </button>
+              }
+              <button
+                class="px-3 py-1.5 border border-gray-200 rounded-md text-sm cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="logCurrentPage === logsMeta()?.totalPages"
+                (click)="nextPage()"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        }
+      }
+    </section>
+
+    <!-- Log Detail Modal -->
+    @if (selectedLog()) {
+      <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]" (click)="closeLogDetails()">
+        <div class="w-full max-w-[640px] mx-4 max-h-[90vh] overflow-y-auto bg-white rounded-lg shadow-xl" (click)="$event.stopPropagation()">
+          <div class="flex justify-between items-center p-5 border-b border-gray-200">
+            <h3 class="m-0">WhatsApp Message Details</h3>
+            <button class="p-2 rounded-md border-none bg-transparent cursor-pointer hover:bg-gray-100" (click)="closeLogDetails()">
+              <img src="icons/icon-close-gray.svg" alt="Close" class="w-5 h-5" />
+            </button>
+          </div>
+          <div class="p-5 space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">Recipient Phone</label>
+                <p class="m-0 font-medium">{{ selectedLog()!.toPhone }}</p>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">Status</label>
+                <span class="px-2 py-1 rounded text-xs font-bold" [class]="getStatusBadgeClass(selectedLog()!.status)">
+                  {{ selectedLog()!.status }}
+                </span>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">Template ID</label>
+                <p class="m-0 font-mono text-sm">{{ selectedLog()!.templateId }}</p>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">WhatsApp Template Name</label>
+                <p class="m-0 font-mono text-sm">{{ selectedLog()!.whatsAppTemplateName }}</p>
+              </div>
+            </div>
+            @if (selectedLog()!.userId) {
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-gray-500 mb-1">User Email</label>
+                  <p class="m-0">{{ selectedLog()!.userId!.email }}</p>
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-500 mb-1">User Name</label>
+                  <p class="m-0">{{ selectedLog()!.userId!.name || '-' }}</p>
+                </div>
+              </div>
+            }
+            @if (selectedLog()!.hubId) {
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">Hub</label>
+                <p class="m-0">{{ selectedLog()!.hubId!.name }}</p>
+              </div>
+            }
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">Sent At</label>
+                <p class="m-0">{{ selectedLog()!.sentAt | date:'MMM d, y h:mm:ss a' }}</p>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">Delivered At</label>
+                <p class="m-0">{{ selectedLog()!.deliveredAt ? (selectedLog()!.deliveredAt | date:'MMM d, y h:mm:ss a') : '-' }}</p>
+              </div>
+            </div>
+            @if (selectedLog()!.readAt) {
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">Read At</label>
+                <p class="m-0">{{ selectedLog()!.readAt | date:'MMM d, y h:mm:ss a' }}</p>
+              </div>
+            }
+            @if (selectedLog()!.providerMessageId) {
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">Provider Message ID</label>
+                <p class="m-0 font-mono text-sm">{{ selectedLog()!.providerMessageId }}</p>
+              </div>
+            }
+            @if (selectedLog()!.error) {
+              <div>
+                <label class="block text-xs text-gray-500 mb-1">Error</label>
+                <p class="m-0 text-red-600 bg-red-50 p-2 rounded text-sm">{{ selectedLog()!.error }}</p>
+              </div>
+            }
+            @if (selectedLog()!.data && hasData(selectedLog()!.data)) {
+              <div>
+                <label class="block text-xs text-gray-500 mb-2">Template Data</label>
+                <pre class="bg-gray-50 p-3 rounded text-xs overflow-x-auto m-0">{{ selectedLog()!.data | json }}</pre>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Template Modal (Create/Edit) -->
+  @if (showModal()) {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]" (click)="closeModal()">
+      <div class="w-full max-w-[640px] mx-4 max-h-[90vh] overflow-y-auto bg-white rounded-lg shadow-xl" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center p-5 border-b border-gray-200">
+          <h3 class="m-0">{{ isEditMode() ? 'Edit' : 'Create' }} WhatsApp Template</h3>
+          <button class="p-2 rounded-md border-none bg-transparent cursor-pointer hover:bg-gray-100" (click)="closeModal()">
+            <img src="icons/icon-close-gray.svg" alt="Close" class="w-5 h-5" />
+          </button>
+        </div>
+        <div class="p-5">
+          <!-- Template ID -->
+          <div class="mb-4">
+            <label class="block font-bold mb-2 text-sm">Template ID <span class="text-red-500">*</span></label>
+            <input
+              type="text"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary font-mono uppercase"
+              [class.bg-gray-100]="isEditMode()"
+              [class.cursor-not-allowed]="isEditMode()"
+              placeholder="e.g., BOOKING_CONFIRMED"
+              [value]="templateForm().templateId || ''"
+              [disabled]="isEditMode()"
+              (input)="updateFormField('templateId', $any($event.target).value)"
+            />
+            <p class="text-xs text-gray-400 mt-1">
+              @if (isEditMode()) {
+                Template ID cannot be changed
+              } @else {
+                Unique identifier (e.g., BOOKING_CONFIRMED, PAYMENT_SUCCESS)
+              }
+            </p>
+          </div>
+
+          <!-- Name -->
+          <div class="mb-4">
+            <label class="block font-bold mb-2 text-sm">Name <span class="text-red-500">*</span></label>
+            <input
+              type="text"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+              placeholder="e.g., Booking Confirmation"
+              [value]="templateForm().name || ''"
+              (input)="updateFormField('name', $any($event.target).value)"
+            />
+            <p class="text-xs text-gray-400 mt-1">Human-readable name for this template</p>
+          </div>
+
+          <!-- Title -->
+          <div class="mb-4">
+            <label class="block font-bold mb-2 text-sm">Title <span class="text-red-500">*</span></label>
+            <input
+              type="text"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary"
+              placeholder="e.g., Booking Confirmed"
+              [value]="templateForm().title || ''"
+              (input)="updateFormField('title', $any($event.target).value)"
+            />
+            <p class="text-xs text-gray-400 mt-1">Title shown in notification preferences</p>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-4">
+            <label class="block font-bold mb-2 text-sm">Description <span class="text-red-500">*</span></label>
+            <textarea
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary resize-y min-h-[80px]"
+              placeholder="Description shown in notification preferences"
+              [value]="templateForm().description || ''"
+              (input)="updateFormField('description', $any($event.target).value)"
+            ></textarea>
+          </div>
+
+          <!-- Category -->
+          <div class="mb-4">
+            <label class="block font-bold mb-2 text-sm">Category <span class="text-red-500">*</span></label>
+            <select
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary bg-white"
+              [value]="templateForm().category || ''"
+              (change)="updateFormField('category', $any($event.target).value)"
+            >
+              <option value="">Select a category</option>
+              @for (category of categories; track category) {
+                <option [value]="category">{{ category | titlecase }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Scope -->
+          <div class="mb-4">
+            <label class="block font-bold mb-2 text-sm">Scope</label>
+            <select
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary bg-white"
+              [value]="templateForm().scope || 'user'"
+              (change)="updateFormField('scope', $any($event.target).value)"
+            >
+              @for (option of scopeOptions; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+            <p class="text-xs text-gray-400 mt-1">User = personal notifications, Hub = hub-related notifications</p>
+          </div>
+
+          <!-- Target User Types -->
+          <div class="mb-4">
+            <label class="block font-bold mb-2 text-sm">Target User Types</label>
+            <div class="flex flex-wrap gap-3 p-3 border border-gray-200 rounded-md">
+              @for (option of targetUserTypeOptions; track option.value) {
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    class="w-4 h-4 accent-primary"
+                    [checked]="isTargetUserTypeSelected(option.value)"
+                    (change)="toggleTargetUserType(option.value)"
+                  />
+                  <span class="text-sm">{{ option.label }}</span>
+                </label>
+              }
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Leave empty to target all user types</p>
+          </div>
+
+          <!-- WhatsApp Template Name -->
+          <div class="mb-4">
+            <label class="block font-bold mb-2 text-sm">WhatsApp Template Name <span class="text-red-500">*</span></label>
+            <input
+              type="text"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary font-mono"
+              placeholder="e.g., booking_confirmed_v1"
+              [value]="templateForm().whatsAppTemplateName || ''"
+              (input)="updateFormField('whatsAppTemplateName', $any($event.target).value)"
+            />
+            <p class="text-xs text-gray-400 mt-1">Template name from Meta Business (WhatsApp Business API)</p>
+          </div>
+
+          <!-- Language Code -->
+          <div class="mb-4">
+            <label class="block font-bold mb-2 text-sm">Language Code</label>
+            <input
+              type="text"
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary font-mono"
+              placeholder="en"
+              [value]="templateForm().languageCode || 'en'"
+              (input)="updateFormField('languageCode', $any($event.target).value)"
+            />
+            <p class="text-xs text-gray-400 mt-1">Language code (e.g., en, ms, zh)</p>
+          </div>
+
+          <!-- Body Preview -->
+          <div class="mb-4">
+            <label class="block font-bold mb-2 text-sm">Body Preview <span class="text-red-500">*</span></label>
+            <textarea
+              class="w-full px-3 py-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary resize-y min-h-[100px]"
+              [placeholder]="bodyPreviewPlaceholder"
+              [value]="templateForm().bodyPreview || ''"
+              (input)="updateFormField('bodyPreview', $any($event.target).value)"
+            ></textarea>
+            <p class="text-xs text-gray-400 mt-1">Message preview with curly brace placeholders</p>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 p-5 border-t border-gray-200">
+          <button
+            class="px-4 py-2 bg-gray-100 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-200"
+            (click)="closeModal()"
+            [disabled]="isSubmitting()"
+          >
+            Cancel
+          </button>
+          <button
+            class="px-4 py-2 bg-primary text-white border-none rounded-md cursor-pointer hover:opacity-90 disabled:opacity-50"
+            (click)="saveTemplate()"
+            [disabled]="isSubmitting()"
+          >
+            @if (isSubmitting()) {
+              {{ isEditMode() ? 'Saving...' : 'Creating...' }}
+            } @else {
+              {{ isEditMode() ? 'Save Changes' : 'Create Template' }}
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

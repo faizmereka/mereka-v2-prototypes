@@ -1,0 +1,7 @@
+@use 'functions' as *;
+
+$layout-section-padding: #{get-clamp(80, 24)};
+$layout-container-width: 1120px;
+$layout-container-width-wide: 1280px;
+$layout-container-width-small: 840px;
+$layout-container-width-full: 100%;

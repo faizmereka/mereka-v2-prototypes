@@ -1,0 +1,49 @@
+@layer mereka-ui {
+ .ui-swiper-pagination {
+    width: 100%;
+    margin-top: 20px;
+    margin-inline: auto;
+    display: block;
+    text-align: center;
+    line-height: 1;
+    transition: .3s opacity;
+    transform: translate3d(0, 0, 0);
+    white-space: nowrap;
+
+    .swiper-pagination-bullet {
+      width: var(--swiper-pagination-bullet-width, 8px);
+      height: var(--swiper-pagination-bullet-height, 8px);
+      display: inline-block;
+      border-radius: 50%;
+      background: #000;
+      opacity: 0.2;
+      margin: 0 var(--swiper-pagination-bullet-horizontal-gap, 3px);
+      transition: .2s transform, .2s left;
+    }
+
+    .swiper-pagination-bullet-active {
+      opacity: var(--swiper-pagination-bullet-opacity, 1);
+      background: var(--swiper-pagination-color, var(--swiper-theme-color));
+    }
+
+    &.swiper-pagination-bullets-dynamic {
+      overflow: hidden;
+
+      .swiper-pagination-bullet {
+        transform: scale(.33);
+        position: relative;
+      }
+      .swiper-pagination-bullet-active-next-next,
+      .swiper-pagination-bullet-active-next-prev {
+        transform: scale(.33);
+      }
+      .swiper-pagination-bullet-active-next,
+      .swiper-pagination-bullet-active-prev {
+        transform: scale(.66);
+      }
+      .swiper-pagination-bullet-active-main {
+        transform: scale(1);
+      }
+    }
+  }
+}

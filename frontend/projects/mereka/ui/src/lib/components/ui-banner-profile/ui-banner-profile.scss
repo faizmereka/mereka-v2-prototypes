@@ -1,0 +1,75 @@
+
+@use 'abstracts' as *;
+
+.banner {
+    display: flex;
+    width: 100%;
+    padding: 0 80px;
+    background: rgba(26, 22, 35, 0.8);
+    position: absolute;
+    height: 84px;
+  }
+  
+  .update-profile {
+    display: grid;
+    grid-auto-flow: column;
+    width: 100%;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  
+  .text-preview {
+    color: rgba(255, 255, 255, 1);
+    text-align: end;
+    font-family: Lato;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    display: grid;
+    grid-auto-flow: column;
+    gap: 8px;
+    grid-template-columns: 1fr;
+  }
+  
+  .share {
+    position: absolute;
+    right: 100px;
+    top: 15px;
+  }
+
+  @media only screen and (width < $breakpoint-tablet) {
+    .banner {
+      height: 60px;
+      padding: 12px 24px 12px 24px;
+    }
+    .text-preview {
+      text-align: center;
+      grid-template-columns: 0fr 1fr 0fr;
+    }
+
+    .icon-back {
+      color: white;
+      background: #48454f;
+      padding: 6px;
+      gap: 4px;
+      border-radius: 20px;
+      display: grid;
+    }
+
+    .align-center {
+      display: flex;
+      align-items: center;
+      margin: auto;
+    }
+
+    .icon-edit{
+      color: #fff;
+    }
+  }
+
+  @media only screen and (width < $breakpoint-laptop) {
+    .share {
+      right: 10px;
+    }
+  }

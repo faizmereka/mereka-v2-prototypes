@@ -1,0 +1,159 @@
+# Mereka Backend v2 - Node.js Migration
+
+🎉 **Production-Quality Backend Setup Complete!**
+
+Production-grade Node.js backend for migrating Mereka from Firebase to MongoDB with **professional quality standards**.
+
+---
+
+## 📦 What's Included
+
+✅ **Fastify 5.x** - High-performance web framework
+✅ **MongoDB + Mongoose** - Flexible document database
+✅ **TypeScript 5.9 (Strict)** - Professional strict type safety
+✅ **Biome** - Unified linting and formatting
+✅ **Swagger/OpenAPI** - Auto-generated API docs
+✅ **Vitest** - Fast testing (80%+ coverage target)
+✅ **JWT Authentication** - Secure auth ready
+✅ **Validation Scripts** - Professional quality gates
+✅ **AI Agent Workflows** - 8 specialized agents
+✅ **Example User Module** - Complete reference implementation
+
+---
+
+## 🚀 Quick Start (3 Commands)
+
+```bash
+npm install              # Install dependencies
+cp .env.example .env     # Configure (edit with MongoDB URI)
+npm run dev              # Start server
+```
+
+**Visit**: http://localhost:3000/docs (Swagger documentation)
+
+See **[QUICK-START.md](./QUICK-START.md)** for detailed setup.
+
+---
+
+## 📚 Essential Documentation
+
+### 🚨 Read These FIRST:
+1. **[CLAUDE.md](./CLAUDE.md)** - AI coding instructions
+2. **[docs/BUILDING.md](./docs/BUILDING.md)** - Build system (AUTHORITATIVE)
+3. **[docs/VALIDATION_SYSTEMS.md](./docs/VALIDATION_SYSTEMS.md)** - Quality gates
+
+### 📖 Guides:
+- **[docs/agents/AGENTS.md](./docs/agents/AGENTS.md)** - AI agent workflows (8 agents)
+- **[docs/modules/MODULE-TEMPLATE.md](./docs/modules/MODULE-TEMPLATE.md)** - Create modules
+- **[QUICK-START.md](./QUICK-START.md)** - 5-minute setup
+
+---
+
+## 🏗️ Architecture
+
+**Model-Schema-Controller** pattern (production-grade):
+
+```
+Request → Route → Schema → Controller → Service → Model → MongoDB
+```
+
+**Example Module**: See `src/` User module (complete reference implementation)
+
+---
+
+## ⚡ Commands
+
+```bash
+# Development
+npm run dev              # Watch mode (hot reload)
+npm run check            # FULL validation (run before commit!)
+npm run check:fast       # Quick check (lint + types)
+
+# Testing
+npm test                 # All tests
+npm run test:coverage    # With coverage (80%+ required)
+
+# Quality
+npm run lint             # Biome lint (strict)
+npm run type-check       # TypeScript (strict)
+
+# Build
+npm run build            # Types + JS
+```
+
+---
+
+## 🎯 Quality Standards (Professional Level)
+
+### TypeScript Strict Mode
+- NO `any` types
+- NO `@ts-ignore`
+- NO unsafe operations
+- 100% type coverage
+
+### Biome Lint Rules (Comprehensive)
+- Organized imports (enforced)
+- Type import separation
+- No circular dependencies
+- Consistent patterns
+
+### Test Coverage
+- 80%+ coverage (enforced)
+- Unit + Integration tests
+- All edge cases
+
+### Validation Scripts
+- Import validation
+- Export validation
+- Secret scanning
+- Code quality checks
+
+**Run `npm run check` before every commit!**
+
+---
+
+## 🤖 AI-Friendly
+
+**8 Specialized Agents** for faster development:
+
+1. `@firebase-analyzer` - Analyze Firebase structure
+2. `@migration-generator` - Generate complete modules
+3. `@code-pattern-follower` - Maintain consistency
+4. `@database-operations-specialist` - Optimize queries
+5. `@api-comprehensive-tester` - Create tests
+6. `@schema-validator` - Build Zod schemas
+7. `@error-handler-specialist` - Handle errors
+8. `@documentation-specialist` - Write docs
+
+**Example**:
+```
+@migration-generator Create Experience module following User module pattern
+```
+
+See **[docs/agents/AGENTS.md](./docs/agents/AGENTS.md)** for details.
+
+---
+
+## 📖 Full Documentation
+
+- **[README.md](./README.md)** - Complete reference (this file)
+- **[CLAUDE.md](./CLAUDE.md)** - AI coding guide
+- **[QUICK-START.md](./QUICK-START.md)** - 5-min setup
+- **[docs/BUILDING.md](./docs/BUILDING.md)** - Build system
+- **[docs/VALIDATION_SYSTEMS.md](./docs/VALIDATION_SYSTEMS.md)** - Quality gates
+
+---
+
+## 🎓 Learning Path
+
+1. **Setup** - Follow QUICK-START.md
+2. **Understand** - Read CLAUDE.md
+3. **Study** - Examine User module in src/
+4. **Practice** - Create a module using template
+5. **Validate** - Run `npm run check`
+
+---
+
+**Professional standards for production backend service**
+**Built for Firebase → MongoDB migration with AI assistance**
+

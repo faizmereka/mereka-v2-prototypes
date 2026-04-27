@@ -1,0 +1,245 @@
+<div class="team-members-container h-full flex flex-col">
+  <!-- Header - Fixed -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 lg:p-6 flex-shrink-0">
+    <div>
+      <h1 class="text-2xl font-bold text-neutral-900">Users: Team Members</h1>
+      <p class="text-neutral-500 mt-1">Manage your team members and their access</p>
+    </div>
+    @if (canManageTeam()) {
+      <button
+        type="button"
+        (click)="openInviteModal()"
+        class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-full font-semibold hover:bg-primary-dark transition-colors"
+      >
+        <ui-icon name="plus" size="sm" />
+        <span>Invite Team Members</span>
+      </button>
+    }
+  </div>
+
+  <!-- Main Content - Flexible Height -->
+  <div class="flex-1 bg-white rounded-xl border border-neutral-200 mx-4 lg:mx-6 mb-4 lg:mb-6 overflow-hidden flex flex-col min-h-0">
+    <!-- Tabs - Fixed -->
+    <div class="flex border-b border-neutral-200 overflow-x-auto flex-shrink-0">
+      <button
+        type="button"
+        (click)="setActiveTab('team_member')"
+        class="px-6 py-4 text-sm font-medium transition-colors border-b-2 whitespace-nowrap"
+        [ngClass]="activeTab() === 'team_member'
+          ? 'border-primary text-primary'
+          : 'border-transparent text-neutral-500 hover:text-neutral-700'"
+      >
+        Team Members ({{ teamMemberCount() }})
+      </button>
+      <button
+        type="button"
+        (click)="setActiveTab('collaborator')"
+        class="px-6 py-4 text-sm font-medium transition-colors border-b-2 whitespace-nowrap"
+        [ngClass]="activeTab() === 'collaborator'
+          ? 'border-primary text-primary'
+          : 'border-transparent text-neutral-500 hover:text-neutral-700'"
+      >
+        Collaborators ({{ collaboratorCount() }})
+      </button>
+      <button
+        type="button"
+        (click)="setActiveTab('invitation_links')"
+        class="px-6 py-4 text-sm font-medium transition-colors border-b-2 whitespace-nowrap"
+        [ngClass]="activeTab() === 'invitation_links'
+          ? 'border-primary text-primary'
+          : 'border-transparent text-neutral-500 hover:text-neutral-700'"
+      >
+        Invitation Links ({{ invitationLinksCount() }})
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="flex-1 flex items-center justify-center">
+        <div class="text-center">
+          <div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+          <p class="text-neutral-500 mt-4">Loading team members...</p>
+        </div>
+      </div>
+    } @else {
+      <!-- Team Members / Collaborators Tab -->
+      @if (activeTab() !== 'invitation_links') {
+        <div class="flex flex-col lg:flex-row flex-1 min-h-0">
+          <!-- Left Panel: Member List - Fixed Width, Scrollable Content -->
+          <div class="w-full lg:w-1/3 border-r border-neutral-200 flex flex-col min-h-0 lg:h-full">
+            <app-member-list
+              [members]="filteredMembers()"
+              [selectedMemberId]="selectedMember()?.id"
+              [searchText]="searchText()"
+              [activeTab]="activeTab()"
+              [loading]="loading()"
+              [loadingMore]="loadingMore()"
+              [hasMore]="hasMoreMembers()"
+              (memberSelected)="selectMember($event)"
+              (searchChanged)="onSearch($event)"
+              (loadMore)="onListScroll()"
+            />
+          </div>
+
+          <!-- Right Panel: Member Details - Fixed, No Scroll (or independent scroll) -->
+          <div class="w-full lg:w-2/3 overflow-y-auto">
+            @if (selectedMember()) {
+              <app-member-details
+                [member]="selectedMember()!"
+                [roles]="teamMemberRoles()"
+                [activeTab]="activeTab()"
+                [canManage]="canManageTeam()"
+                [isEditing]="editingPermissions()"
+                [isSaving]="saving()"
+                (roleChange)="changeRole(selectedMember()!, $event)"
+                (removeClicked)="removeMember(selectedMember()!)"
+                (cancelInvitationClicked)="cancelInvitation(selectedMember()!)"
+                (editPermissionsClicked)="startEditingPermissions()"
+                (cancelEditClicked)="cancelEditingPermissions()"
+                (savePermissionsClicked)="savePermissions($event)"
+              />
+            } @else {
+              <div class="flex items-center justify-center h-full text-neutral-500 p-8">
+                <p>Select a member to view details</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Invitation Links Tab -->
+      @if (activeTab() === 'invitation_links') {
+        <div class="flex-1 overflow-y-auto p-6">
+          @if (invitationLinks().length === 0) {
+            <div class="text-center py-12">
+              <div class="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <ui-icon name="link" size="lg" class="text-neutral-400" />
+              </div>
+              <h3 class="text-lg font-semibold text-neutral-900 mb-2">No invitation links yet</h3>
+              <p class="text-neutral-500 mb-6">
+                Create invitation links to share with potential team members.
+              </p>
+              @if (canManageTeam()) {
+                <button
+                  type="button"
+                  (click)="openInviteModal()"
+                  class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+                >
+                  <ui-icon name="plus" size="sm" />
+                  Create Invitation Link
+                </button>
+              }
+            </div>
+          } @else {
+            <div class="space-y-4">
+              @for (link of invitationLinks(); track link.id) {
+                <div
+                  class="border rounded-lg p-4 transition-colors"
+                  [ngClass]="{
+                    'border-neutral-200 bg-white': link.isActive && !isLinkExpired(link),
+                    'border-red-200 bg-red-50': !link.isActive || isLinkExpired(link)
+                  }"
+                >
+                  <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+                    <!-- Link Info -->
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-2">
+                        <span
+                          class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
+                          [ngClass]="{
+                            'bg-primary/10 text-primary': link.isActive && !isLinkExpired(link),
+                            'bg-red-100 text-red-700': !link.isActive || isLinkExpired(link)
+                          }"
+                        >
+                          {{ link.roleName === 'Expert' ? 'Team Member' : link.roleName }}
+                        </span>
+                        @if (!link.isActive) {
+                          <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-neutral-100 text-neutral-600">
+                            Disabled
+                          </span>
+                        } @else if (isLinkExpired(link)) {
+                          <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700">
+                            Expired
+                          </span>
+                        }
+                      </div>
+
+                      <!-- URL -->
+                      <div class="flex items-center gap-2 mb-2">
+                        <input
+                          type="text"
+                          [value]="link.link"
+                          readonly
+                          class="flex-1 px-3 py-2 text-sm border border-neutral-200 rounded-lg bg-neutral-50 truncate"
+                        />
+                        <button
+                          type="button"
+                          (click)="copyInvitationLink(link)"
+                          [disabled]="!link.isActive || isLinkExpired(link)"
+                          class="px-4 py-2 text-sm bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {{ copiedLinkId() === link.id ? 'Copied!' : 'Copy' }}
+                        </button>
+                      </div>
+
+                      <!-- Stats -->
+                      <div class="flex flex-wrap gap-4 text-xs text-neutral-500">
+                        <span>
+                          <strong>Created:</strong> {{ formatDate(link.createdAt) }}
+                        </span>
+                        <span>
+                          <strong>Expires:</strong> {{ formatDate(link.expiresAt) }}
+                        </span>
+                        <span>
+                          <strong>Uses:</strong> {{ link.usageCount }}{{ link.maxUses ? ' / ' + link.maxUses : '' }}
+                        </span>
+                        @if (link.createdBy) {
+                          <span>
+                            <strong>By:</strong> {{ link.createdBy.name || link.createdBy.email }}
+                          </span>
+                        }
+                      </div>
+                    </div>
+
+                    <!-- Actions -->
+                    @if (canManageTeam() && link.isActive && !isLinkExpired(link)) {
+                      <div class="flex-shrink-0">
+                        <button
+                          type="button"
+                          (click)="disableInvitationLink(link)"
+                          class="px-4 py-2 text-sm text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                        >
+                          Disable
+                        </button>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Help Text - Fixed at bottom -->
+  <div class="px-4 lg:px-6 pb-4 text-sm text-neutral-500 flex-shrink-0">
+    @if (activeTab() === 'team_member') {
+      <p>
+        Team members have access to the Hub Dashboard. Learn more about user management
+        <a href="https://help.mereka.io/hc/hub-administration/user-management" target="_blank" class="text-primary hover:underline">here</a>.
+      </p>
+    } @else if (activeTab() === 'collaborator') {
+      <p>
+        Collaborators can be invited by adding them to an experience. Learn how
+        <a href="https://help.mereka.io/hc/onboarding-steps/how-do-i-add-hosts-and-collaborators-to-my-experience" target="_blank" class="text-primary hover:underline">here</a>.
+      </p>
+    } @else {
+      <p>
+        Share invitation links to allow anyone to join your hub with a specific role.
+        Links expire after 30 days and can be disabled at any time.
+      </p>
+    }
+  </div>
+</div>

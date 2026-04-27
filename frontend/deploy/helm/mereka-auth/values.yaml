@@ -1,0 +1,54 @@
+# Mereka Web configuration
+image:
+  repository: gcr.io/mereka-dev/mereka-auth
+  tag: "latest"
+  pullPolicy: Always
+
+replicaCount: 1
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  host: ""  # Set in overlay (e.g., v2.mereka.dev)
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  tls:
+    enabled: true
+    secretName: ""
+
+# Resource limits
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "50m"
+  limits:
+    memory: "256Mi"
+    cpu: "200m"
+
+# Health check
+healthCheck:
+  path: /
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}
+
+# Extra volumes and volume mounts (e.g. emptyDir for nginx writable dirs)
+extraVolumes: []
+extraVolumeMounts: []

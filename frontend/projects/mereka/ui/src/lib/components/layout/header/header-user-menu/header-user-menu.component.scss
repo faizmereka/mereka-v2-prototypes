@@ -1,0 +1,46 @@
+.avatar-button {
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.avatar {
+  // Layout
+  width: 2.25rem;
+  height: 2.25rem;
+
+  // Layout fix
+  max-width: initial;
+
+  // Style
+  border-radius: 50%;
+
+  &--empty {
+    // Style
+    background: #C4C4C4;
+  }
+}
+
+.line {
+  background: var(--border-solid, #DDDDDE);
+}
+
+::ng-deep .item-button {
+  // Layout
+  padding: 0.375rem 0.75rem;
+
+  &:hover {
+    border-radius: 1.25rem;
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  span {
+    // Typography
+    color: var(--content-primary, var(--neutral-neutral900, #1A1623));
+    // Typography fix
+    font-family: 'Lato' !important;
+    font-size: var(--subtitle-2) !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    line-height: 1.5rem !important;
+  }
+}

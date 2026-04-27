@@ -1,0 +1,30 @@
+@if (!view.isTabletMax()) {
+  <common-header-search-bar (click)="searchBarOpen($event)" />
+  @if (searchService.panelExpanded()) {
+    <common-header-search-panel />
+  }
+} @else {
+  @if (searchService.panelExpanded()) {    
+    <div class="header-search-overlay" @panelSlideUpDown>
+      <div class="header-search-container">
+        <div class="header-search-panel-header">
+          <button type="button" ui-button (click)="onBack()">
+            <span ui-button-icon-wrapper>
+              <svg class="header-search-back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+              </svg>
+            </span>
+          </button>
+          <div class="header-search-panel-header__text">
+            <span class="header-search-panel-header__text-title">What are you looking for?</span>
+          </div>
+        </div>
+
+        <div class="header-search-main">
+          <common-header-search-bar (click)="searchBarToggle($event)" />
+          <common-header-search-panel class="scrollbar" />  
+        </div>
+      </div>
+    </div>
+  }
+}

@@ -1,0 +1,139 @@
+.ui-tooltip {
+  display: inline-block;
+  position: relative;
+  line-height: 1;
+  cursor: pointer;
+
+  &-top {
+    .ui-tooltip-dialog {
+      flex-direction: column;
+      transform: translate(-50%, -100%);
+      top: 0;
+      left: 50%;
+    }
+  }
+  &-bottom {
+    .ui-tooltip-dialog {
+      flex-direction: column-reverse;
+      transform: translate(-50%, 100%);
+      bottom: 0;
+      left: 50%;
+    }
+    .ui-tooltip-pointer {
+      transform: rotate(180deg);
+    }
+  }
+
+  &-top.align-start {
+    .ui-tooltip-dialog {
+      transform: translate(-12px, -100%);
+      left: 0;
+    }
+    .ui-tooltip-pointer {
+      width: 100%;
+      justify-content: flex-start;
+      padding: 0 16px;
+    }
+  }
+  &-top.align-end {
+    .ui-tooltip-dialog {
+      transform: translate(12px, -100%);
+      left: auto;
+      right: 0;
+    }
+    .ui-tooltip-pointer {
+      width: 100%;
+      justify-content: flex-end;
+      padding: 0 16px;
+    }
+  }
+  &-bottom.align-start {
+    .ui-tooltip-dialog {
+      transform: translate(-12px, 100%);
+      left: 0;
+    }
+    .ui-tooltip-pointer {
+      width: 100%;
+      justify-content: flex-end;
+      padding: 0 16px;
+    }
+  }
+  &-bottom.align-end {
+    .ui-tooltip-dialog {
+      transform: translate(12px, 100%);
+      left: auto;
+      right: 0;
+    }
+    .ui-tooltip-pointer {
+      width: 100%;
+      justify-content: flex-start;
+      padding: 0 16px;
+    }
+  }
+  &-right {
+    .ui-tooltip-dialog {
+      flex-direction: row-reverse;
+      transform: translate(0, -50%);
+      top: 50%;
+      left: 100%;
+    }
+    .ui-tooltip-pointer {
+      transform: rotate(90deg);
+      position: relative;
+      left: 3px;
+    }
+  }
+
+  &-left {
+    .ui-tooltip-dialog {
+      flex-direction: row;
+      transform: translate(0, -50%);
+      top: 50%;
+      right: 100%;
+    }
+    .ui-tooltip-pointer {
+      transform: rotate(-90deg);
+      position: relative;
+      right: 3px;
+    }
+  }
+}
+.ui-tooltip-toggle {
+  display: inline-flex;
+  vertical-align: text-bottom;
+}
+.ui-tooltip-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.25em;
+  // Set higher to appear on top
+  z-index: 15;
+
+  .ui-tooltip-inner-wrap {
+    width: max-content;
+    max-width: 250px; // Set max-width to prevent tooltip from being too wide
+    padding: 8px 16px 10px; /* Fix for line-height offset */
+    margin: -1px; /* Fix for visible gap in sub-pixel rendering */
+    background: #2d2d2d;
+    border: none;
+    border-radius: 1rem;
+    font-size: inherit;
+    font-weight: inherit;
+    text-align: center;
+    text-transform: none;
+    line-height: inherit;
+    color: #fff;
+    z-index: 1;
+  }
+  .ui-tooltip-pointer {
+    display: flex;
+    color: #2d2d2d;
+    fill: #2d2d2d;
+    justify-content: center;
+    transform-origin: center;
+  }
+}

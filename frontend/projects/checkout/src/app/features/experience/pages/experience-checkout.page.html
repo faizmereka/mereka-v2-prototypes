@@ -1,0 +1,281 @@
+<!-- Loading State -->
+@if (loading()) {
+  <div class="min-h-screen bg-neutral-100 flex items-center justify-center">
+    <div class="text-center">
+      <svg class="animate-spin h-10 w-10 mx-auto text-black" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <p class="mt-4 text-neutral-600">Loading checkout...</p>
+    </div>
+  </div>
+}
+
+<!-- Error State -->
+@else if (error()) {
+  <div class="min-h-screen bg-neutral-100 flex items-center justify-center">
+    <div class="text-center max-w-md mx-auto px-4">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
+        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+      <h1 class="text-xl font-semibold text-neutral-900 mb-2">Checkout Error</h1>
+      <p class="text-neutral-600 mb-6">{{ error() }}</p>
+      <button
+        onclick="history.back()"
+        class="px-6 py-3 bg-black text-white rounded-lg font-medium hover:bg-neutral-800 transition-colors"
+      >
+        Go Back
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Checkout Content -->
+@else {
+  <div class="min-h-screen bg-neutral-100">
+    <!-- Step Progress Header -->
+    <app-step-progress
+      [currentStep]="currentStep()"
+      [completedSteps]="completedSteps()"
+    />
+
+    <!-- Hold Timer (visible after step 1) -->
+    @if (holdExpiresAt()) {
+      <div class="max-w-3xl mx-auto px-4 pt-4">
+        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 border border-neutral-200">
+          <span class="text-sm text-neutral-600">Time remaining to complete booking</span>
+          <app-hold-timer
+            [expiresAt]="holdExpiresAt()"
+            (expired)="onHoldExpired()"
+          />
+        </div>
+      </div>
+    }
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto px-4 py-6 pb-24 space-y-4">
+
+      <!-- Step 1: Select Slot & Tickets -->
+      @if (currentStep() === 1 && experienceInfo()) {
+        <!-- Experience Header -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <div class="flex gap-4">
+            @if (experienceInfo()?.coverPhoto) {
+              <img
+                [src]="experienceInfo()?.coverPhoto"
+                [alt]="experienceInfo()?.experienceTitle"
+                class="w-24 h-24 rounded-lg object-cover flex-shrink-0"
+              />
+            }
+            <div>
+              <h1 class="text-xl font-semibold text-neutral-900">
+                {{ experienceInfo()?.experienceTitle }}
+              </h1>
+              @if (experienceInfo()?.hub) {
+                <p class="text-sm text-neutral-500 mt-1">
+                  by {{ experienceInfo()?.hub?.name }}
+                </p>
+              }
+              @if (experienceInfo()?.experienceDuration) {
+                <p class="text-sm text-neutral-600 mt-1">
+                  Duration: {{ experienceInfo()?.experienceDuration }} mins
+                </p>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- Slot & Ticket Selector -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <app-slot-ticket-selector
+            [slots]="slotsData()?.slots || []"
+            [currency]="step1Currency()"
+            (slotSelected)="onSlotSelected($event)"
+            (ticketsSelected)="onTicketsSelected($event)"
+          />
+        </section>
+
+        <!-- Continue Button -->
+        @if (totalSelectedTickets() > 0) {
+          <div class="sticky bottom-0 bg-white border-t border-neutral-200 p-4 -mx-4">
+            <button
+              type="button"
+              (click)="continueFromStep1()"
+              [disabled]="!canContinueStep1()"
+              class="w-full py-4 bg-black text-white rounded-lg font-semibold text-lg
+                     hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed transition-colors"
+            >
+              Continue - {{ step1Currency() }} {{ step1Subtotal() | number:'1.2-2' }}
+            </button>
+          </div>
+        }
+      }
+
+      <!-- Experience Summary Card (visible in steps 2 and 3) -->
+      @if (checkoutData() && currentStep() >= 2) {
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <h2 class="text-xl font-semibold text-neutral-900 mb-2">
+            {{ experience()?.title }}
+          </h2>
+          @if (event()) {
+            <p class="text-neutral-600 mb-2">
+              {{ event()?.startTime | date:'d MMM yyyy, h:mm a' }} - {{ event()?.endTime | date:'h:mm a' }}
+            </p>
+          }
+          <div class="flex items-center justify-between">
+            <p class="text-neutral-700">
+              @for (ticket of tickets(); track ticket.ticketId) {
+                {{ ticket.quantity }}x {{ ticket.ticketName }}
+                @if (!$last) { , }
+              }
+            </p>
+            <button
+              type="button"
+              (click)="changeSelection()"
+              class="px-4 py-2 border border-neutral-300 rounded-lg text-sm font-medium hover:bg-neutral-50 transition-colors"
+            >
+              Change Selection
+            </button>
+          </div>
+        </section>
+      }
+
+      <!-- Step 2: Your Details -->
+      @if (currentStep() === 2) {
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <h2 class="text-xl font-semibold text-neutral-900 mb-4">Your Details</h2>
+
+          <app-booker-form
+            [showErrors]="showErrors()"
+            [showGoogleSignIn]="!isLoggedIn()"
+            [initialData]="bookerData()"
+            (formDataChange)="onBookerDataChange($event)"
+            (onGoogleSignIn)="onGoogleSignIn()"
+          />
+
+          <button
+            type="button"
+            (click)="continueFromStep2()"
+            [disabled]="!canContinueStep2()"
+            class="mt-6 w-full sm:w-auto px-8 py-3 bg-black text-white rounded-lg font-medium
+                   hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed transition-colors"
+          >
+            Continue
+          </button>
+        </section>
+      }
+
+      <!-- Step 3: Payment -->
+      @if (currentStep() === 3) {
+        <!-- Your Details Summary -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <h2 class="text-xl font-semibold text-neutral-900 mb-2">Your Details</h2>
+          <p class="text-sm text-neutral-500 mb-4">
+            If you are booking multiple tickets, booking information can be shared with your guests after payment.
+          </p>
+          <div class="text-neutral-700">
+            <p class="font-medium">{{ bookerData().name }}</p>
+            <p>{{ bookerData().email }}</p>
+            <p>{{ bookerData().countryCode }}{{ bookerData().phone }}</p>
+          </div>
+        </section>
+
+        <!-- Questionnaire (if exists) -->
+        @if (questionnaire()?.questionArray?.length) {
+          <section class="bg-white rounded-xl p-6 border border-neutral-200">
+            <h2 class="text-xl font-semibold text-neutral-900 mb-4">Additional Questions</h2>
+            <app-questionnaire-form
+              [questionnaire]="questionnaire()"
+              [showErrors]="showErrors()"
+              (answersChange)="onQuestionnaireChange($event)"
+            />
+          </section>
+        }
+
+        <!-- Payment Section -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <h2 class="text-xl font-semibold text-neutral-900 mb-4">Pay With</h2>
+
+          <!-- Coupon Code -->
+          <div class="mb-6">
+            <app-coupon-input
+              [currency]="checkoutData()?.pricing?.currency || 'MYR'"
+              [appliedCoupon]="appliedCoupon()"
+              [loading]="couponLoading()"
+              (apply)="onApplyCoupon($event)"
+              (remove)="onRemoveCoupon()"
+            />
+          </div>
+
+          <!-- Stripe Payment -->
+          @if (!isFreeCheckout()) {
+            <app-stripe-payment
+              [currency]="checkoutData()?.pricing?.currency || 'MYR'"
+              [amount]="pricing()?.total || 0"
+              [clientSecret]="checkoutData()?.clientSecret"
+              [stripePublishableKey]="checkoutData()?.stripePublishableKey"
+            />
+          }
+
+          <!-- Pricing Summary -->
+          <div class="mt-6 pt-6 border-t border-neutral-200 space-y-2">
+            @for (ticket of tickets(); track ticket.ticketId) {
+              <div class="flex justify-between text-sm">
+                <span class="text-neutral-600">{{ ticket.quantity }} x {{ ticket.ticketName }}</span>
+                <span class="text-neutral-900">{{ checkoutData()?.pricing?.currency }} {{ ticket.subtotal | number:'1.2-2' }}</span>
+              </div>
+            }
+            @if (pricing()?.serviceFee && pricing()!.serviceFee > 0) {
+              <div class="flex justify-between text-sm">
+                <span class="text-neutral-600">Service Fee</span>
+                <span class="text-neutral-900">{{ checkoutData()?.pricing?.currency }} {{ pricing()?.serviceFee | number:'1.2-2' }}</span>
+              </div>
+            }
+            @if (appliedCoupon()) {
+              <div class="flex justify-between text-sm text-green-600">
+                <span>Discount</span>
+                <span>-{{ checkoutData()?.pricing?.currency }} {{ appliedCoupon()?.discount | number:'1.2-2' }}</span>
+              </div>
+            }
+            <div class="flex justify-between text-lg font-semibold pt-2">
+              <span>Total</span>
+              <span>{{ checkoutData()?.pricing?.currency }} {{ pricing()?.total | number:'1.2-2' }}</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Terms & Confirm Button -->
+        <div class="space-y-4">
+          <p class="text-sm text-neutral-500 text-center">
+            By confirming your booking you agree to our
+            <a href="/terms" class="text-black underline">Cancellation Policy</a>
+            and
+            <a href="/privacy" class="text-black underline">privacy policy</a>.
+          </p>
+
+          <button
+            type="button"
+            (click)="onSubmit()"
+            [disabled]="submitting() || !canSubmit()"
+            class="w-full py-4 bg-black text-white rounded-lg font-semibold text-lg
+                   hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed
+                   transition-colors flex items-center justify-center gap-2"
+          >
+            @if (submitting()) {
+              <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Processing...
+            } @else {
+              Confirm & Pay
+            }
+          </button>
+        </div>
+      }
+
+    </main>
+  </div>
+}

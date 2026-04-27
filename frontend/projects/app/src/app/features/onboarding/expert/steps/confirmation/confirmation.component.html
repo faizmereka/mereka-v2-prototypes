@@ -1,0 +1,272 @@
+<div class="font-sans">
+  <!-- Validation Errors -->
+  @if (validationErrors().length > 0) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+      <div class="flex items-start gap-3">
+        <ui-icon name="error" class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5"></ui-icon>
+        <div>
+          <h4 class="font-medium text-red-800 mb-2">Please fix the following issues:</h4>
+          <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
+            @for (error of validationErrors(); track error.field) {
+              <li>{{ error.message }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Profile Section -->
+  <ui-panel class="mb-6">
+    <ui-panel-row>
+      <div class="flex justify-between items-start mb-4">
+        <h3 class="text-lg font-semibold text-neutral-900">Profile Information</h3>
+        <button
+          type="button"
+          (click)="navigateToStep('your-profile')"
+          class="text-sm text-primary-600 hover:text-primary-700 font-medium"
+        >
+          Edit
+        </button>
+      </div>
+
+      <!-- Cover & Profile Photo Preview -->
+      <div class="mb-6">
+        @if (coverPhoto()) {
+          <div class="relative w-full h-32 bg-neutral-100 rounded-lg overflow-hidden mb-4">
+            <img [src]="coverPhoto()" alt="Cover" class="w-full h-full object-cover" />
+          </div>
+        }
+
+        <div class="flex items-center gap-4">
+          @if (profilePhoto()) {
+            <img [src]="profilePhoto()" alt="Profile" class="w-20 h-20 rounded-full object-cover border-2 border-white shadow" />
+          } @else {
+            <div class="w-20 h-20 rounded-full bg-neutral-200 flex items-center justify-center">
+              <ui-icon name="user" class="w-10 h-10 text-neutral-400"></ui-icon>
+            </div>
+          }
+          <div>
+            <h4 class="text-xl font-semibold text-neutral-900">{{ name() || 'No name provided' }}</h4>
+            @if (username()) {
+              <p class="text-neutral-500">&#64;{{ username() }}</p>
+            }
+            @if (professionalTitle()) {
+              <p class="text-neutral-600 mt-1">{{ professionalTitle() }}</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        @if (location()) {
+          <div>
+            <span class="text-sm text-neutral-500">Location</span>
+            <p class="font-medium text-neutral-900">{{ location() }}</p>
+          </div>
+        }
+
+        @if (phoneNumber()) {
+          <div>
+            <span class="text-sm text-neutral-500">Phone</span>
+            <p class="font-medium text-neutral-900">{{ phoneNumber() }}</p>
+          </div>
+        }
+      </div>
+
+      @if (bio()) {
+        <div class="mt-4">
+          <span class="text-sm text-neutral-500">About</span>
+          <p class="text-neutral-700 mt-1">{{ bio() }}</p>
+        </div>
+      }
+
+      @if (socialLinks().length > 0) {
+        <div class="mt-4">
+          <span class="text-sm text-neutral-500">Social Links</span>
+          <div class="flex flex-wrap gap-2 mt-2">
+            @for (link of socialLinks(); track link.name) {
+              <a
+                [href]="link.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 rounded-full text-sm text-neutral-700 hover:bg-neutral-200"
+              >
+                {{ link.name }}
+                <ui-icon name="external" class="w-3 h-3"></ui-icon>
+              </a>
+            }
+          </div>
+        </div>
+      }
+    </ui-panel-row>
+  </ui-panel>
+
+  <!-- Skills Section -->
+  <ui-panel class="mb-6">
+    <ui-panel-row>
+      <div class="flex justify-between items-start mb-4">
+        <h3 class="text-lg font-semibold text-neutral-900">Skills & Expertise</h3>
+        <button
+          type="button"
+          (click)="navigateToStep('your-skills')"
+          class="text-sm text-primary-600 hover:text-primary-700 font-medium"
+        >
+          Edit
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        @if (focusAreaName()) {
+          <div>
+            <span class="text-sm text-neutral-500">Focus Area</span>
+            <p class="font-medium text-neutral-900">{{ focusAreaName() }}</p>
+          </div>
+        }
+
+        @if (skillNames().length > 0) {
+          <div>
+            <span class="text-sm text-neutral-500">Skills</span>
+            <div class="flex flex-wrap gap-2 mt-2">
+              @for (skill of skillNames(); track skill) {
+                <span class="px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-sm">{{ skill }}</span>
+              }
+            </div>
+          </div>
+        }
+
+        @if (languagesDisplay().length > 0) {
+          <div>
+            <span class="text-sm text-neutral-500">Languages</span>
+            <div class="flex flex-wrap gap-2 mt-2">
+              @for (lang of languagesDisplay(); track lang.name) {
+                <span class="px-3 py-1 bg-neutral-100 text-neutral-700 rounded-full text-sm">
+                  {{ lang.name }} ({{ getProficiencyLabel(lang.proficiency) }})
+                </span>
+              }
+            </div>
+          </div>
+        }
+
+        @if (jobPreferenceNames().length > 0) {
+          <div>
+            <span class="text-sm text-neutral-500">Job Preferences</span>
+            <div class="flex flex-wrap gap-2 mt-2">
+              @for (pref of jobPreferenceNames(); track pref) {
+                <span class="px-3 py-1 bg-neutral-100 text-neutral-700 rounded-full text-sm">{{ pref }}</span>
+              }
+            </div>
+          </div>
+        }
+
+        @if (hourlyRate()) {
+          <div>
+            <span class="text-sm text-neutral-500">Hourly Rate</span>
+            <p class="font-medium text-neutral-900">{{ currency() }} {{ hourlyRate() }} / hour</p>
+          </div>
+        }
+      </div>
+    </ui-panel-row>
+  </ui-panel>
+
+  <!-- Background Section -->
+  <ui-panel class="mb-6">
+    <ui-panel-row>
+      <div class="flex justify-between items-start mb-4">
+        <h3 class="text-lg font-semibold text-neutral-900">Background</h3>
+        <button
+          type="button"
+          (click)="navigateToStep('your-background')"
+          class="text-sm text-primary-600 hover:text-primary-700 font-medium"
+        >
+          Edit
+        </button>
+      </div>
+
+      <div class="space-y-6">
+        <!-- Portfolio -->
+        @if (portfolio().length > 0) {
+          <div>
+            <span class="text-sm text-neutral-500 block mb-2">Portfolio ({{ portfolio().length }} project{{ portfolio().length > 1 ? 's' : '' }})</span>
+            <div class="space-y-2">
+              @for (item of portfolio(); track item.id) {
+                <div class="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg">
+                  @if (item.images && item.images.length > 0) {
+                    <img [src]="item.images[0]" alt="" class="w-12 h-12 rounded object-cover" />
+                  } @else {
+                    <div class="w-12 h-12 rounded bg-neutral-200 flex items-center justify-center">
+                      <ui-icon name="image" class="w-6 h-6 text-neutral-400"></ui-icon>
+                    </div>
+                  }
+                  <div class="flex-1">
+                    <p class="font-medium text-neutral-900">{{ item.title }}</p>
+                    @if (item.year) {
+                      <p class="text-sm text-neutral-500">{{ item.year }}</p>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Employment -->
+        @if (employment().length > 0) {
+          <div>
+            <span class="text-sm text-neutral-500 block mb-2">Work Experience ({{ employment().length }} position{{ employment().length > 1 ? 's' : '' }})</span>
+            <div class="space-y-2">
+              @for (item of employment(); track item.id) {
+                <div class="p-3 bg-neutral-50 rounded-lg">
+                  <p class="font-medium text-neutral-900">{{ item.title }}</p>
+                  <p class="text-sm text-neutral-600">{{ item.company }}</p>
+                  @if (item.startDate) {
+                    <p class="text-sm text-neutral-500 mt-1">
+                      {{ item.startDate }}
+                      @if (item.isOngoing) {
+                        - Present
+                      } @else if (item.endDate) {
+                        - {{ item.endDate }}
+                      }
+                    </p>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Education -->
+        @if (education().length > 0) {
+          <div>
+            <span class="text-sm text-neutral-500 block mb-2">Education ({{ education().length }} item{{ education().length > 1 ? 's' : '' }})</span>
+            <div class="space-y-2">
+              @for (item of education(); track item.id) {
+                <div class="p-3 bg-neutral-50 rounded-lg">
+                  <p class="font-medium text-neutral-900">{{ item.degree }}</p>
+                  <p class="text-sm text-neutral-600">{{ item.institution }}</p>
+                  @if (item.year) {
+                    <p class="text-sm text-neutral-500 mt-1">{{ item.year }}</p>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (portfolio().length === 0 && employment().length === 0 && education().length === 0) {
+          <p class="text-neutral-500 text-sm italic">No background information added yet.</p>
+        }
+      </div>
+    </ui-panel-row>
+  </ui-panel>
+
+  <!-- Submission Error -->
+  @if (submissionError()) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+      <div class="flex items-center gap-2 text-red-700">
+        <ui-icon name="error" class="w-5 h-5"></ui-icon>
+        <span>{{ submissionError() }}</span>
+      </div>
+    </div>
+  }
+</div>

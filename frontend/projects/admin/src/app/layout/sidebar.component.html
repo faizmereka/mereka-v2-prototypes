@@ -1,0 +1,54 @@
+<aside
+  class="fixed top-0 left-0 h-screen bg-gray-100 transition-all duration-300 z-50 overflow-hidden"
+  [class.w-[110px]]="!isExpanded()"
+  [class.w-[220px]]="isExpanded()"
+  (mouseenter)="expand()"
+  (mouseleave)="collapse()"
+>
+  <div class="h-full py-[30px] px-[25px] overflow-y-auto overflow-x-hidden flex flex-col">
+    <!-- Logo -->
+    <div class="flex items-center gap-3 mb-10">
+      <img src="icons/mereka-logo.svg" alt="Mereka" class="w-10 h-auto flex-shrink-0" />
+      @if (isExpanded()) {
+        <img src="images/group(1).svg" alt="Admin" class="h-5 w-auto" />
+      }
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1">
+      <ul class="flex flex-col gap-2 list-none m-0 p-0">
+        @for (item of navItems; track item.route) {
+          <li>
+            <a
+              [routerLink]="item.route"
+              routerLinkActive="bg-black/8 text-primary"
+              [routerLinkActiveOptions]="{ exact: !item.children }"
+              class="flex items-center gap-3 py-3 px-[18px] rounded-lg text-gray-500 font-bold no-underline transition-all duration-200 whitespace-nowrap hover:text-primary hover:bg-black/5 [&.active>img]:brightness-0 hover:[&>img]:brightness-0"
+            >
+              <img [src]="'icons/' + item.icon" [alt]="item.label" class="w-[22px] h-[22px] flex-shrink-0 transition-all duration-200" />
+              @if (isExpanded()) {
+                <span class="min-w-[90px]">{{ item.label }}</span>
+              }
+            </a>
+            @if (isExpanded() && item.children) {
+              <ul class="mt-1 mb-2 flex flex-col gap-1 list-none m-0 p-0">
+                @for (child of item.children; track child.route) {
+                  <li>
+                    <a
+                      [routerLink]="child.route"
+                      routerLinkActive="bg-black/8 text-primary font-bold"
+                      class="block py-2 pl-[52px] pr-3 text-gray-500 text-sm no-underline rounded-md hover:bg-black/5 hover:text-primary transition-colors"
+                    >
+                      {{ child.label }}
+                    </a>
+                  </li>
+                }
+              </ul>
+            }
+          </li>
+        }
+      </ul>
+    </nav>
+
+  </div>
+</aside>

@@ -1,0 +1,584 @@
+<!-- Loading State -->
+@if (loading()) {
+  <div class="min-h-screen bg-neutral-100 flex items-center justify-center">
+    <div class="text-center">
+      <svg class="animate-spin h-10 w-10 mx-auto text-black" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <p class="mt-4 text-neutral-600">Loading job details...</p>
+    </div>
+  </div>
+}
+
+<!-- Error State -->
+@else if (error()) {
+  <div class="min-h-screen bg-neutral-100 flex items-center justify-center">
+    <div class="text-center max-w-md mx-auto px-4">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
+        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+      <h1 class="text-xl font-semibold text-neutral-900 mb-2">Error</h1>
+      <p class="text-neutral-600 mb-6">{{ error() }}</p>
+      <button
+        onclick="history.back()"
+        class="px-6 py-3 bg-black text-white rounded-lg font-medium hover:bg-neutral-800 transition-colors"
+      >
+        Go Back
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Checkout Content -->
+@else {
+  <div class="min-h-screen bg-neutral-100">
+    <!-- Step Progress Header -->
+    <app-step-progress
+      [currentStep]="currentStep()"
+      [completedSteps]="completedSteps()"
+    />
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto px-4 py-6 pb-24 space-y-4">
+
+      <!-- Step 1: Review Job -->
+      @if (currentStep() === 1 && job()) {
+        <!-- Job Header -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <h1 class="text-2xl font-semibold text-neutral-900 mb-2">
+            {{ job()?.jobTitle }}
+          </h1>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-3 py-1 bg-neutral-100 text-neutral-700 rounded-full text-sm">
+              {{ job()?.serviceCategory?.category }}
+            </span>
+            <span class="px-3 py-1 bg-neutral-100 text-neutral-700 rounded-full text-sm">
+              {{ job()?.employmentType }}
+            </span>
+            @if (job()?.expertLevel) {
+              <span class="px-3 py-1 bg-neutral-100 text-neutral-700 rounded-full text-sm">
+                {{ job()?.expertLevel }}
+              </span>
+            }
+          </div>
+          <div class="flex items-center gap-2 text-neutral-600">
+            @if (job()?.client?.organizationImage) {
+              <img
+                [src]="job()?.client?.organizationImage"
+                [alt]="job()?.client?.organizationName || job()?.client?.name"
+                class="w-8 h-8 rounded-full object-cover"
+              />
+            }
+            <span>
+              {{ job()?.client?.organizationName || job()?.client?.name }}
+            </span>
+          </div>
+        </section>
+
+        <!-- Job Details -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <h2 class="text-lg font-semibold text-neutral-900 mb-4">Job Details</h2>
+
+          <!-- Budget -->
+          <div class="mb-4 pb-4 border-b border-neutral-100">
+            <p class="text-sm text-neutral-500 mb-1">Budget</p>
+            <p class="text-lg font-semibold text-neutral-900">
+              {{ job()?.jobCurrency }} {{ job()?.jobBudget?.fromAmount | number:'1.0-0' }}
+              @if (job()?.jobBudget?.upToAmount) {
+                - {{ job()?.jobBudget?.upToAmount | number:'1.0-0' }}
+              }
+              <span class="text-sm font-normal text-neutral-500">
+                ({{ job()?.jobBudget?.pricingType }})
+              </span>
+            </p>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-4 pb-4 border-b border-neutral-100">
+            <p class="text-sm text-neutral-500 mb-2">Description</p>
+            <div class="prose prose-sm max-w-none text-neutral-700" [innerHTML]="job()?.jobDescription"></div>
+          </div>
+
+          <!-- Skills -->
+          @if (job()?.jobSkills?.length) {
+            <div>
+              <p class="text-sm text-neutral-500 mb-2">Required Skills</p>
+              <div class="flex flex-wrap gap-2">
+                @for (skill of job()?.jobSkills; track skill) {
+                  <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm">
+                    {{ skill }}
+                  </span>
+                }
+              </div>
+            </div>
+          }
+        </section>
+
+        <!-- Existing Proposal Warning -->
+        @if (hasExistingProposal()) {
+          <section class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <div class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-amber-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div>
+                <p class="text-sm font-medium text-amber-800">You've Already Submitted a Proposal</p>
+                <p class="text-sm text-amber-700">
+                  You have already submitted a proposal for this job. You cannot submit another proposal.
+                </p>
+              </div>
+            </div>
+          </section>
+        }
+
+        <!-- Expert Selection / Info -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <h2 class="text-lg font-semibold text-neutral-900 mb-4">
+            @if (showExpertSelection()) {
+              Select Expert
+            } @else {
+              Submitting as
+            }
+          </h2>
+
+          @if (showExpertSelection()) {
+            <!-- Expert Selection Dropdown -->
+            <p class="text-sm text-neutral-500 mb-4">
+              Choose which expert from your hub will be assigned to this proposal.
+            </p>
+            <select
+              [value]="formData().asssignedExpertId || ''"
+              (change)="onExpertChange($event)"
+              class="w-full px-4 py-3 border border-neutral-300 rounded-lg bg-white focus:ring-2 focus:ring-black focus:border-black"
+            >
+              @for (hubExpert of hubExperts(); track hubExpert._id) {
+                <option [value]="hubExpert._id">
+                  {{ hubExpert.name }} ({{ hubExpert.email }})
+                </option>
+              }
+            </select>
+
+            <!-- Selected Expert Preview -->
+            @if (formData().asssignedExpertId) {
+              <div class="mt-4 pt-4 border-t border-neutral-100">
+                <p class="text-sm text-neutral-500 mb-2">Selected Expert</p>
+                <div class="flex items-center gap-3">
+                  @for (hubExpert of hubExperts(); track hubExpert._id) {
+                    @if (hubExpert._id === formData().asssignedExpertId) {
+                      @if (hubExpert.profileImage) {
+                        <img
+                          [src]="hubExpert.profileImage"
+                          [alt]="hubExpert.name"
+                          class="w-10 h-10 rounded-full object-cover"
+                        />
+                      } @else {
+                        <div class="w-10 h-10 rounded-full bg-neutral-200 flex items-center justify-center">
+                          <span class="text-neutral-600 font-medium">{{ hubExpert.name.charAt(0) }}</span>
+                        </div>
+                      }
+                      <div>
+                        <p class="font-medium text-neutral-900">{{ hubExpert.name }}</p>
+                        <p class="text-sm text-neutral-500">{{ hubExpert.email }}</p>
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          } @else {
+            <!-- Single Expert Display -->
+            <div class="flex items-center gap-4">
+              @if (expert()?.profilePhoto) {
+                <img
+                  [src]="expert()?.profilePhoto"
+                  [alt]="expert()?.name"
+                  class="w-12 h-12 rounded-full object-cover"
+                />
+              } @else {
+                <div class="w-12 h-12 rounded-full bg-neutral-200 flex items-center justify-center">
+                  <span class="text-neutral-600 font-medium">{{ expert()?.name?.charAt(0) }}</span>
+                </div>
+              }
+              <div>
+                <p class="font-medium text-neutral-900">{{ expert()?.name }}</p>
+                @if (expert()?.professionalTitle) {
+                  <p class="text-sm text-neutral-500">{{ expert()?.professionalTitle }}</p>
+                }
+                <p class="text-sm text-neutral-500">{{ expert()?.email }}</p>
+              </div>
+            </div>
+          }
+        </section>
+
+        <!-- Continue Button -->
+        @if (!hasExistingProposal()) {
+          <div class="sticky bottom-0 bg-white border-t border-neutral-200 p-4 -mx-4">
+            <button
+              type="button"
+              (click)="continueFromStep1()"
+              class="w-full py-4 bg-black text-white rounded-lg font-semibold text-lg
+                     hover:bg-neutral-800 transition-colors"
+            >
+              Continue to Proposal
+            </button>
+          </div>
+        }
+      }
+
+      <!-- Step 2: Create Proposal -->
+      @if (currentStep() === 2) {
+        <!-- Job Summary -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-semibold text-neutral-900">{{ job()?.jobTitle }}</h2>
+              <p class="text-sm text-neutral-500">
+                Budget: {{ job()?.jobCurrency }} {{ job()?.jobBudget?.fromAmount | number:'1.0-0' }}
+                @if (job()?.jobBudget?.upToAmount) {
+                  - {{ job()?.jobBudget?.upToAmount | number:'1.0-0' }}
+                }
+              </p>
+            </div>
+            <button
+              type="button"
+              (click)="goBackToStep(1)"
+              class="px-4 py-2 border border-neutral-300 rounded-lg text-sm font-medium hover:bg-neutral-50 transition-colors"
+            >
+              View Job
+            </button>
+          </div>
+        </section>
+
+        <!-- Cover Letter -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <h2 class="text-lg font-semibold text-neutral-900 mb-4">Cover Letter</h2>
+          <p class="text-sm text-neutral-500 mb-4">
+            Introduce yourself and explain why you're the best fit for this job.
+          </p>
+          <textarea
+            [value]="formData().proposalDetails"
+            (input)="onProposalDetailsChange($event)"
+            rows="8"
+            maxlength="2000"
+            placeholder="Write your cover letter here..."
+            class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+            [class.border-red-500]="showErrors() && !proposalDetailsValid()"
+          ></textarea>
+          <div class="flex justify-between mt-2 text-sm">
+            <span [class.text-red-500]="showErrors() && !proposalDetailsValid()" class="text-neutral-500">
+              @if (showErrors() && !proposalDetailsValid()) {
+                Minimum 10 characters required
+              } @else {
+                &nbsp;
+              }
+            </span>
+            <span class="text-neutral-400">{{ proposalDetailsRemaining() }} characters remaining</span>
+          </div>
+        </section>
+
+        <!-- Budget -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <h2 class="text-lg font-semibold text-neutral-900 mb-4">Your Proposed Budget</h2>
+
+          <!-- Price Type Toggle -->
+          <div class="flex gap-2 mb-6">
+            <button
+              type="button"
+              (click)="onPriceTypeChange('fixed')"
+              class="flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-colors"
+              [class.border-black]="formData().priceType === 'fixed'"
+              [class.bg-black]="formData().priceType === 'fixed'"
+              [class.text-white]="formData().priceType === 'fixed'"
+              [class.border-neutral-200]="formData().priceType !== 'fixed'"
+              [class.text-neutral-700]="formData().priceType !== 'fixed'"
+            >
+              Fixed Price
+            </button>
+            <button
+              type="button"
+              (click)="onPriceTypeChange('hourly')"
+              class="flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-colors"
+              [class.border-black]="formData().priceType === 'hourly'"
+              [class.bg-black]="formData().priceType === 'hourly'"
+              [class.text-white]="formData().priceType === 'hourly'"
+              [class.border-neutral-200]="formData().priceType !== 'hourly'"
+              [class.text-neutral-700]="formData().priceType !== 'hourly'"
+            >
+              Hourly Rate
+            </button>
+          </div>
+
+          <!-- Fixed Price Input -->
+          @if (formData().priceType === 'fixed') {
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 mb-2">
+                Proposed Price ({{ job()?.jobCurrency }})
+              </label>
+              <input
+                type="number"
+                [value]="formData().proposedPrice"
+                (input)="onProposedPriceChange($event)"
+                min="0"
+                placeholder="Enter your proposed price"
+                class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                [class.border-red-500]="showErrors() && !budgetValid()"
+              />
+            </div>
+          }
+
+          <!-- Hourly Rate Inputs -->
+          @if (formData().priceType === 'hourly') {
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-2">
+                  Hourly Rate ({{ job()?.jobCurrency }})
+                </label>
+                <input
+                  type="number"
+                  [value]="formData().hourlyProposedPrice"
+                  (input)="onHourlyRateChange($event)"
+                  min="0"
+                  placeholder="Hourly rate"
+                  class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                  [class.border-red-500]="showErrors() && !budgetValid()"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-2">
+                  Estimated Hours
+                </label>
+                <input
+                  type="number"
+                  [value]="formData().workingHours"
+                  (input)="onWorkingHoursChange($event)"
+                  min="1"
+                  placeholder="Hours"
+                  class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                  [class.border-red-500]="showErrors() && !budgetValid()"
+                />
+              </div>
+            </div>
+            @if (formData().hourlyProposedPrice && formData().workingHours) {
+              <p class="mt-3 text-sm text-neutral-600">
+                Total: {{ job()?.jobCurrency }} {{ totalPrice() | number:'1.2-2' }}
+              </p>
+            }
+          }
+        </section>
+
+        <!-- Milestones (Fixed Price Only) -->
+        @if (formData().priceType === 'fixed') {
+          <section class="bg-white rounded-xl p-6 border border-neutral-200">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-semibold text-neutral-900">Milestones</h2>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  [checked]="formData().enableMilestones"
+                  (change)="onEnableMilestonesChange($event)"
+                  class="w-5 h-5 rounded border-neutral-300 text-black focus:ring-black"
+                />
+                <span class="text-sm text-neutral-600">Enable milestones</span>
+              </label>
+            </div>
+
+            @if (formData().enableMilestones) {
+              <p class="text-sm text-neutral-500 mb-4">
+                Break down the project into milestones with specific deliverables and amounts.
+              </p>
+
+              @for (milestone of formData().milestones; track $index; let i = $index) {
+                <div class="p-4 border border-neutral-200 rounded-lg mb-4">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="font-medium text-neutral-700">Milestone {{ i + 1 }}</span>
+                    @if (formData().milestones.length > 1) {
+                      <button
+                        type="button"
+                        (click)="removeMilestone(i)"
+                        class="text-red-600 text-sm hover:underline"
+                      >
+                        Remove
+                      </button>
+                    }
+                  </div>
+                  <div class="space-y-3">
+                    <input
+                      type="text"
+                      [value]="milestone.taskName"
+                      (input)="updateMilestone(i, 'taskName', $any($event.target).value)"
+                      maxlength="150"
+                      placeholder="Task name"
+                      class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-black focus:border-black"
+                    />
+                    <textarea
+                      [value]="milestone.taskDescription"
+                      (input)="updateMilestone(i, 'taskDescription', $any($event.target).value)"
+                      maxlength="200"
+                      rows="2"
+                      placeholder="Description (optional)"
+                      class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-black focus:border-black"
+                    ></textarea>
+                    <div class="grid grid-cols-2 gap-3">
+                      <input
+                        type="number"
+                        [value]="milestone.amount"
+                        (input)="updateMilestone(i, 'amount', +$any($event.target).value)"
+                        min="0"
+                        placeholder="Amount"
+                        class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-black focus:border-black"
+                      />
+                      <input
+                        type="date"
+                        [value]="milestone.dueDate ? milestone.dueDate.split('T')[0] : ''"
+                        (input)="updateMilestone(i, 'dueDate', $any($event.target).value + 'T00:00:00.000Z')"
+                        class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-black focus:border-black"
+                      />
+                    </div>
+                  </div>
+                </div>
+              }
+
+              <button
+                type="button"
+                (click)="addMilestone()"
+                class="w-full py-3 border-2 border-dashed border-neutral-300 rounded-lg text-neutral-600 hover:border-neutral-400 hover:text-neutral-700 transition-colors"
+              >
+                + Add Milestone
+              </button>
+
+              <!-- Milestones Total -->
+              @if (formData().milestones.length > 0) {
+                <div class="mt-4 p-3 bg-neutral-50 rounded-lg">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-neutral-600">Milestones Total</span>
+                    <span class="font-medium" [class.text-red-600]="milestonesTotal() > (formData().proposedPrice || 0)">
+                      {{ job()?.jobCurrency }} {{ milestonesTotal() | number:'1.2-2' }}
+                    </span>
+                  </div>
+                  @if (milestonesTotal() > (formData().proposedPrice || 0)) {
+                    <p class="text-xs text-red-600 mt-1">
+                      Total exceeds proposed price
+                    </p>
+                  }
+                </div>
+              }
+            }
+          </section>
+        }
+
+        <!-- Continue Button -->
+        <div class="sticky bottom-0 bg-white border-t border-neutral-200 p-4 -mx-4">
+          <button
+            type="button"
+            (click)="continueFromStep2()"
+            [disabled]="!canContinueStep2()"
+            class="w-full py-4 bg-black text-white rounded-lg font-semibold text-lg
+                   hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed transition-colors"
+          >
+            Review & Submit
+          </button>
+        </div>
+      }
+
+      <!-- Step 3: Review & Submit -->
+      @if (currentStep() === 3) {
+        <!-- Job Summary -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <h2 class="text-lg font-semibold text-neutral-900 mb-2">{{ job()?.jobTitle }}</h2>
+          <p class="text-sm text-neutral-500">
+            {{ job()?.client?.organizationName || job()?.client?.name }}
+          </p>
+        </section>
+
+        <!-- Proposal Summary -->
+        <section class="bg-white rounded-xl p-6 border border-neutral-200">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-neutral-900">Your Proposal</h2>
+            <button
+              type="button"
+              (click)="goBackToStep(2)"
+              class="text-sm text-black underline hover:no-underline"
+            >
+              Edit
+            </button>
+          </div>
+
+          <!-- Cover Letter Preview -->
+          <div class="mb-4 pb-4 border-b border-neutral-100">
+            <p class="text-sm font-medium text-neutral-500 mb-2">Cover Letter</p>
+            <p class="text-neutral-700 whitespace-pre-wrap line-clamp-4">{{ formData().proposalDetails }}</p>
+          </div>
+
+          <!-- Budget Preview -->
+          <div class="mb-4 pb-4 border-b border-neutral-100">
+            <p class="text-sm font-medium text-neutral-500 mb-2">Proposed Budget</p>
+            @if (formData().priceType === 'fixed') {
+              <p class="text-lg font-semibold text-neutral-900">
+                {{ job()?.jobCurrency }} {{ formData().proposedPrice | number:'1.2-2' }}
+                <span class="text-sm font-normal text-neutral-500">(Fixed)</span>
+              </p>
+            } @else {
+              <p class="text-lg font-semibold text-neutral-900">
+                {{ job()?.jobCurrency }} {{ formData().hourlyProposedPrice | number:'1.2-2' }}/hr
+                <span class="text-sm font-normal text-neutral-500">
+                  × {{ formData().workingHours }} hrs = {{ job()?.jobCurrency }} {{ totalPrice() | number:'1.2-2' }}
+                </span>
+              </p>
+            }
+          </div>
+
+          <!-- Milestones Preview -->
+          @if (formData().enableMilestones && formData().milestones.length > 0) {
+            <div>
+              <p class="text-sm font-medium text-neutral-500 mb-2">Milestones</p>
+              <div class="space-y-2">
+                @for (milestone of formData().milestones; track $index; let i = $index) {
+                  <div class="flex justify-between text-sm">
+                    <span class="text-neutral-700">{{ milestone.taskName }}</span>
+                    <span class="text-neutral-900 font-medium">
+                      {{ job()?.jobCurrency }} {{ milestone.amount | number:'1.2-2' }}
+                    </span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </section>
+
+        <!-- Submit Button -->
+        <div class="space-y-4">
+          <p class="text-sm text-neutral-500 text-center">
+            By submitting your proposal you agree to our
+            <a href="/terms" class="text-black underline">Terms of Service</a>
+            and
+            <a href="/privacy" class="text-black underline">Privacy Policy</a>.
+          </p>
+
+          <button
+            type="button"
+            (click)="onSubmit()"
+            [disabled]="submitting() || !canSubmit()"
+            class="w-full py-4 bg-black text-white rounded-lg font-semibold text-lg
+                   hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed
+                   transition-colors flex items-center justify-center gap-2"
+          >
+            @if (submitting()) {
+              <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Submitting...
+            } @else {
+              Submit Proposal
+            }
+          </button>
+        </div>
+      }
+
+    </main>
+  </div>
+}

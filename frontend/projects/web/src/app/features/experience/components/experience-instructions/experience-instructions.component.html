@@ -1,0 +1,47 @@
+@if (hasData()) {
+  <section class="border-b border-neutral-200 pb-8">
+    <h2 class="text-xl font-semibold text-neutral-900 mb-4">Instructions</h2>
+
+    <!-- How to Prepare -->
+    @if (instructions().instruction) {
+      <div class="mb-6">
+        <h3 class="text-lg font-medium text-neutral-900 mb-2">How to prepare</h3>
+        <p class="text-neutral-600 whitespace-pre-line">{{ instructions().instruction }}</p>
+      </div>
+    }
+
+    <!-- Materials Provided -->
+    @if (instructions().materialProvided.length > 0) {
+      <div class="mb-6">
+        <h3 class="text-lg font-medium text-neutral-900 mb-2">The host will provide</h3>
+        <ul class="list-disc list-inside space-y-1 text-neutral-600">
+          @for (item of instructions().materialProvided; track $index) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- What to Bring -->
+    @if (instructions().materialNeedToBring.length > 0) {
+      <div class="mb-6">
+        <h3 class="text-lg font-medium text-neutral-900 mb-2">What to bring</h3>
+        <ul class="list-disc list-inside space-y-1 text-neutral-600">
+          @for (item of instructions().materialNeedToBring; track $index) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- Poster Image -->
+    @if (instructions().posterUrl) {
+      <div class="mt-6">
+        <img
+          [src]="instructions().posterUrl"
+          alt="Experience poster"
+          class="w-full rounded-lg object-cover" />
+      </div>
+    }
+  </section>
+}

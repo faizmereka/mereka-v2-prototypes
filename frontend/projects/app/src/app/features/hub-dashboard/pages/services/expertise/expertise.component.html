@@ -1,0 +1,650 @@
+<div class="experiences-page h-full flex">
+  <!-- Left Sidebar -->
+  <div class="w-64 flex-shrink-0 border-r border-neutral-200 bg-white flex flex-col hidden lg:flex">
+    <!-- Sidebar Header -->
+    <div class="p-6 border-b border-neutral-200">
+      <h2 class="text-lg font-semibold text-neutral-900">Listings</h2>
+    </div>
+
+    <!-- Filter Options -->
+    <div class="flex-1 py-2">
+      @for (filter of sidebarFilters; track filter.id) {
+        <button
+          type="button"
+          (click)="setFilter(filter.id)"
+          class="w-full px-6 py-3 flex items-center justify-between text-left text-sm transition-colors"
+          [class.bg-neutral-100]="activeFilter() === filter.id"
+          [class.font-medium]="activeFilter() === filter.id"
+          [class.text-neutral-900]="activeFilter() === filter.id"
+          [class.text-neutral-600]="activeFilter() !== filter.id"
+          [class.hover:bg-neutral-50]="activeFilter() !== filter.id"
+        >
+          <span>{{ filter.label }}</span>
+          @if (filter.hasInfo) {
+            <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          }
+        </button>
+      }
+    </div>
+
+    <!-- Add Expertise Button -->
+    <div class="p-4 border-t border-neutral-200" *hasPermission="'expertise.create'">
+      <a
+        routerLink="/onboarding/expertise/your-expertise"
+        class="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-[#1a1623] rounded-lg hover:bg-neutral-800 transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Add an Expertise
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 overflow-auto">
+    <!-- Desktop View -->
+    <div class="hidden lg:block">
+      <div class="bg-white">
+        <!-- Action Row -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
+          <div class="flex items-center gap-3">
+            <!-- Checkbox -->
+            <div class="flex items-center">
+              <input
+                type="checkbox"
+                [checked]="selectAllExpertise()"
+                (change)="toggleSelectAll()"
+                class="w-5 h-5 rounded border-neutral-300 text-[#1a1623] focus:ring-[#1a1623] cursor-pointer"
+              />
+            </div>
+
+            <!-- Action Dropdown -->
+            <div class="relative">
+              <button
+                type="button"
+                class="flex items-center gap-2 px-4 py-1.5 text-sm font-medium border border-neutral-200 rounded-full hover:bg-neutral-50"
+              >
+                Action
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Search -->
+            <div class="flex items-center gap-2 px-3 py-1.5 border border-neutral-200 rounded-full bg-white">
+              <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search Expertise"
+                [ngModel]="searchText()"
+                (ngModelChange)="searchByServiceName($event)"
+                class="text-sm border-0 focus:outline-none focus:ring-0 w-32 bg-transparent"
+              />
+            </div>
+
+            <!-- Item Count -->
+            <div class="text-sm text-neutral-500 pl-3">
+              {{ getItemsCountString() }}
+            </div>
+          </div>
+
+          <div class="flex items-center">
+            <!-- Export & Embed Dropdown -->
+            <div class="relative">
+              <button
+                type="button"
+                (click)="toggleExportDropdown()"
+                class="flex items-center gap-2 px-4 py-1.5 text-sm font-medium border border-neutral-200 rounded-full hover:bg-neutral-50"
+              >
+                Export & Embed
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              @if (showExportDropdown()) {
+                <div class="fixed inset-0 z-10" (click)="closeExportDropdown()"></div>
+                <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-2 z-20">
+                  <button
+                    type="button"
+                    (click)="openCsvExportDialog(); closeExportDropdown()"
+                    class="w-full px-4 py-2 text-sm text-left hover:bg-neutral-50"
+                  >
+                    CSV Export
+                  </button>
+                  <button
+                    type="button"
+                    (click)="openEmbedListingDialog(); closeExportDropdown()"
+                    class="w-full px-4 py-2 text-sm text-left hover:bg-neutral-50"
+                  >
+                    Embed Listings
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <table class="w-full">
+          <thead class="bg-neutral-50 border-b border-neutral-200">
+            <tr>
+              <th class="w-12 px-6 py-4">
+                <input
+                  type="checkbox"
+                  [checked]="selectAllExpertise()"
+                  (change)="toggleSelectAll()"
+                  class="w-5 h-5 rounded border-neutral-300 text-[#1a1623] focus:ring-[#1a1623] cursor-pointer"
+                />
+              </th>
+              <th
+                class="px-4 py-4 text-left text-sm font-semibold text-neutral-700 cursor-pointer"
+                (click)="sortServiceData('title')"
+              >
+                <div class="flex items-center gap-1">
+                  Title
+                  @if (sortBy() === 'title') {
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      @if (sortType() === 'asc') {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                      } @else {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      }
+                    </svg>
+                  }
+                </div>
+              </th>
+              <th
+                class="px-4 py-4 text-left text-sm font-semibold text-neutral-700 cursor-pointer"
+                (click)="sortServiceData('expert')"
+              >
+                <div class="flex items-center gap-1">
+                  Expert
+                  @if (sortBy() === 'expert') {
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      @if (sortType() === 'asc') {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                      } @else {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      }
+                    </svg>
+                  }
+                </div>
+              </th>
+              <th
+                class="px-4 py-4 text-left text-sm font-semibold text-neutral-700 cursor-pointer"
+                (click)="sortServiceData('mode')"
+              >
+                <div class="flex items-center gap-1">
+                  Mode
+                  @if (sortBy() === 'mode') {
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      @if (sortType() === 'asc') {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                      } @else {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      }
+                    </svg>
+                  }
+                </div>
+              </th>
+              <th
+                class="px-4 py-4 text-left text-sm font-semibold text-neutral-700 cursor-pointer"
+                (click)="sortServiceData('createdDate')"
+              >
+                <div class="flex items-center gap-1">
+                  Created On
+                  @if (sortBy() === 'createdDate') {
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      @if (sortType() === 'asc') {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                      } @else {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      }
+                    </svg>
+                  } @else {
+                    <svg class="w-3 h-3 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  }
+                </div>
+              </th>
+              <th
+                class="px-4 py-4 text-left text-sm font-semibold text-neutral-700 cursor-pointer"
+                (click)="sortServiceData('price')"
+              >
+                <div class="flex items-center gap-1">
+                  Price
+                  @if (sortBy() === 'price') {
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      @if (sortType() === 'asc') {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                      } @else {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      }
+                    </svg>
+                  }
+                </div>
+              </th>
+              <th class="px-4 py-4 text-left text-sm font-semibold text-neutral-700">
+                Status
+              </th>
+              <th class="px-4 py-4 text-left text-sm font-semibold text-neutral-700">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (loading()) {
+              <tr>
+                <td colspan="8" class="px-6 py-12 text-center">
+                  <div class="animate-spin w-8 h-8 border-2 border-neutral-300 border-t-neutral-900 rounded-full mx-auto"></div>
+                  <p class="text-sm text-neutral-500 mt-3">Loading expertises...</p>
+                </td>
+              </tr>
+            } @else {
+              @for (exp of filteredData(); track exp.id) {
+                <tr class="border-b border-neutral-100 hover:bg-neutral-50/50 group">
+                  <td class="px-6 py-4">
+                    <input
+                      type="checkbox"
+                      [checked]="exp.isSelected"
+                      class="w-5 h-5 rounded border-neutral-300 text-[#1a1623] focus:ring-[#1a1623] cursor-pointer"
+                    />
+                  </td>
+                  <td class="px-4 py-4">
+                    <div class="text-sm font-medium text-neutral-900">{{ exp.title }}</div>
+                  </td>
+                  <td class="px-4 py-4 text-sm text-neutral-600">{{ exp.expert }}</td>
+                  <td class="px-4 py-4 text-sm text-neutral-600">{{ getModeLabel(exp.mode) }}</td>
+                  <td class="px-4 py-4 text-sm text-neutral-600">{{ formatDate(exp.createdDate) }}</td>
+                  <td class="px-4 py-4 text-sm text-neutral-600">{{ formatPrice(exp) }}</td>
+                  <td class="px-4 py-4">
+                    <span
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded uppercase"
+                      [ngClass]="getStatusClass(getStatusLabel(exp))"
+                    >
+                      {{ getStatusLabel(exp) }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-4 relative">
+                    <div class="flex items-center gap-2">
+                      <!-- Actions Menu -->
+                      <div class="relative">
+                        <button
+                          type="button"
+                          (click)="toggleActionsDropdown(exp.id)"
+                          class="p-1 text-neutral-400 hover:text-neutral-600"
+                        >
+                          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                          </svg>
+                        </button>
+
+                        @if (showActionsDropdown() === exp.id) {
+                          <div class="fixed inset-0 z-10" (click)="closeActionsDropdown()"></div>
+                          <div class="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-2 z-20">
+                            @if (exp.status === 'active' || exp.status === 'unlisted') {
+                              <button
+                                type="button"
+                                (click)="manageExpertise(exp); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-sm text-left hover:bg-neutral-50"
+                              >
+                                Manage Listing
+                              </button>
+                              <button
+                                *hasPermission="'expertise.edit'"
+                                type="button"
+                                (click)="editExpertise(exp); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-sm text-left hover:bg-neutral-50"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                *hasPermission="'expertise.create'"
+                                type="button"
+                                (click)="duplicateExpertise(exp); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-sm text-left hover:bg-neutral-50"
+                              >
+                                Duplicate
+                              </button>
+                              <button
+                                type="button"
+                                (click)="viewExpertise(exp); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-sm text-left hover:bg-neutral-50"
+                              >
+                                View Page
+                              </button>
+                              <button
+                                type="button"
+                                (click)="shareExpertise(exp); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-sm text-left hover:bg-neutral-50"
+                              >
+                                Share
+                              </button>
+                              <button
+                                *hasPermission="'expertise.edit'"
+                                type="button"
+                                (click)="toggleList(exp); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-sm text-left hover:bg-neutral-50"
+                              >
+                                {{ exp.status === 'unlisted' ? 'List' : 'Unlist' }}
+                              </button>
+                            }
+
+                            @if (exp.status === 'draft') {
+                              <button
+                                *hasPermission="'expertise.edit'"
+                                type="button"
+                                (click)="editExpertise(exp); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-sm text-left hover:bg-neutral-50"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                *hasPermission="'expertise.delete'"
+                                type="button"
+                                (click)="deleteExpertise(exp); closeActionsDropdown()"
+                                class="w-full px-4 py-2 text-sm text-left text-red-600 hover:bg-neutral-50"
+                              >
+                                Delete
+                              </button>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="8" class="px-6 py-12 text-center">
+                    <div class="text-neutral-400 mb-2">
+                      <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                    </div>
+                    <p class="text-sm text-neutral-500">You don't have an Expertise yet.</p>
+                    <p class="text-sm text-neutral-500">Add an Expertise and it will be shown here!</p>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+
+        <!-- Pagination -->
+        @if (totalPages() > 1) {
+          <div class="flex items-center justify-between px-6 py-4 border-t border-neutral-200">
+            <div class="text-sm text-neutral-500">
+              Showing {{ (currentPage() - 1) * recordsPerPage() + 1 }} to {{ Math.min(currentPage() * recordsPerPage(), totalItems()) }} of {{ totalItems() }} entries
+            </div>
+            <div class="flex items-center gap-1">
+              <button
+                type="button"
+                [disabled]="currentPage() === 1"
+                (click)="handlePageChange(currentPage() - 1)"
+                class="px-3 py-1.5 text-sm border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              @for (page of [].constructor(totalPages()); track $index) {
+                <button
+                  type="button"
+                  (click)="handlePageChange($index + 1)"
+                  class="w-8 h-8 text-sm rounded-lg"
+                  [class.bg-[#1a1623]]="currentPage() === $index + 1"
+                  [class.text-white]="currentPage() === $index + 1"
+                  [class.hover:bg-neutral-50]="currentPage() !== $index + 1"
+                >
+                  {{ $index + 1 }}
+                </button>
+              }
+              <button
+                type="button"
+                [disabled]="currentPage() === totalPages()"
+                (click)="handlePageChange(currentPage() + 1)"
+                class="px-3 py-1.5 text-sm border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Mobile View -->
+    <div class="lg:hidden">
+      <!-- Mobile Header -->
+      <div class="p-4 border-b border-neutral-200 bg-white">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-neutral-900">Expertises</h2>
+          <button
+            type="button"
+            (click)="openMobileFilters()"
+            class="p-2 rounded-lg hover:bg-neutral-100"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Search & Actions -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1" style="scrollbar-width: none;">
+          <div class="flex items-center gap-2 px-3 py-2 border border-neutral-200 rounded-full bg-white min-w-fit">
+            <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search"
+              [ngModel]="searchText()"
+              (ngModelChange)="searchByServiceName($event)"
+              class="text-sm border-0 focus:outline-none focus:ring-0 w-24 bg-transparent"
+            />
+          </div>
+          <button
+            type="button"
+            (click)="openCsvExportDialog()"
+            class="px-4 py-2 text-sm font-medium border border-neutral-200 rounded-full whitespace-nowrap"
+          >
+            Export
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Cards -->
+      <div class="divide-y divide-neutral-200">
+        @if (loading()) {
+          <div class="p-8 text-center bg-white">
+            <div class="animate-spin w-8 h-8 border-2 border-neutral-300 border-t-neutral-900 rounded-full mx-auto"></div>
+            <p class="text-sm text-neutral-500 mt-3">Loading expertises...</p>
+          </div>
+        } @else {
+          @for (exp of filteredData(); track exp.id) {
+            <div class="p-4 bg-white">
+              <div class="flex items-start justify-between mb-3">
+                <span
+                  class="inline-flex px-2 py-1 text-xs font-medium rounded uppercase"
+                  [ngClass]="getStatusClass(getStatusLabel(exp))"
+                >
+                  {{ getStatusLabel(exp) }}
+                </span>
+                <div class="relative">
+                  <button
+                    type="button"
+                    (click)="toggleActionsDropdown(exp.id)"
+                    class="p-1 text-neutral-400"
+                  >
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                    </svg>
+                  </button>
+
+                  @if (showActionsDropdown() === exp.id) {
+                    <div
+                      class="fixed inset-0 z-50 bg-black/20"
+                      (click)="closeActionsDropdown()"
+                    ></div>
+                    <div class="fixed left-0 bottom-0 w-full bg-white z-[100] rounded-t-2xl py-4">
+                      @if (exp.status === 'active' || exp.status === 'unlisted') {
+                        <button
+                          type="button"
+                          (click)="shareExpertise(exp); closeActionsDropdown()"
+                          class="w-full px-6 py-3 text-left border-b border-neutral-100"
+                        >
+                          Share
+                        </button>
+                        <button
+                          *hasPermission="'expertise.create'"
+                          type="button"
+                          (click)="duplicateExpertise(exp); closeActionsDropdown()"
+                          class="w-full px-6 py-3 text-left border-b border-neutral-100"
+                        >
+                          Duplicate
+                        </button>
+                        <button
+                          *hasPermission="'expertise.edit'"
+                          type="button"
+                          (click)="toggleList(exp); closeActionsDropdown()"
+                          class="w-full px-6 py-3 text-left"
+                        >
+                          {{ exp.status === 'unlisted' ? 'List' : 'Unlist' }}
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <h3 class="text-sm font-semibold text-neutral-900 mb-1">{{ exp.title }}</h3>
+              <p class="text-xs text-neutral-500 mb-1">
+                <span>Expert:</span>
+                <span class="underline ml-1">{{ exp.expert }}</span>
+              </p>
+              <p class="text-xs text-neutral-500 mb-3">{{ getModeLabel(exp.mode) }}</p>
+
+              <div class="flex items-center justify-between text-xs mb-4">
+                <div>
+                  <div class="text-neutral-400 uppercase mb-0.5">Created</div>
+                  <div class="font-medium text-neutral-900">{{ formatDate(exp.createdDate) }}</div>
+                </div>
+                <div>
+                  <div class="text-neutral-400 uppercase mb-0.5">Price</div>
+                  <div class="font-medium text-neutral-900">{{ formatPrice(exp) }}</div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                @if (exp.status === 'draft') {
+                  <button
+                    *hasPermission="'expertise.delete'"
+                    type="button"
+                    (click)="deleteExpertise(exp)"
+                    class="flex-1 px-4 py-2 text-sm font-medium border border-neutral-200 rounded-lg"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    *hasPermission="'expertise.edit'"
+                    type="button"
+                    (click)="editExpertise(exp)"
+                    class="flex-1 px-4 py-2 text-sm font-medium text-white bg-[#1a1623] rounded-lg"
+                  >
+                    Edit
+                  </button>
+                } @else if (exp.status !== 'inactive') {
+                  <button
+                    type="button"
+                    (click)="manageExpertise(exp)"
+                    class="flex-1 px-4 py-2 text-sm font-medium text-white bg-[#1a1623] rounded-lg"
+                  >
+                    Manage Listing
+                  </button>
+                }
+              </div>
+            </div>
+          } @empty {
+            <div class="p-8 text-center bg-white">
+              <p class="text-sm text-neutral-500">You don't have an Expertise yet.</p>
+              <p class="text-sm text-neutral-500">Add an Expertise and it will be shown here!</p>
+            </div>
+          }
+        }
+      </div>
+
+      <!-- Mobile Add Button -->
+      <div class="fixed bottom-4 right-4 lg:hidden" *hasPermission="'expertise.create'">
+        <a
+          routerLink="/onboarding/expertise/your-expertise"
+          class="flex items-center justify-center w-14 h-14 bg-[#1a1623] text-white rounded-full shadow-lg"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Filter Slide-in -->
+@if (showMobileFilter()) {
+  <div class="fixed inset-0 z-[1000] lg:hidden bg-white">
+    <div class="h-14 px-4 flex items-center border-b border-neutral-200">
+      <button type="button" (click)="closeMobileFilters()" class="p-2 -ml-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+      </button>
+      <h2 class="text-base font-semibold ml-2">Filters</h2>
+    </div>
+
+    <div class="p-4">
+      <h3 class="text-sm font-semibold text-neutral-900 mb-3">Status</h3>
+      <div class="space-y-2">
+        @for (filter of sidebarFilters; track filter.id) {
+          <button
+            type="button"
+            (click)="setFilter(filter.id)"
+            class="w-full px-4 py-3 flex items-center justify-between text-left text-sm rounded-lg transition-colors"
+            [class.bg-neutral-100]="activeFilter() === filter.id"
+            [class.font-medium]="activeFilter() === filter.id"
+          >
+            <span>{{ filter.label }}</span>
+            @if (activeFilter() === filter.id) {
+              <svg class="w-5 h-5 text-[#1a1623]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            }
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 flex items-center gap-3 p-4 bg-white border-t border-neutral-200">
+      <button
+        type="button"
+        (click)="setFilter('all'); closeMobileFilters()"
+        class="flex-1 px-4 py-3 text-sm font-medium border border-neutral-200 rounded-lg"
+      >
+        Clear
+      </button>
+      <button
+        type="button"
+        (click)="closeMobileFilters()"
+        class="flex-1 px-4 py-3 text-sm font-medium text-white bg-[#1a1623] rounded-lg"
+      >
+        Apply
+      </button>
+    </div>
+  </div>
+}

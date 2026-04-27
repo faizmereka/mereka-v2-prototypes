@@ -1,0 +1,21 @@
+@layer mereka-ui {
+  .ui-profile-cover {
+    width:  100%;
+    display: block;
+    height: clamp(165px, 25.9091px + 24.1477vw, 335px);
+    overflow: hidden;
+  }
+
+  .ui-profile-cover-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+
+    > img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+}

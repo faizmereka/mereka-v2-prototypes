@@ -1,0 +1,85 @@
+<div class="ui-gallery-lightbox-header">
+  <div class="ui-gallery-lightbox-header__container">    
+    <button ui-button-icon
+      class="ui-gallery-close"
+      tabindex="0"
+      [attr.aria-label]="activeView === UIGalleryActiveView.SLIDER ? 'Back to gallery' : 'Close lightbox'"
+      (click)="back()">
+      <span ui-button-icon-wrapper>
+        <mat-icon fontIcon="arrow_back" />
+      </span>
+    </button>
+    <!-- Pagination -->
+    @if (activeView === UIGalleryActiveView.SLIDER) {
+      <div class="ui-gallery-lightbox-pagination"></div>
+    }
+  </div>
+</div>
+@if (images && images.length > 0) {
+  <div class="ui-gallery-lightbox-content">
+    <!-- Gallery view -->
+    @if (activeView === UIGalleryActiveView.GRID) {
+      <div class="ui-gallery-lightbox-grid" [@fadeInOut]>
+        <ngx-masonry #masonry 
+          class="ui-gallery-masonry-container"
+          [options]="options"
+          [ordered]="true">
+          <div class="ui-gallery-masonry-column"></div>
+          <div class="ui-gallery-masonry-gap"></div>
+          @for (image of images; track i; let i = $index) {
+            @if (image !== '') {
+              <div ngxMasonryItem class="ui-gallery-masonry-item"
+                [class.pointer]="viewMode === UIGalleryViewMode.BOTH"
+                tabindex="0"
+                (keyup.enter)="selectGridImage(i)"
+                (click)="selectGridImage(i)">
+                <img [src]="image" [attr.alt]="'Gallery image ' + (i+1) ">
+              </div>
+            }
+          }
+        </ngx-masonry>
+      </div>
+    }    
+    <!-- Slider view -->
+    <!-- @Note:
+      As of Swiper 11.1.9, there's a navigation bug that causes the slider to move by 2 slides
+      when the navigation button is enabled and clicked. The workaround to this is to manually
+      use the slideNext() and slidePrev() methods to navigate the slides with arrows instead
+      of enabling the navigation parameter in SwiperOptions.
+    -->
+    @if (activeView === UIGalleryActiveView.SLIDER) {
+      <div class="ui-gallery-lightbox-slider" [@fadeInOut]>
+        <button ui-button-icon-outline
+          class="swiper-button-nav swiper-button-prev"
+          tabindex="0"
+          aria-label="Previous slide"
+          (click)="slider.swiperContainer.swiper.slidePrev()">
+          <span ui-button-icon-wrapper>
+            <mat-icon fontIcon="chevron_left" />
+          </span>
+        </button>
+        <button ui-button-icon-outline
+          class="swiper-button-nav swiper-button-next"
+          tabindex="0"
+          aria-label="Next slide"
+          (click)="slider.swiperContainer.swiper.slideNext()">
+          <span ui-button-icon-wrapper>
+            <mat-icon fontIcon="chevron_right" />
+          </span>
+        </button>
+        <swiper-container #slider
+          ui-swiper
+          class="ui-gallery-lightbox-swiper"
+          [config]="config">
+          @for (image of images; track i; let i = $index) {
+            @if (image !== '') {
+              <swiper-slide ui-swiper-slide class="swiper-slide" lazy="true">
+                <img ui-image [src]="image" loading="lazy" [attr.alt]="'Gallery image ' + i ">
+              </swiper-slide>
+            }
+          }
+        </swiper-container>
+      </div>
+    }
+  </div>
+}

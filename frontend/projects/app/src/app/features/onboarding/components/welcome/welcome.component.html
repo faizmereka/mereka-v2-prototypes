@@ -1,0 +1,57 @@
+<div class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/assets/pages/welcome/onboarding-bg.png');">
+  <!-- Header -->
+  <header class="flex items-center justify-between px-6 lg:px-12 py-4 bg-white border-b border-gray-100">
+    <!-- Logo -->
+    <a routerLink="/" class="flex items-center">
+      <img src="assets/images/logo.svg" alt="Mereka" class="h-8" />
+    </a>
+    <!-- Skip -->
+    <a (click)="getStarted()" class="text-[13px] text-[#1a1623] hover:text-gray-600 underline cursor-pointer">
+      Skip
+    </a>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex items-center justify-center min-h-[calc(100vh-73px)] px-4 py-8">
+    <div class="w-full max-w-[1000px] mx-auto text-center">
+      <!-- Title -->
+      <h1 class="text-[1.5rem] md:text-[2.125rem] font-bold text-[#1a1623] mb-4 leading-tight tracking-[-0.5px]">
+        Welcome to the Future of Innovation!
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="text-[1rem] md:text-[1.0625rem] text-gray-600 max-w-[800px] mx-auto mb-12 leading-relaxed">
+        Different goals require different means – and our platform is geared to accommodate them! Whether you're
+        looking for education, facilities, or one-on-one guidance, we've got you covered.
+      </p>
+
+      <!-- Services Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mb-10 max-w-[950px] mx-auto">
+        @for (service of services; track service.title) {
+          <div class="flex flex-col items-center text-center">
+            <!-- Image -->
+            <div class="w-full h-[180px] lg:h-[200px] flex items-center justify-center mb-4">
+              <img
+                [src]="'assets/lottie/' + service.animation + '.png'"
+                [alt]="service.title"
+                class="h-full w-auto object-contain"
+              />
+            </div>
+            <!-- Title -->
+            <h3 class="text-[1.25rem] font-bold text-[#1a1623] mb-3">{{ service.title }}</h3>
+            <!-- Description -->
+            <p class="text-[0.9375rem] text-gray-600 leading-normal max-w-[260px]">{{ service.description }}</p>
+          </div>
+        }
+      </div>
+
+      <!-- Button -->
+      <button
+        (click)="getStarted()"
+        class="inline-flex items-center justify-center px-8 py-3 bg-[#1a1623] text-white text-[1rem] font-semibold rounded-full hover:bg-gray-800 transition-colors"
+      >
+        Get Started
+      </button>
+    </div>
+  </main>
+</div>

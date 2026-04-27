@@ -1,0 +1,240 @@
+{
+  "name": "mereka-backend-v2",
+  "version": "1.0.0",
+  "description": "Mereka Backend v2 - Firebase to MongoDB Migration",
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/hiramaniupadhyay/Documents/projects/Mereka/mereka-backend-v2-elevate-ref"
+      ]
+    }
+  },
+  "settings": {
+    "commandsDirectory": ".claude/commands",
+    "skillsDirectory": ".claude/skills",
+    "agentsDirectory": ".claude/agents",
+    "hooksDirectory": ".claude/hooks",
+    "contextFiles": [".claude/context/project-context.md", ".claude/context/workflows.md"],
+    "autoLoadContext": true,
+    "enableHooks": true,
+    "enableSkills": true,
+    "enableAgents": true
+  },
+  "projectContext": {
+    "framework": "Fastify",
+    "database": "MongoDB with Mongoose",
+    "language": "TypeScript",
+    "validation": "Zod",
+    "testing": "Vitest",
+    "architecture": "Model-Schema-Controller",
+    "standards": "Professional strict type safety",
+    "codeStyle": {
+      "naming": {
+        "models": "PascalCase",
+        "services": "camelCase",
+        "controllers": "camelCase",
+        "routes": "kebab-case",
+        "schemas": "camelCase"
+      },
+      "imports": {
+        "order": ["node", "external", "internal-types", "internal-values", "relative"],
+        "typeImports": "separate",
+        "pathAliases": true
+      },
+      "errorHandling": {
+        "serviceLayer": "throw",
+        "controllerLayer": "try-catch-log"
+      }
+    }
+  },
+  "quickCommands": {
+    "validate": "Run comprehensive validation (npm run check)",
+    "test": "Run tests with coverage analysis",
+    "migrate": "Migrate Firebase collection to MongoDB",
+    "analyze": "Analyze project health and provide recommendations",
+    "fix": "Auto-fix linting and formatting issues",
+    "api-test": "Create HTTP test files for API endpoints"
+  },
+  "skills": {
+    "firebase-analyzer": {
+      "description": "Analyze Firebase collection structure before migration",
+      "when": "Before migrating any Firebase collection",
+      "output": "Field mapping, relationships, complexity assessment"
+    },
+    "migration-generator": {
+      "description": "Generate complete module from Firebase analysis",
+      "when": "After Firebase analysis complete",
+      "output": "Model, Schema, Service, Controller, Routes, Tests"
+    },
+    "code-pattern-follower": {
+      "description": "Ensure code consistency across modules",
+      "when": "After creating new module or during code review",
+      "reference": "User module",
+      "checks": ["naming", "imports", "errors", "responses"]
+    },
+    "api-tester": {
+      "description": "Create comprehensive test coverage",
+      "when": "After implementing any module",
+      "target": "80%+ coverage",
+      "types": ["unit", "integration"]
+    },
+    "template-manager": {
+      "description": "Manage and validate email/notification templates",
+      "when": "Creating or updating templates, validating template variables",
+      "checks": ["variables", "enums", "html-syntax", "character-limits"]
+    },
+    "seed-generator": {
+      "description": "Generate comprehensive database seed scripts",
+      "when": "Populating reference data, creating test fixtures",
+      "output": "Seed scripts with duplicate detection and relationships"
+    },
+    "schema-validator": {
+      "description": "Validate and fix Zod schemas for Fastify routes",
+      "when": "Creating routes, fixing validation errors",
+      "fixes": ["plain-object-to-zod", "type-inference", "error-messages"]
+    },
+    "kubernetes-helper": {
+      "description": "Manage Kubernetes deployments and troubleshooting",
+      "when": "Deploying to K8s, debugging pod issues, port forwarding",
+      "cluster": "GKE single-node zonal cluster"
+    },
+    "stripe-helper": {
+      "description": "Handle Stripe payments, webhooks, and subscriptions",
+      "when": "Implementing payment flows, processing refunds, managing subscriptions",
+      "features": ["payment-intents", "webhooks", "subscriptions", "refunds"]
+    },
+    "test-coverage-enhancer": {
+      "description": "Improve test coverage to 80%+ target",
+      "when": "Coverage below target, before production deployment",
+      "output": "Unit and integration tests with edge cases"
+    }
+  },
+  "hooks": {
+    "pre-commit": {
+      "description": "Validation before git commit",
+      "checks": ["lint", "types", "tests", "secrets", "format"]
+    },
+    "post-test": {
+      "description": "Coverage analysis after tests",
+      "reports": ["coverage", "performance", "suggestions"]
+    },
+    "pre-migration": {
+      "description": "Validation before migration",
+      "checks": ["environment", "dependencies", "git-status", "tests"]
+    }
+  },
+  "importantFiles": [
+    "CLAUDE.md",
+    "docs/BUILDING.md",
+    "docs/VALIDATION_SYSTEMS.md",
+    "docs/agents/AGENTS.md",
+    "docs/CLAUDE-CODE-SETUP.md",
+    "biome.json",
+    ".claude/README.md",
+    ".claude/context/project-context.md",
+    ".claude/context/workflows.md"
+  ],
+  "referenceImplementation": {
+    "description": "User module is the gold standard - follow it exactly",
+    "model": "src/models/User.ts",
+    "schema": "src/schemas/user.schema.ts",
+    "service": "src/services/user.service.ts",
+    "controller": "src/controllers/user.controller.ts",
+    "routes": "src/routes/user.routes.ts",
+    "tests": {
+      "unit": "tests/unit/user.service.test.ts",
+      "integration": "tests/integration/user.routes.test.ts"
+    }
+  },
+  "qualityGates": {
+    "coverage": {
+      "minimum": 80,
+      "target": 90,
+      "enforce": true
+    },
+    "typescript": {
+      "strict": true,
+      "noAny": true,
+      "noUnsafe": true
+    },
+    "biome": {
+      "maxErrors": 0,
+      "maxWarnings": 0
+    },
+    "commands": {
+      "preCommit": "npm run check:fast",
+      "prePush": "npm run check",
+      "validate": "npm run validate:all"
+    }
+  },
+  "development": {
+    "hotReload": true,
+    "port": 3000,
+    "logLevel": "debug",
+    "database": "MongoDB (local or Atlas)",
+    "scripts": {
+      "dev": "npm run dev",
+      "test": "npm run test:coverage",
+      "validate": "npm run check",
+      "build": "npm run build"
+    }
+  },
+  "apiDocumentation": {
+    "swagger": {
+      "url": "http://localhost:3000/docs",
+      "enabled": true
+    },
+    "httpTests": {
+      "directory": "tests/http",
+      "tool": "VS Code REST Client",
+      "files": ["auth", "learner-profile", "hub-profile", "subscription", "reference-data"]
+    }
+  },
+  "conventions": {
+    "responseFormat": {
+      "success": "{ success: true, data: {}, meta?: {} }",
+      "error": "{ success: false, error: { code, message, details? } }"
+    },
+    "httpStatusCodes": {
+      "200": "OK (GET, PATCH, DELETE success)",
+      "201": "Created (POST success)",
+      "400": "Bad Request (validation error)",
+      "401": "Unauthorized",
+      "403": "Forbidden",
+      "404": "Not Found",
+      "500": "Internal Server Error"
+    },
+    "logging": {
+      "service": "throw errors (don't log)",
+      "controller": "request.log.error({ error, context }, message)",
+      "never": "console.log"
+    }
+  },
+  "bestPractices": {
+    "alwaysDo": [
+      "Follow User module pattern",
+      "Use path aliases (@models/, @services/)",
+      "Separate type and value imports",
+      "Enable timestamps in Mongoose schemas",
+      "Add indexes for queried fields",
+      "Write tests (≥80% coverage)",
+      "Use structured logging",
+      "Validate all inputs with Zod",
+      "Handle all errors",
+      "Document with Swagger"
+    ],
+    "neverDo": [
+      "Use 'any' type",
+      "Use console.log",
+      "Skip error handling",
+      "Ignore floating promises",
+      "Deep relative imports (../../../)",
+      "Hard-code secrets",
+      "Skip tests",
+      "Mix type and value imports"
+    ]
+  }
+}

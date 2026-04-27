@@ -1,0 +1,180 @@
+<div class="flex flex-col gap-4 animate-fade-in">
+  <!-- Filter Bar -->
+  <div class="bg-white border border-gray-200 rounded-t-lg p-3 px-5">
+    <div class="flex items-center gap-1">
+      @for (tab of filterTabs; track tab.value) {
+        <button
+          class="flex items-center gap-2 px-4 py-2 font-normal text-gray-500 rounded-xl transition-all hover:bg-black/5"
+          [class.font-bold]="activeFilter() === tab.value"
+          [class.text-primary]="activeFilter() === tab.value"
+          (click)="setFilter(tab.value)"
+        >
+          {{ tab.label }}
+          @if (tab.value === 'pending') {
+            <span class="w-2 h-2 bg-info rounded-full"></span>
+          }
+        </button>
+        @if (!$last) {
+          <span class="w-px h-5 bg-primary"></span>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Table Controls -->
+  <div class="flex justify-between items-center p-4 px-5 bg-white border border-gray-200 border-t-0">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <input type="checkbox" [checked]="allSelected()" (change)="toggleSelectAll($event)" class="w-5 h-5 cursor-pointer" />
+        <img src="icons/icon-dropmenu.svg" alt="" class="w-3 h-3" />
+      </div>
+
+      <!-- Actions Dropdown -->
+      <div class="relative">
+        <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium disabled:opacity-50" [disabled]="!hasSelection()" (click)="toggleActionsMenu()">
+          Action
+          <img src="icons/icon-dropmenu.svg" alt="" />
+        </button>
+        @if (showActionsMenu() && hasSelection()) {
+          <div class="absolute top-full left-0 bg-white border border-gray-200 rounded-md shadow-lg z-50 min-w-[160px] mt-1">
+            <button class="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-100 transition-colors" (click)="bulkAction('approve')">
+              <img src="icons/active.png" alt="" class="w-5 h-5" /> Approve
+            </button>
+            <button class="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-100 transition-colors" (click)="bulkAction('reject')">
+              <img src="icons/rejected.png" alt="" class="w-5 h-5" /> Reject
+            </button>
+            <button class="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-100 transition-colors" (click)="bulkAction('feature')">
+              <img src="icons/featured.png" alt="" class="w-5 h-5" /> Make Featured
+            </button>
+            <button class="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-100 transition-colors" (click)="bulkAction('archive')">
+              <img src="icons/archive.png" alt="" class="w-5 h-5" /> Archive
+            </button>
+            <button class="flex items-center gap-3 w-full px-4 py-3 text-sm text-left text-error hover:bg-gray-100 transition-colors" (click)="bulkAction('delete')">
+              <img src="icons/delete.png" alt="" class="w-5 h-5" /> Delete
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Search -->
+      <div class="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-xl w-[250px]">
+        <img src="icons/icon-search.svg" alt="" class="w-4 h-4" />
+        <input type="text" placeholder="Search Hub Name" [(ngModel)]="searchQuery" (input)="onSearch()" class="border-0 bg-transparent outline-none w-full text-sm" />
+      </div>
+
+      <span class="text-sm text-gray-500">{{ paginationStart() }}-{{ paginationEnd() }} of {{ filteredHubs().length }} items</span>
+    </div>
+
+    <button class="flex items-center justify-center w-12 h-12 border border-gray-200 rounded-full hover:bg-gray-100 transition-colors" (click)="exportData()" title="Export CSV">
+      <img src="icons/icon-copy.svg" alt="Export" class="w-5 h-5" />
+    </button>
+  </div>
+
+  <!-- Data Table -->
+  <div class="bg-white border border-gray-200 border-t-0 overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="bg-gray-50">
+          <th class="p-4 text-left font-bold text-lg w-[60px]">
+            <input type="checkbox" [checked]="allSelected()" (change)="toggleSelectAll($event)" class="w-5 h-5 cursor-pointer" />
+          </th>
+          <th class="p-4 text-left font-bold text-lg min-w-[200px]">Hub Name</th>
+          <th class="p-4 text-left font-bold text-lg">Email</th>
+          <th class="p-4 text-left font-bold text-lg">Created By</th>
+          <th class="p-4 text-left font-bold text-lg">Created On</th>
+          <th class="p-4 text-left font-bold text-lg">Last Updated</th>
+          <th class="p-4 text-left font-bold text-lg">Plan</th>
+          <th class="p-4 text-left font-bold text-lg">Status</th>
+          <th class="p-4 text-left font-bold text-lg w-[80px]">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (hub of paginatedHubs(); track hub.id) {
+          <tr class="border-b border-gray-200 transition-colors hover:bg-gray-50" [class.bg-primary/5]="hub.selected">
+            <td class="p-4">
+              <input type="checkbox" [checked]="hub.selected" (change)="toggleSelect(hub)" class="w-5 h-5 cursor-pointer" />
+            </td>
+            <td class="p-4">
+              <div class="flex items-center gap-3">
+                <img [src]="hub.logo" alt="" class="w-8 h-8 rounded-full object-cover" />
+                <span class="font-bold">{{ hub.name }}</span>
+                <a [routerLink]="['/dashboard/hubs', hub.id]" class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                  <img src="icons/icon-openPage.svg" alt="View" class="w-5 h-5" />
+                </a>
+              </div>
+            </td>
+            <td class="p-4">{{ hub.email }}</td>
+            <td class="p-4">{{ hub.createdBy }}</td>
+            <td class="p-4">{{ hub.createdOn | date:'MMM d, y, h:mm a' }}</td>
+            <td class="p-4">{{ hub.lastUpdated | date:'MMM d, y, h:mm a' }}</td>
+            <td class="p-4">
+              <span class="inline-block px-3 py-1 bg-gray-100 rounded-md text-sm">{{ hub.plan }}</span>
+            </td>
+            <td class="p-4">
+              <ui-badge [variant]="hub.status === 'active' ? 'success' : hub.status === 'pending' ? 'warning' : hub.status === 'rejected' ? 'error' : 'default'">
+                {{ hub.status }}
+              </ui-badge>
+            </td>
+            <td class="p-4">
+              <div class="relative">
+                <button class="p-2 rounded-md hover:bg-gray-100" (click)="toggleRowActions(hub.id)" title="More actions">
+                  <img src="icons/icon-3dots.svg" alt="" class="w-5 h-5" />
+                </button>
+                @if (activeRowMenu() === hub.id) {
+                  <div class="absolute top-full right-0 bg-white border border-gray-200 rounded-md shadow-lg z-50 min-w-[160px] mt-1">
+                    <button class="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-100" (click)="rowAction(hub, 'view')">
+                      <img src="icons/view-eye.png" alt="" class="w-5 h-5" /> View
+                    </button>
+                    <button class="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-100" (click)="rowAction(hub, 'approve')">
+                      <img src="icons/active.png" alt="" class="w-5 h-5" /> Approve
+                    </button>
+                    <button class="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-100" (click)="rowAction(hub, 'reject')">
+                      <img src="icons/rejected.png" alt="" class="w-5 h-5" /> Reject
+                    </button>
+                    @if (hub.isActive && !hub.isFeatured) {
+                      <button class="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-100" (click)="rowAction(hub, 'feature')">
+                        <img src="icons/featured.png" alt="" class="w-5 h-5" /> Make Featured
+                      </button>
+                    }
+                    <button class="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-gray-100" (click)="rowAction(hub, 'archive')">
+                      <img src="icons/archive.png" alt="" class="w-5 h-5" /> Archive
+                    </button>
+                    <button class="flex items-center gap-3 w-full px-4 py-3 text-sm text-left text-error hover:bg-gray-100" (click)="rowAction(hub, 'delete')">
+                      <img src="icons/delete.png" alt="" class="w-5 h-5" /> Delete
+                    </button>
+                  </div>
+                }
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="9" class="text-center p-10 text-gray-500">
+              <img src="icons/no-data.svg" alt="" class="w-16 h-16 mx-auto mb-4 opacity-50" />
+              <p>No hubs found</p>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-between items-center p-4 px-5 bg-white border border-gray-200 border-t-0 rounded-b-lg">
+    <span class="text-sm text-gray-500">Page {{ currentPage() }} of {{ totalPages() }}</span>
+    <div class="flex gap-2">
+      <button class="flex items-center justify-center w-9 h-9 border border-gray-200 rounded-md transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="currentPage() === 1" (click)="prevPage()">
+        <img src="icons/icon-leftArrow-small.svg" alt="Previous" class="w-4 h-4" />
+      </button>
+      <button class="flex items-center justify-center w-9 h-9 border border-gray-200 rounded-md transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="currentPage() === totalPages()" (click)="nextPage()">
+        <img src="icons/icon-rightArrow-small.svg" alt="Next" class="w-4 h-4" />
+      </button>
+    </div>
+    <select class="px-3 py-2 border border-gray-200 rounded-md text-sm cursor-pointer" [ngModel]="pageSize()" (ngModelChange)="setPageSize($event)">
+      <option [value]="10">10 per page</option>
+      <option [value]="25">25 per page</option>
+      <option [value]="50">50 per page</option>
+      <option [value]="100">100 per page</option>
+    </select>
+  </div>
+</div>

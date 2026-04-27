@@ -1,0 +1,310 @@
+### Multi-Region Stripe Test Suite
+### Use this file with VS Code REST Client extension
+
+@baseUrl = http://localhost:3000/api/v1
+@authToken = {{$dotenv AUTH_TOKEN}}
+
+### Replace these with actual IDs
+@myHubId = YOUR_MY_HUB_ID
+@atlasHubId = YOUR_ATLAS_HUB_ID
+@experienceSlug = test-experience
+@eventId = YOUR_EVENT_ID
+@expertiseSlug = test-expertise
+@ticketId = YOUR_TICKET_ID
+
+###############################################################################
+# SUITE 1: Hub Stripe Account (Regional)
+###############################################################################
+
+### 1.1 Create MY Hub Stripe Account
+# @name createMyHubStripeAccount
+POST {{baseUrl}}/hub/{{myHubId}}/stripe/account
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+# Expected: stripeRegion: "malaysia"
+
+###
+
+### 1.2 Create Atlas Hub Stripe Account
+# @name createAtlasHubStripeAccount
+POST {{baseUrl}}/hub/{{atlasHubId}}/stripe/account
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+# Expected: stripeRegion: "atlas"
+
+###
+
+### 1.3 Get MY Hub Stripe Account
+# @name getMyHubStripeAccount
+GET {{baseUrl}}/hub/{{myHubId}}/stripe/account
+Authorization: Bearer {{authToken}}
+
+###
+
+### 1.4 Get Atlas Hub Stripe Account
+# @name getAtlasHubStripeAccount
+GET {{baseUrl}}/hub/{{atlasHubId}}/stripe/account
+Authorization: Bearer {{authToken}}
+
+###
+
+### 1.5 Create MY Hub Onboarding Link
+# @name createMyHubOnboardingLink
+POST {{baseUrl}}/hub/{{myHubId}}/stripe/onboarding-link
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "returnUrl": "http://localhost:4200/hub/settings/payments",
+  "refreshUrl": "http://localhost:4200/hub/settings/payments"
+}
+
+###############################################################################
+# SUITE 2: User Stripe Account (Regional)
+###############################################################################
+
+### 2.1 Create User Stripe Account
+# @name createUserStripeAccount
+POST {{baseUrl}}/user/stripe/account
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+###
+
+### 2.2 Get User Stripe Account
+# @name getUserStripeAccount
+GET {{baseUrl}}/user/stripe/account
+Authorization: Bearer {{authToken}}
+
+###############################################################################
+# SUITE 3: Hub Transactions (Regional)
+###############################################################################
+
+### 3.1 Get MY Hub Balance
+# @name getMyHubBalance
+GET {{baseUrl}}/hub/{{myHubId}}/transactions/balance
+Authorization: Bearer {{authToken}}
+
+###
+
+### 3.2 Get Atlas Hub Balance
+# @name getAtlasHubBalance
+GET {{baseUrl}}/hub/{{atlasHubId}}/transactions/balance
+Authorization: Bearer {{authToken}}
+
+###
+
+### 3.3 Get MY Hub Earnings
+# @name getMyHubEarnings
+GET {{baseUrl}}/hub/{{myHubId}}/transactions/earnings
+Authorization: Bearer {{authToken}}
+
+###############################################################################
+# SUITE 4: User Transactions (Regional)
+###############################################################################
+
+### 4.1 Get User Balance
+# @name getUserBalance
+GET {{baseUrl}}/user/transactions/balance
+Authorization: Bearer {{authToken}}
+
+###
+
+### 4.2 Get User Earnings
+# @name getUserEarnings
+GET {{baseUrl}}/user/transactions/earnings
+Authorization: Bearer {{authToken}}
+
+###############################################################################
+# SUITE 5: Hub Withdrawals (Regional)
+###############################################################################
+
+### 5.1 Get MY Hub Withdrawals
+# @name getMyHubWithdrawals
+GET {{baseUrl}}/hub/{{myHubId}}/withdrawals
+Authorization: Bearer {{authToken}}
+
+###
+
+### 5.2 Create MY Hub Withdrawal
+# @name createMyHubWithdrawal
+POST {{baseUrl}}/hub/{{myHubId}}/withdrawals
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "amount": 10000,
+  "currency": "MYR",
+  "description": "Test withdrawal"
+}
+
+###############################################################################
+# SUITE 6: Hub Bank Accounts (Regional)
+###############################################################################
+
+### 6.1 Get MY Hub Bank Accounts
+# @name getMyHubBankAccounts
+GET {{baseUrl}}/hub/{{myHubId}}/bank-accounts
+Authorization: Bearer {{authToken}}
+
+###
+
+### 6.2 Get Supported Banks (MY)
+# @name getSupportedBanks
+GET {{baseUrl}}/hub/{{myHubId}}/bank-accounts/supported-banks?countryCode=MY
+Authorization: Bearer {{authToken}}
+
+###
+
+### 6.3 Add MY Hub Bank Account
+# @name addMyHubBankAccount
+POST {{baseUrl}}/hub/{{myHubId}}/bank-accounts
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "accountNumber": "1234567890",
+  "routingNumber": "MABORUMYKL",
+  "accountHolderName": "Test Company Sdn Bhd",
+  "accountHolderType": "company",
+  "currency": "MYR",
+  "country": "MY",
+  "setAsDefault": true
+}
+
+###############################################################################
+# SUITE 7: Experience Checkout (Hub's Region)
+###############################################################################
+
+### 7.1 Initialize Experience Checkout (MY Hub)
+# @name initExperienceCheckoutMY
+POST {{baseUrl}}/checkout/experience/init
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "experienceSlug": "{{experienceSlug}}",
+  "eventId": "{{eventId}}",
+  "tickets": [
+    { "ticketId": "ticket-id-1", "quantity": 1 }
+  ]
+}
+
+# Expected for MY hub:
+# - stripeRegion: "malaysia"
+# - stripePublishableKey: "pk_test_REDACTED..."
+
+###############################################################################
+# SUITE 8: Expertise Checkout (Hub's Region)
+###############################################################################
+
+### 8.1 Initialize Expertise Checkout
+# @name initExpertiseCheckout
+POST {{baseUrl}}/checkout/expertise/init
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "expertiseSlug": "{{expertiseSlug}}",
+  "ticketId": "{{ticketId}}",
+  "date": "2025-03-15",
+  "time": "10:00"
+}
+
+# Expected: stripeRegion and stripePublishableKey based on hub's region
+
+###############################################################################
+# SUITE 9: Webhooks (Multi-Region)
+###############################################################################
+
+### 9.1 Test Malaysia Webhook
+# Note: This will fail without valid Stripe signature
+# @name testMalaysiaWebhook
+POST {{baseUrl}}/webhook?region=malaysia
+Content-Type: application/json
+stripe-signature: test-signature
+
+{
+  "type": "payment_intent.succeeded",
+  "data": {
+    "object": {
+      "id": "pi_test_123"
+    }
+  }
+}
+
+###
+
+### 9.2 Test Atlas Webhook
+# Note: This will fail without valid Stripe signature
+# @name testAtlasWebhook
+POST {{baseUrl}}/webhook?region=atlas
+Content-Type: application/json
+stripe-signature: test-signature
+
+{
+  "type": "payment_intent.succeeded",
+  "data": {
+    "object": {
+      "id": "pi_test_456"
+    }
+  }
+}
+
+###
+
+### 9.3 Test Default Webhook (No Region - defaults to Atlas)
+# @name testDefaultWebhook
+POST {{baseUrl}}/webhook
+Content-Type: application/json
+stripe-signature: test-signature
+
+{
+  "type": "payment_intent.succeeded",
+  "data": {
+    "object": {
+      "id": "pi_test_789"
+    }
+  }
+}
+
+###############################################################################
+# SUITE 10: Subscription (Always Atlas)
+###############################################################################
+
+### 10.1 Get Plans
+# @name getPlans
+GET {{baseUrl}}/hub/subscription/plans
+Authorization: Bearer {{authToken}}
+
+###
+
+### 10.2 Create Checkout Session
+# @name createCheckoutSession
+POST {{baseUrl}}/hub/subscription/create-checkout-session
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "planCode": "soar",
+  "hubId": "{{myHubId}}",
+  "successUrl": "http://localhost:4200/hub/subscription/success",
+  "cancelUrl": "http://localhost:4200/hub/subscription/cancel"
+}
+
+###############################################################################
+# VERIFICATION QUERIES (MongoDB Shell)
+###############################################################################
+
+# Run these in MongoDB shell to verify:
+#
+# // Check hub stripeRegion
+# db.hubs.find({ stripeAccountId: { $exists: true } }, { name: 1, stripeRegion: 1, "location.country": 1 })
+#
+# // Check user stripeRegion
+# db.users.find({ stripeAccountId: { $exists: true } }, { name: 1, stripeRegion: 1, "location.country": 1 })
+#
+# // Check payment stripeRegion
+# db.contractpayments.find({ stripePaymentIntentId: { $exists: true } }, { _id: 1, stripeRegion: 1, expertId: 1 })

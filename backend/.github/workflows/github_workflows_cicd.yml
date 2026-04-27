@@ -1,0 +1,56 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-notify:
+    runs-on: mereka-k8s-runners
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run your build/test steps
+        run: |
+          echo "Your build or test commands go here"
+          # e.g.
+          # npm install
+          # npm run build
+          # npm test
+
+      - name: Notify Slack with workflow status
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          STATUS="${{ job.status }}"
+          REPO="${{ github.repository }}"
+          COMMIT_SHA="${{ github.sha }}"
+          COMMIT_URL="https://github.com/${REPO}/commit/${COMMIT_SHA}"
+
+          # Get commit author and message from git
+          COMMIT_AUTHOR="$(git log -1 --pretty=%an)"
+          COMMIT_MESSAGE="$(git log -1 --pretty=%s)"
+
+          # GitHub user who triggered the workflow
+          ACTOR="${{ github.actor }}"
+
+          MSG="Repo: \`${REPO}\`\nWorkflow: \`${{ github.workflow }}\`\nCommit: <${COMMIT_URL}|${COMMIT_SHA}>\nAuthor: ${COMMIT_AUTHOR}\nTriggered by: ${ACTOR}\nMessage: ${COMMIT_MESSAGE}\nRef: \`${{ github.ref }}\`\nStatus: *${STATUS}*."
+
+          # Escape double quotes for JSON safety
+          MSG_ESCAPED=$(echo "$MSG" | sed 's/\"/\\\"/g')
+          PAYLOAD="{\"text\":\"${MSG_ESCAPED}\"}"
+
+          curl -X POST -H 'Content-type: application/json' --data "${PAYLOAD}" "$SLACK_WEBHOOK_URL"

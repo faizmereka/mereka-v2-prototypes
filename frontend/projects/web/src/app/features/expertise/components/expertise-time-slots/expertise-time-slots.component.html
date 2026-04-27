@@ -1,0 +1,54 @@
+@if (selectedDate()) {
+  <div class="bg-white rounded-lg">
+    <!-- Date Header -->
+    <div class="mb-4">
+      <p class="text-sm text-neutral-500">Available times for</p>
+      <p class="font-medium text-neutral-900">{{ dateLabel() }}</p>
+    </div>
+
+    <!-- Time Slots Grid -->
+    @if (hasSlots()) {
+      <div class="grid grid-cols-3 gap-2">
+        @for (slot of timeSlots(); track slot.time) {
+          <button
+            type="button"
+            (click)="selectSlot(slot)"
+            [disabled]="!slot.available"
+            [class]="[
+              'py-2 px-3 text-sm rounded-lg border transition-colors',
+              !slot.available
+                ? 'border-neutral-100 bg-neutral-50 text-neutral-300 cursor-not-allowed line-through'
+                : isSelected(slot)
+                  ? 'border-primary bg-primary text-white'
+                  : 'border-neutral-200 hover:border-primary hover:bg-primary/5 text-neutral-700'
+            ].join(' ')">
+            {{ slot.label }}
+          </button>
+        }
+      </div>
+
+      <!-- Selected Slot Info -->
+      @if (selectedSlot(); as slot) {
+        <div class="mt-4 p-3 bg-primary/5 rounded-lg">
+          <p class="text-sm text-neutral-600">
+            Session: <span class="font-medium text-neutral-900">{{ slot.label }} - {{ slot.endLabel }}</span>
+          </p>
+        </div>
+      }
+    } @else {
+      <div class="text-center py-8 text-neutral-500">
+        <svg class="w-12 h-12 mx-auto mb-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="text-sm">No available times for this date</p>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="text-center py-8 text-neutral-500">
+    <svg class="w-12 h-12 mx-auto mb-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+    <p class="text-sm">Select a date to see available times</p>
+  </div>
+}

@@ -1,0 +1,84 @@
+/*
+* Chaining the class to ensure higher specificity for experience cards
+* and to limit the styles from affecting other card styles
+*/
+@layer mereka-ui {
+  .ui-card.ui-card-project {
+    display: block;
+
+    &[tabindex] {
+      cursor: pointer;
+    }
+
+    &:focus {
+      outline: 2px solid #000;
+    }
+
+    .inner-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .ui-card-body {
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .ui-card-title {
+      font-weight: 700;
+      // Make whole card clickable
+      a {
+        &::before {
+          content: "";      
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+        }
+        &:active,
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+
+    .ui-card-image {
+      border-bottom: 1px solid #E0E0E0;
+
+      img {
+        aspect-ratio: 4/3;
+      }
+    }
+
+    .ui-card-date {
+      color: var(--content-secondary, #7B7B7B);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .ui-card-meta {
+      display: flex;
+      color: var(--content-secondary, #7B7B7B);
+      font-size: 14px;
+      line-height: 1.5;
+
+      > span {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      &.separator {
+        display: block;
+        
+        > span:not(:last-child) {
+          display: inline-block;
+          margin-inline-end: 0.5rem;
+          padding-inline-end: 0.5rem;
+          padding-block: 0.1rem;
+          border-inline-end: 1px solid var(--content-secondary, #7B7B7B);
+          line-height: 1em;
+        }
+      }
+    } 
+  }
+}

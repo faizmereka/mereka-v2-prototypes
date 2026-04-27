@@ -1,0 +1,102 @@
+<div class="space-y-6" [formGroup]="form">
+  <!-- Service Fee Section -->
+  <ui-collapsible title="Service Fee" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <!-- Form Side -->
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">Will you be absorbing the service fee for this Experience?</h3>
+        <p class="text-sm text-neutral-600 mb-6">
+          You have the option to absorb this fee or pass it to your users.
+        </p>
+
+        <!-- Radio Options -->
+        <div class="space-y-3">
+          <label class="flex items-start gap-3 cursor-pointer p-4 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors"
+            [class.border-neutral-900]="!absorbServiceFee()"
+            [class.bg-neutral-50]="!absorbServiceFee()"
+          >
+            <input
+              type="radio"
+              name="absorbServiceFee"
+              [checked]="!absorbServiceFee()"
+              (change)="onAbsorbServiceFeeChange(false)"
+              class="w-5 h-5 mt-0.5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <div>
+              <div class="font-medium text-neutral-900">No, users will bear the service fee</div>
+              <div class="text-sm text-neutral-600">Users will pay the service fee on top of the standard ticket price</div>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 cursor-pointer p-4 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors"
+            [class.border-neutral-900]="absorbServiceFee()"
+            [class.bg-neutral-50]="absorbServiceFee()"
+          >
+            <input
+              type="radio"
+              name="absorbServiceFee"
+              [checked]="absorbServiceFee()"
+              (change)="onAbsorbServiceFeeChange(true)"
+              class="w-5 h-5 mt-0.5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <div>
+              <div class="font-medium text-neutral-900">Yes, I will absorb the service fee</div>
+              <div class="text-sm text-neutral-600">The service fee will be deducted from my earnings</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Tips Side -->
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">TIPS</span>
+        </div>
+        <p class="text-sm text-neutral-600 leading-relaxed">
+          The service fee is {{ getServiceFeeText() }} per transaction. This covers payment processing and platform maintenance.
+        </p>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Ticket Type Section -->
+  <ui-collapsible title="Ticket Type" [badge]="tickets().length === 0 ? 'Required' : ''" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <!-- Form Side -->
+      <div class="flex-1">
+        <p class="text-sm text-neutral-600 mb-6">
+          This is where you can set up the different kinds of service packages for your Experience. You can add multiple tickets and customize the rate and quantity for each of them.
+        </p>
+
+        <!-- Ticket Form Component -->
+        <ui-experience-ticket-form
+          #ticketFormComponent
+          [currency]="currency()"
+          [maxTickets]="10"
+          [serviceFeePercent]="3"
+          [serviceFeeFixed]="1"
+          (ticketsChange)="onTicketsChange($event)"
+        />
+      </div>
+
+      <!-- Tips Side -->
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">TIPS</span>
+        </div>
+        <ul class="text-sm text-neutral-600 leading-relaxed space-y-2 list-disc list-inside">
+          <li>Funds for your paid tickets will be available 24 hours after the session ends.</li>
+          <li>For free experiences, select "Free" as the ticket type.</li>
+          <li>Set a cutoff time to stop ticket sales before your Experience starts.</li>
+          <li>Add a description to tell learners more about each ticket type.</li>
+        </ul>
+      </div>
+    </div>
+  </ui-collapsible>
+</div>

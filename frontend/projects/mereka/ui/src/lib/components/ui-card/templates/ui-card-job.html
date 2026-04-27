@@ -1,0 +1,92 @@
+<div class="inner-container">
+  <div ui-card-body>
+    <div ui-card-row class="ui-card-job-meta">
+      <span class="ui-card-meta">Client:
+        @if (isPrivate) {
+          <span class="text-blur">Clientname</span>
+        } @else {
+          {{ client() }}
+        }
+      </span>
+      <span class="ui-card-meta">Posted {{ createdDateLabel() }}</span>
+    </div>
+    @if (tag()) {
+      <div ui-card-row>
+        @if (isClosed()) {
+          <span class="job-tag job-tag--closed"> Closed </span>
+        } @else {
+          <span class="job-tag">{{ tag() }}</span>
+        }
+      </div>
+    }
+    <div ui-card-row>
+      <h3 ui-card-title>
+        @if (url()) {
+          <a ui-card-link
+            [routerLink]="url() ? [url()] : []"
+            [title]="title()"
+            [attr.target]="target() ?? null"
+            (click)="onClick()">
+            {{ title() }}
+          </a>
+        } @else if (href()) {
+          <a ui-card-link
+            [href]="href() ?? null"
+            [title]="title()"
+            [attr.target]="target() ?? null"
+            (click)="onClick()">
+            {{ title() }}
+          </a>
+        } @else {
+          {{ title() }}
+        }
+      </h3>
+    </div>
+    @if (!hideElements().includes('description')) {
+      <p class="ui-card-desc">{{ description() }}</p>
+    }
+    <div class="separator"></div>
+
+    <div class="ui-card-meta-list">
+      @if (!hideElements().includes('experienceLevel')) {
+        <div class="ui-card-meta">
+          <span class="job-label">Experience Level</span>
+          <span class="job-info">{{ experienceLevel() }}</span>
+        </div>
+      }
+      @if (!hideElements().includes('location')) {
+        <div class="ui-card-meta">
+          <span class="job-label">Location</span>
+          <span class="job-info">{{ locationLabel() }}</span>
+        </div>
+      }
+      @if (!hideElements().includes('timeline')) {
+        <div class="ui-card-meta">
+          <span class="job-label">Timeline</span>
+          <span class="job-info">{{ timeline() }}</span>
+        </div>
+      }
+      @if (!hideElements().includes('start')) {
+        <div class="ui-card-meta">
+          <span class="job-label">Starts</span>
+          <span class="job-info">{{ startLabel() }}</span>
+        </div>
+      }
+      @if (!hideElements().includes('budget')) {
+        <div class="ui-card-meta">
+          <span class="job-label">Budget</span>
+          <span class="job-info">{{ budgetLabel() }}</span>
+        </div>
+      }
+    </div>
+
+    @if (buttonLink()) {
+      <a ui-button-ai-large [href]="buttonLink()" (click)="onContactClick()">{{ isClosed() ? 'View Job Post' : buttonText() }}</a>
+    } @else if (url()) {
+      <a ui-button-ai-large [routerLink]="url() ? [url()] : []" (click)="onContactClick()">{{ isClosed() ? 'View Job Post' : buttonText() }}</a>
+    } @else {
+      <button ui-button-ai-large (click)="onContactClick()">{{ buttonText() }}</button>
+    }
+    <ng-content select="[ui-card-body-end]"></ng-content>
+  </div>
+</div>

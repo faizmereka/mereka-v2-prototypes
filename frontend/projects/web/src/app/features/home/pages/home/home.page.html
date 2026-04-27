@@ -1,0 +1,38 @@
+<web-header />
+
+<main>
+  <section home-section-hero></section>
+
+  <section home-section-experts
+    [experts]="experts()"
+    [loading]="expertsLoading()">
+  </section>
+
+  <section home-section-expertises
+    [expertises]="expertises()"
+    [loading]="loading()">
+  </section>
+
+  <section home-section-experiences
+    [experiences]="experiences()"
+    [loading]="loading()">
+  </section>
+
+  <section home-section-jobs
+    [jobs]="jobs()"
+    [loading]="jobsLoading()">
+  </section>
+
+  <section home-section-reviews
+    [reviews]="reviews()"
+    [loading]="reviewsLoading()">
+  </section>
+
+  <section home-section-marketplace></section>
+
+  <section home-section-corporate></section>
+
+  <!-- <section home-section-banner></section> -->
+</main>
+
+<site-footer />

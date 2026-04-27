@@ -1,0 +1,244 @@
+
+@use 'abstracts' as *;
+@use '../../pages/home/home.page.scss' as *;
+
+:host {
+  /* Background underlay */
+  &:before {
+    background-color: #F5F6F7;
+  }
+}
+
+.layout-container {
+  overflow: hidden;
+}
+
+.review-slider-container {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+
+  --swiper-pagination-bullet-horizontal-gap: 8px;
+  --swiper-pagination-bullet-width: 12px;
+  --swiper-pagination-bullet-height: 12px;
+}
+
+.ui-swiper-container {
+  margin: 0 auto;
+}
+
+.ui-swiper-slide {
+  max-width: none;
+}
+
+/*
+ * Review card
+ */
+
+.review-slide {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  
+  &__image {
+    display: none;
+  }
+}
+
+.review-card {
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: #FFF;
+  border: 1px solid var(--border-solid, #DDDDDE);
+  border-radius: 12px;
+
+  &__rating {
+    margin-bottom: 12px;
+    display: flex;
+
+    .mat-icon {      
+      width: 40px;
+      height: 40px;
+      font-size: 40px;
+      color: #F0D95E;
+    }
+  }
+
+  &__desc {
+    margin-bottom: 30px;
+    font-size: 1rem;
+
+    .read-toggle {
+      display: inline-block;
+      text-decoration: underline;
+      white-space: nowrap;
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+
+    // &.hide .content {
+    //   --lines: 5;
+    //   margin-right: 0.25em;
+    //   /* max-height = line-clamp * line-height */
+    //   max-height: calc(var(--lines) * 1.5em);
+    //   display: -webkit-box;
+    //   overflow: hidden;
+    //   line-clamp: var(--lines);
+    //   text-overflow: ellipsis;
+    //   -webkit-line-clamp: var(--lines);
+    //   -webkit-box-orient: vertical;
+    // }
+  }
+
+  &__reviewer {
+    margin-bottom: 30px;
+    font-size: 17px;
+    font-weight: 600;
+
+    a {
+      color: var(--surface-info, #276EF1);
+    }
+  }
+
+  &__host-by {
+    margin-top: auto;
+    margin-bottom: 12px;
+    color: #7B7B7B;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1em;
+    text-transform: uppercase;    
+  }
+
+  &__hub {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex: 1 1 0;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .review-card-host {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+
+    &__title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    &__image {
+      
+      img {
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--border-solid, #DDDDDE);
+        border-radius: 50%;
+        object-fit: cover;      
+      }
+    }
+  }
+}
+
+/* Skeleton loader */
+
+.ui-loader-skeleton-group {
+
+  .review-card {
+
+    .ui-loader-skeleton[data-appearance="line"]:not(:last-child) {
+      margin-bottom: 0.75rem;
+    }
+
+    &__rating {
+      display: flex;      
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1.5rem;
+
+      .ui-loader-skeleton[data-appearance="square-rounded"] {
+        width: 30px !important;
+        height: 30px !important;
+      }
+    }
+
+    &__image {
+      .ui-loader-skeleton[data-appearance="custom"] {
+        width: 100% !important;
+        height: 100% !important;
+      }
+    }
+
+    &__desc {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 3rem;
+    }
+
+    &__reviewer {
+      margin-bottom: 4rem;
+    }
+
+    &__hub {
+      width: 100%;
+    }
+
+    .review-card-host {
+      width: 100%;
+
+      &__content {
+        width: 50%;
+      }
+    }
+  }
+}
+
+@media (width >= $breakpoint-laptop) {    
+  :host {
+    /* Background underlay */
+    &:before {
+      background-color: #F5F6F7;
+    }
+  }
+  
+  .review-slide {
+    max-width: 1060px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto 360px;
+    gap: var(--space-m);
+
+    &__image {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 12px;
+      background-color: #EDEDED;
+      overflow: hidden;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  .review-card {
+    padding: 30px;
+  }
+}

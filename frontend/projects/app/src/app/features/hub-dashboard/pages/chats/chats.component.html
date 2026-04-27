@@ -1,0 +1,540 @@
+<!-- Hub Chat Inbox - @covers AC-FEH-001 through AC-FEH-092 -->
+<div class="hub-chats-page h-full flex flex-col overflow-hidden" data-testid="hub-chats-page">
+  <!-- @covers AC-FEH-005 - Breadcrumb -->
+  <div class="px-4 py-2 border-b border-neutral-200 bg-white lg:hidden">
+    <nav class="text-sm text-neutral-500">
+      <span>Hub Dashboard</span>
+      <span class="mx-1">/</span>
+      <span class="text-neutral-900 font-medium">Chats</span>
+    </nav>
+  </div>
+
+  <div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+  <!-- @covers AC-FEH-091 - Socket reconnecting banner -->
+  @if (socketReconnecting()) {
+    <div class="absolute top-0 left-0 right-0 z-50 px-4 py-2 bg-amber-500 text-white text-center text-sm" data-testid="reconnecting-banner">
+      <span class="inline-flex items-center gap-2">
+        <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Reconnecting...
+      </span>
+    </div>
+  }
+
+  <!-- @covers AC-FEH-001 - Sidebar (chat list) -->
+  <div
+    class="chat-list-sidebar w-full lg:w-80 xl:w-96 flex-shrink-0 border-r border-neutral-200 bg-white flex flex-col"
+    [class.hidden]="!showMobileList() && selectedRoomId()"
+    [class.lg:flex]="true"
+  >
+    <!-- Header -->
+    <div class="p-4 border-b border-neutral-200">
+      <div class="flex items-center justify-between mb-4">
+        <h1 class="text-xl font-bold text-neutral-900" data-testid="page-title">Messages</h1>
+        <!-- @covers AC-FEH-011 - Total unread badge -->
+        @if (totalUnread() > 0) {
+          <span class="px-2 py-1 text-xs font-medium bg-red-500 text-white rounded-full" data-testid="total-unread-badge">
+            {{ totalUnread() > 99 ? '99+' : totalUnread() }}
+          </span>
+        }
+      </div>
+
+      <!-- @covers AC-FEH-015 - Search input -->
+      <div class="relative mb-4">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          type="text"
+          placeholder="Search messages..."
+          class="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          [ngModel]="searchText()"
+          (ngModelChange)="onSearchChange($event)"
+          data-testid="search-input"
+        />
+      </div>
+
+      <!-- @covers AC-FEH-010, AC-FEH-011, AC-FEH-012, AC-FEH-013 - Filters with count badges -->
+      <div class="flex gap-2 overflow-x-auto pb-1" data-testid="filter-tabs">
+        @for (filter of filters; track filter.value) {
+          <button
+            type="button"
+            (click)="setFilter(filter.value)"
+            class="px-3 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-colors inline-flex items-center gap-1.5"
+            [class.bg-primary]="activeFilter() === filter.value"
+            [class.text-white]="activeFilter() === filter.value"
+            [class.bg-neutral-100]="activeFilter() !== filter.value"
+            [class.text-neutral-600]="activeFilter() !== filter.value"
+            [class.hover:bg-neutral-200]="activeFilter() !== filter.value"
+            [attr.data-testid]="'filter-' + filter.value"
+          >
+            {{ filter.label }}
+            <!-- @covers AC-FEH-011 - Count badge -->
+            @if (filterCounts()[filter.value] > 0) {
+              <span
+                class="px-1.5 py-0.5 text-xs rounded-full"
+                [class.bg-white]="activeFilter() === filter.value"
+                [class.text-primary]="activeFilter() === filter.value"
+                [class.bg-neutral-200]="activeFilter() !== filter.value"
+                [class.text-neutral-700]="activeFilter() !== filter.value"
+              >
+                {{ filterCounts()[filter.value] > 99 ? '99+' : filterCounts()[filter.value] }}
+              </span>
+            }
+          </button>
+        }
+      </div>
+
+      <!-- @covers AC-FEH-014 - Context sub-filters (expandable) -->
+      <div class="mt-3 border-t border-neutral-200 pt-3">
+        <button
+          type="button"
+          (click)="toggleContextFilters()"
+          class="w-full flex items-center justify-between text-sm text-neutral-600 hover:text-neutral-900"
+        >
+          <span class="font-medium">By Context</span>
+          <svg
+            class="w-4 h-4 transition-transform"
+            [class.rotate-180]="showContextFilters()"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        @if (showContextFilters()) {
+          <div class="mt-2 space-y-1">
+            <!-- Clear context filter -->
+            @if (activeContextFilter()) {
+              <button
+                type="button"
+                (click)="setContextFilter(null)"
+                class="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 rounded"
+              >
+                <span class="w-5 text-center">✕</span>
+                <span>Clear filter</span>
+              </button>
+            }
+            @for (ctx of contextFilters; track ctx.value) {
+              <button
+                type="button"
+                (click)="setContextFilter(ctx.value)"
+                class="w-full flex items-center justify-between px-2 py-1.5 text-sm rounded transition-colors"
+                [class.bg-primary-50]="activeContextFilter() === ctx.value"
+                [class.text-primary]="activeContextFilter() === ctx.value"
+                [class.text-neutral-600]="activeContextFilter() !== ctx.value"
+                [class.hover:bg-neutral-100]="activeContextFilter() !== ctx.value"
+              >
+                <span class="flex items-center gap-2">
+                  <span class="w-5 text-center">{{ ctx.icon }}</span>
+                  <span>{{ ctx.label }}</span>
+                </span>
+                @if (contextCounts()[ctx.value] > 0) {
+                  <span class="text-xs text-neutral-400">{{ contextCounts()[ctx.value] }}</span>
+                }
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- @covers AC-FEH-020, AC-FEH-021, AC-FEH-022 - Room list -->
+    <div class="flex-1 overflow-y-auto" data-testid="room-list">
+      <!-- @covers AC-FEH-080 - Loading skeleton -->
+      @if (roomsLoading() && rooms().length === 0) {
+        <div class="space-y-1">
+          @for (i of [1, 2, 3, 4, 5]; track i) {
+            <div class="p-4 animate-pulse">
+              <div class="flex gap-3">
+                <div class="w-12 h-12 bg-neutral-200 rounded-full"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-4 bg-neutral-200 rounded w-3/4"></div>
+                  <div class="h-3 bg-neutral-200 rounded w-1/2"></div>
+                  <div class="h-3 bg-neutral-200 rounded w-full"></div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (rooms().length === 0) {
+        <!-- @covers AC-FEH-025 - Empty state -->
+        <div class="p-8 text-center text-neutral-500" data-testid="empty-state">
+          <svg class="w-12 h-12 mx-auto mb-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          <p>No conversations found</p>
+        </div>
+      } @else {
+        <!-- @covers AC-FEH-020 - Room list using shared component -->
+        @for (roomItem of rooms(); track roomItem.room._id) {
+          <app-chat-room-list-item
+            [roomItem]="roomItem"
+            [isActive]="isRoomActive(roomItem)"
+            (roomClick)="selectRoom(roomItem)"
+          />
+        }
+      }
+    </div>
+  </div>
+
+  <!-- @covers AC-FEH-002, AC-FEH-003 - Chat detail panel -->
+  <div
+    class="chat-screen flex-1 flex flex-col bg-neutral-50 overflow-hidden"
+    [class.hidden]="showMobileList() && !selectedRoomId()"
+    [class.flex]="!showMobileList() || selectedRoomId()"
+    data-testid="chat-detail-panel"
+  >
+    @if (!selectedRoom()) {
+      <!-- No Chat Selected -->
+      <div class="flex-1 flex items-center justify-center">
+        <div class="text-center">
+          <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-neutral-200 flex items-center justify-center">
+            <svg class="w-12 h-12 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </div>
+          <h2 class="text-lg font-semibold text-neutral-900 mb-2">Select a conversation</h2>
+          <p class="text-sm text-neutral-500">Choose a chat from the list to start messaging</p>
+        </div>
+      </div>
+    } @else {
+      <!-- @covers AC-FEH-030 - Room header -->
+      <div class="flex items-center gap-3 p-4 bg-white border-b border-neutral-200 flex-shrink-0">
+        <!-- @covers AC-FEH-004 - Back button (mobile) -->
+        <button
+          type="button"
+          (click)="backToList()"
+          class="lg:hidden p-2 -ml-2 rounded-lg hover:bg-neutral-100"
+          data-testid="back-button"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <!-- User Info -->
+        <div class="relative">
+          @if (selectedRoom()!.room.learnerSnapshot?.avatar) {
+            <img
+              [src]="selectedRoom()!.room.learnerSnapshot!.avatar"
+              [alt]="selectedRoom()!.room.learnerSnapshot!.name"
+              class="w-10 h-10 rounded-full object-cover"
+            />
+          } @else {
+            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-medium">
+              {{ getInitials(selectedRoom()!.room.learnerSnapshot?.name || 'U') }}
+            </div>
+          }
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <h2 class="text-base font-semibold text-neutral-900 truncate">
+            {{ selectedRoom()!.room.learnerSnapshot?.name || selectedRoom()!.room.otherHubSnapshot?.name }}
+          </h2>
+          @if (selectedRoom()!.room.contextSnapshot?.title) {
+            <p class="text-sm text-neutral-500 truncate">
+              {{ selectedRoom()!.room.contextType }} - {{ selectedRoom()!.room.contextSnapshot!.title }}
+            </p>
+          }
+        </div>
+
+        <!-- @covers AC-FEH-036 - Actions menu -->
+        <div class="flex items-center gap-1">
+          <!-- @covers AC-FEH-034, AC-FEH-035 - Join button -->
+          @if (!selectedRoom()!.isMember) {
+            <button
+              type="button"
+              (click)="joinRoom()"
+              [disabled]="actionLoading() === 'join'"
+              class="px-3 py-1.5 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50"
+              data-testid="join-button"
+            >
+              @if (actionLoading() === 'join') {
+                <span class="inline-flex items-center gap-1">
+                  <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Joining...
+                </span>
+              } @else {
+                Join Conversation
+              }
+            </button>
+          } @else {
+            <!-- @covers AC-FEH-050 - Assign button -->
+            @if (!selectedRoom()!.assignedMember) {
+              <button
+                type="button"
+                (click)="assignToSelf()"
+                class="px-3 py-1.5 text-sm font-medium text-primary border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+                data-testid="assign-to-self-button"
+              >
+                Assign to me
+              </button>
+            } @else {
+              <button
+                type="button"
+                (click)="unassign()"
+                class="px-3 py-1.5 text-sm font-medium text-neutral-600 border border-neutral-300 rounded-lg hover:bg-neutral-100 transition-colors"
+                data-testid="unassign-button"
+              >
+                Unassign
+              </button>
+            }
+          }
+
+          <!-- @covers AC-FEH-051, AC-FEH-052, AC-FEH-053, AC-FEH-054 - More actions dropdown -->
+          <div class="relative">
+            <button
+              type="button"
+              (click)="toggleActionsMenu()"
+              class="p-2 rounded-lg hover:bg-neutral-100 text-neutral-500"
+              data-testid="actions-menu-button"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+              </svg>
+            </button>
+
+            <!-- Dropdown menu -->
+            @if (showActionsMenu()) {
+              <!-- Backdrop to close dropdown -->
+              <div
+                class="fixed inset-0 z-40"
+                (click)="closeActionsMenu()"
+              ></div>
+              <div
+                class="absolute right-0 top-full mt-1 w-48 bg-white border border-neutral-200 rounded-lg shadow-lg z-50"
+                data-testid="actions-dropdown"
+              >
+                <!-- @covers AC-FEH-040 - Assign to team member -->
+                <button
+                  type="button"
+                  (click)="openAssignModal(); closeActionsMenu()"
+                  class="w-full flex items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 first:rounded-t-lg"
+                  data-testid="assign-to-member-button"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  Assign to...
+                </button>
+
+                <!-- @covers AC-FEH-051, AC-FEH-052 - Archive/Unarchive -->
+                @if (!selectedRoom()!.isArchived) {
+                  <button
+                    type="button"
+                    (click)="archiveRoom()"
+                    [disabled]="actionLoading() === 'archive'"
+                    class="w-full flex items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+                    data-testid="archive-button"
+                  >
+                    @if (actionLoading() === 'archive') {
+                      <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                    } @else {
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                      </svg>
+                    }
+                    Archive
+                  </button>
+                } @else {
+                  <button
+                    type="button"
+                    (click)="unarchiveRoom()"
+                    [disabled]="actionLoading() === 'unarchive'"
+                    class="w-full flex items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+                    data-testid="unarchive-button"
+                  >
+                    @if (actionLoading() === 'unarchive') {
+                      <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                    } @else {
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                      </svg>
+                    }
+                    Unarchive
+                  </button>
+                }
+
+                <!-- @covers AC-FEH-053, AC-FEH-054 - Mute/Unmute -->
+                @if (!selectedRoom()!.isMuted) {
+                  <button
+                    type="button"
+                    (click)="muteRoom()"
+                    [disabled]="actionLoading() === 'mute'"
+                    class="w-full flex items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 last:rounded-b-lg disabled:opacity-50"
+                    data-testid="mute-button"
+                  >
+                    @if (actionLoading() === 'mute') {
+                      <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                    } @else {
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                      </svg>
+                    }
+                    Mute notifications
+                  </button>
+                } @else {
+                  <button
+                    type="button"
+                    (click)="unmuteRoom()"
+                    [disabled]="actionLoading() === 'unmute'"
+                    class="w-full flex items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 last:rounded-b-lg disabled:opacity-50"
+                    data-testid="unmute-button"
+                  >
+                    @if (actionLoading() === 'unmute') {
+                      <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                    } @else {
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                      </svg>
+                    }
+                    Unmute notifications
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- @covers AC-FEH-031 - Participant list (collapsible) -->
+      <div class="bg-white border-b border-neutral-200 flex-shrink-0" data-testid="participants-section">
+        <button
+          type="button"
+          (click)="toggleParticipants()"
+          class="w-full flex items-center justify-between px-4 py-2 text-sm text-neutral-600 hover:bg-neutral-50"
+          data-testid="toggle-participants-button"
+        >
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span>{{ selectedRoom()!.room.participants?.length ?? 0 }} Participants</span>
+          </span>
+          <svg
+            class="w-4 h-4 transition-transform"
+            [class.rotate-180]="showParticipants()"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        @if (showParticipants() && selectedRoom()?.room?.participants) {
+          <div class="px-4 pb-3 space-y-2">
+            @for (participant of selectedRoom()!.room.participants; track participant.userId) {
+              <div class="flex items-center gap-2">
+                @if (participant.avatar) {
+                  <img
+                    [src]="participant.avatar"
+                    [alt]="participant.name"
+                    class="w-6 h-6 rounded-full object-cover"
+                  />
+                } @else {
+                  <div class="w-6 h-6 rounded-full bg-neutral-200 text-neutral-600 flex items-center justify-center text-xs font-medium">
+                    {{ getInitials(participant.name) }}
+                  </div>
+                }
+                <span class="text-sm text-neutral-700">{{ participant.name }}</span>
+                @if (participant.isAssigned) {
+                  <span class="px-1.5 py-0.5 text-xs bg-primary-50 text-primary rounded">Assigned</span>
+                }
+                @if (participant.status === 'LEFT') {
+                  <span class="px-1.5 py-0.5 text-xs bg-neutral-100 text-neutral-500 rounded">Left</span>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- @covers AC-FEH-032 - Message list using shared component -->
+      <app-chat-message-list
+        [messages]="messages()"
+        [currentUserId]="currentUserId()"
+        [isLoading]="messagesLoading()"
+        [hasMore]="hasMoreMessages()"
+        (loadMore)="onLoadMoreMessages()"
+        data-testid="message-list"
+      />
+
+      <!-- @covers AC-FEH-062 - Typing indicator -->
+      <app-typing-indicator [users]="typingUsersArray()" data-testid="typing-indicator" />
+
+      <!-- @covers AC-FEH-033, AC-FEH-034, AC-FEH-037 - Message input -->
+      @if (selectedRoom()!.room.status === 'CLOSED') {
+        <div class="p-4 bg-neutral-100 border-t border-neutral-200 text-center text-neutral-500 flex-shrink-0" data-testid="closed-conversation-message">
+          This conversation is closed
+        </div>
+      } @else if (!selectedRoom()!.isMember) {
+        <!-- @covers AC-FEH-034 - Disabled input for non-joined users -->
+        <div class="p-4 bg-neutral-100 border-t border-neutral-200 flex-shrink-0" data-testid="join-to-chat-prompt">
+          <div class="flex items-center justify-center gap-3">
+            <span class="text-neutral-500">Join the conversation to send messages</span>
+            <button
+              type="button"
+              (click)="joinRoom()"
+              [disabled]="actionLoading() === 'join'"
+              class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50"
+            >
+              @if (actionLoading() === 'join') {
+                <span class="inline-flex items-center gap-1">
+                  <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Joining...
+                </span>
+              } @else {
+                Join
+              }
+            </button>
+          </div>
+        </div>
+      } @else {
+        <app-chat-input
+          [disabled]="false"
+          [sending]="sendingMessage()"
+          [uploading]="uploading()"
+          [uploadProgress]="uploadProgress()"
+          (sendMessage)="sendMessage($event)"
+          (typing)="onTyping($event)"
+          data-testid="chat-input"
+        />
+      }
+    }
+  </div>
+</div>
+
+<!-- @covers AC-FEH-040, AC-FEH-041, AC-FEH-042, AC-FEH-043, AC-FEH-044 - Assignment Modal -->
+@if (showAssignModal() && selectedRoomId()) {
+  <app-assign-member-modal
+    [roomId]="selectedRoomId()!"
+    [currentAssigneeId]="selectedRoom()?.assignedMember?.memberId ?? null"
+    (close)="closeAssignModal()"
+    (assigned)="closeAssignModal()"
+  />
+}

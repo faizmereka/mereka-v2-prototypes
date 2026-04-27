@@ -1,0 +1,23 @@
+@layer mereka-ui {
+  .ui-loader-skeleton-card-hub {
+    height: 330px;
+    display: block;
+    background-color: #FFF;
+    border: 1px solid #EDEDED;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .ui-loader-skeleton-body {
+      padding: 6.5rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .logo.ui-loader-skeleton[data-appearance=circle] {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 12px;
+    }
+  }
+}

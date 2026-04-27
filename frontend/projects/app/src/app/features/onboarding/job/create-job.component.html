@@ -1,0 +1,169 @@
+<div class="create-job-wizard h-screen flex flex-col lg:flex-row bg-white overflow-hidden">
+  <!-- Loading Overlay -->
+  @if (isLoading()) {
+    <div class="fixed inset-0 bg-white/80 flex items-center justify-center z-50">
+      <div class="flex flex-col items-center gap-4">
+        <div class="w-8 h-8 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-sm text-neutral-600">Loading...</p>
+      </div>
+    </div>
+  }
+
+  <!-- Left Panel (Desktop) - Illustration - Fixed -->
+  <aside class="hidden lg:flex lg:w-[500px] lg:flex-shrink-0 bg-neutral-900 text-white flex-col h-screen sticky top-0">
+    <div class="flex-1 flex flex-col p-10 overflow-y-auto">
+      <!-- Illustration -->
+      <div class="flex-1 flex items-center justify-center mb-8">
+        <img
+          src="/assets/images/jobs/add-job-sidebar.png"
+          alt="Create Job"
+          class="max-w-full max-h-96 object-contain"
+        />
+      </div>
+
+      <!-- Heading -->
+      <div class="space-y-4">
+        <h2 class="text-3xl font-bold leading-tight">Let's get matched to an Expert</h2>
+        <p class="text-neutral-300 text-base">
+          Create your job post to connect with top experts in the field.
+        </p>
+      </div>
+
+      <!-- Expert Link -->
+      <div class="mt-8 pt-6 border-t border-neutral-700">
+        <p class="text-sm text-neutral-400">
+          Or are you an Expert? Check out our
+          <a href="/jobs" class="text-white underline">list of Jobs</a>
+          to find exciting opportunities!
+        </p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Right Panel - Form Content -->
+  <main class="flex-1 flex flex-col h-screen overflow-hidden">
+    <!-- Header with Step Navigation - Fixed -->
+    <header class="flex-shrink-0 bg-white border-b border-neutral-200 z-10">
+      <div class="flex items-center justify-between px-4 lg:px-8 py-4">
+        <!-- Logo -->
+        <a [href]="webUrl" class="inline-block">
+          <img src="/assets/images/mereka-logo.svg" alt="Mereka" class="h-8" />
+        </a>
+
+        <!-- Step Navigation (Desktop) -->
+        <nav class="hidden lg:flex items-center gap-1">
+          @for (step of steps; track step.id; let i = $index) {
+            <button
+              type="button"
+              (click)="navigateToStep(i)"
+              class="relative px-4 py-2 text-sm font-medium rounded-full transition-colors cursor-pointer"
+              [class.bg-neutral-900]="isStepActive(i)"
+              [class.text-white]="isStepActive(i)"
+              [class.text-neutral-600]="!isStepActive(i)"
+              [class.hover:text-neutral-900]="!isStepActive(i)"
+              [class.hover:bg-neutral-100]="!isStepActive(i)"
+            >
+              {{ step.label }}
+              @if (stepHasErrors(i) && isConfirmStep()) {
+                <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+              }
+            </button>
+          }
+        </nav>
+
+        <!-- Mobile: Current Step Indicator -->
+        <div class="lg:hidden text-sm text-neutral-600">
+          Step {{ currentStepIndex() + 1 }} of {{ steps.length }}
+        </div>
+
+        <!-- Edit Mode Badge -->
+        @if (isEditMode()) {
+          <span class="hidden lg:inline-flex items-center px-3 py-1 text-xs font-medium bg-amber-100 text-amber-800 rounded-full">
+            Editing
+          </span>
+        }
+      </div>
+
+      <!-- Mobile: Step Pills -->
+      <div class="lg:hidden px-4 pb-4 overflow-x-auto">
+        <div class="flex items-center gap-2 min-w-max">
+          @for (step of steps; track step.id; let i = $index) {
+            <button
+              type="button"
+              (click)="navigateToStep(i)"
+              class="relative px-3 py-1.5 text-xs font-medium rounded-full transition-colors whitespace-nowrap"
+              [class.bg-neutral-900]="isStepActive(i)"
+              [class.text-white]="isStepActive(i)"
+              [class.bg-neutral-100]="!isStepActive(i)"
+              [class.text-neutral-600]="!isStepActive(i)"
+            >
+              {{ step.label }}
+              @if (stepHasErrors(i) && isConfirmStep()) {
+                <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full"></span>
+              }
+            </button>
+          }
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content - Scrollable -->
+    <div class="flex-1 overflow-y-auto">
+      <div class="max-w-2xl mx-auto px-4 lg:px-8 py-6 lg:py-10">
+        <!-- Mobile: Progress Message -->
+        <h1 class="lg:hidden text-xl font-bold text-neutral-900 mb-6">
+          {{ progressMessage() }}
+        </h1>
+
+        <!-- Error Message -->
+        @if (error()) {
+          <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            {{ error() }}
+          </div>
+        }
+
+        <!-- Step Content -->
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+
+    <!-- Footer - Fixed -->
+    <footer class="flex-shrink-0 bg-white border-t border-neutral-200 px-4 lg:px-8 py-4 z-10">
+      <div class="flex items-center justify-between max-w-2xl mx-auto">
+        <button
+          type="button"
+          (click)="goBack()"
+          [disabled]="isSaving()"
+          class="px-6 lg:px-8 py-2.5 lg:py-3 text-sm font-semibold border border-neutral-200 rounded-full hover:bg-neutral-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Back
+        </button>
+
+        <button
+          type="button"
+          (click)="saveAndExit()"
+          [disabled]="isSaving()"
+          class="text-sm font-semibold text-neutral-700 hover:text-neutral-900 transition-colors disabled:opacity-50"
+        >
+          @if (isSaving()) {
+            <span class="flex items-center gap-2">
+              <span class="w-4 h-4 border-2 border-neutral-600 border-t-transparent rounded-full animate-spin"></span>
+              Saving...
+            </span>
+          } @else {
+            Save and Exit
+          }
+        </button>
+
+        <button
+          type="button"
+          (click)="continue()"
+          [disabled]="isSaving() || isPublishDisabled()"
+          class="px-6 lg:px-8 py-2.5 lg:py-3 text-sm font-semibold text-white bg-primary rounded-full hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {{ getContinueButtonText() }}
+        </button>
+      </div>
+    </footer>
+  </main>
+</div>

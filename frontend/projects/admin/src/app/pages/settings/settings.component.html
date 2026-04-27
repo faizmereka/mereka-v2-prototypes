@@ -1,0 +1,185 @@
+<div class="flex flex-col gap-5 animate-fade-in">
+  <!-- Page Header -->
+  <div class="mb-2">
+    <h1 class="text-3xl font-bold m-0">Settings & Reference Data</h1>
+    <p class="text-gray-500 mt-1">Manage system configuration and reference data</p>
+  </div>
+
+  <!-- Reference Data Sections -->
+  <div class="grid grid-cols-[250px_1fr] gap-5 min-h-[600px]">
+    <!-- Sidebar Navigation -->
+    <aside class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm h-fit sticky top-4">
+      <nav class="flex flex-col gap-1">
+        <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wide m-0 mb-3 px-2">Reference Data</h3>
+        @for (section of sections; track section.key) {
+        @if (activeSection() === section.key) {
+        <button
+          class="flex items-center gap-3 px-3 py-3 bg-neutral-900 text-white border-none rounded-md cursor-pointer text-left transition-all"
+          (click)="selectSection(section.key)">
+          <img [src]="'icons/' + section.icon" [alt]="section.label" class="w-5 h-5 brightness-0 invert" />
+          <span class="flex-1 text-sm font-medium text-white">{{ section.label }}</span>
+          <span class="text-xs px-2 py-0.5 rounded-[10px] bg-white/20 text-white">{{ getItemCount(section.key) }}</span>
+        </button>
+        } @else {
+        <button
+          class="flex items-center gap-3 px-3 py-3 bg-transparent border-none rounded-md cursor-pointer text-left transition-all hover:bg-gray-100"
+          (click)="selectSection(section.key)">
+          <img [src]="'icons/' + section.icon" [alt]="section.label" class="w-5 h-5 opacity-60" />
+          <span class="flex-1 text-sm font-medium text-gray-600">{{ section.label }}</span>
+          <span class="text-xs px-2 py-0.5 rounded-[10px] bg-gray-200 text-gray-600">{{ getItemCount(section.key)
+            }}</span>
+        </button>
+        }
+        }
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex flex-col gap-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <h2 class="text-xl font-bold m-0">{{ getActiveSection()?.label }}</h2>
+          @if (loading()) {
+          <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+          }
+        </div>
+        <div class="flex gap-2">
+          <button
+            class="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 border border-gray-200 rounded-md cursor-pointer font-medium hover:bg-gray-200"
+            (click)="refreshData()" [disabled]="loading()">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh
+          </button>
+          <button
+            class="flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white border-none rounded-md cursor-pointer font-medium hover:opacity-90"
+            (click)="openAddDialog()">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Add {{ getActiveSection()?.labelSingular }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Search and Filters -->
+      <div class="flex gap-3 items-center">
+        <div class="relative flex-1">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input type="text" [(ngModel)]="searchQuery" placeholder="Search..."
+            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+        </div>
+        <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+          <input type="checkbox" [(ngModel)]="showInactive" class="cursor-pointer" />
+          Show inactive
+        </label>
+      </div>
+
+      <!-- Loading Skeleton -->
+      @if (loading() && items().length === 0) {
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm animate-pulse">
+          <div class="flex items-start gap-3 mb-3">
+            <div class="w-10 h-10 bg-gray-200 rounded-md"></div>
+            <div class="flex-1">
+              <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+              <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+            </div>
+          </div>
+          <div class="h-4 bg-gray-200 rounded w-full mb-2"></div>
+          <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+        </div>
+        }
+      </div>
+      }
+
+      <!-- Items Grid -->
+      @if (!loading() || items().length > 0) {
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
+        @for (item of filteredItems(); track item._id) {
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm transition-all hover:shadow-lg"
+          [class.opacity-60]="!item.isActive">
+          <div class="flex items-start gap-3 mb-3">
+            @if (item.icon) {
+            <img [src]="item.icon" [alt]="item.name" class="w-10 h-10 rounded-md object-cover" />
+            } @else {
+            <div class="w-10 h-10 rounded-md bg-gray-100 flex items-center justify-center">
+              <span class="text-lg font-bold text-gray-400">{{ item.name.charAt(0).toUpperCase() }}</span>
+            </div>
+            }
+            <div class="flex-1 min-w-0">
+              <h4 class="m-0 font-bold text-base truncate">{{ item.name }}</h4>
+              <!-- Show parent theme for topics -->
+              @if (isTopicsSection() && item.parentCategory) {
+              <span class="text-xs text-blue-600">Theme: {{ getParentThemeName(item) }}</span>
+              }
+              <!-- Show focus area and type for skills -->
+              @if (isSkillsSection() && item.focusAreaId) {
+              <span class="text-xs text-purple-600">{{ getFocusAreaName(item) }}</span>
+              @if (item.type) {
+              <span class="text-xs text-gray-400 mx-1">•</span>
+              <span class="text-xs px-1.5 py-0.5 rounded-sm" [class.bg-blue-100]="item.type === 'primary'"
+                [class.text-blue-700]="item.type === 'primary'" [class.bg-gray-100]="item.type === 'additional'"
+                [class.text-gray-600]="item.type === 'additional'">{{ item.type }}</span>
+              }
+              }
+              <!-- Show code for languages -->
+              @if (isLanguagesSection() && item.code) {
+              <span class="text-xs text-gray-500 font-mono bg-gray-100 px-1.5 py-0.5 rounded">{{ item.code }}</span>
+              }
+              @if (!isTopicsSection() && !isSkillsSection() && !isLanguagesSection() && item.slug) {
+              <span class="text-xs text-gray-500">{{ item.slug }}</span>
+              }
+            </div>
+            <div class="text-xs px-2 py-0.5 rounded-sm flex-shrink-0" [class.bg-green-100]="item.isActive"
+              [class.text-green-700]="item.isActive" [class.bg-red-100]="!item.isActive"
+              [class.text-red-800]="!item.isActive">
+              {{ item.isActive ? 'Active' : 'Inactive' }}
+            </div>
+          </div>
+          @if (item.description) {
+          <p class="text-sm text-gray-600 m-0 mb-3 leading-[1.5] line-clamp-2">{{ item.description }}</p>
+          }
+          <div class="flex gap-2 border-t border-gray-200 pt-3">
+            <button class="p-2 bg-gray-100 border-none rounded-sm cursor-pointer hover:bg-gray-200" title="Edit"
+              (click)="editItem(item)">
+              <img src="icons/icon-edit.svg" alt="Edit" class="w-4 h-4 opacity-60" />
+            </button>
+            <button class="p-2 bg-gray-100 border-none rounded-sm cursor-pointer hover:bg-gray-200"
+              [title]="item.isActive ? 'Deactivate' : 'Activate'" (click)="toggleActive(item)">
+              <img [src]="item.isActive ? 'icons/icon-eye-off.svg' : 'icons/icon-eye.svg'" alt="Toggle"
+                class="w-4 h-4 opacity-60" />
+            </button>
+            <button class="p-2 bg-gray-100 border-none rounded-sm cursor-pointer hover:bg-red-50" title="Delete"
+              (click)="deleteItem(item)">
+              <img src="icons/icon-trash.svg" alt="Delete" class="w-4 h-4 opacity-60" />
+            </button>
+          </div>
+        </div>
+        } @empty {
+        @if (!loading()) {
+        <div class="col-[1/-1] text-center py-10 text-gray-500">
+          <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          </svg>
+          <p class="mb-4">No items found</p>
+          <button class="px-4 py-2 bg-gray-100 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-200"
+            (click)="openAddDialog()">
+            Add First Item
+          </button>
+        </div>
+        }
+        }
+      </div>
+      }
+    </main>
+  </div>
+</div>

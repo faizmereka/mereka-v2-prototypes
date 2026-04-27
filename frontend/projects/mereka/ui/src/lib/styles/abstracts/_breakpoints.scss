@@ -1,0 +1,21 @@
+/*
+  Breakpoints
+
+  For mobile first implementation (note the >= operator):
+
+  @media screen and (width >= $breakpoint-mobile) {
+    // Your styles here
+  }
+
+  For desktop first implementation (note the < operator):
+
+  @media screen and (width < $breakpoint-mobile) {
+    // Your styles here
+  }
+
+*/
+$breakpoint-mobile: 576px; // Mobile
+$breakpoint-tablet: 768px; // Tablet
+$breakpoint-laptop: 1024px; // Tablet landscape, laptop, small screens
+$breakpoint-desktop: 1200px; // Desktop, large screens
+$breakpoint-desktop-large: 1440px; // Large desktop, extra large screens

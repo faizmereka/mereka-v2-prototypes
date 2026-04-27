@@ -1,0 +1,85 @@
+<div class="hub-menu-page min-h-screen bg-neutral-50">
+  <!-- Profile Header -->
+  <div class="profile-header bg-white border-b border-neutral-200 p-6">
+    <div class="flex items-center gap-4 mb-4">
+      @if (hubLogo()) {
+        <img [src]="hubLogo()" alt="Hub Logo" class="w-16 h-16 rounded-full object-cover" />
+      } @else {
+        <div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
+          <span class="text-white text-xl font-bold">{{ hubInitials() }}</span>
+        </div>
+      }
+      <div>
+        <h2 class="text-lg font-bold text-neutral-900">{{ hubName() }}</h2>
+        <p class="text-sm text-neutral-500">{{ userEmail() }}</p>
+      </div>
+    </div>
+
+    <!-- Switch to User Button -->
+    <button
+      type="button"
+      (click)="switchToLearner()"
+      class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary rounded-full text-white text-sm font-semibold hover:bg-primary-dark transition-colors"
+    >
+      <span>Switch to User</span>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Menu Sections -->
+  <div class="menu-sections p-4">
+    @for (section of menuSections(); track section.title) {
+      <div class="menu-section mb-6">
+        <h3 class="text-xs font-bold uppercase text-neutral-500 px-4 mb-2">{{ section.title }}</h3>
+        <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+          @for (item of section.items; track item.label; let last = $last) {
+            @if (item.external) {
+              <a
+                [href]="item.routerLink"
+                target="_blank"
+                class="flex items-center gap-3 px-4 py-3 hover:bg-neutral-50 transition-colors"
+                [class.border-b]="!last"
+                [class.border-neutral-200]="!last"
+              >
+                <ui-icon [name]="item.icon" size="md" class="text-neutral-500" />
+                <span class="flex-1 font-medium text-neutral-900">{{ item.label }}</span>
+                <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            } @else {
+              <a
+                [routerLink]="item.routerLink"
+                class="flex items-center gap-3 px-4 py-3 hover:bg-neutral-50 transition-colors"
+                [class.border-b]="!last"
+                [class.border-neutral-200]="!last"
+              >
+                <ui-icon [name]="item.icon" size="md" class="text-neutral-500" />
+                <span class="flex-1 font-medium text-neutral-900">{{ item.label }}</span>
+                <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            }
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Logout Button -->
+    <div class="mt-8">
+      <button
+        type="button"
+        (click)="logout()"
+        class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white border border-neutral-200 rounded-xl text-red-600 font-semibold hover:bg-red-50 transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        <span>Log Out</span>
+      </button>
+    </div>
+  </div>
+</div>

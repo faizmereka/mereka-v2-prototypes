@@ -1,0 +1,1325 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\playwright.config.ts",
+    "rootDir": "C:/Users/ASUS/Documents/mereka-frontend-workspace-v2/tests/e2e-test/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 600000,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "open": "never",
+          "outputFolder": "../../artifacts/playwright-report-e2e-2026-01-19T05-20-43"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "../../artifacts/test-results/junit-e2e.xml"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../../artifacts/test-results/test-results-e2e.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/ASUS/Documents/mereka-frontend-workspace-v2/tests/e2e-test/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/ASUS/Documents/mereka-frontend-workspace-v2/tests/e2e-test/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.57.0",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "auth\\auth-login.spec.ts",
+      "file": "auth/auth-login.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Authentication E2E Tests - Login Flow",
+          "file": "auth/auth-login.spec.ts",
+          "line": 27,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should successfully login with valid email and password",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6674,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:20:46.717Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a614337207ce9a60346d-b32518856ba798552de5",
+              "file": "auth/auth-login.spec.ts",
+              "line": 34,
+              "column": 7
+            },
+            {
+              "title": "should show error for invalid email format",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2755,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:20:46.733Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a614337207ce9a60346d-563b69c8907a9204530a",
+              "file": "auth/auth-login.spec.ts",
+              "line": 61,
+              "column": 7
+            },
+            {
+              "title": "should show error for non-existent email",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6855,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:20:49.609Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a614337207ce9a60346d-4393a852c902b6fb37c8",
+              "file": "auth/auth-login.spec.ts",
+              "line": 83,
+              "column": 7
+            },
+            {
+              "title": "should show error for incorrect password",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9969,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:20:53.511Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a614337207ce9a60346d-7c56417b5cf7a6ff8d90",
+              "file": "auth/auth-login.spec.ts",
+              "line": 100,
+              "column": 7
+            },
+            {
+              "title": "should display all social login options",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2378,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:20:56.476Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a614337207ce9a60346d-09c65e85fd272485f035",
+              "file": "auth/auth-login.spec.ts",
+              "line": 124,
+              "column": 7
+            },
+            {
+              "title": "should handle empty email submission",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2878,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:20:58.864Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a614337207ce9a60346d-38fe771103417a1bde6f",
+              "file": "auth/auth-login.spec.ts",
+              "line": 134,
+              "column": 7
+            },
+            {
+              "title": "should handle empty password submission",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4663,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:21:01.754Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a614337207ce9a60346d-c35cf5d1e9dc4918a421",
+              "file": "auth/auth-login.spec.ts",
+              "line": 146,
+              "column": 7
+            },
+            {
+              "title": "should show forgot password option",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4255,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:21:03.491Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a614337207ce9a60346d-e3d6a8637b8b55746eaf",
+              "file": "auth/auth-login.spec.ts",
+              "line": 161,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "auth\\auth-logout.spec.ts",
+      "file": "auth/auth-logout.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Authentication E2E Tests - Logout Flow",
+          "file": "auth/auth-logout.spec.ts",
+          "line": 18,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should successfully logout after login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 11554,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:21:06.438Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "23127dbe1a576e1202bd-9c0c19c490dd1aff785f",
+              "file": "auth/auth-logout.spec.ts",
+              "line": 25,
+              "column": 7
+            },
+            {
+              "title": "should clear authentication tokens after logout",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9922,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:21:07.763Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "23127dbe1a576e1202bd-6500147b7e4e12b22ecb",
+              "file": "auth/auth-logout.spec.ts",
+              "line": 84,
+              "column": 7
+            },
+            {
+              "title": "should require login after logout to access protected pages",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8696,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:21:17.695Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "23127dbe1a576e1202bd-886fdbc36d20cf70a2c3",
+              "file": "auth/auth-logout.spec.ts",
+              "line": 127,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "auth\\auth-password-reset.spec.ts",
+      "file": "auth/auth-password-reset.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Authentication E2E Tests - Password Reset Flow",
+          "file": "auth/auth-password-reset.spec.ts",
+          "line": 20,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should navigate to password reset page",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5432,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:21:18.012Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b574967694660dfbb22b-8a39b3bb19b46d91afa6",
+              "file": "auth/auth-password-reset.spec.ts",
+              "line": 27,
+              "column": 7
+            },
+            {
+              "title": "should request password reset for valid email",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 30219,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\tests\\auth\\auth-password-reset.spec.ts",
+                            "column": 37,
+                            "line": 84
+                          },
+                          "message": "Error: page.textContent: Target page, context or browser has been closed\n\n  82 |         // Check for success message - could be various formats\n  83 |         const successMessage = page.getByText(/sent|check your email|reset link|instructions|email has been sent|we've sent/i);\n> 84 |         const pageText = await page.textContent('body') || '';\n     |                                     ^\n  85 |         const hasSuccess = /sent|check your email|reset link|instructions|email has been sent|we've sent/i.test(pageText);\n  86 |         \n  87 |         // Check if form is still visible\n    at C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\tests\\auth\\auth-password-reset.spec.ts:84:37"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:21:23.455Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\test-results\\auth-auth-password-reset-A-24060-sword-reset-for-valid-email-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\test-results\\auth-auth-password-reset-A-24060-sword-reset-for-valid-email-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\test-results\\auth-auth-password-reset-A-24060-sword-reset-for-valid-email-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b574967694660dfbb22b-089fdf538808861120a0",
+              "file": "auth/auth-password-reset.spec.ts",
+              "line": 48,
+              "column": 7
+            },
+            {
+              "title": "should show error for invalid email format in password reset",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6575,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:21:26.407Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b574967694660dfbb22b-cef70d8e52782d845aa5",
+              "file": "auth/auth-password-reset.spec.ts",
+              "line": 120,
+              "column": 7
+            },
+            {
+              "title": "should handle password reset for non-existent email gracefully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30211,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\tests\\auth\\auth-password-reset.spec.ts",
+                            "column": 37,
+                            "line": 185
+                          },
+                          "message": "Error: page.textContent: Target page, context or browser has been closed\n\n  183 |         \n  184 |         // Check page text for any message\n> 185 |         const pageText = await page.textContent('body') || '';\n      |                                     ^\n  186 |         const hasMessage = /sent|check your email|reset link|not found|doesn't exist|invalid|error|email has been sent|we've sent/i.test(pageText);\n  187 |         \n  188 |         // Check if form is still visible\n    at C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\tests\\auth\\auth-password-reset.spec.ts:185:37"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:21:32.992Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\test-results\\auth-auth-password-reset-A-06eb4-n-existent-email-gracefully-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\test-results\\auth-auth-password-reset-A-06eb4-n-existent-email-gracefully-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\test-results\\auth-auth-password-reset-A-06eb4-n-existent-email-gracefully-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b574967694660dfbb22b-a7108b25aa96e96db505",
+              "file": "auth/auth-password-reset.spec.ts",
+              "line": 155,
+              "column": 7
+            },
+            {
+              "title": "should allow navigation back from password reset",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 8025,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:21:54.814Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b574967694660dfbb22b-9a50800a70d9ccd78ceb",
+              "file": "auth/auth-password-reset.spec.ts",
+              "line": 225,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "auth\\auth-registration.spec.ts",
+      "file": "auth/auth-registration.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Authentication E2E Tests - Registration Flow",
+          "file": "auth/auth-registration.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should navigate to registration page",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2102,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:22:02.990Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "504b8ecb4a818ac30a7d-ca9eb177e9744d6bb9b3",
+              "file": "auth/auth-registration.spec.ts",
+              "line": 31,
+              "column": 7
+            },
+            {
+              "title": "should show registration form fields",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2406,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:22:04.651Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "504b8ecb4a818ac30a7d-c253758184a1f5706dc6",
+              "file": "auth/auth-registration.spec.ts",
+              "line": 49,
+              "column": 7
+            },
+            {
+              "title": "should validate email format during registration",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1600,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:22:05.113Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "504b8ecb4a818ac30a7d-a99d489cfb85f2933a79",
+              "file": "auth/auth-registration.spec.ts",
+              "line": 83,
+              "column": 7
+            },
+            {
+              "title": "should validate password strength during registration",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1542,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:22:06.728Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "504b8ecb4a818ac30a7d-59e4b80a98086e4ff086",
+              "file": "auth/auth-registration.spec.ts",
+              "line": 108,
+              "column": 7
+            },
+            {
+              "title": "should prevent registration with duplicate email",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1410,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:22:07.190Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "504b8ecb4a818ac30a7d-9d3e03dda2a42cb4e1a2",
+              "file": "auth/auth-registration.spec.ts",
+              "line": 129,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "experience\\create-physical-experience.spec.ts",
+      "file": "experience/create-physical-experience.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Physical Experience Creation",
+          "file": "experience/create-physical-experience.spec.ts",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should navigate to experience creation page after login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 14871,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "🔐 Starting login flow...\n"
+                        },
+                        {
+                          "text": "✅ Login link clicked\n"
+                        },
+                        {
+                          "text": "✅ Login successful\n"
+                        },
+                        {
+                          "text": "🔍 Looking for hub dashboard or experience creation link...\n"
+                        },
+                        {
+                          "text": "✅ Found navigation path:  Post a Job \n"
+                        },
+                        {
+                          "text": "✅ Navigated to: https://v2.mereka.dev/\n"
+                        },
+                        {
+                          "text": "📋 Current URL: https://v2.mereka.dev/\n"
+                        },
+                        {
+                          "text": "⚠️ May not be on experience creation page\n"
+                        },
+                        {
+                          "text": "ℹ️ Test may need adjustment based on actual v2 navigation structure\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:22:08.294Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "12bb9e73b0fe5c58354a-975bd0c728700c931902",
+              "file": "experience/create-physical-experience.spec.ts",
+              "line": 55,
+              "column": 7
+            },
+            {
+              "title": "should verify experience creation page elements are accessible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 10358,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "🔐 Starting login flow...\n"
+                        },
+                        {
+                          "text": "✅ Login successful\n"
+                        },
+                        {
+                          "text": "✅ User menu found - logged in successfully\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:22:08.627Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "12bb9e73b0fe5c58354a-d478fbee78394c0ad475",
+              "file": "experience/create-physical-experience.spec.ts",
+              "line": 197,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "experience\\home-to-experience-redirection.spec.ts",
+      "file": "experience/home-to-experience-redirection.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Home to Experience Redirection Flow",
+          "file": "experience/home-to-experience-redirection.spec.ts",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should successfully navigate to experience detail page after login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 10977,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting login flow with valid credentials...\n"
+                        },
+                        {
+                          "text": "✅ Login link clicked\n"
+                        },
+                        {
+                          "text": "✅ Login successful\n"
+                        },
+                        {
+                          "text": "✅ Navigated to homepage\n"
+                        },
+                        {
+                          "text": "✅ Upcoming Experiences section verified\n"
+                        },
+                        {
+                          "text": "✅ Clicked on first experience card\n"
+                        },
+                        {
+                          "text": "✅ Successfully navigated to experience detail page\n"
+                        },
+                        {
+                          "text": "✅ Current URL: https://v2.mereka.dev/experience/dsadasd3\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:22:19.010Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f9160b89a8252e1ef7b1-36e1ec9db415c1943639",
+              "file": "experience/home-to-experience-redirection.spec.ts",
+              "line": 19,
+              "column": 7
+            },
+            {
+              "title": "should navigate to experience detail page without login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5012,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Testing experience navigation without login...\n"
+                        },
+                        {
+                          "text": "✅ Navigated to homepage\n"
+                        },
+                        {
+                          "text": "✅ Upcoming Experiences section verified\n"
+                        },
+                        {
+                          "text": "✅ Clicked on first experience card\n"
+                        },
+                        {
+                          "text": "✅ Successfully navigated to experience detail page\n"
+                        },
+                        {
+                          "text": "✅ Current URL: https://v2.mereka.dev/experience/dsadasd3\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:22:23.185Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f9160b89a8252e1ef7b1-478301f8a5181460ac9e",
+              "file": "experience/home-to-experience-redirection.spec.ts",
+              "line": 59,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "home\\home-page-elements.spec.ts",
+      "file": "home/home-page-elements.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Home Page Elements",
+          "file": "home/home-page-elements.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should display all key elements in a single flow",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 8581,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/jobs/\u001b[39m\nReceived string:  \u001b[31m\"https://v2.mereka.dev/\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://v2.mereka.dev/\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/jobs/\u001b[39m\nReceived string:  \u001b[31m\"https://v2.mereka.dev/\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://v2.mereka.dev/\"\u001b[22m\n\n    at HomePage.clickViewAllJobs (C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\fixtures\\home-page.ts:218:29)\n    at C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\tests\\home\\home-page-elements.spec.ts:105:5",
+                        "location": {
+                          "file": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\fixtures\\home-page.ts",
+                          "column": 29,
+                          "line": 218
+                        },
+                        "snippet": "   at ..\\fixtures\\home-page.ts:218\n\n  216 |     await expect(this.viewAllJobsLink).toBeVisible();\n  217 |     await this.viewAllJobsLink.click();\n> 218 |     await expect(this.page).toHaveURL(/.*\\/jobs/);\n      |                             ^\n  219 |   }\n  220 |\n  221 |   /**"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\fixtures\\home-page.ts",
+                            "column": 29,
+                            "line": 218
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/jobs/\u001b[39m\nReceived string:  \u001b[31m\"https://v2.mereka.dev/\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://v2.mereka.dev/\"\u001b[22m\n\n\n   at ..\\fixtures\\home-page.ts:218\n\n  216 |     await expect(this.viewAllJobsLink).toBeVisible();\n  217 |     await this.viewAllJobsLink.click();\n> 218 |     await expect(this.page).toHaveURL(/.*\\/jobs/);\n      |                             ^\n  219 |   }\n  220 |\n  221 |   /**\n    at HomePage.clickViewAllJobs (C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\fixtures\\home-page.ts:218:29)\n    at C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\tests\\home\\home-page-elements.spec.ts:105:5"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "✅ Hero section verified\n"
+                        },
+                        {
+                          "text": "✅ Featured Experts section verified\n"
+                        },
+                        {
+                          "text": "✅ Found 4 expert cards\n"
+                        },
+                        {
+                          "text": "✅ View all Experts navigation verified\n"
+                        },
+                        {
+                          "text": "✅ Featured Hubs section verified\n"
+                        },
+                        {
+                          "text": "✅ Found 4 hub cards\n"
+                        },
+                        {
+                          "text": "✅ View all Hubs navigation verified\n"
+                        },
+                        {
+                          "text": "✅ Browse Expertise section verified\n"
+                        },
+                        {
+                          "text": "✅ Found 3 expertise cards\n"
+                        },
+                        {
+                          "text": "✅ Expertise card price element verified\n"
+                        },
+                        {
+                          "text": "✅ View all Expertise navigation verified\n"
+                        },
+                        {
+                          "text": "✅ Upcoming Experiences section verified\n"
+                        },
+                        {
+                          "text": "✅ Found 3 experience cards\n"
+                        },
+                        {
+                          "text": "✅ Experience card elements verified\n"
+                        },
+                        {
+                          "text": "✅ View all Experiences navigation verified\n"
+                        },
+                        {
+                          "text": "✅ Latest Jobs section verified\n"
+                        },
+                        {
+                          "text": "ℹ️ No job cards found (may be empty)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-19T05:22:28.213Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\test-results\\home-home-page-elements-Ho-d5a5a-y-elements-in-a-single-flow-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\test-results\\home-home-page-elements-Ho-d5a5a-y-elements-in-a-single-flow-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\test-results\\home-home-page-elements-Ho-d5a5a-y-elements-in-a-single-flow-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\ASUS\\Documents\\mereka-frontend-workspace-v2\\tests\\e2e-test\\fixtures\\home-page.ts",
+                        "column": 29,
+                        "line": 218
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "6e6d8f17a2657aeef863-1a02f7134d2fdc90dd7e",
+              "file": "home/home-page-elements.spec.ts",
+              "line": 11,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-01-19T05:20:45.691Z",
+    "duration": 111253.53600000001,
+    "expected": 23,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  }
+}

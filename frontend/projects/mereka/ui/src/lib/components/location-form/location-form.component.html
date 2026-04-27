@@ -1,0 +1,201 @@
+<div class="flex flex-col lg:flex-row gap-8">
+  <div class="flex-1">
+    <!-- Location Type Tabs -->
+    <div class="flex gap-2 mb-6">
+      <button
+        type="button"
+        (click)="onLocationTypeChange('hub')"
+        class="px-4 py-2 text-sm font-medium rounded-full transition-colors"
+        [class.bg-neutral-900]="isHubType()"
+        [class.text-white]="isHubType()"
+        [class.bg-neutral-100]="!isHubType()"
+        [class.text-neutral-600]="!isHubType()"
+        [disabled]="disabled()"
+      >
+        {{ hubTabLabel() }}
+      </button>
+      <button
+        type="button"
+        (click)="onLocationTypeChange('new')"
+        class="px-4 py-2 text-sm font-medium rounded-full transition-colors"
+        [class.bg-neutral-900]="isNewType()"
+        [class.text-white]="isNewType()"
+        [class.bg-neutral-100]="!isNewType()"
+        [class.text-neutral-600]="!isNewType()"
+        [disabled]="disabled()"
+      >
+        {{ newTabLabel() }}
+      </button>
+      <button
+        type="button"
+        (click)="onLocationTypeChange('other')"
+        class="px-4 py-2 text-sm font-medium rounded-full transition-colors"
+        [class.bg-neutral-900]="isOtherType()"
+        [class.text-white]="isOtherType()"
+        [class.bg-neutral-100]="!isOtherType()"
+        [class.text-neutral-600]="!isOtherType()"
+        [disabled]="disabled()"
+      >
+        {{ otherTabLabel() }}
+      </button>
+    </div>
+
+    <!-- Show selected hub name for Hub Address -->
+    @if (isHubType() && hubName()) {
+      <div class="mb-6 p-4 bg-neutral-50 rounded-xl">
+        <p class="text-sm text-neutral-600">Using address from:</p>
+        <p class="font-medium text-neutral-900">{{ hubName() }}</p>
+      </div>
+    }
+
+    <!-- Other Venue Name Input -->
+    @if (isOtherType() && showVenueNameForOther()) {
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-neutral-700 mb-2">Venue Name</label>
+        <input
+          type="text"
+          [value]="venueName()"
+          (input)="updateField('venueName', $any($event.target).value)"
+          placeholder="Enter venue name..."
+          [disabled]="disabled()"
+          class="w-full h-12 px-4 border border-neutral-200 rounded-xl outline-none transition-colors bg-neutral-50 focus:border-primary focus:bg-white disabled:bg-neutral-100 disabled:cursor-not-allowed"
+        />
+      </div>
+    }
+
+    <!-- Address Fields -->
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-neutral-700 mb-2">Street Address</label>
+        @if (isLocationAutofill()) {
+          <input
+            type="text"
+            [value]="address()"
+            disabled
+            class="w-full h-12 px-4 border border-neutral-200 rounded-xl outline-none bg-neutral-100 text-neutral-500 cursor-not-allowed"
+          />
+        } @else {
+          <ui-location-autocomplete
+            [apiKey]="googleMapsApiKey()"
+            [initialValue]="address() || (city() ? city() + ', ' + country() : '')"
+            placeholder="Search for your address..."
+            [disabled]="disabled()"
+            (locationSelected)="onLocationAutocompleteSelected($event)"
+            (locationCleared)="onLocationAutocompleteCleared()"
+          />
+        }
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-1">Country</label>
+          <input
+            type="text"
+            [value]="country()"
+            (input)="updateField('country', $any($event.target).value)"
+            placeholder="Country"
+            [disabled]="isLocationAutofill() || disabled()"
+            class="w-full h-12 px-4 border border-neutral-200 rounded-xl outline-none transition-colors"
+            [class.bg-neutral-100]="isLocationAutofill() || disabled()"
+            [class.text-neutral-500]="isLocationAutofill() || disabled()"
+            [class.cursor-not-allowed]="isLocationAutofill() || disabled()"
+            [class.bg-neutral-50]="!isLocationAutofill() && !disabled()"
+            [class.focus:border-primary]="!isLocationAutofill() && !disabled()"
+            [class.focus:bg-white]="!isLocationAutofill() && !disabled()"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-1">State (if any)</label>
+          <input
+            type="text"
+            [value]="state()"
+            (input)="updateField('state', $any($event.target).value)"
+            placeholder="State / Province"
+            [disabled]="isLocationAutofill() || disabled()"
+            class="w-full h-12 px-4 border border-neutral-200 rounded-xl outline-none transition-colors"
+            [class.bg-neutral-100]="isLocationAutofill() || disabled()"
+            [class.text-neutral-500]="isLocationAutofill() || disabled()"
+            [class.cursor-not-allowed]="isLocationAutofill() || disabled()"
+            [class.bg-neutral-50]="!isLocationAutofill() && !disabled()"
+            [class.focus:border-primary]="!isLocationAutofill() && !disabled()"
+            [class.focus:bg-white]="!isLocationAutofill() && !disabled()"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-neutral-700 mb-1">Town / City</label>
+        <input
+          type="text"
+          [value]="city()"
+          (input)="updateField('city', $any($event.target).value)"
+          placeholder="City"
+          [disabled]="isLocationAutofill() || disabled()"
+          class="w-full h-12 px-4 border border-neutral-200 rounded-xl outline-none transition-colors"
+          [class.bg-neutral-100]="isLocationAutofill() || disabled()"
+          [class.text-neutral-500]="isLocationAutofill() || disabled()"
+          [class.cursor-not-allowed]="isLocationAutofill() || disabled()"
+          [class.bg-neutral-50]="!isLocationAutofill() && !disabled()"
+          [class.focus:border-primary]="!isLocationAutofill() && !disabled()"
+          [class.focus:bg-white]="!isLocationAutofill() && !disabled()"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Map Section -->
+  <div class="lg:w-80 flex-shrink-0">
+    <div class="flex items-center gap-2 mb-3">
+      <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      <span class="font-semibold text-neutral-900">PIN IT</span>
+    </div>
+    <p class="text-sm text-neutral-600 mb-3">
+      @if (showMap()) {
+        Search or drag the marker to set exact location
+      } @else {
+        Location from hub profile
+      }
+    </p>
+
+    <!-- Interactive Map for New Address & Other Venue -->
+    @if (showMap()) {
+      <ui-location-picker
+        [apiKey]="googleMapsApiKey()"
+        [initialLat]="lat()"
+        [initialLng]="lng()"
+        [initialValue]="address() || city()"
+        [disabled]="disabled()"
+        placeholder="Search location on map..."
+        mapHeight="200px"
+        (locationSelected)="onLocationPickerSelected($event)"
+        (markerDragged)="onMarkerDragged($event)"
+      />
+    } @else {
+      <!-- Static Map for Hub Address -->
+      <div class="w-full h-48 bg-neutral-100 rounded-lg overflow-hidden relative">
+        @if (lat() && lng()) {
+          <iframe
+            [src]="getMapUrl()"
+            width="100%"
+            height="100%"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            class="w-full h-full"
+          ></iframe>
+        } @else {
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-neutral-400">
+            <svg class="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            </svg>
+            <span class="text-sm">Hub address location</span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

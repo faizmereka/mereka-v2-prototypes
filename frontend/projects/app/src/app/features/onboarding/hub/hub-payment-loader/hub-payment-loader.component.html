@@ -1,0 +1,52 @@
+<div class="min-h-screen bg-white flex flex-col items-center justify-center p-6">
+  <div class="max-w-md w-full text-center">
+    <!-- Processing State -->
+    @if (status() === 'processing') {
+      <!-- Lottie Animation -->
+      <div class="w-64 h-64 mx-auto mb-4">
+        <ng-lottie [options]="lottieOptions"></ng-lottie>
+      </div>
+
+      <!-- Message -->
+      <p class="text-lg text-neutral-600">{{ message() }}</p>
+    }
+
+    <!-- Success State -->
+    @if (status() === 'success') {
+      <!-- Success Icon -->
+      <div class="w-24 h-24 mx-auto mb-8 bg-green-100 rounded-full flex items-center justify-center">
+        <ui-icon name="check" class="w-12 h-12 text-green-500"></ui-icon>
+      </div>
+
+      <!-- Message -->
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">Payment Successful!</h2>
+      <p class="text-neutral-600">{{ message() }}</p>
+
+      <!-- Redirect notice -->
+      <p class="text-sm text-neutral-400 mt-6">Redirecting you to setup...</p>
+    }
+
+    <!-- Error State -->
+    @if (status() === 'error') {
+      <!-- Error Icon -->
+      <div class="w-24 h-24 mx-auto mb-8 bg-red-100 rounded-full flex items-center justify-center">
+        <ui-icon name="close" class="w-12 h-12 text-red-500"></ui-icon>
+      </div>
+
+      <!-- Message -->
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">{{ message() }}</h2>
+      @if (errorMessage()) {
+        <p class="text-neutral-600 mb-6">{{ errorMessage() }}</p>
+      }
+
+      <!-- Retry Button -->
+      <button
+        type="button"
+        (click)="retryPayment()"
+        class="px-8 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors"
+      >
+        Try Again
+      </button>
+    }
+  </div>
+</div>

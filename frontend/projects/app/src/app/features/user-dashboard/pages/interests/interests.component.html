@@ -1,0 +1,139 @@
+<div class="max-w-7xl mx-auto px-4 lg:px-8 py-6 lg:py-8">
+  <div class="dashboard-title mb-6">
+    <h1 class="text-2xl lg:text-3xl font-bold text-neutral-900">My Interests</h1>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="bg-white rounded-xl border border-neutral-200 p-6">
+      <h5 class="bold text-lg font-semibold text-neutral-900 mb-4 flex items-center justify-between">
+        My Interests
+        <span class="pointer text-sm font-semibold text-primary hover:underline">
+          <a routerLink="/onboarding/learner/interests" (click)="activeTable('experience')">
+            Edit Interests
+            <hr class="border-t border-primary mt-1" />
+          </a>
+        </span>
+      </h5>
+      
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex-1">
+          <p class="text-base font-semibold text-neutral-900 mb-2">Personalize Content</p>
+          <p class="text-sm text-neutral-600 mb-0">
+            Personalize the content of my homepage according to my interests
+          </p>
+        </div>
+        <div class="ml-4">
+          <ui-toggle [checked]="personalizeContent()" (checkedChange)="personalizeContent.set($event)"></ui-toggle>
+        </div>
+      </div>
+      
+      <hr class="my-6 border-neutral-200" />
+
+      <h5 class="bold text-lg font-semibold text-neutral-900 mb-4 flex items-center justify-between">
+        Experiences
+        <span class="float-end pointer text-sm font-semibold text-primary hover:underline">
+          <a routerLink="/onboarding/learner/interests/experiences" (click)="activeTable('experience')">
+            Edit Experiences
+            <hr class="border-t border-primary mt-1" />
+          </a>
+        </span>
+      </h5>
+      
+      <p class="ph3 text-neutral-700 mb-4">
+        I am hoping to find Experiences where I can 
+        <span class="font-semibold text-primary">gain new skills</span>, 
+        <span class="font-semibold text-primary">learn something new</span> and 
+        <span class="font-semibold text-primary">meet new people.</span>
+      </p>
+      
+      <p class="ph3 text-neutral-700 mb-4">
+        I am interested to discover 
+        <span class="font-semibold text-primary">Workshops</span> and 
+        <span class="font-semibold text-primary">Courses.</span>
+      </p>
+      
+      <p class="ph3 text-neutral-700 mb-4">
+        Here are the themes I am looking for in Experiences:
+      </p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        @for (purpose of learnerProfile().purposeInExperiences; track purpose) {
+          <div class="text-center p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+            <p class="font-semibold m-0 text-neutral-900">
+              {{ purpose }} <ui-icon name="check-circle" class="w-4 h-4 text-primary-500 inline-block ml-1"></ui-icon>
+            </p>
+          </div>
+        }
+
+        @for (interest of learnerProfile().interestedExperiences; track interest) {
+          <div class="text-center p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+            <p class="font-semibold m-0 text-neutral-900">
+              {{ interest }} <ui-icon name="check-circle" class="w-4 h-4 text-primary-500 inline-block ml-1"></ui-icon>
+            </p>
+          </div>
+        }
+
+        @for (theme of learnerProfile().interestedThemes; track theme) {
+          <div class="text-center p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+            <p class="font-semibold m-0 text-neutral-900">
+              {{ theme }} <ui-icon name="check-circle" class="w-4 h-4 text-primary-500 inline-block ml-1"></ui-icon>
+            </p>
+          </div>
+        }
+      </div>
+
+      <hr class="my-6 border-neutral-200" />
+
+      <h5 class="bold text-lg font-semibold text-neutral-900 mb-4 flex items-center justify-between">
+        Spaces
+        <span class="float-end pointer text-sm font-semibold text-primary hover:underline">
+          <a routerLink="/onboarding/learner/interests/spaces" (click)="activeTable('space')">
+            Edit Spaces
+            <hr class="border-t border-primary mt-1" />
+          </a>
+        </span>
+      </h5>
+      
+      <p class="ph3 text-neutral-700 mb-4">Here are the Spaces I am looking for:</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        @for (interest of learnerProfile().interestedSpaces; track interest) {
+          <div class="text-center p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+            <p class="font-semibold m-0 text-neutral-900">
+              {{ interest }} <ui-icon name="check-circle" class="w-4 h-4 text-primary-500 inline-block ml-1"></ui-icon>
+            </p>
+          </div>
+        }
+      </div>
+
+      <hr class="my-6 border-neutral-200" />
+
+      <h5 class="bold text-lg font-semibold text-neutral-900 mb-4 flex items-center justify-between">
+        Experts
+        <span class="float-end pointer text-sm font-semibold text-primary hover:underline">
+          <a routerLink="/onboarding/learner/interests/experts" (click)="activeTable('expert')">
+            Edit Experts
+            <hr class="border-t border-primary mt-1" />
+          </a>
+        </span>
+      </h5>
+      
+      <p class="ph3 text-neutral-700 mb-4">
+        Here are the Experts' topics I am interested in:
+      </p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        @for (interest of learnerProfile().interestedExperts; track interest) {
+          <div class="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+            <div class="flex items-center justify-between mb-2">
+              <img src="/assets/imgs/design.png" alt="Expert topic" class="w-8 h-8" />
+              <ui-icon name="check-circle" class="w-4 h-4 text-primary-500"></ui-icon>
+            </div>
+            <p class="font-semibold m-0 text-neutral-900">{{ interest }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+

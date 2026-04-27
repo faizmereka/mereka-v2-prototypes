@@ -1,0 +1,68 @@
+.ui-dialog-content {
+  height: calc(var(--max-viewport-height) - var(--ui-dialog-header-height) - var(--ui-dialog-actions-height) );
+  max-height: calc(var(--max-viewport-height) - var(--ui-dialog-header-height) - var(--ui-dialog-actions-height) );
+  padding: 1rem 1.5rem;
+  overflow-y: auto;
+
+  &.ui-dialog-content--no-actions {
+    max-height: calc(var(--max-viewport-height) - var(--ui-dialog-header-height));
+  }
+  &::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+    transition: 250ms;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #666;
+    border: 1px solid #666;
+    border-radius: 10px;
+    transition: 250ms;
+  }
+  &::-webkit-scrollbar-track {
+    background: #CCC;
+    transition: 250ms;
+  }
+  &--onhover:not(:hover) {
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
+  &--onhover:not(:hover) {
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
+}
+.ui-dialog-content-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media only screen and (width >= 576px) {    
+  .ui-dialog-content {
+    height: auto;
+    max-height: min(500px, 50svh);
+    min-height: 60px;
+    padding: 1rem 2rem;
+    overflow-x: hidden;
+  
+    &.ui-dialog-content--no-actions {
+      max-height: min(680px, 80svh);
+    } 
+  }
+}

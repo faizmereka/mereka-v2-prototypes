@@ -1,0 +1,307 @@
+<div class="space-y-6" [formGroup]="form">
+  <!-- Experience Access Section -->
+  <ui-collapsible title="Experience Access" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">Who is your Experience open to?</h3>
+        <p class="text-sm text-neutral-600 mb-6">
+          Select the type of audience that can access your Experience.
+        </p>
+
+        <div class="space-y-3 mb-6">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="accessType"
+              [checked]="audienceType() === 'Everyone'"
+              (change)="onAccessTypeChange('Everyone')"
+              class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="font-medium text-neutral-900">Everyone</span>
+          </label>
+
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-3 cursor-not-allowed opacity-60">
+              <input
+                type="radio"
+                name="accessType"
+                disabled
+                class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+              />
+              <span class="font-medium text-neutral-900">Members</span>
+            </label>
+            <ui-tooltip text="This feature is coming soon!" position="top">
+              <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </ui-tooltip>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              [checked]="isHidden()"
+              (change)="onHiddenChange($any($event.target).checked)"
+              class="w-5 h-5 rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="font-medium text-neutral-900">I want my Experience to be hidden</span>
+          </label>
+          <ui-tooltip text="This means that your Experience can only be found using a direct URL. It will not be visible upon search." position="top">
+            <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </ui-tooltip>
+        </div>
+      </div>
+
+      <div class="lg:w-72 flex-shrink-0"></div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Target Audience Section -->
+  <ui-collapsible title="Target Audience" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">Who is the target audience for your Experience?</h3>
+        <p class="text-sm text-neutral-600 mb-6">
+          Indicate whether your Experience is open to everyone, or if it suits the needs of a particular group.
+        </p>
+
+        <div class="space-y-3">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="targetAudienceType"
+              [checked]="targetAudienceType() === 'everyone'"
+              (change)="onTargetAudienceTypeChange('everyone')"
+              class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="font-medium text-neutral-900">Open to Everyone</span>
+          </label>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="targetAudienceType"
+              [checked]="targetAudienceType() === 'groups'"
+              (change)="onTargetAudienceTypeChange('groups')"
+              class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="font-medium text-neutral-900">Specific Groups</span>
+          </label>
+        </div>
+
+        @if (targetAudienceType() === 'groups') {
+          <div class="mt-4 grid grid-cols-2 gap-3">
+            @if (isLoadingRef()) {
+              <div class="col-span-2 text-center py-4 text-neutral-500">Loading audiences...</div>
+            } @else {
+              @for (option of audienceOptions; track option.id) {
+                <label
+                  class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors"
+                  [class.border-neutral-900]="isAudienceSelected(option.id)"
+                  [class.bg-neutral-50]="isAudienceSelected(option.id)"
+                  [class.border-neutral-200]="!isAudienceSelected(option.id)"
+                >
+                  <input
+                    type="checkbox"
+                    [checked]="isAudienceSelected(option.id)"
+                    (change)="toggleAudienceOption(option.id)"
+                    class="w-4 h-4 rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900"
+                  />
+                  <span class="text-sm font-medium text-neutral-900">{{ option.label }}</span>
+                </label>
+              }
+            }
+          </div>
+        }
+      </div>
+
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">TIPS</span>
+        </div>
+        <p class="text-sm text-neutral-600 leading-relaxed">
+          For instance, if your Experience is about implementing effective HR strategies, you may select Professionals or Corporations as your Target Audience. But don't worry, this will not exclude other Learners from booking your Experience; it simply helps them to make an informed booking!
+        </p>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Level of Expertise Section (Optional) -->
+  <ui-collapsible title="Level of Expertise" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-1 flex items-center gap-2">
+          What level of expertise does your audience require?
+          <span class="px-2 py-0.5 text-xs font-medium text-neutral-500 bg-neutral-100 rounded uppercase">Optional</span>
+        </h3>
+        <p class="text-sm text-neutral-600 mb-6">
+          Please indicate the expertise level to best match the audience with your Experience.
+        </p>
+
+        <div class="space-y-3 mb-6">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="expertiseLevel"
+              [checked]="expertiseLevel() === 'Beginner'"
+              (change)="onExpertiseLevelChange('Beginner')"
+              class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="font-medium text-neutral-900">Beginner</span>
+          </label>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="expertiseLevel"
+              [checked]="expertiseLevel() === 'Intermediate'"
+              (change)="onExpertiseLevelChange('Intermediate')"
+              class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="font-medium text-neutral-900">Intermediate</span>
+          </label>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="expertiseLevel"
+              [checked]="expertiseLevel() === 'Advanced'"
+              (change)="onExpertiseLevelChange('Advanced')"
+              class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="font-medium text-neutral-900">Advanced</span>
+          </label>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="expertiseLevel"
+              [checked]="expertiseLevel() === 'Not Applicable'"
+              (change)="onExpertiseLevelChange('Not Applicable')"
+              class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="font-medium text-neutral-900">Not Applicable</span>
+          </label>
+        </div>
+
+        @if (expertiseLevel() !== 'Beginner' && expertiseLevel() !== 'Not Applicable') {
+          <div>
+            <p class="text-sm text-neutral-600 mb-3">What skills does your audience need to be intermediate or advanced in?</p>
+            <div class="flex gap-2">
+              <input
+                type="text"
+                [(ngModel)]="skillInput"
+                [ngModelOptions]="{standalone: true}"
+                (keyup.enter)="addSkill()"
+                placeholder="Type Skills"
+                class="flex-1 h-12 px-4 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
+              />
+              <button
+                type="button"
+                (click)="addSkill()"
+                class="px-4 h-12 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
+            @if (expertiseFields().length > 0) {
+              <div class="flex flex-wrap gap-2 mt-3">
+                @for (skill of expertiseFields(); track skill) {
+                  <span class="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 rounded-full text-sm">
+                    {{ skill }}
+                    <button type="button" (click)="removeSkill(skill)" class="text-neutral-500 hover:text-neutral-700">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">Tips</span>
+        </div>
+        <p class="text-sm text-neutral-600 leading-relaxed">
+          If you are hosting a workshop on advanced graphic design skills, make sure to list the software which your users should have prior knowledge in.
+        </p>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Language Section -->
+  <ui-collapsible title="Language" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <div class="flex-1 space-y-6">
+        <div>
+          <h3 class="text-lg font-semibold text-neutral-900 mb-4">What language will you be hosting in?</h3>
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 mb-1">Choose language</label>
+            <select
+              formControlName="primaryLanguage"
+              class="w-full h-12 px-4 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent bg-white"
+            >
+              <option value="">Select language</option>
+              @for (lang of languageOptions; track lang.value) {
+                <option [value]="lang.value">{{ lang.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-semibold text-neutral-900 mb-1 flex items-center gap-2">
+            Do you know any other languages?
+            <span class="px-2 py-0.5 text-xs font-medium text-neutral-500 bg-neutral-100 rounded uppercase">Optional</span>
+          </h3>
+          <div class="mt-4">
+            <label class="block text-sm font-medium text-neutral-700 mb-1">Choose language</label>
+            <select
+              (change)="onSecondaryLanguageChange($any($event.target).value); $any($event.target).value = ''"
+              class="w-full h-12 px-4 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent bg-white"
+            >
+              <option value="">Select language</option>
+              @for (lang of languageOptions; track lang.value) {
+                @if (lang.value !== primaryLanguage() && !secondaryLanguages().includes(lang.value)) {
+                  <option [value]="lang.value">{{ lang.label }}</option>
+                }
+              }
+            </select>
+          </div>
+          @if (secondaryLanguages().length > 0) {
+            <div class="flex flex-wrap gap-2 mt-3">
+              @for (lang of secondaryLanguages(); track lang) {
+                <span class="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 rounded-full text-sm">
+                  {{ getLanguageLabel(lang) }}
+                  <button type="button" (click)="removeSecondaryLanguage(lang)" class="text-neutral-500 hover:text-neutral-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="lg:w-72 flex-shrink-0"></div>
+    </div>
+  </ui-collapsible>
+</div>

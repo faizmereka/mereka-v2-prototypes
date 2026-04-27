@@ -1,0 +1,8 @@
+<div class="px-6 py-5" [class.border-b]="!last" [class.border-gray-100]="!last">
+  <div class="flex flex-col lg:flex-row gap-6">
+    <div class="flex-1">
+      <ng-content></ng-content>
+    </div>
+    <ng-content select="ui-panel-sidebar"></ng-content>
+  </div>
+</div>

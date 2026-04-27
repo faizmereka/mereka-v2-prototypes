@@ -1,0 +1,230 @@
+<div class="space-y-6" [formGroup]="form">
+  <!-- Upload Error Message -->
+  @if (uploadError()) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+      <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <div class="flex-1">
+        <p class="font-medium text-red-800">Upload Error</p>
+        <p class="text-sm text-red-700 mt-1">{{ uploadError()?.message }}</p>
+      </div>
+      <button type="button" (click)="clearError()" class="text-red-500 hover:text-red-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  }
+
+  <!-- Description Section -->
+  <ui-collapsible title="Description" [badge]="!description() ? 'Required' : ''" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <!-- Form Side -->
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">Describe your Experience</h3>
+        <p class="text-sm text-neutral-600 mb-2">
+          Your description is a chance to inspire Learners to take part in your Experience! Here's a breakdown of a good description.
+        </p>
+        <div class="text-sm text-neutral-600 mb-4 space-y-2">
+          <p>1. First, briefly describe what you'll do with your Learners and how your Experience is unique.</p>
+          <p>2. Get more specific. How will you kick things off and keep Learners interested?</p>
+          <p>3. End with a strong selling point. What is the knowledge you want your Learners to leave with, and how can they apply it?</p>
+        </div>
+        <p class="text-sm text-neutral-600 mb-4">A concise description of 100-200 words works best!</p>
+
+        <!-- Text Area -->
+        <textarea
+          [(ngModel)]="descriptionValue"
+          [ngModelOptions]="{standalone: true}"
+          (ngModelChange)="onDescriptionChange($event)"
+          placeholder="Write a compelling description of your experience..."
+          rows="8"
+          class="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent resize-none"
+        ></textarea>
+        <p class="text-xs text-neutral-500 mt-2">{{ descriptionValue.length }} / 2000 characters</p>
+      </div>
+
+      <!-- Tips Side -->
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">TIPS</span>
+        </div>
+        <p class="text-sm text-neutral-600 leading-relaxed">
+          Make sure you have a clearly defined itinerary!
+        </p>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Photos Section -->
+  <ui-collapsible title="Photos" [badge]="!coverPhoto() ? 'Required' : ''" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <!-- Form Side -->
+      <div class="flex-1 space-y-6">
+        <!-- Cover Photo -->
+        <div>
+          <h3 class="text-lg font-semibold text-neutral-900 mb-2">Cover Photo</h3>
+          <p class="text-sm text-neutral-600 mb-4">
+            This will be the main image displayed on your Experience listing.
+          </p>
+
+          @if (uploadingCover()) {
+            <!-- Loading State -->
+            <div class="w-64 h-40 border-2 border-dashed border-neutral-300 rounded-lg flex flex-col items-center justify-center">
+              <svg class="w-8 h-8 text-neutral-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <p class="text-sm text-neutral-500 mt-2">Uploading...</p>
+            </div>
+          } @else if (coverPhotoPreview()) {
+            <!-- Image Preview -->
+            <div class="relative inline-block">
+              <img
+                [src]="coverPhotoPreview()"
+                alt="Cover photo preview"
+                class="w-64 h-40 object-cover rounded-lg"
+              />
+              <button
+                type="button"
+                (click)="removeCoverPhoto()"
+                class="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-md hover:bg-neutral-50 transition-colors"
+              >
+                <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          } @else {
+            <!-- Upload Area -->
+            <label class="flex flex-col items-center justify-center w-64 h-40 border-2 border-dashed border-neutral-300 rounded-lg cursor-pointer hover:border-neutral-400 transition-colors">
+              <div class="flex flex-col items-center justify-center">
+                <svg class="w-10 h-10 text-neutral-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p class="text-sm text-neutral-600">
+                  <span class="font-semibold">Click to upload</span>
+                </p>
+                <p class="text-xs text-neutral-500">PNG, JPG up to 10MB</p>
+              </div>
+              <input
+                type="file"
+                class="hidden"
+                accept="image/jpeg,image/png,image/webp"
+                (change)="onCoverPhotoSelected($event)"
+              />
+            </label>
+          }
+        </div>
+
+        <!-- Gallery Photos -->
+        <div>
+          <h3 class="text-lg font-semibold text-neutral-900 mb-2">Gallery Photos</h3>
+          <p class="text-sm text-neutral-600 mb-4">
+            Add more photos to showcase your Experience. You can add up to 10 photos.
+          </p>
+
+          <div class="flex flex-wrap gap-4">
+            <!-- Uploaded Photos -->
+            @for (photo of galleryPhotosLocal(); track photo.id) {
+              <div class="relative">
+                <img
+                  [src]="photo.preview"
+                  [alt]="photo.name"
+                  class="w-32 h-24 object-cover rounded-lg"
+                />
+                <button
+                  type="button"
+                  (click)="removeGalleryPhoto(photo.id)"
+                  class="absolute top-1 right-1 p-1 bg-white rounded-full shadow-md hover:bg-neutral-50 transition-colors"
+                >
+                  <svg class="w-3 h-3 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            }
+
+            <!-- Loading indicator for gallery upload -->
+            @if (uploadingGallery()) {
+              <div class="w-32 h-24 border-2 border-dashed border-neutral-300 rounded-lg flex flex-col items-center justify-center">
+                <svg class="w-6 h-6 text-neutral-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div>
+            }
+
+            <!-- Add More Button -->
+            @if (galleryPhotosLocal().length < 10 && !uploadingGallery()) {
+              <label class="flex flex-col items-center justify-center w-32 h-24 border-2 border-dashed border-neutral-300 rounded-lg cursor-pointer hover:border-neutral-400 transition-colors">
+                <svg class="w-6 h-6 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-xs text-neutral-500 mt-1">Add photo</span>
+                <input
+                  type="file"
+                  class="hidden"
+                  accept="image/jpeg,image/png,image/webp"
+                  multiple
+                  (change)="onGalleryPhotosSelected($event)"
+                />
+              </label>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips Side -->
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">TIPS</span>
+        </div>
+        <p class="text-sm text-neutral-600 leading-relaxed">
+          Use high-quality images that represent your experience. Photos of past events or the activity itself work best.
+        </p>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Video Section (Optional) -->
+  <ui-collapsible title="Video" badge="Optional" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <!-- Form Side -->
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">Add a video to your Experience</h3>
+        <p class="text-sm text-neutral-600 mb-4">
+          Paste a YouTube or Vimeo URL to showcase your experience with video.
+        </p>
+
+        <input
+          type="url"
+          [value]="videoUrl()"
+          (input)="onVideoUrlChange($any($event.target).value)"
+          placeholder="https://www.youtube.com/watch?v=..."
+          class="w-full h-12 px-4 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
+        />
+      </div>
+
+      <!-- Tips Side -->
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">TIPS</span>
+        </div>
+        <p class="text-sm text-neutral-600 leading-relaxed">
+          Videos can help participants understand what to expect. Keep it short (1-2 minutes) and engaging.
+        </p>
+      </div>
+    </div>
+  </ui-collapsible>
+</div>

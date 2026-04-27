@@ -1,0 +1,326 @@
+<div class="min-h-screen bg-gray-50 animate-fade-in">
+  <!-- Header -->
+  <div class="mb-6">
+    <button class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4" (click)="goBack()">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to Withdrawals
+    </button>
+    <h1 class="text-3xl font-bold text-gray-900">Withdrawal Details</h1>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+    <div class="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+      <p class="text-red-600">{{ error() }}</p>
+      <button class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" (click)="goBack()">
+        Go Back
+      </button>
+    </div>
+  }
+
+  <!-- Withdrawal Details -->
+  @if (withdrawal(); as w) {
+    <div class="space-y-6">
+      <!-- Main Info Card -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <h2 class="text-xl font-bold text-gray-900">{{ w.stripePayoutId }}</h2>
+              <button class="text-gray-400 hover:text-gray-600" (click)="copyToClipboard(w.stripePayoutId)" title="Copy Payout ID">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+            </div>
+            <p class="text-gray-500">{{ w.description || 'Withdrawal Request' }}</p>
+          </div>
+          <div class="text-right">
+            <span class="px-3 py-1 rounded-full text-sm font-medium" [class]="getStatusClass(w.status)">
+              {{ formatStatus(w.status) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Amount Display -->
+        <div class="bg-gray-50 rounded-xl p-6 mb-6">
+          <div class="text-center">
+            <p class="text-sm text-gray-500 mb-1">Withdrawal Amount</p>
+            <p class="text-4xl font-bold text-gray-900">{{ formatCurrency(w.amount, w.currency) }}</p>
+            <div class="flex items-center justify-center gap-4 mt-3">
+              <span class="px-3 py-1 rounded-full text-xs font-medium" [class]="getSourceTypeClass(w.sourceType)">
+                {{ formatSourceType(w.sourceType) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dates -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <p class="text-sm text-gray-500">Requested</p>
+            <p class="font-medium">{{ w.createdAt | date:'MMM d, y h:mm a' }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Last Updated</p>
+            <p class="font-medium">{{ w.updatedAt | date:'MMM d, y h:mm a' }}</p>
+          </div>
+          @if (w.arrivalDate) {
+            <div>
+              <p class="text-sm text-gray-500">Expected Arrival</p>
+              <p class="font-medium">{{ w.arrivalDate | date:'MMM d, y' }}</p>
+            </div>
+          }
+          @if (w.completedDate) {
+            <div>
+              <p class="text-sm text-gray-500">Completed</p>
+              <p class="font-medium text-green-600">{{ w.completedDate | date:'MMM d, y h:mm a' }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- User Info -->
+      @if (w.user) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">User Information</h3>
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                <span class="text-lg font-bold text-blue-600">{{ w.user.name.charAt(0) }}</span>
+              </div>
+              <div>
+                <p class="font-medium text-gray-900">{{ w.user.name }}</p>
+                <p class="text-sm text-gray-500">{{ w.user.email }}</p>
+                @if (w.user.phone) {
+                  <p class="text-sm text-gray-500">{{ w.user.phone }}</p>
+                }
+              </div>
+            </div>
+            @if (w.user.stripeAccountId) {
+              <div class="text-right">
+                <p class="text-sm text-gray-500">Stripe Account</p>
+                <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ w.user.stripeAccountId }}</code>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Bank Account Info -->
+      @if (w.bankAccount) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Bank Account Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <p class="text-sm text-gray-500">Bank Name</p>
+              <p class="font-medium text-gray-900">{{ w.bankAccount.bankName }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Account Holder</p>
+              <p class="font-medium text-gray-900">{{ w.bankAccount.accountHolderName }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Account Number</p>
+              <p class="font-medium text-gray-900">**** {{ w.bankAccount.accountLast4 }}</p>
+            </div>
+            @if (w.bankAccount.accountType) {
+              <div>
+                <p class="text-sm text-gray-500">Account Type</p>
+                <p class="font-medium text-gray-900">{{ w.bankAccount.accountType | titlecase }}</p>
+              </div>
+            }
+            @if (w.bankAccount.currency) {
+              <div>
+                <p class="text-sm text-gray-500">Currency</p>
+                <p class="font-medium text-gray-900">{{ w.bankAccount.currency | uppercase }}</p>
+              </div>
+            }
+            @if (w.bankAccount.routingNumber) {
+              <div>
+                <p class="text-sm text-gray-500">Routing Number</p>
+                <p class="font-medium text-gray-900">{{ w.bankAccount.routingNumber }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Stripe Details -->
+      @if (w.stripeResponse || w.stripeDetails) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Stripe Payout Details</h3>
+          @if (w.stripeResponse; as stripe) {
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <p class="text-sm text-gray-500">Payout ID</p>
+                <div class="flex items-center gap-2">
+                  <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ stripe.id }}</code>
+                  <button class="text-gray-400 hover:text-gray-600" (click)="copyToClipboard(stripe.id)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Stripe Amount</p>
+                <p class="font-medium">{{ formatStripeAmount(stripe.amount, stripe.currency) }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Stripe Status</p>
+                <span class="px-2 py-1 rounded-full text-xs font-medium" [class]="getStatusClass(stripe.status)">{{ stripe.status | titlecase }}</span>
+              </div>
+              @if (stripe.method) {
+                <div>
+                  <p class="text-sm text-gray-500">Method</p>
+                  <p class="font-medium">{{ stripe.method | titlecase }}</p>
+                </div>
+              }
+              @if (stripe.destination) {
+                <div>
+                  <p class="text-sm text-gray-500">Destination</p>
+                  <p class="font-medium">{{ stripe.destination }}</p>
+                </div>
+              }
+              @if (stripe.arrivalDate) {
+                <div>
+                  <p class="text-sm text-gray-500">Arrival Date (Stripe)</p>
+                  <p class="font-medium">{{ formatUnixTimestamp(stripe.arrivalDate) | date:'MMM d, y' }}</p>
+                </div>
+              }
+            </div>
+
+            <!-- Failure Info -->
+            @if (stripe.failureCode || stripe.failureMessage) {
+              <div class="mt-4 bg-red-50 rounded-lg p-4">
+                <h4 class="font-medium text-red-900 mb-2">Failure Information</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  @if (stripe.failureCode) {
+                    <div>
+                      <p class="text-sm text-red-600">Failure Code</p>
+                      <p class="font-medium text-red-900">{{ stripe.failureCode }}</p>
+                    </div>
+                  }
+                  @if (stripe.failureMessage) {
+                    <div>
+                      <p class="text-sm text-red-600">Failure Message</p>
+                      <p class="font-medium text-red-900">{{ stripe.failureMessage }}</p>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          }
+        </div>
+      }
+
+      <!-- Related Transaction -->
+      @if (w.relatedTransaction; as txn) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Related Transaction</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <p class="text-sm text-gray-500">Reference ID</p>
+              <p class="font-medium font-mono">{{ txn.referenceId }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Type</p>
+              <p class="font-medium">{{ txn.type | titlecase }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Amount</p>
+              <p class="font-medium">{{ formatCurrency(txn.amount, w.currency) }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Status</p>
+              <span class="px-2 py-1 rounded-full text-xs font-medium" [class]="getStatusClass(txn.status)">{{ txn.status | titlecase }}</span>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Approval Info -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Request & Approval</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Requested By -->
+          <div>
+            <p class="text-sm text-gray-500 mb-2">Requested By</p>
+            @if (w.requestedByUser) {
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                  <span class="font-bold text-gray-600">{{ w.requestedByUser.name.charAt(0) }}</span>
+                </div>
+                <div>
+                  <p class="font-medium text-gray-900">{{ w.requestedByUser.name }}</p>
+                  <p class="text-sm text-gray-500">{{ w.requestedByUser.email }}</p>
+                </div>
+              </div>
+            } @else {
+              <p class="text-gray-500">User ID: {{ w.requestedBy }}</p>
+            }
+          </div>
+
+          <!-- Approved By -->
+          <div>
+            <p class="text-sm text-gray-500 mb-2">Approved By</p>
+            @if (w.approvedByUser) {
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                  <span class="font-bold text-green-600">{{ w.approvedByUser.name.charAt(0) }}</span>
+                </div>
+                <div>
+                  <p class="font-medium text-gray-900">{{ w.approvedByUser.name }}</p>
+                  <p class="text-sm text-gray-500">{{ w.approvedByUser.email }}</p>
+                </div>
+              </div>
+            } @else if (w.approvedBy) {
+              <p class="text-gray-500">Admin ID: {{ w.approvedBy }}</p>
+            } @else {
+              <p class="text-gray-400">Not yet approved</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Stripe Account Info -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Stripe References</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm text-gray-500">Stripe Account ID</p>
+            <div class="flex items-center gap-2">
+              <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ w.stripeAccountId }}</code>
+              <button class="text-gray-400 hover:text-gray-600" (click)="copyToClipboard(w.stripeAccountId)">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Bank Account ID</p>
+            <div class="flex items-center gap-2">
+              <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ w.bankAccountId }}</code>
+              <button class="text-gray-400 hover:text-gray-600" (click)="copyToClipboard(w.bankAccountId)">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

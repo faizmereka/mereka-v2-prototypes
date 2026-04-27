@@ -1,0 +1,12 @@
+<span #content data-collapse class="content" [class.collapsed]="isCollapsed()">
+  @if (!text()) {
+    <ng-content></ng-content>
+  } @else {
+    <div [innerHTML]="sanitizedHtml"></div>
+  }
+</span>
+@if (isCollapsible()) {
+  <span class="toggle" tabindex="0" (click)="toggleCollapse()" (keyup)="toggleCollapse()">
+    {{ isCollapsed() ? 'Show More' : 'Show Less' }}
+  </span>
+}

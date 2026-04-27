@@ -1,0 +1,358 @@
+<div class="space-y-6">
+  <!-- Section 1: Online Meeting Link (for Online/Hybrid packages) -->
+  @if (hasOnlinePackages()) {
+  <ui-collapsible [expanded]="true">
+    <div slot="header" class="flex items-center gap-2">
+      <span class="text-lg font-semibold text-neutral-900">Online Meeting</span>
+      @if (!bookingForm.get('linkMode')?.value) {
+        <span class="w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center">
+          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+        </span>
+      }
+    </div>
+    <div class="flex flex-col lg:flex-row gap-6">
+      <!-- Main Content -->
+      <div class="flex-1 space-y-6">
+        <!-- Link Mode -->
+        <div>
+          <h5 class="text-base font-semibold text-neutral-900 mb-1">Meeting Link Preference</h5>
+          <p class="text-sm text-neutral-500 mb-3">How would you like to share your meeting link?</p>
+          <div class="space-y-3">
+            @for (option of linkModeOptions; track option.value) {
+              <label
+                class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer transition-all"
+                [class.border-primary]="bookingForm.get('linkMode')?.value === option.value"
+                [class.bg-primary/5]="bookingForm.get('linkMode')?.value === option.value"
+                [class.border-neutral-200]="bookingForm.get('linkMode')?.value !== option.value"
+              >
+                <input
+                  type="radio"
+                  [formControl]="$any(bookingForm.get('linkMode'))"
+                  [value]="option.value"
+                  class="mt-0.5 w-4 h-4 text-primary"
+                />
+                <div>
+                  <div class="font-medium text-neutral-900 text-sm">{{ option.label }}</div>
+                  <div class="text-xs text-neutral-500">{{ option.description }}</div>
+                </div>
+              </label>
+            }
+          </div>
+        </div>
+
+        <!-- Fixed Meeting Link -->
+        @if (bookingForm.get('linkMode')?.value === 'input') {
+          <div>
+            <h5 class="text-base font-semibold text-neutral-900 mb-1">Meeting Link</h5>
+            <p class="text-sm text-neutral-500 mb-3">Enter your Zoom, Google Meet, or other video conferencing link.</p>
+            <ui-input
+              [formControl]="$any(bookingForm.get('expertiseLink'))"
+              placeholder="https://zoom.us/j/..."
+            />
+          </div>
+        }
+      </div>
+
+      <!-- Tips Sidebar -->
+      <div class="lg:w-64 shrink-0 bg-neutral-50 rounded-lg p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="text-sm font-semibold text-neutral-900 uppercase">Tips</span>
+        </div>
+        <p class="text-sm text-neutral-600 mb-3">Using a fixed meeting link makes it easier for you to manage your sessions.</p>
+        <p class="text-sm text-neutral-600">If you prefer more control, you can send a unique link to each learner after they book.</p>
+      </div>
+    </div>
+  </ui-collapsible>
+  }
+
+  <!-- Section 2: Location (for Physical/Hybrid packages) -->
+  @if (hasPhysicalPackages()) {
+    <ui-collapsible [expanded]="true">
+      <div slot="header" class="flex items-center gap-2">
+        <span class="text-lg font-semibold text-neutral-900">Location</span>
+        @if (!currentLocation?.address) {
+          <span class="w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center">
+            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+          </span>
+        }
+      </div>
+      <div class="pt-2">
+        <h5 class="text-base font-semibold text-neutral-900 mb-1">Share the location of your Expertise!</h5>
+        <p class="text-sm text-neutral-500 mb-6">Enter your venue address or select from saved locations.</p>
+
+        <ui-location-form
+          [googleMapsApiKey]="googleMapsApiKey"
+          [hubName]="hubName"
+          [hubLocation]="hubLocation"
+          [initialLocation]="currentLocation"
+          (locationChange)="onLocationChange($event)"
+        />
+      </div>
+    </ui-collapsible>
+  }
+
+  <!-- Section 3: Cover Photo -->
+  <ui-collapsible>
+    <div slot="header" class="flex items-center gap-2">
+      <span class="text-lg font-semibold text-neutral-900">Cover Photo</span>
+      @if (!pageForm.get('coverPhoto')?.value) {
+        <span class="w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center">
+          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+        </span>
+      }
+    </div>
+    <div class="flex flex-col lg:flex-row gap-6">
+      <!-- Main Content -->
+      <div class="flex-1">
+        <h5 class="text-base font-semibold text-neutral-900 mb-1">Upload your cover image</h5>
+        <p class="text-sm text-neutral-500 mb-4">This will be the main image shown in listings and search results.</p>
+
+        <!-- Upload Error Message -->
+        @if (uploadError() && !uploadingCover()) {
+          <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+            <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p class="text-sm font-medium text-red-800">Upload failed</p>
+              <p class="text-sm text-red-600">{{ uploadError()?.message }}</p>
+            </div>
+          </div>
+        }
+
+        <div class="border-2 border-dashed border-neutral-300 rounded-lg p-8 text-center">
+          @if (uploadingCover()) {
+            <div class="flex flex-col items-center justify-center py-8">
+              <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p class="text-neutral-600">Uploading image...</p>
+            </div>
+          } @else if (pageForm.get('coverPhoto')?.value) {
+            <div class="relative inline-block">
+              <img
+                [src]="pageForm.get('coverPhoto')?.value"
+                alt="Cover Photo"
+                class="max-w-full max-h-64 rounded-lg mx-auto"
+              />
+              <button
+                type="button"
+                (click)="onCoverPhotoChange('')"
+                class="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          } @else {
+            <svg class="w-16 h-16 text-neutral-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <p class="text-neutral-500 mb-4">Drag and drop an image, or click to browse</p>
+            <div class="text-xs text-neutral-400 mb-4">Recommended: 1200x630px, JPG or PNG, max 5MB</div>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              (change)="onCoverFileSelected($event)"
+              class="hidden"
+              #coverInput
+            />
+            <button
+              type="button"
+              (click)="coverInput.click()"
+              class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+            >
+              Upload Image
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Tips Sidebar -->
+      <div class="lg:w-64 shrink-0 bg-neutral-50 rounded-lg p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="text-sm font-semibold text-neutral-900 uppercase">Tips</span>
+        </div>
+        <p class="text-sm text-neutral-600 mb-3">Use a high-quality image that represents your expertise.</p>
+        <p class="text-sm text-neutral-600 mb-3">Images with faces tend to perform better.</p>
+        <p class="text-sm text-neutral-600">Avoid text-heavy images as they may be cropped on mobile.</p>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Section 3: Gallery -->
+  <ui-collapsible>
+    <div slot="header" class="flex items-center gap-2">
+      <span class="text-lg font-semibold text-neutral-900">Gallery</span>
+      <span class="px-2 py-0.5 text-xs font-semibold rounded bg-neutral-200 text-neutral-600 uppercase">Optional</span>
+    </div>
+    <div class="flex flex-col lg:flex-row gap-6">
+      <!-- Main Content -->
+      <div class="flex-1">
+        <h5 class="text-base font-semibold text-neutral-900 mb-1">Add more images</h5>
+        <p class="text-sm text-neutral-500 mb-4">These will appear in a gallery on your expertise page.</p>
+
+        <!-- Upload Error Message for Gallery -->
+        @if (uploadError() && !uploadingGallery() && !uploadingCover()) {
+          <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+            <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p class="text-sm font-medium text-red-800">Upload failed</p>
+              <p class="text-sm text-red-600">{{ uploadError()?.message }}</p>
+            </div>
+          </div>
+        }
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          @for (image of gallery; track $index; let i = $index) {
+            <div class="relative group">
+              <img
+                [src]="image"
+                alt="Gallery image"
+                class="w-full h-32 object-cover rounded-lg"
+              />
+              <button
+                type="button"
+                (click)="removeGalleryImage(i)"
+                class="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          }
+
+          <!-- Loading state for gallery upload -->
+          @if (uploadingGallery()) {
+            <div class="h-32 border-2 border-dashed border-primary rounded-lg flex flex-col items-center justify-center bg-primary/5">
+              <div class="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
+              <span class="text-xs text-primary">Uploading...</span>
+            </div>
+          }
+
+          <!-- Add Image Button -->
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onGalleryFileSelected($event)"
+            class="hidden"
+            #galleryInput
+          />
+          <button
+            type="button"
+            (click)="galleryInput.click()"
+            [disabled]="uploadingGallery()"
+            class="h-32 border-2 border-dashed border-neutral-300 rounded-lg flex flex-col items-center justify-center text-neutral-400 hover:border-primary hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            <span class="text-xs">Add Image</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tips Sidebar -->
+      <div class="lg:w-64 shrink-0 bg-neutral-50 rounded-lg p-4 self-start">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="text-sm font-semibold text-neutral-900 uppercase">Tips</span>
+        </div>
+        <p class="text-sm text-neutral-600 mb-3">Add 3-5 images showcasing your work or past sessions.</p>
+        <p class="text-sm text-neutral-600">Include photos of certificates, workspace, or previous clients (with permission).</p>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Section 4: Instructions -->
+  <ui-collapsible>
+    <div slot="header" class="flex items-center gap-2">
+      <span class="text-lg font-semibold text-neutral-900">Instructions</span>
+      <span class="px-2 py-0.5 text-xs font-semibold rounded bg-neutral-200 text-neutral-600 uppercase">Optional</span>
+    </div>
+    <div class="flex flex-col lg:flex-row gap-6">
+      <!-- Main Content -->
+      <div class="flex-1">
+        <!-- Information to provide after booking -->
+        <div>
+          <h5 class="text-base font-semibold text-neutral-900 mb-1">Information to provide after booking</h5>
+          <p class="text-sm text-neutral-500 mb-3">This will be information you wish to provide ONLY to those who have booked your service. It will NOT be displayed on the listing page.</p>
+          <ui-textarea
+            [formControl]="$any(pageForm.get('expertiseInstructions'))"
+            placeholder="e.g., Meeting preparation tips, what to bring, pre-session requirements..."
+            [rows]="4"
+          />
+        </div>
+      </div>
+
+      <!-- Tips Sidebar -->
+      <div class="lg:w-64 shrink-0 bg-neutral-50 rounded-lg p-4 self-start">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="text-sm font-semibold text-neutral-900 uppercase">Tips</span>
+        </div>
+        <p class="text-sm text-neutral-600 mb-3">This information will only be shown to users after they complete a booking.</p>
+        <p class="text-sm text-neutral-600">Include any preparation steps or important details for the session.</p>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Section 5: Custom Questions -->
+  <ui-collapsible>
+    <div slot="header" class="flex items-center gap-2">
+      <span class="text-lg font-semibold text-neutral-900">Custom Questions</span>
+      <span class="px-2 py-0.5 text-xs font-semibold rounded bg-neutral-200 text-neutral-600 uppercase">Optional</span>
+    </div>
+    <div class="flex flex-col lg:flex-row gap-6">
+      <!-- Main Content -->
+      <div class="flex-1">
+        <h5 class="text-base font-semibold text-neutral-900 mb-1">Create a custom form for your Learners</h5>
+        <p class="text-sm text-neutral-500 mb-6">
+          Add custom questions that your Learners will need to answer when booking this Expertise. You can add up to 10 questions.
+        </p>
+
+        <ui-custom-questions
+          #customQuestionsComponent
+          [maxQuestions]="10"
+          [serviceType]="'expertise'"
+          (questionsChange)="onQuestionsChange($event)"
+          (mandatoryChange)="onMandatoryChange($event)"
+        />
+      </div>
+
+      <!-- Tips Sidebar -->
+      <div class="lg:w-64 shrink-0 bg-neutral-50 rounded-lg p-4 self-start">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="text-sm font-semibold text-neutral-900 uppercase">Tips</span>
+        </div>
+        <ul class="text-sm text-neutral-600 leading-relaxed space-y-2 list-disc list-inside">
+          <li>Use short answer for brief responses like names or single words.</li>
+          <li>Use paragraph for longer responses requiring detailed answers.</li>
+          <li>Use dropdown, multiple choice, or checkboxes when you want users to select from predefined options.</li>
+          <li>Mark questions as mandatory if you need the information to deliver your Expertise.</li>
+        </ul>
+      </div>
+    </div>
+  </ui-collapsible>
+</div>

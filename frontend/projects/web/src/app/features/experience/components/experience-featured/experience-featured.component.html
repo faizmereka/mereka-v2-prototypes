@@ -1,0 +1,69 @@
+@if (hasExperiences()) {
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-neutral-900">Featured Experiences</h2>
+        <a
+          routerLink="/experiences"
+          class="text-sm font-medium text-primary hover:text-primary/80 transition-colors underline">
+          View All
+        </a>
+      </div>
+
+      <!-- Experience Cards Grid/Carousel -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (exp of featuredExperiences(); track exp.id) {
+          <a
+            [routerLink]="'/experience/' + exp.slug"
+            class="group block bg-white rounded-xl border border-neutral-200 overflow-hidden hover:shadow-lg transition-shadow">
+            <!-- Image -->
+            <div class="aspect-[4/3] relative overflow-hidden">
+              <img
+                [src]="exp.coverPhoto"
+                [alt]="exp.title"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+
+              <!-- Rating Badge -->
+              @if (exp.rating) {
+                <div class="absolute top-3 right-3 flex items-center gap-1 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-sm">
+                  <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                  <span class="font-medium">{{ exp.rating }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Content -->
+            <div class="p-4">
+              <!-- Location -->
+              <p class="text-xs text-neutral-500 mb-1">{{ exp.location }}</p>
+
+              <!-- Title -->
+              <h3 class="font-medium text-neutral-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">
+                {{ exp.title }}
+              </h3>
+
+              <!-- Dates -->
+              <p class="text-xs text-neutral-500 mb-2">{{ exp.slotDates }}</p>
+
+              <!-- Host -->
+              <p class="text-xs text-neutral-500 mb-3">{{ exp.hostName }}</p>
+
+              <!-- Price -->
+              <div class="flex items-baseline gap-1">
+                @if (exp.price > 0) {
+                  <span class="text-xs text-neutral-500">From</span>
+                }
+                <span class="font-semibold text-neutral-900">{{ formatPrice(exp) }}</span>
+                @if (exp.price > 0) {
+                  <span class="text-xs text-neutral-500">/ ticket</span>
+                }
+              </div>
+            </div>
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+}

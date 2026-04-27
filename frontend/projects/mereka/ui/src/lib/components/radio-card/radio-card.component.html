@@ -1,0 +1,37 @@
+<button
+  type="button"
+  (click)="select()"
+  [disabled]="disabled"
+  class="relative flex flex-col p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer text-left w-full"
+  [class.border-primary-500]="checked"
+  [class.bg-primary-50]="checked"
+  [class.border-gray-200]="!checked"
+  [class.bg-white]="!checked"
+  [class.hover:border-gray-300]="!checked && !disabled"
+  [class.hover:shadow-sm]="!checked && !disabled"
+  [class.opacity-50]="disabled"
+  [class.cursor-not-allowed]="disabled"
+>
+  @if (recommended) {
+    <div class="absolute -top-3 left-4">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-500 text-white">
+        Recommended
+      </span>
+    </div>
+  }
+  @if (checked) {
+    <div class="absolute top-3 right-3">
+      <svg class="w-5 h-5 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </svg>
+    </div>
+  }
+  <ng-content select="[image]"></ng-content>
+  <h4 class="text-base font-semibold mt-3" [class.text-primary-700]="checked" [class.text-gray-900]="!checked">
+    <ng-content select="[title]"></ng-content>
+  </h4>
+  <p class="text-sm mt-1" [class.text-primary-600]="checked" [class.text-gray-500]="!checked">
+    <ng-content select="[description]"></ng-content>
+  </p>
+  <ng-content></ng-content>
+</button>

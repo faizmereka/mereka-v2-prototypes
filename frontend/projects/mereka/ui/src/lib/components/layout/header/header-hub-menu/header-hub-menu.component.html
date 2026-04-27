@@ -1,0 +1,34 @@
+@if (!isDataLoading) {
+  @if (!user.uid || allRoles.length === 0) {
+    <a ui-button-outline href="{{ merekaBaseUrl }}/welcome/hub">
+      List a service <mat-icon fontIcon="add" />
+    </a>
+  } @else {
+    @if (allRoles && allRoles.length > 1) {
+      <button ui-button-outline tabindex="0" [matMenuTriggerFor]="menu">
+        Business Dashboard <mat-icon fontIcon="expand_more" />
+      </button>
+      <mat-menu #menu="matMenu" class="ui-dropmenu ui-dropmenu-hub" >
+        <div class="hub-type-label">Your Hub</div>
+        @for (hubData of allRoles; track hubData.hubId) {
+          <a mat-menu-item class="ui-dropmenu-item hub-item" [href]="merekaBaseUrl + '/hub/' + hubData.hubId + '/dashboard'">
+            <div class="hub-item__wrapper">
+              <img ui-image class="hub-item__logo" [src]="hubData.hubLogo" alt />
+              <span class="hub-item__name">{{ hubData.hubName }} </span>
+              <mat-icon fontIcon="chevron_right" aria-hidden="true" />
+            </div>
+          </a>
+        }
+      </mat-menu>
+    } @else if (allRoles && allRoles.length === 1) {
+      <a ui-button-outline tabindex="0" [href]="merekaBaseUrl + '/hub/' + allRoles[0].hubId + '/dashboard'">
+        Business Dashboard <mat-icon fontIcon="autorenew" />
+      </a>
+    }
+  }
+} @else {
+  <ui-loader-skeleton-group class="hub-menu-loader">
+    <ui-loader-skeleton appearance="line" />
+    <!-- <ui-loader-spinner /> -->
+  </ui-loader-skeleton-group>
+}

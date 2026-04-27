@@ -1,0 +1,26 @@
+<button
+  type="button"
+  (click)="toggle()"
+  [disabled]="disabled"
+  class="relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer text-center min-h-[100px] w-full"
+  [class.border-primary-500]="checked"
+  [class.bg-primary-50]="checked"
+  [class.border-gray-200]="!checked"
+  [class.bg-white]="!checked"
+  [class.hover:border-gray-300]="!checked && !disabled"
+  [class.hover:bg-gray-50]="!checked && !disabled"
+  [class.opacity-50]="disabled"
+  [class.cursor-not-allowed]="disabled"
+>
+  @if (checked) {
+    <div class="absolute top-2 right-2">
+      <svg class="w-5 h-5 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </svg>
+    </div>
+  }
+  <ng-content select="[icon]"></ng-content>
+  <span class="mt-2 text-sm font-medium" [class.text-primary-700]="checked" [class.text-gray-700]="!checked">
+    <ng-content></ng-content>
+  </span>
+</button>

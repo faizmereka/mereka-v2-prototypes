@@ -1,0 +1,360 @@
+// Partially based on:
+// Bootstrap v5.3.0 | MIT License | getbootstrap.com
+// Normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css
+
+// Change from `box-sizing: content-box` so that `width` is not affected by `padding` or `border`.
+@layer mereka-base {
+  *,
+  ::after,
+  ::before {
+    box-sizing: border-box;
+    outline: none;
+    
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  // Body
+
+  body {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    color: #1A1623;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    font-family: var(--font-secondary), sans-serif;
+    font-size: var(--body);
+  }
+
+  hr {
+    margin: 0;
+    border: 0;
+    border-top: 1px solid #DDDDDE;
+  }
+
+  // Typography
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-family: var(--font-primary);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  // Paragraphs
+
+  p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }// 
+
+  p,
+  li,
+  i,
+  img,
+  div:focus {
+    outline: none;
+  }
+
+  // Lists
+
+  ol,
+  ul {
+    padding-left: 2rem;
+  }
+
+  ol,
+  ul,
+  dl {
+    margin-top: 0;
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  ol ol,
+  ul ul,
+  ol ul,
+  ul ol {
+    margin-bottom: 0;
+  }
+
+  // Blockquote
+
+  blockquote {
+    margin: 0 0 1rem;
+  }
+
+  // Strong
+  //
+  // Add the correct font weight in Chrome, Edge, and Safari
+
+  b,
+  strong {
+    font-weight: 700;
+  }
+
+  // Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+
+  sub,
+  sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+
+  sub {
+    bottom: -0.25em;
+  }
+
+  sup {
+    top: -0.5em;
+  }
+
+  // Links
+  //
+  // 1. Opinionated underline style for links
+
+  a {
+    color: #1A1623;
+    text-decoration: underline;
+    text-underline-offset: 3px; // 1
+    
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  // Images
+
+  img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+    border-style: none;
+  }
+
+  figure {
+    margin: 0 0 1rem;
+  }
+
+  // Small
+
+  small {
+    font-size: 14px;
+  }
+
+  // Pre
+
+  pre {
+    font-family: monospace, monospace;
+    font-size: 1em;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  // Table
+  //
+  // Prevent double borders
+
+  table {
+    caption-side: bottom;
+    border-collapse: collapse;
+  }
+
+  // 1. Removes font-weight bold by inheriting
+  // 2. Matches default `<td>` alignment by inheriting `text-align`.
+  // 3. Fix alignment for Safari
+
+  th {
+    font-weight: 700; // 1
+    text-align: inherit; // 2
+    text-align: -webkit-match-parent; // 3
+  }
+
+  thead,
+  tbody,
+  tfoot,
+  tr,
+  td,
+  th {
+    border-color: inherit;
+    border-style: solid;
+    border-width: 0;
+  }
+
+  // Forms
+  //
+  // 1. Allow labels to use `margin` for spacing.
+
+  label {
+    display: inline-block; // 1
+  }
+
+  // Explicitly remove focus outline in Chromium when it shouldn't be
+  // visible (e.g. as result of mouse click or touch tap). It already
+  // should be doing this automatically, but seems to currently be
+  // confused and applies its very visible two-tone outline anyway.
+
+  button:focus:not(:focus-visible) {
+    outline: 0;
+  }
+
+  // 1. Remove the margin in Firefox and Safari
+
+  input,
+  button,
+  select,
+  optgroup,
+  textarea {
+    margin: 0; // 1
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1.25;
+  }
+
+  // Remove the inheritance of text transform in Edge, Firefox, and IE.
+  // 1. Remove the inheritance of text transform in Firefox.
+
+  button,
+  select { // 1
+    text-transform: none;
+  }
+
+  select {
+    // Remove the inheritance of word-wrap in Safari.
+    // See https://github.com/twbs/bootstrap/issues/24990
+    word-wrap: normal;
+
+    // Undo the opacity change from Chrome
+    &:disabled {
+      opacity: 1;
+    }
+  }
+
+  // Set the cursor for non-`<button>` buttons
+
+  [role="button"] {
+    cursor: pointer;
+  }
+  
+  // 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`
+  //    controls in Android 4.
+  // 2. Correct the inability to style clickable types in iOS and Safari.
+
+  button,
+  [type="button"], // 1
+  [type="reset"],
+  [type="submit"] {
+    -webkit-appearance: button; // 2
+  }
+
+  // Remove inner border and padding from Firefox, but don't restore the outline like Normalize.
+
+  ::-moz-focus-inner {
+    padding: 0;
+    border-style: none;    
+  }
+
+  // 1. Textareas should really only resize vertically so they don't break their (horizontal) containers.
+
+  textarea {
+    resize: vertical; // 1
+  }
+
+  // 1. Browsers set a default `min-width: min-content;` on fieldsets,
+  //    unlike e.g. `<div>`s, which have `min-width: 0;` by default.
+  //    So we reset that to ensure fieldsets behave more like a standard block element.
+  //    See https://github.com/twbs/bootstrap/issues/12359
+  //    and https://html.spec.whatwg.org/multipage/#the-fieldset-and-legend-elements
+  // 2. Reset the default outline behavior of fieldsets so they don't affect page layout.
+
+  fieldset {
+    min-width: 0; // 1
+    padding: 0; // 2
+    margin: 0; // 2
+    border: 0; // 2
+  }
+
+  // Fix height of inputs with a type of datetime-local, date, month, week, or time
+  // See https://github.com/twbs/bootstrap/issues/18842
+
+  ::-webkit-datetime-edit-fields-wrapper,
+  ::-webkit-datetime-edit-text,
+  ::-webkit-datetime-edit-minute,
+  ::-webkit-datetime-edit-hour-field,
+  ::-webkit-datetime-edit-day-field,
+  ::-webkit-datetime-edit-month-field,
+  ::-webkit-datetime-edit-year-field {
+    padding: 0;
+  }
+
+  ::-webkit-inner-spin-button {
+    height: auto;
+  }
+
+  // 1. This overrides the extra rounded corners on search inputs in iOS so that our
+  //    `.form-control` class can properly style them. Note that this cannot simply
+  //    be added to `.form-control` as it's not specific enough. For details, see
+  //    https://github.com/twbs/bootstrap/issues/11586.
+  // 2. Correct the outline style in Safari.
+
+  [type="search"] {
+    -webkit-appearance: textfield; // 1
+    outline-offset: -2px; // 2
+  }
+
+  // Remove the inner padding in Chrome and Safari on macOS.
+
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+
+  // 1. Inherit font family and line height for file input buttons
+  // 2. Correct the inability to style clickable types in iOS and Safari.
+
+  ::file-selector-button {
+    font: inherit; // 1
+    -webkit-appearance: button; // 2
+  }
+
+  // Remove border from iframe
+
+  iframe {
+    border: 0;
+  }
+
+  // Progress
+  //
+  // Add the correct vertical alignment in Chrome, Firefox, and Opera.
+
+  progress {
+    vertical-align: baseline;
+  }
+
+  // Hidden attribute
+  //
+  // Always hide an element with the `hidden` HTML attribute.
+
+  [hidden] {
+    display: none !important;
+  }
+}

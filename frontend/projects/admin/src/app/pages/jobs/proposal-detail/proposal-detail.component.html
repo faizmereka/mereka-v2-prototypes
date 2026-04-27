@@ -1,0 +1,208 @@
+    <div class="min-h-screen bg-gray-50 animate-fade-in">
+      <!-- Back Navigation -->
+      <div class="px-6 py-4">
+        <button class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors" (click)="goBack()">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+          <span class="font-medium">Back to Proposals</span>
+        </button>
+      </div>
+
+      @if (isLoading()) {
+        <div class="flex items-center justify-center py-20">
+          <p class="text-gray-500">Loading proposal details...</p>
+        </div>
+      } @else if (proposal()) {
+        <div class="px-6 pb-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Main Content -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Proposal Header -->
+            <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div class="flex items-center gap-4">
+                  <ui-avatar [imageUrl]="proposal()!.expertAvatar" [name]="proposal()!.expertName" size="xl" />
+                  <div>
+                    <h2 class="text-xl font-bold text-gray-900">{{ proposal()!.expertName }}</h2>
+                    <span class="text-gray-500">{{ proposal()!.expertEmail }}</span>
+                  </div>
+                </div>
+                <span class="px-3 py-1 rounded-full text-sm font-medium" [class]="getStatusClasses(proposal()!.status)">
+                  {{ proposal()!.status | titlecase }}
+                </span>
+              </div>
+            </section>
+
+            <!-- Job Link -->
+            <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500">Proposal for Job:</span>
+                <a [routerLink]="['/dashboard/jobs', proposal()!.jobId]" class="flex items-center gap-2 text-primary font-medium hover:underline">
+                  {{ proposal()!.jobTitle }}
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+            </section>
+
+            <!-- Proposal Details -->
+            <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 class="text-lg font-bold text-gray-900 mb-4">Proposal Details</h3>
+
+              <div class="flex flex-wrap gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                <div class="flex-1 min-w-[200px]">
+                  <span class="block text-sm text-gray-500 mb-1">Proposed Bid</span>
+                  <span class="text-2xl font-bold text-gray-900">
+                    {{ proposal()!.selectedCurrency }}
+                    @if (proposal()!.priceType === 'hourly') {
+                      {{ proposal()!.hourlyProposedPrice }}/hr
+                    } @else {
+                      {{ proposal()!.proposedPrice | number }}
+                    }
+                  </span>
+                  @if (proposal()!.priceType === 'hourly' && proposal()!.workingHours) {
+                    <span class="block text-sm text-gray-500 mt-1">
+                      Est. {{ proposal()!.workingHours }} hrs =
+                      {{ proposal()!.selectedCurrency }} {{ (proposal()!.hourlyProposedPrice! * proposal()!.workingHours!) | number }}
+                    </span>
+                  }
+                </div>
+                <div>
+                  <span class="px-3 py-1 rounded-full text-sm font-medium"
+                    [class]="proposal()!.priceType === 'hourly' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'">
+                    {{ proposal()!.priceType | titlecase }} Price
+                  </span>
+                </div>
+              </div>
+
+              <div class="mb-6">
+                <h4 class="font-semibold text-gray-900 mb-2">Cover Letter</h4>
+                <div class="text-gray-700 whitespace-pre-line">{{ proposal()!.proposalDetails }}</div>
+              </div>
+
+              @if (proposal()!.files && proposal()!.files.length > 0) {
+                <div>
+                  <h4 class="font-semibold text-gray-900 mb-2">Attachments ({{ proposal()!.files.length }})</h4>
+                  <div class="space-y-2">
+                    @for (file of proposal()!.files; track file) {
+                      <a [href]="file" target="_blank" class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        <span class="flex-1 text-sm text-gray-700">{{ getFileName(file) }}</span>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                      </a>
+                    }
+                  </div>
+                </div>
+              }
+            </section>
+
+            <!-- Milestones Section -->
+            @if (milestones().length > 0) {
+              <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Proposed Milestones ({{ milestones().length }})</h3>
+
+                <div class="space-y-4">
+                  @for (milestone of milestones(); track milestone.id; let i = $index) {
+                    <div class="relative pl-8 pb-4" [class.border-b]="i < milestones().length - 1" [class.border-gray-100]="i < milestones().length - 1">
+                      <div class="absolute left-0 top-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold">
+                        {{ i + 1 }}
+                      </div>
+                      @if (i < milestones().length - 1) {
+                        <div class="absolute left-3 top-6 w-px h-full bg-gray-200"></div>
+                      }
+                      <div class="flex items-start justify-between mb-2">
+                        <span class="font-semibold text-gray-900">{{ milestone.taskName }}</span>
+                        <span class="px-2 py-0.5 rounded text-xs font-medium" [class]="getMilestoneStatusClasses(milestone.status)">
+                          {{ milestone.status | titlecase }}
+                        </span>
+                      </div>
+                      <p class="text-sm text-gray-600 mb-2">{{ milestone.taskDescription }}</p>
+                      <div class="flex items-center gap-4 text-sm">
+                        <span class="font-semibold text-gray-900">{{ milestone.currency }} {{ milestone.amount | number }}</span>
+                        <span class="text-gray-500">Due: {{ milestone.dueDate | date: 'mediumDate' }}</span>
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+                  <span class="font-semibold text-gray-900">Total</span>
+                  <span class="text-xl font-bold text-gray-900">{{ proposal()!.selectedCurrency }} {{ totalMilestoneAmount() | number }}</span>
+                </div>
+              </section>
+            }
+          </div>
+
+          <!-- Sidebar -->
+          <aside class="space-y-6">
+            <!-- Proposal Info -->
+            <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 class="font-bold text-gray-900 mb-4">Proposal Info</h3>
+              <div class="space-y-3">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">Submitted</span>
+                  <span class="text-sm font-medium text-gray-900">{{ proposal()!.createdDate | date: 'medium' }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">Last Updated</span>
+                  <span class="text-sm font-medium text-gray-900">{{ proposal()!.updatedDate | date: 'medium' }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">Price Type</span>
+                  <span class="text-sm font-medium text-gray-900">{{ proposal()!.priceType | titlecase }}</span>
+                </div>
+                @if (proposal()!.priceType === 'hourly') {
+                  <div class="flex justify-between">
+                    <span class="text-sm text-gray-500">Est. Hours</span>
+                    <span class="text-sm font-medium text-gray-900">{{ proposal()!.workingHours }} hours</span>
+                  </div>
+                }
+              </div>
+            </section>
+
+            <!-- Expert Profile Link -->
+            <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 class="font-bold text-gray-900 mb-4">Expert Profile</h3>
+              <a [routerLink]="['/dashboard/users', proposal()!.expertId]" class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <ui-avatar [imageUrl]="proposal()!.expertAvatar" [name]="proposal()!.expertName" size="md" />
+                <div class="flex-1">
+                  <span class="block font-medium text-gray-900">{{ proposal()!.expertName }}</span>
+                  <span class="text-sm text-primary">View full profile</span>
+                </div>
+                <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </section>
+
+            <!-- Hub Info -->
+            @if (proposal()!.hubId) {
+              <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 class="font-bold text-gray-900 mb-4">Hub</h3>
+                <a [routerLink]="['/dashboard/hubs', proposal()!.hubId]" class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <ui-avatar [imageUrl]="proposal()!.hubLogo" [name]="proposal()!.hubName" size="md" />
+                  <div class="flex-1">
+                    <span class="block font-medium text-gray-900">{{ proposal()!.hubName }}</span>
+                    <span class="text-sm text-primary">View hub</span>
+                  </div>
+                  <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </section>
+            }
+          </aside>
+        </div>
+      } @else {
+        <div class="mx-6 bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
+          <h2 class="text-xl font-bold text-gray-900 mb-2">Proposal Not Found</h2>
+          <p class="text-gray-500 mb-4">The proposal you're looking for doesn't exist or has been removed.</p>
+          <button class="px-4 py-2 bg-primary text-white rounded-lg font-medium" routerLink="/dashboard/jobs/proposals">Back to Proposals</button>
+        </div>
+      }
+    </div>

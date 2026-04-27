@@ -1,0 +1,178 @@
+<div class="bookings-container" [class.mobile]="isMobile()">
+  <!-- Mobile Header with Tabs (only on mobile) -->
+  @if (isMobile()) {
+    <div class="mobile-header">
+      <div class="mobile-tabs">
+        <button
+          class="mobile-tab"
+          [class.active]="bookingService.serviceType() === 'experience'"
+          (click)="bookingService.setServiceType('experience')"
+        >
+          Experiences
+        </button>
+        <button
+          class="mobile-tab"
+          [class.active]="bookingService.serviceType() === 'expertise'"
+          (click)="bookingService.setServiceType('expertise')"
+        >
+          Expertise
+        </button>
+      </div>
+    </div>
+  }
+
+  <div class="bookings-body">
+    <!-- Sidebar (desktop only) -->
+    @if (!isMobile()) {
+      <app-booking-sidebar></app-booking-sidebar>
+    }
+
+    <!-- Main Content -->
+    <div class="bookings-content">
+      <!-- Mobile Filter Header -->
+      @if (isMobile()) {
+        <div class="mobile-content-header">
+          <h5>{{ bookingService.serviceType() === 'experience' ? 'Experiences' : 'Expertise' }}</h5>
+          <button class="mobile-filter-btn" (click)="toggleMobileFilter()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            </svg>
+          </button>
+        </div>
+      }
+
+      <!-- Filter Bar (desktop only) -->
+      @if (!isMobile()) {
+        <app-booking-filters
+          (addBooking)="openAddBookingDialog()"
+          (exportBookings)="openExportDialog()"
+        ></app-booking-filters>
+      }
+
+      <!-- Loading State -->
+      @if (bookingService.loading()) {
+        <div class="loading-container">
+          <div class="spinner"></div>
+        </div>
+      } @else if (bookingService.error()) {
+        <!-- Error State -->
+        <div class="error-container">
+          <p>{{ bookingService.error() }}</p>
+          <button (click)="bookingService.refresh()">Try Again</button>
+        </div>
+      } @else if (!bookingService.hasBookings()) {
+        <!-- Empty State -->
+        <app-booking-empty-state></app-booking-empty-state>
+      } @else {
+        <!-- Booking Table -->
+        <app-booking-table
+          (actionMenuOpen)="openActionMenu($event)"
+        ></app-booking-table>
+
+        <!-- Pagination -->
+        @if (bookingService.totalPages() > 1) {
+          <div class="pagination">
+            <button
+              [disabled]="bookingService.currentPage() === 1"
+              (click)="bookingService.loadPage(bookingService.currentPage() - 1)"
+            >
+              Previous
+            </button>
+            <span class="page-info">
+              Page {{ bookingService.currentPage() }} of {{ bookingService.totalPages() }}
+            </span>
+            <button
+              [disabled]="bookingService.currentPage() >= bookingService.totalPages()"
+              (click)="bookingService.loadPage(bookingService.currentPage() + 1)"
+            >
+              Next
+            </button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Mobile Filter Slide-in -->
+  @if (showMobileFilter()) {
+    <div class="mobile-filter-overlay" (click)="toggleMobileFilter()"></div>
+    <div class="mobile-filter-panel">
+      <div class="mobile-filter-header">
+        <button class="back-btn" (click)="toggleMobileFilter()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+        </button>
+        <h6>Filters</h6>
+      </div>
+
+      <div class="mobile-filter-content">
+        <!-- Type Filters -->
+        <div class="filter-section">
+          <h6>Type</h6>
+          <label class="filter-option">
+            <span>Upcoming</span>
+            <input
+              type="checkbox"
+              [checked]="bookingService.statusFilter() === 'upcoming'"
+              (change)="bookingService.setStatusFilter('upcoming')"
+            />
+          </label>
+          <label class="filter-option">
+            <span>Past</span>
+            <input
+              type="checkbox"
+              [checked]="bookingService.statusFilter() === 'past'"
+              (change)="bookingService.setStatusFilter('past')"
+            />
+          </label>
+          <label class="filter-option">
+            <span>Cancelled</span>
+            <input
+              type="checkbox"
+              [checked]="bookingService.statusFilter() === 'cancelled'"
+              (change)="bookingService.setStatusFilter('cancelled')"
+            />
+          </label>
+        </div>
+      </div>
+
+      <div class="mobile-filter-footer">
+        <button class="clear-btn" (click)="bookingService.resetFilters()">Clear</button>
+        <button class="apply-btn" (click)="applyMobileFilters()">Apply filters</button>
+      </div>
+    </div>
+  }
+
+  <!-- Action Menu -->
+  @if (showActionMenu()) {
+    <div class="action-menu-overlay" (click)="closeActionMenu()"></div>
+    <div class="action-menu-panel">
+      <button *hasPermission="'booking.cancel'" class="action-item" (click)="openCancelDialog()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="15" y1="9" x2="9" y2="15"/>
+          <line x1="9" y1="9" x2="15" y2="15"/>
+        </svg>
+        Cancel Booking
+      </button>
+      <button class="action-item" (click)="viewBookingDetails()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        View Details
+      </button>
+    </div>
+  }
+
+  <!-- Mobile FAB Button -->
+  @if (isMobile()) {
+    <button *hasPermission="'booking.create'" class="fab-button" (click)="openAddBookingDialog()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </button>
+  }
+</div>

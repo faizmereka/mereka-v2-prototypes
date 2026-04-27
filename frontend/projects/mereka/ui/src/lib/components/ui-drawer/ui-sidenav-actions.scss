@@ -1,0 +1,29 @@
+@layer mereka-ui {
+  :root {
+    --ui-sidenav-actions-height: 84px !important;
+  }
+
+  .ui-sidenav-actions {
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    padding: 16px 24px;
+    box-shadow: 0px -6px 12px rgba(0, 0, 0, 0.05);
+    background-color: #FFF;
+    display: flex;
+    justify-content: center;
+    z-index: 100;
+
+    &__inner-container {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 400px;
+      gap: 16px;
+
+      .ui-button {
+        flex: 1 1 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,114 @@
+<div class="inner-container">
+  <div ui-card-body class="card-space"
+    [class.ui-card--compact]="effectiveLayout() === 'compact'"
+    [class.ui-card--extended]="effectiveLayout() === 'extended'">
+    <div class="ui-card-user">
+      <div ui-card-image>
+        <img ui-image placeholder="user" [src]="image()" alt />
+      </div>
+      <div ui-card-row>
+        <h3 ui-card-title>{{ title() }}</h3>
+
+        <div class="ui-card-meta">
+          <div class="ui-card-meta__row">
+            <span class="ui-card-meta__rating">
+              <mat-icon fontIcon="star" /><span>{{ rating() }}</span>
+            </span>
+
+            @if (!(isEmpty(submittedDate()) || hideElements().includes('submittedDate'))) {
+              <span class="ui-card-meta__submitted-date">
+                <span class="ui-card-meta__submitted-date__dot"> . </span> <span> {{ submittedDate() }}
+                  @if (serviceType() === 'job' && closedDate()) {
+                    <span class="ui-card-meta__submitted-date__dash">-</span>{{ closedDate() }}
+                  }
+                </span>
+              </span>
+            }
+
+            @if (!(isEmpty(date()) || hideElements().includes('date'))) {
+              <div class="ui-card-meta__date">Reviewed on {{ date() }}</div>
+            }
+          </div>
+        </div>
+      </div>
+
+      @if (filteredPhotos().length > 0 && !effectiveShowPhotos()) {
+        <div class="ui-card-meta__photos">
+          {{ filteredPhotos().length }} <mat-icon fontIcon="image" />
+        </div>
+      }
+      <ng-content select="ui-menu-options, [ui-menu-options]"></ng-content>
+    </div>
+
+    @if (!(isEmpty(serviceType()) || hideElements().includes('tags'))) {
+      <div class="ui-card-tags">
+        <span class="ui-card-tags__service-tag"
+          [class.tag-expertise]="serviceType() === 'expertise'"
+          [class.tag-experience]="serviceType() === 'experience'"
+          [class.tag-job]="serviceType() === 'job'">
+          {{ serviceType() }}
+        </span>
+      </div>
+    }
+
+    @if (!(isEmpty(serviceTitle()) || hideElements().includes('serviceTitle'))) {
+      <div class="ui-card-meta__service-title">{{ serviceTitle() }}</div>
+    }
+
+    <div class="ui-card-content">
+      <p class="ui-card-desc" [class.ui-card-desc--clamp]="!collapseReview() && clampReview()">
+        @if (!collapseReview() && review() && review().length >= reviewMaxLength()) {
+          @if (!showReview()) {
+            {{ review().substring(0, reviewMaxLength()) }}...
+          }
+          @if (showReview()) {
+            {{ review() }}
+          }
+          <span class="read-toggle" tabindex="0" role="button"
+            (keyup.return)="toggleReview($event)"
+            (keyup.enter)="toggleReview($event)"
+            (click)="toggleReview($event)">
+            Read {{ showReview() ? 'less' : 'more' }}
+          </span>
+        }
+        @if (review() && review().length <= reviewMaxLength()) {
+          {{ review() }}
+        }
+      </p>
+
+      @if (filteredPhotos().length > 0 && effectiveShowPhotos()) {
+        <div class="ui-card-photos">
+          @for (photo of filteredPhotos(); track $index) {
+            <div class="ui-card-photos__image" tabindex="0" role="button"
+              (keyup.return)="openGalleryLightbox($index)"
+              (keyup.enter)="openGalleryLightbox($index)"
+              (click)="openGalleryLightbox($index)">
+              <img ui-image [src]="photo" [attr.alt]="'Gallery photo ' + ($index+1)" loading="lazy">
+            </div>
+          }
+        </div>
+      }
+      @if (replyMessage()) {
+        <div class="ui-card-reply" [class.hide]="!showResponse()">
+          <div class="ui-card-reply__toggle" tabindex="0" role="button"
+            [attr.aria-label]="(showResponse() ? 'Expand' : 'Collapse') + ' reply message'"
+            [attr.aria-expanded]="!showResponse()"
+            (keyup.return)="toggleResponse($event)"
+            (keyup.enter)="toggleResponse($event)"
+            (click)="toggleResponse($event)">
+            <mat-icon [fontIcon]="showResponse() ? 'expand_more' : 'expand_less'" />
+            {{ replyTitle() }}
+          </div>
+          @if (showResponse() && replyMessage()) {
+            <p class="ui-card-reply__message">{{ replyMessage() }}</p>
+          }
+        </div>
+      }
+      @if (isEmpty(replyMessage()) && showReplyButton()) {
+        <button class="ui-card-reply-btn" (click)="replyReview()">
+          Reply
+        </button>
+      }
+    </div>
+  </div>
+</div>

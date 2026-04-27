@@ -1,0 +1,333 @@
+###############################################################################
+# Hub Invitation API Tests
+#
+# Requirements:
+# 1. Start the server: npm run dev
+# 2. Set environment variables below
+# 3. Run tests in order (some depend on previous responses)
+#
+# Compatible with:
+# - VS Code REST Client extension
+# - IntelliJ HTTP Client
+# - Manual curl commands (see curl-commands.sh)
+###############################################################################
+
+### Variables (Update these with your values)
+@baseUrl = http://localhost:3000/api/v1
+@authToken = YOUR_AUTH_TOKEN_HERE
+@hubId = YOUR_HUB_ID_HERE
+@invitationToken = INVITATION_TOKEN_FROM_RESPONSE
+@linkToken = LINK_TOKEN_FROM_RESPONSE
+@memberId = MEMBER_ID_FROM_RESPONSE
+@linkId = LINK_ID_FROM_RESPONSE
+
+###############################################################################
+# 1. Email Invitations
+###############################################################################
+
+### 1.1 Create email invitations
+# @name createEmailInvitations
+POST {{baseUrl}}/hubs/{{hubId}}/members/invite
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "invitations": [
+    {
+      "email": "newadmin@test.com",
+      "roleKey": "admin",
+      "title": "Senior Admin"
+    },
+    {
+      "email": "manager@test.com",
+      "roleKey": "manager",
+      "title": "Team Manager"
+    },
+    {
+      "email": "viewer@test.com",
+      "roleKey": "viewer"
+    }
+  ]
+}
+
+### 1.2 Accept email invitation
+# User who received invitation must authenticate first
+# @name acceptInvitation
+POST {{baseUrl}}/invitations/{{invitationToken}}/accept
+Authorization: Bearer {{authToken}}
+
+### 1.3 List pending invitations
+# @name listPendingInvitations
+GET {{baseUrl}}/hubs/{{hubId}}/invitations?page=1&limit=20
+Authorization: Bearer {{authToken}}
+
+### 1.4 Cancel pending invitation
+# @name cancelInvitation
+DELETE {{baseUrl}}/hubs/{{hubId}}/invitations/{{memberId}}
+Authorization: Bearer {{authToken}}
+
+###############################################################################
+# 2. Invitation Links (Shareable)
+###############################################################################
+
+### 2.1 Create invitation link
+# @name createInvitationLink
+POST {{baseUrl}}/hubs/{{hubId}}/invitation-links
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "roleKey": "manager",
+  "expiresInDays": 30,
+  "maxUses": 10
+}
+
+### 2.2 Create invitation link without usage limit
+# @name createUnlimitedLink
+POST {{baseUrl}}/hubs/{{hubId}}/invitation-links
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "roleKey": "viewer",
+  "expiresInDays": 7
+}
+
+### 2.3 Join hub via invitation link
+# Any authenticated user can use this link
+# @name joinViaLink
+POST {{baseUrl}}/invitation-links/{{linkToken}}/join
+Authorization: Bearer {{authToken}}
+
+### 2.4 List invitation links
+# @name listInvitationLinks
+GET {{baseUrl}}/hubs/{{hubId}}/invitation-links?page=1&limit=20
+Authorization: Bearer {{authToken}}
+
+### 2.5 Filter invitation links by status
+# @name filterLinksByStatus
+GET {{baseUrl}}/hubs/{{hubId}}/invitation-links?status=active&page=1&limit=20
+Authorization: Bearer {{authToken}}
+
+### 2.6 Disable invitation link
+# @name disableInvitationLink
+DELETE {{baseUrl}}/hubs/{{hubId}}/invitation-links/{{linkId}}
+Authorization: Bearer {{authToken}}
+
+###############################################################################
+# 3. Member Management
+###############################################################################
+
+### 3.1 List all hub members
+# @name listAllMembers
+GET {{baseUrl}}/hubs/{{hubId}}/members?page=1&limit=20
+Authorization: Bearer {{authToken}}
+
+### 3.2 Filter members by status
+# @name filterMembersByStatus
+GET {{baseUrl}}/hubs/{{hubId}}/members?status=active&page=1&limit=10
+Authorization: Bearer {{authToken}}
+
+### 3.3 Filter members by role
+# @name filterMembersByRole
+GET {{baseUrl}}/hubs/{{hubId}}/members?roleKey=admin&page=1&limit=10
+Authorization: Bearer {{authToken}}
+
+### 3.4 Search members by name or email
+# @name searchMembers
+GET {{baseUrl}}/hubs/{{hubId}}/members?search=john&page=1&limit=10
+Authorization: Bearer {{authToken}}
+
+### 3.5 Update member role
+# @name updateMemberRole
+PATCH {{baseUrl}}/hubs/{{hubId}}/members/{{memberId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "roleKey": "admin",
+  "title": "Senior Administrator"
+}
+
+### 3.6 Update member title only
+# @name updateMemberTitle
+PATCH {{baseUrl}}/hubs/{{hubId}}/members/{{memberId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "title": "Lead Developer"
+}
+
+### 3.7 Remove member from hub
+# @name removeMember
+DELETE {{baseUrl}}/hubs/{{hubId}}/members/{{memberId}}
+Authorization: Bearer {{authToken}}
+
+###############################################################################
+# 4. Error Cases (For Testing)
+###############################################################################
+
+### 4.1 Create invitation without authentication (401 Expected)
+# @name unauthorizedInvite
+POST {{baseUrl}}/hubs/{{hubId}}/members/invite
+Content-Type: application/json
+
+{
+  "invitations": [
+    {
+      "email": "test@test.com",
+      "roleKey": "admin"
+    }
+  ]
+}
+
+### 4.2 Create invitation with invalid email (400 Expected)
+# @name invalidEmail
+POST {{baseUrl}}/hubs/{{hubId}}/members/invite
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "invitations": [
+    {
+      "email": "not-an-email",
+      "roleKey": "admin"
+    }
+  ]
+}
+
+### 4.3 Create invitation with invalid role (400 Expected)
+# @name invalidRole
+POST {{baseUrl}}/hubs/{{hubId}}/members/invite
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "invitations": [
+    {
+      "email": "test@test.com",
+      "roleKey": "invalid-role"
+    }
+  ]
+}
+
+### 4.4 Accept expired invitation (410 Expected)
+# @name expiredInvitation
+POST {{baseUrl}}/invitations/expired-token-123/accept
+Authorization: Bearer {{authToken}}
+
+### 4.5 Join via invalid link (400 Expected)
+# @name invalidLink
+POST {{baseUrl}}/invitation-links/invalid-token-123/join
+Authorization: Bearer {{authToken}}
+
+### 4.6 Update non-existent member (400 Expected)
+# @name updateNonExistent
+PATCH {{baseUrl}}/hubs/{{hubId}}/members/507f1f77bcf86cd799439011
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "roleKey": "admin"
+}
+
+### 4.7 Remove hub owner (403 Expected)
+# Try to remove the hub owner - should fail
+DELETE {{baseUrl}}/hubs/{{hubId}}/members/OWNER_MEMBER_ID
+Authorization: Bearer {{authToken}}
+
+###############################################################################
+# 5. Permission Tests
+###############################################################################
+
+### 5.1 Try to invite without permission (403 Expected)
+# First, create a viewer user and authenticate as them
+POST {{baseUrl}}/hubs/{{hubId}}/members/invite
+Authorization: Bearer VIEWER_TOKEN
+Content-Type: application/json
+
+{
+  "invitations": [
+    {
+      "email": "test@test.com",
+      "roleKey": "admin"
+    }
+  ]
+}
+
+### 5.2 Try to remove member without permission (403 Expected)
+DELETE {{baseUrl}}/hubs/{{hubId}}/members/{{memberId}}
+Authorization: Bearer VIEWER_TOKEN
+
+### 5.3 Try to change role without permission (403 Expected)
+PATCH {{baseUrl}}/hubs/{{hubId}}/members/{{memberId}}
+Authorization: Bearer VIEWER_TOKEN
+Content-Type: application/json
+
+{
+  "roleKey": "admin"
+}
+
+###############################################################################
+# 6. Pagination Tests
+###############################################################################
+
+### 6.1 Get first page of members
+# @name firstPage
+GET {{baseUrl}}/hubs/{{hubId}}/members?page=1&limit=5
+Authorization: Bearer {{authToken}}
+
+### 6.2 Get second page of members
+# @name secondPage
+GET {{baseUrl}}/hubs/{{hubId}}/members?page=2&limit=5
+Authorization: Bearer {{authToken}}
+
+### 6.3 Get members with large limit
+# @name largeLimit
+GET {{baseUrl}}/hubs/{{hubId}}/members?page=1&limit=100
+Authorization: Bearer {{authToken}}
+
+###############################################################################
+# 7. Multi-Hub Membership Tests
+###############################################################################
+
+### 7.1 Invite same user to multiple hubs
+# This should work - users can be members of multiple hubs
+POST {{baseUrl}}/hubs/HUB_A_ID/members/invite
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "invitations": [
+    {
+      "email": "multihub@test.com",
+      "roleKey": "manager"
+    }
+  ]
+}
+
+### 7.2 Invite same user to another hub
+POST {{baseUrl}}/hubs/HUB_B_ID/members/invite
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "invitations": [
+    {
+      "email": "multihub@test.com",
+      "roleKey": "admin"
+    }
+  ]
+}
+
+###############################################################################
+# Notes:
+#
+# 1. Replace placeholder values ({{variable}}) with actual values from responses
+# 2. Run tests in order - some depend on previous responses
+# 3. For curl commands, see curl-commands.sh
+# 4. Expected response codes are noted in test names
+# 5. All successful responses follow format: { success: true, data: {...} }
+# 6. Error responses follow format: { success: false, error: { code, message } }
+###############################################################################

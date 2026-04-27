@@ -1,0 +1,59 @@
+<div class="inner-container">
+  @if (!hideElements().includes('image')) {
+    <ui-card-image [aspectRatio]="4/3">
+      <img ui-image [src]="image()" alt loading="lazy" />
+    </ui-card-image>
+  }
+
+  <div ui-card-body>
+    <ng-content select="[ui-card-body-start]"></ng-content>
+    @if (!hideElements().includes('date')) {
+      <span class="ui-card-date">{{ date() }}</span>
+    }
+    @if (!hideElements().includes('title')) {
+      <h3 ui-card-title>
+        @if (url()) {
+          <a ui-card-link
+            [routerLink]="url() ? [url()] : []"
+            [title]="title()"
+            [attr.target]="target() ?? null"
+            (click)="onClick()">
+            {{ title() }}
+          </a>
+        } @else if (href()) {
+          <a ui-card-link
+            [href]="href() ?? null"
+            [title]="title()"
+            [attr.target]="target() ?? null"
+            (click)="onClick()">
+            {{ title() }}
+          </a>
+        } @else {
+          {{ title() }}
+        }
+      </h3>
+    }
+
+    @if (!hideElements().includes('metadata')) {
+      <div class="ui-card-meta separator">
+        @for (data of metadata(); track data) {
+          @if (data) {
+            <span>{{ data }}</span>
+          }
+        }
+      </div>
+    }
+
+    @if (!hideElements().includes('partners')) {
+      <div class="ui-card-meta separator">
+        @for (data of partners(); track data) {
+          @if (data) {
+            <span>{{ data }}</span>
+          }
+        }
+      </div>
+    }
+
+    <ng-content select="[ui-card-body-end]"></ng-content>
+  </div>
+</div>

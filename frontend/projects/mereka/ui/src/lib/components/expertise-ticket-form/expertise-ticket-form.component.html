@@ -1,0 +1,334 @@
+<!-- Expertise Package Container -->
+<div class="space-y-4">
+  <!-- Packages List -->
+  <div
+    cdkDropList
+    [cdkDropListData]="packages()"
+    (cdkDropListDropped)="onDrop($event)"
+    class="space-y-4"
+  >
+    @for (pkg of packages(); track pkg.id; let i = $index) {
+      <div
+        cdkDrag
+        [cdkDragDisabled]="pkg.isEditing && !pkg.isSaved"
+        class="bg-white border border-neutral-200 rounded-xl overflow-hidden"
+      >
+        <!-- Collapsed View (Saved Package) -->
+        @if (!pkg.isEditing && pkg.isSaved) {
+          <div class="p-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <!-- Drag Handle -->
+              <button
+                type="button"
+                cdkDragHandle
+                class="cursor-grab active:cursor-grabbing text-neutral-400 hover:text-neutral-600"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                </svg>
+              </button>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-semibold text-neutral-900">{{ pkg.ticketName }}</span>
+                  <span
+                    class="px-2 py-0.5 text-xs rounded-full font-medium"
+                    [class.bg-green-100]="pkg.ticketType === 'Free'"
+                    [class.text-green-700]="pkg.ticketType === 'Free'"
+                    [class.bg-blue-100]="pkg.ticketType === 'Paid'"
+                    [class.text-blue-700]="pkg.ticketType === 'Paid'"
+                  >
+                    {{ pkg.ticketType }}
+                  </span>
+                </div>
+                <div class="mt-1 text-sm text-neutral-500">
+                  {{ formatDuration(pkg) }} • {{ formatPrice(pkg) }} • {{ formatMode(pkg) }}
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                (click)="editPackage(pkg.id)"
+                class="p-2 text-neutral-400 hover:text-neutral-600 rounded-full hover:bg-neutral-100"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                (click)="duplicatePackage(pkg.id)"
+                class="p-2 text-neutral-400 hover:text-neutral-600 rounded-full hover:bg-neutral-100"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+              @if (packages().length > 1) {
+                <button
+                  type="button"
+                  (click)="removePackage(pkg.id)"
+                  class="p-2 text-neutral-400 hover:text-red-600 rounded-full hover:bg-neutral-100"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Expanded View (Editing) -->
+        @if (pkg.isEditing) {
+          <div class="flex flex-col lg:flex-row">
+            <!-- Left Column - Form Fields -->
+            <div class="flex-1 p-5 space-y-4">
+              <!-- Paid/Free Toggle -->
+              <div class="flex gap-0.5 p-0.5 bg-neutral-200 rounded-full w-fit">
+                @for (type of packageTypes; track type) {
+                  <button
+                    type="button"
+                    (click)="onPackageTypeChange(pkg.id, type)"
+                    class="px-4 py-1.5 text-sm font-medium rounded-full transition-all"
+                    [class.bg-neutral-900]="pkg.ticketType === type"
+                    [class.text-white]="pkg.ticketType === type"
+                    [class.text-neutral-500]="pkg.ticketType !== type"
+                  >
+                    {{ type }}
+                  </button>
+                }
+              </div>
+
+              <!-- Service Package Name -->
+              <div>
+                <label class="block text-sm font-medium text-neutral-900 mb-1.5">Service package*</label>
+                <input
+                  type="text"
+                  [ngModel]="pkg.ticketName"
+                  (ngModelChange)="updatePackage(pkg.id, 'ticketName', $event)"
+                  placeholder="Package Name"
+                  maxlength="40"
+                  class="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 placeholder:text-neutral-400 text-sm"
+                />
+                <div class="text-xs text-neutral-400 mt-1">{{ pkg.ticketName.length }} / 40</div>
+              </div>
+
+              <!-- Rate and Session Duration Row -->
+              <div class="grid grid-cols-2 gap-3">
+                <!-- Rate -->
+                <div>
+                  <label class="block text-sm font-medium text-neutral-900 mb-1.5">Rate*</label>
+                  <div class="flex border border-neutral-200 rounded-lg overflow-hidden">
+                    <span class="px-3 py-2.5 bg-neutral-50 text-sm font-medium text-neutral-600 border-r border-neutral-200">
+                      {{ currency() }}
+                    </span>
+                    <input
+                      type="number"
+                      [ngModel]="pkg.ticketPrice"
+                      (ngModelChange)="updatePackage(pkg.id, 'ticketPrice', $event)"
+                      [disabled]="pkg.ticketType === 'Free'"
+                      placeholder="00.00"
+                      step="0.01"
+                      min="0"
+                      class="flex-1 px-3 py-2.5 focus:outline-none disabled:bg-neutral-50 disabled:text-neutral-400 text-right text-sm"
+                    />
+                  </div>
+                  @if (pkg.ticketType !== 'Free' && pkg.ticketPrice > 0) {
+                    <div class="text-xs text-neutral-500 mt-1">
+                      Buyer total: {{ calculateBuyerTotal(pkg.ticketPrice) }}
+                    </div>
+                  }
+                </div>
+
+                <!-- Session Duration -->
+                <div>
+                  <label class="block text-sm font-medium text-neutral-900 mb-1.5">Session Duration*</label>
+                  <select
+                    [ngModel]="pkg.sessionDuration"
+                    (ngModelChange)="updatePackage(pkg.id, 'sessionDuration', $event)"
+                    class="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 bg-white text-sm"
+                  >
+                    @for (opt of sessionDurationOptions; track opt.value) {
+                      <option [value]="opt.value">{{ opt.label }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div>
+                <label class="block text-sm font-medium text-neutral-900 mb-1">
+                  Description <span class="text-neutral-400 font-normal">(Optional)</span>
+                </label>
+                <p class="text-xs text-neutral-500 mb-2">Tell users more about this package. You can include the itinerary or features offered in this service type here.</p>
+                <textarea
+                  [ngModel]="pkg.description"
+                  (ngModelChange)="updatePackage(pkg.id, 'description', $event)"
+                  rows="3"
+                  maxlength="200"
+                  placeholder="Tell users more about this package..."
+                  class="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 resize-none placeholder:text-neutral-400 text-sm"
+                ></textarea>
+                <div class="text-xs text-neutral-400 mt-1">{{ pkg.description.length }} / 200</div>
+              </div>
+
+              <!-- Save Package Button -->
+              <div class="pt-1">
+                <button
+                  type="button"
+                  (click)="savePackage(pkg.id)"
+                  [disabled]="!isPackageValid(pkg)"
+                  class="flex items-center gap-2 px-4 py-2 bg-neutral-100 text-neutral-700 rounded-lg hover:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                >
+                  Save Package
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Column - Package Mode & Settings -->
+            <div class="lg:w-72 p-5 border-t lg:border-t-0 lg:border-l border-neutral-200">
+              <!-- Package Mode -->
+              <div class="mb-6 pb-6 border-b border-neutral-200">
+                <div class="text-sm font-semibold text-neutral-900 mb-1">Package Mode</div>
+                <p class="text-xs text-neutral-500 mb-4 leading-relaxed">
+                  Online Expertise can be hosted from anywhere via video, whereas physical Expertise will be conducted in-person at a physical location of your choice.
+                </p>
+                <div class="space-y-2">
+                  @for (mode of packageModes; track mode.value) {
+                    <label class="flex items-center gap-3 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="expertiseMode_{{ pkg.id }}"
+                        [value]="mode.value"
+                        [checked]="pkg.expertiseMode === mode.value"
+                        (change)="updatePackage(pkg.id, 'expertiseMode', mode.value)"
+                        class="w-4 h-4 text-neutral-900 border-neutral-300 focus:ring-neutral-900"
+                      />
+                      <span class="text-sm text-neutral-700">{{ mode.label }}</span>
+                    </label>
+                  }
+                </div>
+              </div>
+
+              <!-- Package Settings (hidden for flexible availability) -->
+              @if (!hidePackageSettings()) {
+                <div>
+                  <div class="text-sm font-semibold text-neutral-900 mb-4">Package Settings</div>
+
+                  <!-- ASAP Bookings Toggle -->
+                  <div class="flex items-start justify-between gap-3 mb-4 pb-4 border-b border-neutral-200">
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-neutral-900 mb-0.5">ASAP bookings</div>
+                      <p class="text-xs text-neutral-500 leading-relaxed">This enables users to request to meet you immediately at the soonest mutually agreed time.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-0.5">
+                      <input
+                        type="checkbox"
+                        [checked]="pkg.asapBookings"
+                        (change)="updatePackage(pkg.id, 'asapBookings', $any($event.target).checked)"
+                        class="sr-only peer"
+                      />
+                      <div class="w-10 h-5 bg-neutral-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-neutral-900"></div>
+                    </label>
+                  </div>
+
+                  <!-- Buffer Time Toggle -->
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-neutral-900 mb-0.5">Buffer time after sessions</div>
+                      <p class="text-xs text-neutral-500 leading-relaxed">Block off extra time after any booked sessions from this package to account for delays, breaks, or preparation between sessions.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-0.5">
+                      <input
+                        type="checkbox"
+                        [checked]="pkg.hasBufferTime"
+                        (change)="updatePackage(pkg.id, 'hasBufferTime', $any($event.target).checked)"
+                        class="sr-only peer"
+                      />
+                      <div class="w-10 h-5 bg-neutral-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-neutral-900"></div>
+                    </label>
+                  </div>
+
+                  <!-- Buffer Time Options (when enabled) -->
+                  @if (pkg.hasBufferTime) {
+                    <div class="mt-3 pt-3 border-t border-neutral-200">
+                      <label class="block text-xs font-medium text-neutral-600 mb-1">Buffer duration</label>
+                      <select
+                        [ngModel]="pkg.bufferTime"
+                        (ngModelChange)="updatePackage(pkg.id, 'bufferTime', $event)"
+                        class="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm bg-white"
+                      >
+                        @for (time of bufferTimeOptions; track time) {
+                          <option [value]="time">{{ time }} minutes</option>
+                        }
+                      </select>
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- Delete Package Button (if more than 1 package) -->
+              @if (packages().length > 1) {
+                <div class="mt-5 pt-5 border-t border-neutral-200">
+                  <button
+                    type="button"
+                    (click)="removePackage(pkg.id)"
+                    class="flex items-center gap-2 text-xs text-red-600 hover:text-red-700"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete Package
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Unsaved Warning -->
+          @if (!pkg.isSaved) {
+            <div class="px-6 py-3 bg-amber-50 border-t border-amber-200 flex items-center gap-2 text-sm text-amber-800">
+              <svg class="w-5 h-5 text-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L1 21h22L12 2zm0 3.83L19.17 19H4.83L12 5.83zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
+              </svg>
+              You need to Save Package before adding another Package
+            </div>
+          }
+        }
+
+        <!-- Drag Preview -->
+        <div *cdkDragPlaceholder class="h-20 border-2 border-dashed border-neutral-300 bg-neutral-50 rounded-xl"></div>
+      </div>
+    }
+  </div>
+
+  <!-- Add Package Button -->
+  @if (canAddPackage()) {
+    <button
+      type="button"
+      (click)="addPackage('Paid')"
+      class="w-full px-4 py-4 border-2 border-dashed border-neutral-300 rounded-xl text-neutral-600 hover:border-neutral-400 hover:text-neutral-700 transition-colors"
+    >
+      <span class="flex items-center justify-center gap-2 text-sm font-medium">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        Add Package
+      </span>
+    </button>
+  }
+
+  <!-- Max Packages Warning -->
+  @if (packages().length >= maxPackages()) {
+    <div class="flex items-center gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <span class="text-sm">You have reached the maximum number of packages ({{ maxPackages() }}).</span>
+    </div>
+  }
+</div>

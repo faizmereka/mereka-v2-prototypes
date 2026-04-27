@@ -1,0 +1,297 @@
+<div class="space-y-6" [formGroup]="form">
+  <!-- Learning Outcomes Section -->
+  <ui-collapsible title="Learning Outcomes" badge="Optional" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">What will your Learners be able to take away from your Experience?</h3>
+        <p class="text-sm text-neutral-600 mb-6">
+          Please outline at least 3 learning outcomes that your Experience will provide. A concise description of 100-200 words is recommended.
+        </p>
+        <textarea
+          [value]="learningOutcomes()"
+          (input)="onLearningOutcomesChange($any($event.target).value)"
+          placeholder="Description"
+          rows="6"
+          class="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent resize-none"
+        ></textarea>
+      </div>
+      <div class="lg:w-72 flex-shrink-0"></div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Instructions Section -->
+  <ui-collapsible title="Instructions" badge="Optional" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">How should your Learners prepare for the Experience?</h3>
+        <p class="text-sm text-neutral-600 mb-6">
+          Please provide clear instructions for your Learners. A concise description of 100-200 words is recommended.
+        </p>
+        <textarea
+          [value]="instructions()"
+          (input)="onInstructionsChange($any($event.target).value)"
+          placeholder="Description"
+          rows="6"
+          class="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent resize-none"
+        ></textarea>
+      </div>
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">TIPS</span>
+        </div>
+        <ul class="text-sm text-neutral-600 leading-relaxed space-y-2 list-disc list-inside">
+          <li>For physical Experiences, provide relevant information such as the meeting point, location, transportation directions, or other necessary guidelines.</li>
+          <li>For online Experiences, provide information on the video conferencing software used, along with setup guidelines and any further steps for Learners (eg. checking for a confirmation email with a link to your Experience).</li>
+        </ul>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Materials Section -->
+  <ui-collapsible title="Materials" badge="Optional" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">Will you provide any materials?</h3>
+        <p class="text-sm text-neutral-600 mb-6">
+          Materials may include textbooks and notes, tools, craft supplies, etc.
+        </p>
+
+        <div class="space-y-3 mb-4">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="materialsOption"
+              [checked]="materialsOption() === 'none'"
+              (change)="onMaterialsOptionChange('none')"
+              class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="text-neutral-900">There are no materials provided</span>
+          </label>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="materialsOption"
+              [checked]="materialsOption() === 'provide'"
+              (change)="onMaterialsOptionChange('provide')"
+              class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="text-neutral-900">I will provide the following materials for my Learners</span>
+          </label>
+        </div>
+
+        @if (materialsOption() === 'provide') {
+          <div class="flex gap-2">
+            <input
+              type="text"
+              [(ngModel)]="materialInput"
+              [ngModelOptions]="{standalone: true}"
+              (keyup.enter)="addMaterial()"
+              placeholder="Type Materials"
+              class="flex-1 h-12 px-4 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
+            />
+            <button
+              type="button"
+              (click)="addMaterial()"
+              class="w-12 h-12 flex items-center justify-center bg-neutral-100 rounded-lg hover:bg-neutral-200 transition-colors"
+            >
+              <svg class="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+          </div>
+          @if (materials().length > 0) {
+            <div class="flex flex-wrap gap-2 mt-3">
+              @for (material of materials(); track material) {
+                <span class="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 rounded-full text-sm">
+                  {{ material }}
+                  <button type="button" (click)="removeMaterial(material)" class="text-neutral-500 hover:text-neutral-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </span>
+              }
+            </div>
+          }
+        }
+      </div>
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">TIPS</span>
+        </div>
+        <p class="text-sm text-neutral-600 leading-relaxed">
+          For an online Experience, you can send out virtual materials such as PDF notes, slides or links to a source where your Learners may access those materials.
+        </p>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- What to Bring Section -->
+  <ui-collapsible title="What to Bring" badge="Optional" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">What should Learners bring to your Experience?</h3>
+        <p class="text-sm text-neutral-600 mb-6">
+          If Learners need anything in order to enjoy your Experience, please list it here. This list will be emailed to Learners when they book your Experience to help them prepare.
+        </p>
+
+        <div class="space-y-3 mb-4">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="bringOption"
+              [checked]="bringOption() === 'nothing'"
+              (change)="onBringOptionChange('nothing')"
+              class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="text-neutral-900">This Experience does not require anything</span>
+          </label>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="bringOption"
+              [checked]="bringOption() === 'bring'"
+              (change)="onBringOptionChange('bring')"
+              class="w-5 h-5 text-neutral-900 focus:ring-neutral-900"
+            />
+            <span class="text-neutral-900">My Learners should bring the following items</span>
+          </label>
+        </div>
+
+        @if (bringOption() === 'bring') {
+          <div class="flex gap-2">
+            <input
+              type="text"
+              [(ngModel)]="bringItemInput"
+              [ngModelOptions]="{standalone: true}"
+              (keyup.enter)="addBringItem()"
+              placeholder="Type Items"
+              class="flex-1 h-12 px-4 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
+            />
+            <button
+              type="button"
+              (click)="addBringItem()"
+              class="w-12 h-12 flex items-center justify-center bg-neutral-100 rounded-lg hover:bg-neutral-200 transition-colors"
+            >
+              <svg class="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+          </div>
+          @if (bringItems().length > 0) {
+            <div class="flex flex-wrap gap-2 mt-3">
+              @for (item of bringItems(); track item) {
+                <span class="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 rounded-full text-sm">
+                  {{ item }}
+                  <button type="button" (click)="removeBringItem(item)" class="text-neutral-500 hover:text-neutral-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </span>
+              }
+            </div>
+          }
+        }
+      </div>
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">TIPS</span>
+        </div>
+        <p class="text-sm text-neutral-600 leading-relaxed">
+          Your Learners should be equally prepared for an online Experience, so make sure to indicate what they will need before the video session.
+        </p>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Poster Section -->
+  <ui-collapsible title="Poster" badge="Optional" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">Showcase a poster that relates to your Experience</h3>
+        <p class="text-sm text-neutral-600 mb-6">
+          The poster could consist of your Experience's guidelines, or even promotional material for past and future events.
+        </p>
+
+        <div
+          class="border-2 border-dashed border-neutral-200 rounded-lg p-8 text-center hover:border-neutral-300 transition-colors cursor-pointer"
+          (click)="posterInput.click()"
+        >
+          @if (posterPreview()) {
+            <img [src]="posterPreview()" alt="Poster preview" class="max-h-48 mx-auto rounded" />
+          } @else {
+            <svg class="w-12 h-12 mx-auto text-neutral-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <p class="text-sm text-neutral-500">Click to upload poster</p>
+            <p class="text-xs text-neutral-400 mt-1">PNG, JPG up to 10MB</p>
+          }
+          <input
+            #posterInput
+            type="file"
+            accept="image/*"
+            (change)="onPosterChange($event)"
+            class="hidden"
+          />
+        </div>
+      </div>
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">TIPS</span>
+        </div>
+        <p class="text-sm text-neutral-600 leading-relaxed">
+          Your poster may be constrained to fit the frame here in the preview, but it will be displayed according to its original size on your Experience page.
+        </p>
+      </div>
+    </div>
+  </ui-collapsible>
+
+  <!-- Custom Questions Section -->
+  <ui-collapsible title="Custom Questions" badge="Optional" [expanded]="true">
+    <div class="flex flex-col lg:flex-row gap-8 pt-6">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-neutral-900 mb-2">Create a custom form for your Learners</h3>
+        <p class="text-sm text-neutral-600 mb-6">
+          Add custom questions that your Learners will need to answer when booking this Experience. You can add up to 10 questions.
+        </p>
+
+        <ui-custom-questions
+          #customQuestionsComponent
+          [maxQuestions]="10"
+          [serviceType]="'experience'"
+          (questionsChange)="onQuestionsChange($event)"
+          (mandatoryChange)="onMandatoryChange($event)"
+        />
+      </div>
+      <div class="lg:w-72 flex-shrink-0">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span class="font-semibold text-neutral-900">TIPS</span>
+        </div>
+        <ul class="text-sm text-neutral-600 leading-relaxed space-y-2 list-disc list-inside">
+          <li>Use short answer for brief responses like names or single words.</li>
+          <li>Use paragraph for longer responses requiring detailed answers.</li>
+          <li>Use dropdown, multiple choice, or checkboxes when you want users to select from predefined options.</li>
+          <li>Mark questions as mandatory if you need the information to deliver your Experience.</li>
+        </ul>
+      </div>
+    </div>
+  </ui-collapsible>
+</div>

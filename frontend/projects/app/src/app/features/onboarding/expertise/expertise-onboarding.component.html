@@ -1,0 +1,108 @@
+<div class="expertise-onboarding h-screen flex flex-col bg-neutral-50 overflow-hidden">
+  <!-- Loading Overlay -->
+  @if (isLoading()) {
+    <div class="fixed inset-0 bg-white/80 flex items-center justify-center z-50">
+      <div class="flex flex-col items-center gap-4">
+        <div class="w-8 h-8 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-sm text-neutral-600">Loading expertise...</p>
+      </div>
+    </div>
+  }
+
+  <!-- Header with Step Navigation -->
+  <header class="flex-shrink-0 bg-white border-b border-neutral-200">
+    <div class="flex items-center justify-between px-6 py-4">
+      <!-- Logo -->
+      <a [href]="webUrl" class="inline-block">
+        <img src="/assets/images/mereka-logo.svg" alt="Mereka" class="h-8" />
+      </a>
+
+      <!-- Step Navigation -->
+      <nav class="hidden lg:flex items-center gap-1">
+        @for (step of steps; track step.id; let i = $index) {
+          <button
+            type="button"
+            (click)="navigateToStep(i)"
+            class="px-4 py-2 text-sm font-medium rounded-full transition-colors cursor-pointer"
+            [class.bg-neutral-900]="isStepActive(i)"
+            [class.text-white]="isStepActive(i)"
+            [class.text-neutral-600]="!isStepActive(i)"
+            [class.hover:text-neutral-900]="!isStepActive(i)"
+            [class.hover:bg-neutral-100]="!isStepActive(i)"
+          >
+            {{ step.label }}
+          </button>
+        }
+      </nav>
+
+      <!-- Mobile: Current Step Indicator -->
+      <div class="lg:hidden text-sm text-neutral-600">
+        Step {{ currentStepIndex() + 1 }} of {{ steps.length }}
+      </div>
+
+      <!-- Edit Mode Badge -->
+      @if (isEditMode()) {
+        <span class="hidden lg:inline-flex items-center px-3 py-1 text-xs font-medium bg-amber-100 text-amber-800 rounded-full">
+          Editing
+        </span>
+      }
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 overflow-y-auto">
+    <div class="max-w-6xl mx-auto px-4 lg:px-8 py-8 lg:py-12">
+      <!-- Progress Message -->
+      <h1 class="text-2xl lg:text-3xl font-bold text-center text-neutral-900 mb-8">
+        {{ progressMessage() }}
+      </h1>
+
+      <!-- Error Message -->
+      @if (error()) {
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+          {{ error() }}
+        </div>
+      }
+
+      <!-- Step Content -->
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="flex-shrink-0 bg-white border-t border-neutral-200 px-6 py-4">
+    <div class="flex items-center justify-between max-w-6xl mx-auto">
+      <button
+        type="button"
+        (click)="goBack()"
+        [disabled]="isSaving()"
+        class="px-8 py-3 text-sm font-semibold border border-neutral-200 rounded-full hover:bg-neutral-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Back
+      </button>
+      <button
+        type="button"
+        (click)="saveAndExit()"
+        [disabled]="isSaving()"
+        class="text-sm font-semibold text-neutral-700 hover:text-neutral-900 transition-colors disabled:opacity-50"
+      >
+        @if (isSaving()) {
+          <span class="flex items-center gap-2">
+            <span class="w-4 h-4 border-2 border-neutral-600 border-t-transparent rounded-full animate-spin"></span>
+            Saving...
+          </span>
+        } @else {
+          Save and Exit
+        }
+      </button>
+      <button
+        type="button"
+        (click)="continue()"
+        [disabled]="isSaving() || isPublishDisabled()"
+        class="px-8 py-3 text-sm font-semibold text-white bg-neutral-900 rounded-full hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ getContinueButtonText() }}
+      </button>
+    </div>
+  </footer>
+</div>

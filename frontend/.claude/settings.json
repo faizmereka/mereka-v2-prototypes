@@ -1,0 +1,23 @@
+{
+  "enabledPlugins": {
+    "github:Biji-Biji-Initiative/team-skills/plugins/core": true,
+    "github:Biji-Biji-Initiative/team-skills/plugins/web": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ng:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(git:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(mkdir:*)",
+      "Bash(curl:*)",
+      "Bash(docker:*)",
+      "Bash(kubectl:*)",
+      "Bash(gcloud:*)"
+    ],
+    "deny": []
+  }
+}

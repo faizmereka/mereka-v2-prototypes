@@ -1,0 +1,173 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold text-neutral-900">Notifications</h1>
+      <p class="text-neutral-500 mt-1">Stay updated with your activities</p>
+    </div>
+    @if (activeTab() === 'all' && unreadCount() > 0) {
+      <button
+        type="button"
+        (click)="markAllAsRead()"
+        class="px-4 py-2 text-sm font-medium text-primary hover:text-primary-dark hover:bg-primary/5 rounded-lg transition-colors"
+      >
+        Mark all as read
+      </button>
+    }
+  </div>
+
+  <!-- Tabs -->
+  <div class="border-b border-neutral-200">
+    <nav class="flex gap-8">
+      <button
+        type="button"
+        (click)="activeTab.set('all')"
+        class="pb-4 px-1 border-b-2 font-medium text-sm transition-colors"
+        [class.border-primary]="activeTab() === 'all'"
+        [class.text-primary]="activeTab() === 'all'"
+        [class.border-transparent]="activeTab() !== 'all'"
+        [class.text-neutral-500]="activeTab() !== 'all'"
+        [class.hover:text-neutral-700]="activeTab() !== 'all'"
+      >
+        All Notifications
+        @if (unreadCount() > 0) {
+          <span class="ml-2 px-2.5 py-0.5 bg-primary text-white text-xs font-medium rounded-full">
+            {{ unreadCount() }}
+          </span>
+        }
+      </button>
+      <button
+        type="button"
+        (click)="activeTab.set('settings')"
+        class="pb-4 px-1 border-b-2 font-medium text-sm transition-colors"
+        [class.border-primary]="activeTab() === 'settings'"
+        [class.text-primary]="activeTab() === 'settings'"
+        [class.border-transparent]="activeTab() !== 'settings'"
+        [class.text-neutral-500]="activeTab() !== 'settings'"
+        [class.hover:text-neutral-700]="activeTab() !== 'settings'"
+      >
+        Settings
+      </button>
+    </nav>
+  </div>
+
+  <!-- All Notifications Tab -->
+  @if (activeTab() === 'all') {
+    <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+      @if (loading()) {
+        <div class="flex items-center justify-center py-20">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      } @else if (error()) {
+        <div class="text-center py-20 px-6">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-error/10 flex items-center justify-center">
+            <ui-icon name="error" size="xl" class="text-error" />
+          </div>
+          <h3 class="text-lg font-medium text-neutral-900">Failed to load notifications</h3>
+          <p class="text-neutral-500 mt-2">{{ error() }}</p>
+        </div>
+      } @else if (notifications().length === 0) {
+        <div class="text-center py-20 px-6">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-neutral-100 flex items-center justify-center">
+            <ui-icon name="bell" size="xl" class="text-neutral-400" />
+          </div>
+          <h3 class="text-lg font-medium text-neutral-900">No notifications yet</h3>
+          <p class="text-neutral-500 mt-2 max-w-sm mx-auto">
+            When you receive notifications about bookings, payments, or activities, they'll appear here.
+          </p>
+        </div>
+      } @else {
+        <div class="divide-y divide-neutral-100">
+          @for (notification of notifications(); track notification._id) {
+            <div
+              (click)="markAsRead(notification)"
+              class="px-6 py-5 hover:bg-neutral-50 cursor-pointer transition-colors group"
+              [class.bg-primary/5]="!notification.isRead"
+            >
+              <div class="flex gap-4">
+                <!-- Icon -->
+                <div
+                  class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                  [class]="getNotificationClasses(notification.templateId)"
+                >
+                  <ui-icon [name]="getNotificationIcon(notification.templateId)" size="sm" />
+                </div>
+
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1">
+                      <p class="font-semibold text-sm text-neutral-900">
+                        {{ notification.title }}
+                      </p>
+                      <p class="text-sm text-neutral-600 mt-1 line-clamp-2">
+                        {{ notification.message }}
+                      </p>
+                      <p class="text-xs text-neutral-400 mt-2">
+                        {{ getTimeAgo(notification.createdAt) }}
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      @if (!notification.isRead) {
+                        <div class="w-2.5 h-2.5 bg-primary rounded-full flex-shrink-0"></div>
+                      }
+                      <button
+                        type="button"
+                        (click)="deleteNotification($event, notification)"
+                        class="p-1 rounded-md text-neutral-400 hover:text-error hover:bg-error/10 opacity-0 group-hover:opacity-100 transition-all"
+                        title="Delete notification"
+                      >
+                        <ui-icon name="close" size="xs" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Actions -->
+                  @if (notification.actions && notification.actions.length > 0) {
+                    <div class="flex gap-2 mt-3">
+                      @for (action of notification.actions; track action.label) {
+                        <a
+                          [href]="action.url"
+                          class="text-sm font-medium"
+                          [class.text-primary]="action.type === 'primary'"
+                          [class.hover:text-primary-dark]="action.type === 'primary'"
+                          [class.text-neutral-600]="action.type === 'secondary'"
+                          [class.hover:text-neutral-800]="action.type === 'secondary'"
+                        >
+                          {{ action.label }}
+                        </a>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Load More -->
+        @if (loadingMore()) {
+          <div class="flex items-center justify-center py-6 border-t border-neutral-100">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            <span class="ml-2 text-sm text-neutral-500">Loading more...</span>
+          </div>
+        } @else if (hasMore()) {
+          <div class="flex items-center justify-center py-4 border-t border-neutral-100">
+            <button
+              type="button"
+              (click)="loadMore()"
+              class="px-4 py-2 text-sm font-medium text-primary hover:text-primary-dark hover:bg-primary/5 rounded-lg transition-colors"
+            >
+              Load more
+            </button>
+          </div>
+        }
+      }
+    </div>
+  }
+
+  <!-- Settings Tab -->
+  @if (activeTab() === 'settings') {
+    <app-user-notification-settings />
+  }
+</div>

@@ -1,0 +1,29 @@
+@layer mereka-ui {
+  .ui-loader-skeleton-card-project {
+    display: block;
+    background-color: #FFF;
+    border: 1px solid var(--border-solid, #DDDDDE);
+    border-radius: 8px;
+    overflow: hidden;
+
+    .ui-loader-skeleton-body {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    [data-part="image"] {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4/3;
+    }
+
+    [data-part="date"] {
+      margin-bottom: 1rem;
+    }
+
+    [data-part="title"] {
+      margin-bottom: 1rem;
+    }
+  }
+}

@@ -1,0 +1,421 @@
+### Variables
+@baseUrl = http://localhost:3000/api/v1
+@token = your-admin-token-here
+
+### ==============================================
+### Reference Data Endpoints (9 Collections)
+### ==============================================
+
+### ==============================================
+### 1. Focus Areas
+### ==============================================
+
+### Get All Focus Areas (Public)
+GET {{baseUrl}}/reference-data/focus-areas
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": [
+#     {
+#       "id": "...",
+#       "name": "Technology",
+#       "description": "Software development, IT, and tech innovation",
+#       "icon": "💻",
+#       "isActive": true
+#     },
+#     ...
+#   ]
+# }
+
+### Get Focus Area by ID
+GET {{baseUrl}}/reference-data/focus-areas/focus-area-id-here
+
+### Create Focus Area (Admin)
+POST {{baseUrl}}/reference-data/focus-areas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Design",
+  "description": "Graphic design, UX/UI, and creative design",
+  "icon": "🎨",
+  "isActive": true
+}
+
+### Update Focus Area (Admin)
+PATCH {{baseUrl}}/reference-data/focus-areas/focus-area-id-here
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "description": "Updated description",
+  "isActive": true
+}
+
+### Delete Focus Area (Admin)
+DELETE {{baseUrl}}/reference-data/focus-areas/focus-area-id-here
+Authorization: Bearer {{token}}
+
+### ==============================================
+### 2. Amenities
+### ==============================================
+
+### Get All Amenities
+GET {{baseUrl}}/reference-data/amenities
+
+# Expected Response:
+# {
+#   "success": true,
+#   "data": [
+#     {
+#       "id": "...",
+#       "name": "WiFi",
+#       "description": "High-speed internet connection",
+#       "icon": "📶",
+#       "category": "connectivity"
+#     },
+#     ...
+#   ]
+# }
+
+### Get Amenity by ID
+GET {{baseUrl}}/reference-data/amenities/amenity-id-here
+
+### Create Amenity (Admin)
+POST {{baseUrl}}/reference-data/amenities
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Parking",
+  "description": "On-site parking facilities",
+  "icon": "🅿️",
+  "category": "convenience"
+}
+
+### Update Amenity (Admin)
+PATCH {{baseUrl}}/reference-data/amenities/amenity-id-here
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "description": "Updated parking description"
+}
+
+### Delete Amenity (Admin)
+DELETE {{baseUrl}}/reference-data/amenities/amenity-id-here
+Authorization: Bearer {{token}}
+
+### ==============================================
+### 3. Facilities
+### ==============================================
+
+### Get All Facilities
+GET {{baseUrl}}/reference-data/facilities
+
+### Create Facility (Admin)
+POST {{baseUrl}}/reference-data/facilities
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Meeting Room",
+  "description": "Professional meeting room with projector",
+  "icon": "🏢",
+  "category": "workspace",
+  "capacity": 10
+}
+
+### ==============================================
+### 4. Skills
+### ==============================================
+
+### Get All Skills
+GET {{baseUrl}}/reference-data/skills
+
+# Expected Response:
+# {
+#   "success": true,
+#   "data": [
+#     {
+#       "id": "...",
+#       "name": "JavaScript",
+#       "category": "programming",
+#       "focusAreaId": "technology-focus-area-id",
+#       "level": "intermediate"
+#     },
+#     ...
+#   ]
+# }
+
+### Create Skill (Admin)
+POST {{baseUrl}}/reference-data/skills
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Python",
+  "category": "programming",
+  "focusAreaId": "technology-focus-area-id",
+  "level": "beginner",
+  "description": "Python programming language"
+}
+
+### Get Skills by Focus Area
+GET {{baseUrl}}/reference-data/skills?focusAreaId=technology-focus-area-id
+
+### ==============================================
+### 5. Job Preferences
+### ==============================================
+
+### Get All Job Preferences
+GET {{baseUrl}}/reference-data/job-preferences
+
+# Expected Response:
+# {
+#   "success": true,
+#   "data": [
+#     {
+#       "id": "...",
+#       "name": "Full-time",
+#       "description": "Full-time employment",
+#       "category": "employment_type"
+#     },
+#     ...
+#   ]
+# }
+
+### Create Job Preference (Admin)
+POST {{baseUrl}}/reference-data/job-preferences
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Remote Work",
+  "description": "Work from home or anywhere",
+  "category": "work_mode"
+}
+
+### ==============================================
+### 6. Languages
+### ==============================================
+
+### Get All Languages
+GET {{baseUrl}}/reference-data/languages
+
+# Expected Response:
+# {
+#   "success": true,
+#   "data": [
+#     {
+#       "id": "...",
+#       "name": "English",
+#       "nativeName": "English",
+#       "isoCode": "en",
+#       "isActive": true
+#     },
+#     ...
+#   ]
+# }
+
+### Create Language (Admin)
+POST {{baseUrl}}/reference-data/languages
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Bahasa Malaysia",
+  "nativeName": "Bahasa Melayu",
+  "isoCode": "ms",
+  "isActive": true
+}
+
+### ==============================================
+### 7. Space Types
+### ==============================================
+
+### Get All Space Types
+GET {{baseUrl}}/reference-data/space-types
+
+# Expected Response:
+# {
+#   "success": true,
+#   "data": [
+#     {
+#       "id": "...",
+#       "name": "Coworking Space",
+#       "description": "Shared workspace for professionals",
+#       "icon": "🏢"
+#     },
+#     ...
+#   ]
+# }
+
+### Create Space Type (Admin)
+POST {{baseUrl}}/reference-data/space-types
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Event Space",
+  "description": "Space for hosting events and workshops",
+  "icon": "🎪"
+}
+
+### ==============================================
+### 8. Experience Types
+### ==============================================
+
+### Get All Experience Types
+GET {{baseUrl}}/reference-data/experience-types
+
+# Expected Response:
+# {
+#   "success": true,
+#   "data": [
+#     {
+#       "id": "...",
+#       "name": "Workshop",
+#       "description": "Hands-on learning session",
+#       "icon": "🛠️",
+#       "category": "learning"
+#     },
+#     ...
+#   ]
+# }
+
+### Create Experience Type (Admin)
+POST {{baseUrl}}/reference-data/experience-types
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Masterclass",
+  "description": "In-depth expert-led session",
+  "icon": "🎓",
+  "category": "learning"
+}
+
+### ==============================================
+### 9. Company Types
+### ==============================================
+
+### Get All Company Types
+GET {{baseUrl}}/reference-data/company-types
+
+# Expected Response:
+# {
+#   "success": true,
+#   "data": [
+#     {
+#       "id": "...",
+#       "name": "Startup",
+#       "description": "Early-stage company",
+#       "category": "business"
+#     },
+#     ...
+#   ]
+# }
+
+### Create Company Type (Admin)
+POST {{baseUrl}}/reference-data/company-types
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Enterprise",
+  "description": "Large established organization",
+  "category": "business"
+}
+
+### ==============================================
+### Bulk Operations
+### ==============================================
+
+### Get All Reference Data (Convenience Endpoint)
+GET {{baseUrl}}/reference-data/all
+
+# Expected Response:
+# {
+#   "success": true,
+#   "data": {
+#     "focusAreas": [...],
+#     "amenities": [...],
+#     "facilities": [...],
+#     "skills": [...],
+#     "jobPreferences": [...],
+#     "languages": [...],
+#     "spaceTypes": [...],
+#     "experienceTypes": [...],
+#     "companyTypes": [...]
+#   }
+# }
+
+### ==============================================
+### Error Scenarios
+### ==============================================
+
+### Unauthorized Create (Non-Admin)
+POST {{baseUrl}}/reference-data/focus-areas
+Content-Type: application/json
+
+{
+  "name": "Unauthorized Focus Area"
+}
+
+# Expected Response (401):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "UNAUTHORIZED",
+#     "message": "Admin access required"
+#   }
+# }
+
+### Duplicate Entry
+POST {{baseUrl}}/reference-data/amenities
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "WiFi"
+}
+
+# Expected Response (400):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "DUPLICATE_ENTRY",
+#     "message": "Amenity with this name already exists"
+#   }
+# }
+
+### Not Found
+GET {{baseUrl}}/reference-data/skills/non-existent-id
+
+# Expected Response (404):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "NOT_FOUND",
+#     "message": "Skill not found"
+#   }
+# }
+
+### ==============================================
+### Testing Notes
+### ==============================================
+
+# Authentication:
+# - GET operations are public (no auth required)
+# - POST, PATCH, DELETE require admin authentication
+
+# Seeding:
+# Use: npm run db:seed to populate reference data
+
+# Categories:
+# - Amenities: connectivity, convenience, safety, recreation
+# - Facilities: workspace, equipment, event, wellness
+# - Skills: programming, design, business, marketing
+# - Job Preferences: employment_type, work_mode, industry

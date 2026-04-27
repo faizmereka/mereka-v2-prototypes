@@ -1,0 +1,518 @@
+<div class="transactions-container h-full flex flex-col">
+  <!-- Header - Fixed -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 lg:p-6 flex-shrink-0">
+    <div>
+      <h1 class="text-2xl font-bold text-neutral-900">Finances</h1>
+      <p class="text-neutral-500 mt-1">Manage your earnings and transactions</p>
+    </div>
+
+    <!-- View Switcher - Only show if user has expert earnings -->
+    @if (showMyEarningsTab()) {
+      <div class="flex items-center gap-1 p-1 bg-neutral-100 rounded-lg">
+        <button
+          (click)="switchView('hub')"
+          class="px-4 py-2 text-sm font-medium rounded-md transition-all"
+          [class.bg-white]="activeView() === 'hub'"
+          [class.shadow-sm]="activeView() === 'hub'"
+          [class.text-neutral-900]="activeView() === 'hub'"
+          [class.text-neutral-600]="activeView() !== 'hub'"
+        >
+          Hub Earnings
+        </button>
+        <button
+          (click)="switchView('expert')"
+          class="px-4 py-2 text-sm font-medium rounded-md transition-all"
+          [class.bg-white]="activeView() === 'expert'"
+          [class.shadow-sm]="activeView() === 'expert'"
+          [class.text-neutral-900]="activeView() === 'expert'"
+          [class.text-neutral-600]="activeView() !== 'expert'"
+        >
+          My Earnings
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Main Content - Flexible Height -->
+  <div class="flex-1 flex flex-col gap-4 px-4 lg:px-6 pb-4 lg:pb-6 overflow-y-auto min-h-0">
+    <!-- Error -->
+    @if (error()) {
+      <div class="bg-red-50 border border-red-200 rounded-xl px-5 py-4 flex items-center justify-between flex-shrink-0">
+        <p class="text-red-700 text-sm">{{ error() }}</p>
+        <button (click)="refresh()" class="text-sm font-medium text-red-700 hover:text-red-800 hover:underline">Retry</button>
+      </div>
+    }
+
+    <!-- Stripe Setup Banner -->
+    @if (needsStripeSetup()) {
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 flex-shrink-0">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-base font-semibold text-neutral-900">
+              {{ activeView() === 'hub' ? 'Set Up Hub Payments' : 'Set Up Expert Payouts' }}
+            </h3>
+            <p class="text-neutral-600 mt-1 text-sm">
+              {{ activeView() === 'hub'
+                ? 'Connect with Stripe to receive payments from experiences and expertise bookings.'
+                : 'Connect with Stripe to receive payments for jobs and milestones you complete.' }}
+            </p>
+          </div>
+          <button (click)="setupStripe()" [disabled]="settingUpStripe()" class="px-5 py-2.5 bg-primary text-white rounded-full text-sm font-semibold hover:bg-primary-dark whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+            @if (settingUpStripe()) {
+              <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            }
+            Get Started
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- KYC Banner -->
+    @if (needsKyc()) {
+      <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-5 flex-shrink-0">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-base font-semibold text-neutral-900">Complete Verification</h3>
+            <p class="text-neutral-600 mt-1 text-sm">
+              @if (verificationErrorReason()) {
+                {{ verificationErrorReason() }}
+              } @else {
+                Finish identity verification to enable withdrawals.
+              }
+            </p>
+          </div>
+          <button (click)="setupStripe()" [disabled]="settingUpStripe()" class="px-5 py-2.5 bg-primary text-white rounded-full text-sm font-semibold hover:bg-primary-dark whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+            @if (settingUpStripe()) {
+              <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            }
+            Continue Verification
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Bank Account Banner -->
+    @if (needsBank()) {
+      <div class="bg-orange-50 border border-orange-200 rounded-xl p-5 flex-shrink-0">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-base font-semibold text-neutral-900">Bank Account Required</h3>
+            <p class="text-neutral-600 mt-1 text-sm">Add a bank account to enable payouts. This is required to receive payments.</p>
+          </div>
+          <button (click)="openAddBankModal()" class="px-5 py-2.5 bg-primary text-white rounded-full text-sm font-semibold hover:bg-primary-dark whitespace-nowrap">
+            Add Bank Account
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Currency Mismatch Error Banner -->
+    @if (hasCurrencyMismatch()) {
+      <div class="bg-red-50 border border-red-200 rounded-xl p-5 flex-shrink-0">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-base font-semibold text-red-900">Currency Mismatch Detected</h3>
+            <p class="text-red-700 mt-1 text-sm">
+              <strong>Action Required:</strong> Your hub location currency ({{ hubCurrency() }}) does not match your Stripe account currency ({{ stripeAccountCurrency() }}).
+              This will cause issues with payouts. Please contact support immediately to resolve this.
+            </p>
+          </div>
+          <a href="mailto:support@mereka.io?subject=Currency%20Mismatch%20Issue&body=Hub%20Currency%3A%20{{ hubCurrency() }}%0AStripe%20Currency%3A%20{{ stripeAccountCurrency() }}"
+             class="px-5 py-2.5 bg-red-600 text-white rounded-full text-sm font-semibold hover:bg-red-700 whitespace-nowrap flex-shrink-0">
+            Contact Support
+          </a>
+        </div>
+      </div>
+    }
+
+    <!-- Balance Card -->
+    <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden flex-shrink-0">
+      <div class="px-6 py-4 border-b border-neutral-200 flex items-center justify-between">
+        <h3 class="text-base font-semibold text-neutral-900">
+          {{ activeView() === 'hub' ? 'Business Balance' : 'Expert Balance' }}
+        </h3>
+        <div class="flex gap-2">
+          <button (click)="withdraw()" [disabled]="!canWithdraw()" class="px-4 py-2 text-sm font-medium bg-primary text-white hover:bg-primary-dark rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+            Withdraw
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Available Balance -->
+          <div class="bg-green-50 rounded-xl p-4 border border-green-100">
+            <p class="text-sm font-medium text-green-700 mb-1">Available</p>
+            <p class="text-2xl font-bold text-green-700">{{ available() | currency:balanceCurrency():'symbol':'1.2-2' }}</p>
+          </div>
+          <!-- Pending Balance -->
+          <div class="bg-amber-50 rounded-xl p-4 border border-amber-100">
+            <p class="text-sm font-medium text-amber-700 mb-1">Pending</p>
+            <p class="text-2xl font-bold text-amber-700">{{ pending() | currency:balanceCurrency():'symbol':'1.2-2' }}</p>
+          </div>
+          <!-- Default Bank -->
+          <div class="bg-neutral-50 rounded-xl p-4 border border-neutral-200 sm:col-span-2">
+            <p class="text-sm font-medium text-neutral-500 mb-1">Default Bank Account</p>
+            @if (defaultBank()) {
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-neutral-200">
+                  <svg class="w-5 h-5 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-base font-semibold text-neutral-900">{{ defaultBank()?.bankName }}</p>
+                  <p class="text-sm text-neutral-500">****{{ defaultBank()?.last4 }}</p>
+                </div>
+              </div>
+            } @else {
+              <p class="text-neutral-400 text-sm">No bank account connected</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bank Accounts Section -->
+    @if (showBankSection()) {
+      <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden flex-shrink-0">
+        <div class="px-6 py-4 border-b border-neutral-200 flex items-center justify-between">
+          <h3 class="text-base font-semibold text-neutral-900">Bank Accounts</h3>
+          <button
+            (click)="openAddBankModal()"
+            class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-full font-semibold text-sm hover:bg-primary-dark transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Add Bank Account</span>
+          </button>
+        </div>
+
+        <div class="p-6">
+          @if (bankAccounts().length === 0) {
+            <div class="text-center py-10 text-neutral-500">
+              <div class="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+              </div>
+              <p class="font-medium text-neutral-700">No bank accounts added yet</p>
+              <p class="text-sm mt-1">Add a bank account to enable withdrawals.</p>
+            </div>
+          } @else {
+            <div class="space-y-3">
+              @for (bank of bankAccounts(); track bank.id) {
+                <div class="flex items-center justify-between p-4 bg-neutral-50 rounded-xl hover:bg-neutral-100 transition-colors">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center border border-neutral-200">
+                      <svg class="w-6 h-6 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <p class="font-semibold text-neutral-900">{{ bank.bankName }}</p>
+                        @if (bank.isDefault) {
+                          <span class="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">Default</span>
+                        }
+                      </div>
+                      <p class="text-sm text-neutral-500">****{{ bank.last4 }} &bull; {{ bank.accountHolderName }}</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    @if (!bank.isDefault) {
+                      <button
+                        (click)="setDefaultBank(bank.id)"
+                        class="px-3 py-1.5 text-sm text-neutral-600 hover:bg-white hover:shadow-sm rounded-lg transition-all"
+                      >
+                        Set Default
+                      </button>
+                    }
+                    <button
+                      (click)="deleteBank(bank.id)"
+                      class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      [disabled]="bank.isDefault && bankAccounts().length > 1"
+                      [class.opacity-50]="bank.isDefault && bankAccounts().length > 1"
+                      [class.cursor-not-allowed]="bank.isDefault && bankAccounts().length > 1"
+                    >
+                      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Transactions Section -->
+    <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden flex flex-col min-h-0 flex-1">
+      <!-- Tabs - Fixed -->
+      <div class="flex border-b border-neutral-200 overflow-x-auto flex-shrink-0">
+        @if (activeView() === 'hub') {
+          @for (tab of [['all', 'All'], ['inbound', 'Received'], ['outbound', 'Paid Out'], ['withdrawals', 'Withdrawals']]; track tab[0]) {
+            <button
+              type="button"
+              (click)="setHubTab($any(tab[0]))"
+              class="px-6 py-4 text-sm font-medium transition-colors border-b-2 whitespace-nowrap"
+              [ngClass]="hubTab() === tab[0]
+                ? 'border-primary text-primary'
+                : 'border-transparent text-neutral-500 hover:text-neutral-700'"
+            >
+              {{ tab[1] }}
+            </button>
+          }
+        } @else {
+          @for (tab of [['earnings', 'Earnings'], ['withdrawals', 'Withdrawals']]; track tab[0]) {
+            <button
+              type="button"
+              (click)="setExpertTab($any(tab[0]))"
+              class="px-6 py-4 text-sm font-medium transition-colors border-b-2 whitespace-nowrap"
+              [ngClass]="expertTab() === tab[0]
+                ? 'border-primary text-primary'
+                : 'border-transparent text-neutral-500 hover:text-neutral-700'"
+            >
+              {{ tab[1] }}
+            </button>
+          }
+        }
+
+        <!-- Actions (pushed to right) -->
+        <div class="ml-auto flex items-center gap-2 px-4">
+          <button (click)="refresh()" [disabled]="refreshing()" class="p-2 text-neutral-500 hover:bg-neutral-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <svg class="w-5 h-5" [class.animate-spin]="refreshing()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </button>
+          <button (click)="exportCsv()" [disabled]="exporting()" class="px-4 py-2 text-sm text-neutral-600 hover:bg-neutral-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors">
+            @if (exporting()) {
+              <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            }
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Export CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50 flex-shrink-0">
+        <div class="relative max-w-sm">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search transactions..."
+            [ngModel]="searchText()"
+            (ngModelChange)="searchText.set($event)"
+            class="w-full pl-10 pr-4 py-2.5 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+          />
+        </div>
+      </div>
+
+      <!-- Loading -->
+      @if (loading()) {
+        <div class="flex-1 flex items-center justify-center">
+          <div class="text-center">
+            <div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+            <p class="text-neutral-500 mt-4">Loading transactions...</p>
+          </div>
+        </div>
+      } @else {
+        <!-- Hub Transactions Table -->
+        @if (activeView() === 'hub') {
+          @if (filteredHubTransactions().length === 0) {
+            <div class="flex-1 flex items-center justify-center">
+              <div class="text-center py-12">
+                <div class="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg class="w-8 h-8 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-neutral-900 mb-2">No transactions yet</h3>
+                <p class="text-neutral-500">
+                  @if (!hasStripe()) {
+                    Set up payments to start tracking transactions.
+                  } @else {
+                    Transactions will appear here once you start receiving payments.
+                  }
+                </p>
+              </div>
+            </div>
+          } @else {
+            <div class="flex-1 overflow-y-auto">
+              <table class="w-full">
+                <thead class="bg-neutral-50 border-b border-neutral-200 sticky top-0">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Reference</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Type</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Description</th>
+                    <th class="px-6 py-3 text-right text-xs font-semibold text-neutral-500 uppercase tracking-wider">Amount</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Date</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-neutral-100">
+                  @for (txn of filteredHubTransactions(); track txn._id) {
+                    <tr class="hover:bg-neutral-50 transition-colors">
+                      <td class="px-6 py-4 text-sm font-mono text-neutral-600">{{ txn.referenceId }}</td>
+                      <td class="px-6 py-4">
+                        <span class="text-sm font-medium text-neutral-900">{{ getTypeLabel(txn.type) }}</span>
+                        @if (txn.serviceType) {
+                          <span class="block text-xs text-neutral-500 mt-0.5">{{ getServiceLabel(txn.serviceType) }}</span>
+                        }
+                      </td>
+                      <td class="px-6 py-4 text-sm text-neutral-600">
+                        {{ txn.description || '-' }}
+                        @if (txn.fromUser) {
+                          <span class="block text-xs text-neutral-500 mt-0.5">{{ txn.fromUser.displayName }}</span>
+                        }
+                      </td>
+                      <td class="px-6 py-4 text-sm font-semibold text-right"
+                          [class.text-green-600]="txn.direction === 'inbound'"
+                          [class.text-red-600]="txn.direction === 'outbound'">
+                        {{ txn.direction === 'inbound' ? '+' : '-' }}{{ txn.amount | currency:txn.currency:'symbol':'1.2-2' }}
+                      </td>
+                      <td class="px-6 py-4">
+                        <span class="px-2.5 py-1 text-xs font-medium rounded-full" [ngClass]="getStatusClass(txn.status)">
+                          {{ txn.status }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 text-sm text-neutral-500">{{ formatDate(txn.createdAt) }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        }
+
+        <!-- Expert Earnings/Withdrawals -->
+        @if (activeView() === 'expert') {
+          @if (filteredExpertTransactions().length === 0) {
+            <div class="flex-1 flex items-center justify-center">
+              <div class="text-center py-12">
+                <div class="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg class="w-8 h-8 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-neutral-900 mb-2">No {{ expertTab() }} yet</h3>
+                <p class="text-neutral-500">
+                  @if (!expertHasStripe()) {
+                    Set up payouts to start receiving earnings.
+                  } @else {
+                    Your {{ expertTab() }} will appear here.
+                  }
+                </p>
+              </div>
+            </div>
+          } @else if (expertTab() === 'earnings') {
+            <div class="flex-1 overflow-y-auto">
+              <table class="w-full">
+                <thead class="bg-neutral-50 border-b border-neutral-200 sticky top-0">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Reference</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">From Hub</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Description</th>
+                    <th class="px-6 py-3 text-right text-xs font-semibold text-neutral-500 uppercase tracking-wider">Amount</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Date</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-neutral-100">
+                  @for (earning of $any(filteredExpertTransactions()); track earning._id) {
+                    <tr class="hover:bg-neutral-50 transition-colors">
+                      <td class="px-6 py-4 text-sm font-mono text-neutral-600">{{ earning.referenceId }}</td>
+                      <td class="px-6 py-4 text-sm font-medium text-neutral-900">{{ earning.metadata?.hubName || '-' }}</td>
+                      <td class="px-6 py-4 text-sm text-neutral-600">{{ earning.description || '-' }}</td>
+                      <td class="px-6 py-4 text-sm font-semibold text-right text-green-600">+{{ earning.transferAmount | currency:earning.currency:'symbol':'1.2-2' }}</td>
+                      <td class="px-6 py-4">
+                        <span class="px-2.5 py-1 text-xs font-medium rounded-full" [ngClass]="getStatusClass(earning.status)">
+                          {{ earning.status }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 text-sm text-neutral-500">{{ formatDate(earning.createdAt) }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <div class="flex-1 overflow-y-auto">
+              <table class="w-full">
+                <thead class="bg-neutral-50 border-b border-neutral-200 sticky top-0">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-3 text-right text-xs font-semibold text-neutral-500 uppercase tracking-wider">Amount</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Bank</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">Arrival</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-neutral-100">
+                  @for (w of $any(filteredExpertTransactions()); track w.id) {
+                    <tr class="hover:bg-neutral-50 transition-colors">
+                      <td class="px-6 py-4 text-sm text-neutral-600">{{ formatDate(w.createdAt) }}</td>
+                      <td class="px-6 py-4 text-sm font-semibold text-right">{{ w.amount | currency:w.currency:'symbol':'1.2-2' }}</td>
+                      <td class="px-6 py-4 text-sm text-neutral-600">{{ w.bankName || 'Bank' }} ****{{ w.bankAccountLast4 }}</td>
+                      <td class="px-6 py-4">
+                        <span class="px-2.5 py-1 text-xs font-medium rounded-full" [ngClass]="getStatusClass(w.status)">
+                          {{ w.status }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 text-sm text-neutral-500">{{ formatDate(w.arrivalDate) }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Help Text - Fixed at bottom -->
+  <div class="px-4 lg:px-6 pb-4 text-sm text-neutral-500 flex-shrink-0">
+    <p>
+      View and manage your {{ activeView() === 'hub' ? 'hub' : 'personal' }} finances.
+      <a href="https://help.mereka.io/hc/hub-administration/finances" target="_blank" class="text-primary hover:underline">Learn more</a>.
+    </p>
+  </div>
+</div>

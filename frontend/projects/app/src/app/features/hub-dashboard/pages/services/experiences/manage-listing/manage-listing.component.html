@@ -1,0 +1,212 @@
+<div class="manage-listing-page h-full flex">
+  <!-- Left Sidebar (Desktop Only) -->
+  <div class="w-64 flex-shrink-0 border-r border-neutral-200 bg-white flex-col hidden lg:flex">
+    <!-- Sidebar Header - Back Button -->
+    <div class="p-4 border-b border-neutral-200">
+      <button
+        (click)="goBack()"
+        class="flex items-center gap-2 text-sm text-neutral-600 hover:text-neutral-900 transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to Experiences
+      </button>
+    </div>
+
+    <!-- Experience Info -->
+    <div class="p-4 border-b border-neutral-200">
+      <h2 class="text-sm font-semibold text-neutral-900 truncate mb-1">
+        {{ experience()?.experienceTitle || 'Loading...' }}
+      </h2>
+      @if (experience()) {
+        <span
+          class="inline-flex px-2 py-0.5 text-xs font-bold uppercase rounded"
+          [class]="statusClass()"
+        >
+          {{ statusLabel() }}
+        </span>
+      }
+    </div>
+
+    <!-- Navigation Menu -->
+    <div class="flex-1 py-2">
+      @for (item of sidebarMenuItems; track item.id) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="bg-neutral-100 font-medium text-neutral-900"
+          class="w-full px-6 py-3 flex items-center justify-between text-left text-sm transition-colors text-neutral-600 hover:bg-neutral-50 block"
+        >
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="p-4 border-t border-neutral-200 space-y-2">
+      <button
+        (click)="editExperience()"
+        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-[#1a1623] rounded-lg hover:bg-neutral-800 transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        Edit Experience
+      </button>
+      <button
+        (click)="viewPage()"
+        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+        View Page
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 overflow-auto">
+    <!-- Mobile Header -->
+    <div class="lg:hidden p-4 border-b border-neutral-200 bg-white">
+      <div class="flex items-center justify-between mb-3">
+        <button
+          (click)="goBack()"
+          class="p-2 -ml-2 rounded-lg hover:bg-neutral-100"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div class="flex items-center gap-2">
+          <button
+            (click)="editExperience()"
+            class="p-2 rounded-lg hover:bg-neutral-100"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
+          <button
+            (click)="viewPage()"
+            class="p-2 rounded-lg hover:bg-neutral-100"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <h2 class="text-base font-semibold text-neutral-900 truncate mb-2">
+        {{ experience()?.experienceTitle || 'Loading...' }}
+      </h2>
+
+      @if (experience()) {
+        <span
+          class="inline-flex px-2 py-0.5 text-xs font-bold uppercase rounded"
+          [class]="statusClass()"
+        >
+          {{ statusLabel() }}
+        </span>
+      }
+    </div>
+
+    <!-- Mobile Tab Navigation -->
+    <div class="lg:hidden flex overflow-x-auto bg-white border-b border-neutral-200" style="scrollbar-width: none;">
+      @for (item of sidebarMenuItems; track item.id) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="border-[#1a1623] text-neutral-900"
+          class="flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 border-transparent transition-colors whitespace-nowrap text-neutral-500"
+        >
+          {{ item.label }}
+        </a>
+      }
+    </div>
+
+    <!-- Desktop Header Row -->
+    <div class="hidden lg:flex items-center justify-between px-6 py-4 border-b border-neutral-200 bg-white">
+      <div class="flex items-center gap-4">
+        <h1 class="text-lg font-semibold text-neutral-900">
+          {{ getActiveTabLabel() }}
+        </h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          (click)="shareReviewLink()"
+          class="px-4 py-1.5 text-sm font-medium border border-neutral-200 rounded-full hover:bg-neutral-50"
+        >
+          Share Review Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Analytics Cards (Desktop, only show on overview) -->
+    @if (isActiveRoute('overview')) {
+      <div class="hidden lg:block px-6 py-4 border-b border-neutral-200 bg-neutral-50">
+        <h5 class="text-sm font-semibold text-neutral-700 mb-3">Experience Analytics</h5>
+        <div class="grid grid-cols-5 gap-4">
+          <div class="bg-white border border-neutral-200 rounded-lg p-4">
+            <div class="text-lg font-bold text-neutral-900">
+              {{ formatCurrency(analytics().totalSales) }}
+            </div>
+            <div class="text-xs font-medium uppercase text-neutral-500 mt-1">Current Sales</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-4">
+            <div class="text-lg font-bold text-neutral-900">{{ analytics().totalBookings }}</div>
+            <div class="text-xs font-medium uppercase text-neutral-500 mt-1">Bookings</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-4">
+            <div class="text-lg font-bold text-neutral-900">{{ analytics().pageViews }}</div>
+            <div class="text-xs font-medium uppercase text-neutral-500 mt-1">Page Views</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-4">
+            <div class="text-lg font-bold text-neutral-900">{{ analytics().pageShares }}</div>
+            <div class="text-xs font-medium uppercase text-neutral-500 mt-1">Page Shares</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-4">
+            <div class="text-lg font-bold text-neutral-900">{{ analytics().pageFavorites }}</div>
+            <div class="text-xs font-medium uppercase text-neutral-500 mt-1">Page Favorites</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Analytics Cards -->
+      <div class="lg:hidden p-4 bg-neutral-50 border-b border-neutral-200">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-white border border-neutral-200 rounded-lg p-3">
+            <div class="text-base font-bold text-neutral-900">
+              {{ formatCurrency(analytics().totalSales) }}
+            </div>
+            <div class="text-xs font-medium uppercase text-neutral-500">Sales</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-3">
+            <div class="text-base font-bold text-neutral-900">{{ analytics().totalBookings }}</div>
+            <div class="text-xs font-medium uppercase text-neutral-500">Bookings</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-3">
+            <div class="text-base font-bold text-neutral-900">{{ analytics().pageViews }}</div>
+            <div class="text-xs font-medium uppercase text-neutral-500">Views</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-3">
+            <div class="text-base font-bold text-neutral-900">{{ analytics().pageFavorites }}</div>
+            <div class="text-xs font-medium uppercase text-neutral-500">Favorites</div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Content Area (Single router-outlet for both desktop and mobile) -->
+    <div class="p-4 lg:p-6 bg-white lg:bg-transparent">
+      @if (loading()) {
+        <div class="flex items-center justify-center h-48 lg:h-64">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900"></div>
+        </div>
+      }
+      <div [class.hidden]="loading()">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>

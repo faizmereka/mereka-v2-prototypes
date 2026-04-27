@@ -1,0 +1,18 @@
+<div class="flex min-h-screen">
+  <app-sidebar />
+
+  <div class="flex-1 ml-[110px] flex flex-col bg-white">
+    <!-- Fixed Header -->
+    <div class="sticky top-0 z-40">
+      <app-header />
+    </div>
+
+    <!-- Main Content with scroll -->
+    <main class="flex-1 p-6 bg-gray-50">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+<!-- Toast notifications -->
+<ui-toast-container />

@@ -1,0 +1,378 @@
+<div class="flex flex-col gap-6 animate-fade-in">
+  <!-- Header Navigation -->
+  <header class="flex justify-between items-center">
+    <nav class="flex items-center gap-3">
+      <a routerLink="home" routerLinkActive="text-primary" class="font-bold text-gray-400 px-2 py-2 transition-colors hover:text-gray-600">Home</a>
+      <span class="text-gray-300">|</span>
+      <a routerLink="calendar" routerLinkActive="text-primary" class="font-bold text-gray-400 px-2 py-2 transition-colors hover:text-gray-600">Calendar</a>
+      <span class="text-gray-300">|</span>
+      <a routerLink="hubs" routerLinkActive="text-primary" class="font-bold text-gray-400 px-2 py-2 transition-colors hover:text-gray-600">Hubs</a>
+      <span class="text-gray-300">|</span>
+      <a routerLink="sales" routerLinkActive="text-primary" class="font-bold text-gray-400 px-2 py-2 transition-colors hover:text-gray-600">Sales</a>
+    </nav>
+
+    <div class="flex items-center gap-4">
+      <!-- View Toggle -->
+      <div class="flex bg-gray-100 rounded-[20px] p-1">
+        <button
+          class="px-4 py-2 rounded-lg text-sm text-gray-500 transition-all"
+          [class.bg-white]="viewMode() === 'overview'"
+          [class.text-primary]="viewMode() === 'overview'"
+          [class.font-bold]="viewMode() === 'overview'"
+          [class.shadow-sm]="viewMode() === 'overview'"
+          (click)="setViewMode('overview')"
+        >
+          Overview
+        </button>
+        <button
+          class="px-4 py-2 rounded-lg text-sm text-gray-500 transition-all"
+          [class.bg-white]="viewMode() === 'detailed'"
+          [class.text-primary]="viewMode() === 'detailed'"
+          [class.font-bold]="viewMode() === 'detailed'"
+          [class.shadow-sm]="viewMode() === 'detailed'"
+          (click)="setViewMode('detailed')"
+        >
+          Detailed
+        </button>
+      </div>
+      <button class="flex items-center justify-center w-10 h-10 bg-white border border-gray-200 rounded-full hover:bg-gray-50">
+        <img src="icons/upload_file.svg" alt="Export" class="w-5 h-5" />
+      </button>
+    </div>
+  </header>
+
+  <!-- Sub Header with Controls -->
+  <div class="flex justify-between items-center">
+    <div class="flex items-center gap-4">
+      @if (viewMode() === 'detailed') {
+        <span class="font-bold">Home</span>
+      }
+      <select
+        class="px-4 py-2 border border-gray-200 rounded-xl bg-white text-sm cursor-pointer"
+        [(ngModel)]="selectedPeriod"
+        (ngModelChange)="onPeriodChange($event)"
+      >
+        <option value="today">Today</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+        <option value="year">This Year</option>
+      </select>
+    </div>
+
+    @if (viewMode() === 'overview') {
+      <div class="flex bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <button
+          class="p-3 transition-all"
+          [class.bg-gray-100]="chartType() === 'pie'"
+          (click)="setChartType('pie')"
+        >
+          <img src="icons/pie_chart.svg" alt="Pie Chart" class="w-5 h-5" [class.opacity-50]="chartType() !== 'pie'" [class.opacity-100]="chartType() === 'pie'" />
+        </button>
+        <button
+          class="p-3 transition-all"
+          [class.bg-gray-100]="chartType() === 'line'"
+          (click)="setChartType('line')"
+        >
+          <img src="icons/stacked_line_chart.svg" alt="Line Chart" class="w-5 h-5" [class.opacity-50]="chartType() !== 'line'" [class.opacity-100]="chartType() === 'line'" />
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Overview Mode -->
+  @if (viewMode() === 'overview') {
+    <!-- Charts Row -->
+    <div class="flex bg-white border border-gray-200 rounded-lg">
+      <div class="flex-1 p-6">
+        <div class="flex justify-between items-center mb-5">
+          <h3 class="m-0 text-base font-bold">Bookings</h3>
+          <span class="text-2xl font-black">{{ bookingsChartTotal() }}</span>
+        </div>
+        <div class="min-h-[200px]">
+          @if (chartType() === 'pie') {
+            <div class="flex items-center gap-8">
+              <div class="w-40 h-40 rounded-full flex-shrink-0" [style.background]="pieGradient(bookingsChartData())"></div>
+              <div class="flex flex-col gap-3">
+                @for (item of bookingsChartData(); track item.label) {
+                  <div class="flex items-center gap-3">
+                    <span class="w-3 h-3 rounded-full" [style.background]="item.color"></span>
+                    <span class="flex-1 text-sm">{{ item.label }}</span>
+                    <span class="font-bold">{{ item.value }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="h-[200px] flex items-center">
+              <svg viewBox="0 0 400 200" class="w-full h-full">
+                <path d="M0,150 L80,120 L160,140 L240,80 L320,100 L400,60" fill="none" stroke="var(--color-primary)" stroke-width="3" />
+                <circle cx="0" cy="150" r="4" fill="var(--color-primary)" />
+                <circle cx="80" cy="120" r="4" fill="var(--color-primary)" />
+                <circle cx="160" cy="140" r="4" fill="var(--color-primary)" />
+                <circle cx="240" cy="80" r="4" fill="var(--color-primary)" />
+                <circle cx="320" cy="100" r="4" fill="var(--color-primary)" />
+                <circle cx="400" cy="60" r="4" fill="var(--color-primary)" />
+              </svg>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="w-px bg-gray-200 my-6"></div>
+
+      <div class="flex-1 p-6">
+        <div class="flex justify-between items-center mb-5">
+          <h3 class="m-0 text-base font-bold">Sales</h3>
+          <span class="text-2xl font-black">RM {{ salesChartTotal() }}</span>
+        </div>
+        <div class="min-h-[200px]">
+          @if (chartType() === 'pie') {
+            <div class="flex items-center gap-8">
+              <div class="w-40 h-40 rounded-full flex-shrink-0" [style.background]="pieGradient(salesChartData())"></div>
+              <div class="flex flex-col gap-3">
+                @for (item of salesChartData(); track item.label) {
+                  <div class="flex items-center gap-3">
+                    <span class="w-3 h-3 rounded-full" [style.background]="item.color"></span>
+                    <span class="flex-1 text-sm">{{ item.label }}</span>
+                    <span class="font-bold">RM {{ item.value }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="h-[200px] flex items-center">
+              <svg viewBox="0 0 400 200" class="w-full h-full">
+                <path d="M0,180 L80,150 L160,100 L240,120 L320,70 L400,40" fill="none" stroke="var(--color-success)" stroke-width="3" />
+                <circle cx="0" cy="180" r="4" fill="var(--color-success)" />
+                <circle cx="80" cy="150" r="4" fill="var(--color-success)" />
+                <circle cx="160" cy="100" r="4" fill="var(--color-success)" />
+                <circle cx="240" cy="120" r="4" fill="var(--color-success)" />
+                <circle cx="320" cy="70" r="4" fill="var(--color-success)" />
+                <circle cx="400" cy="40" r="4" fill="var(--color-success)" />
+              </svg>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Breakdown Overview Section -->
+    <div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold m-0">Breakdown Overview</h2>
+        <select class="px-4 py-2 border border-gray-200 rounded-xl bg-white text-sm">
+          <option value="today">Today</option>
+          <option value="week">This Week</option>
+          <option value="month">This Month</option>
+          <option value="year">This Year</option>
+        </select>
+      </div>
+
+      <ui-card>
+        <div class="flex">
+          <div class="flex flex-col pr-8 border-r border-gray-200 mr-8">
+            <span class="text-gray-500 mb-2">Total Bookings</span>
+            <span class="text-[34px] font-black">{{ breakdown().totalBookings }}</span>
+          </div>
+          <div class="flex-1">
+            <div class="font-bold mb-4">Breakdown</div>
+            <div class="flex items-center gap-8">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-xl">
+                  <img src="icons/directions-run.svg" alt="" class="w-6 h-6" />
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xl font-black">{{ breakdown().physical }}</span>
+                  <span class="text-sm text-gray-500">Physical</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-xl">
+                  <img src="icons/laptop.svg" alt="" class="w-6 h-6" />
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xl font-black">{{ breakdown().online }}</span>
+                  <span class="text-sm text-gray-500">Online</span>
+                </div>
+              </div>
+              <div class="w-px h-12 bg-gray-200 mx-6"></div>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-xl">
+                  <img src="icons/money-off.svg" alt="" class="w-6 h-6" />
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xl font-black">{{ breakdown().free }}</span>
+                  <span class="text-sm text-gray-500">Free</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-xl">
+                  <img src="icons/attach-money.svg" alt="" class="w-6 h-6" />
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xl font-black">{{ breakdown().paid }}</span>
+                  <span class="text-sm text-gray-500">Paid</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui-card>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 gap-5">
+      <!-- Payment Status -->
+      <ui-card>
+        <h3 class="text-base font-bold mb-2">Payment Statuses</h3>
+        <p class="text-gray-500 text-sm mb-5">Total {{ breakdown().totalBookings }} bookings</p>
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between items-center text-sm">
+            <span>Succeeded</span>
+            <span class="font-bold">{{ paymentStatus().succeeded }}</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>Incomplete</span>
+            <span class="font-bold">{{ paymentStatus().incomplete }}</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>Failed</span>
+            <span class="font-bold">{{ paymentStatus().failed }}</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>Refunded</span>
+            <span class="font-bold">{{ paymentStatus().refunded }}</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span>Uncaptured</span>
+            <span class="font-bold">{{ paymentStatus().uncaptured }}</span>
+          </div>
+        </div>
+      </ui-card>
+
+      <!-- Most Booked Services -->
+      <ui-card>
+        <h3 class="text-base font-bold mb-2">Most Booked Services</h3>
+        <p class="text-gray-500 text-sm mb-5">Total {{ breakdown().totalBookings }} bookings</p>
+        <div class="flex flex-col gap-3">
+          @for (service of topServices(); track service.name) {
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 bg-gray-100 rounded-xl flex items-center justify-center">
+                <img [src]="service.icon" alt="" class="w-5 h-5" />
+              </div>
+              <span class="flex-1 text-sm">{{ service.name }}</span>
+              <span class="font-bold">{{ service.count }}</span>
+            </div>
+          }
+        </div>
+      </ui-card>
+
+      <!-- Payment Methods -->
+      <ui-card>
+        <h3 class="text-base font-bold mb-5">Payment Methods</h3>
+        <div class="flex flex-col gap-4">
+          <div class="flex items-center gap-3">
+            <span class="w-[120px] text-sm">Online Payment</span>
+            <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-full bg-primary rounded-full" style="width: 70%"></div>
+            </div>
+            <span class="w-10 text-right font-bold text-sm">70%</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-[120px] text-sm">Cash</span>
+            <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-full bg-primary rounded-full" style="width: 20%"></div>
+            </div>
+            <span class="w-10 text-right font-bold text-sm">20%</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-[120px] text-sm">Other</span>
+            <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-full bg-primary rounded-full" style="width: 10%"></div>
+            </div>
+            <span class="w-10 text-right font-bold text-sm">10%</span>
+          </div>
+        </div>
+      </ui-card>
+
+      <!-- Hub Bookings -->
+      <ui-card>
+        <h3 class="text-base font-bold mb-2">Hub Bookings</h3>
+        <p class="text-gray-500 text-sm mb-5">Total {{ breakdown().totalBookings }} bookings</p>
+        <div class="flex flex-col gap-3">
+          @for (hub of topHubs(); track hub.name) {
+            <div class="flex items-center gap-3">
+              <img [src]="hub.logo" alt="" class="w-9 h-9 rounded-full object-cover" />
+              <div class="flex-1 flex flex-col">
+                <span class="font-bold text-sm">{{ hub.name }}</span>
+                <span class="text-xs text-gray-500">{{ hub.count }} bookings</span>
+              </div>
+              <span class="font-bold">{{ hub.revenue }}</span>
+            </div>
+          }
+        </div>
+      </ui-card>
+    </div>
+  }
+
+  <!-- Detailed Mode -->
+  @if (viewMode() === 'detailed') {
+    <ui-card>
+      <div class="flex justify-between items-center mb-5">
+        <h3 class="m-0 text-base font-bold">All Bookings</h3>
+        <div class="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-[20px]">
+          <img src="icons/icon-search.svg" alt="" class="w-4 h-4 opacity-50" />
+          <input type="text" placeholder="Search bookings..." class="border-none outline-none text-sm" />
+        </div>
+      </div>
+      <table class="w-full border-collapse">
+        <thead>
+          <tr>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 border-b border-gray-200">Booking ID</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 border-b border-gray-200">Service</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 border-b border-gray-200">Customer</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 border-b border-gray-200">Hub</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 border-b border-gray-200">Date</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 border-b border-gray-200">Amount</th>
+            <th class="p-4 text-left font-bold text-sm text-gray-500 border-b border-gray-200">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="hover:bg-gray-50">
+            <td class="p-4 border-b border-gray-200">#BK-001</td>
+            <td class="p-4 border-b border-gray-200">Workshop: Web Design</td>
+            <td class="p-4 border-b border-gray-200">John Doe</td>
+            <td class="p-4 border-b border-gray-200">REXKL</td>
+            <td class="p-4 border-b border-gray-200">Mar 20, 2024</td>
+            <td class="p-4 border-b border-gray-200">RM 150.00</td>
+            <td class="p-4 border-b border-gray-200">
+              <span class="inline-block px-2.5 py-0.5 rounded-xl text-xs font-medium bg-success/10 text-success">Succeeded</span>
+            </td>
+          </tr>
+          <tr class="hover:bg-gray-50">
+            <td class="p-4 border-b border-gray-200">#BK-002</td>
+            <td class="p-4 border-b border-gray-200">Space: Meeting Room A</td>
+            <td class="p-4 border-b border-gray-200">Jane Smith</td>
+            <td class="p-4 border-b border-gray-200">TDIH Miri</td>
+            <td class="p-4 border-b border-gray-200">Mar 19, 2024</td>
+            <td class="p-4 border-b border-gray-200">RM 75.00</td>
+            <td class="p-4 border-b border-gray-200">
+              <span class="inline-block px-2.5 py-0.5 rounded-xl text-xs font-medium bg-success/10 text-success">Succeeded</span>
+            </td>
+          </tr>
+          <tr class="hover:bg-gray-50">
+            <td class="p-4 border-b border-gray-200">#BK-003</td>
+            <td class="p-4 border-b border-gray-200">Experience: Photography</td>
+            <td class="p-4 border-b border-gray-200">Mike Wilson</td>
+            <td class="p-4 border-b border-gray-200">Haus Kuching</td>
+            <td class="p-4 border-b border-gray-200">Mar 18, 2024</td>
+            <td class="p-4 border-b border-gray-200">RM 200.00</td>
+            <td class="p-4 border-b border-gray-200">
+              <span class="inline-block px-2.5 py-0.5 rounded-xl text-xs font-medium bg-warning/10 text-warning">Incomplete</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ui-card>
+  }
+</div>

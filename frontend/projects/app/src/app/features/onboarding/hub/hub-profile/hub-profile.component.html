@@ -1,0 +1,220 @@
+<div class="min-h-screen bg-neutral-50 flex flex-col">
+  <!-- Loading State -->
+  @if (onboarding.isLoading()) {
+  <div class="flex-1 flex items-center justify-center">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+  } @else {
+  <!-- Main Content -->
+  <div class="flex-1 overflow-y-auto">
+    <div class="max-w-4xl mx-auto px-4 lg:px-8 py-8">
+      <!-- Section Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl lg:text-4xl font-bold text-neutral-900 mb-2">Complete your profile</h1>
+        <p class="text-base text-neutral-500">Add more details to make your profile stand out and attract more
+          customers.</p>
+      </div>
+
+      <!-- Save Error Banner -->
+      @if (saveError()) {
+      <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+        <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="text-sm text-red-700">{{ saveError() }}</p>
+      </div>
+      }
+
+      <!-- Main Card with gradient background -->
+      <div class="bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-sm">
+        <!-- Cover Photo Section with pink gradient -->
+        <div class="relative w-full h-40 lg:h-48">
+          <!-- Pink gradient background -->
+          <div class="absolute inset-0 bg-gradient-to-r from-pink-200 via-pink-100 to-fuchsia-100"></div>
+
+          @if (profileForm.get('coverImage')?.value) {
+          <img [src]="profileForm.get('coverImage')?.value" alt="Cover"
+            class="absolute inset-0 w-full h-full object-cover z-0" />
+          }
+
+          <!-- Upload button in top right (z-10 to stay above image) -->
+          <button type="button" (click)="triggerCoverUpload()"
+            class="absolute top-4 right-4 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-neutral-50 transition-colors">
+            <ui-icon name="upload" class="w-5 h-5 text-neutral-600"></ui-icon>
+          </button>
+
+          <input type="file" #coverInput accept="image/*" (change)="onCoverImageChange($event)" class="hidden" />
+        </div>
+
+        <!-- Profile Form Card -->
+        <div class="relative -mt-16 mx-4 lg:mx-8 mb-8">
+          <div class="bg-white rounded-2xl border border-neutral-200 p-6 lg:p-8 shadow-sm">
+            <!-- Two Column Layout -->
+            <div class="flex flex-col lg:flex-row gap-8">
+              <!-- Left Column: Logo and Form Fields -->
+              <div class="flex-1">
+                <!-- Profile Logo and URL row -->
+                <div class="flex items-start gap-6 mb-6">
+                  <!-- Profile Logo -->
+                  <div class="relative flex-shrink-0">
+                    <ui-upload-image [src]="profileForm.get('agencyLogo')?.value || ''" (loaded)="onLogoLoaded($event)"
+                      displayType="avatar" class="w-20 h-20" />
+                  </div>
+
+                  <!-- URL Display -->
+                  <div class="flex-1 flex items-center justify-end">
+                    <div
+                      class="inline-flex items-center gap-2 bg-white border border-neutral-200 rounded-full px-4 py-2">
+                      <ui-icon name="info" class="w-4 h-4 text-neutral-400"></ui-icon>
+                      <span class="text-sm text-neutral-600 truncate max-w-[200px]">
+                        {{ onboarding.profileUrl() || 'mereka.io/...' }}
+                      </span>
+                      <button type="button" (click)="copyUrl()"
+                        class="p-1 text-neutral-400 hover:text-neutral-600 transition-colors">
+                        <ui-icon [name]="copied() ? 'check' : 'copy'" class="w-4 h-4"></ui-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Form Fields -->
+                <form [formGroup]="profileForm" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <!-- Left: Profile Name, Location, Phone -->
+                  <div class="space-y-5">
+                    <!-- Profile Name -->
+                    <div>
+                      <label class="flex items-center gap-1.5 text-sm font-medium text-neutral-700 mb-2">
+                        Profile Name
+                      </label>
+                      <input type="text" formControlName="agencyName" (input)="onNameChange()"
+                        class="w-full px-4 py-3 border rounded-xl outline-none transition-colors bg-neutral-50 focus:border-primary focus:bg-white"
+                        [class.border-neutral-200]="!hasError('agencyName')"
+                        [class.border-red-500]="hasError('agencyName')" />
+                      @if (hasError('agencyName')) {
+                      <p class="mt-1 text-sm text-red-500">{{ getErrorMessage('agencyName') }}</p>
+                      }
+                    </div>
+
+                    <!-- Profile URL Slug -->
+                    <div>
+                      <label class="flex items-center gap-1.5 text-sm font-medium text-neutral-700 mb-2">
+                        Profile URL
+                      </label>
+                      <div class="flex items-center">
+                        <span
+                          class="px-4 py-3 bg-neutral-100 border border-r-0 border-neutral-200 rounded-l-xl text-sm text-neutral-500">
+                          {{ onboarding.isScalePlan() ? 'mereka.io/expert/' : 'mereka.io/hub/' }}
+                        </span>
+                        <input type="text" formControlName="slug"
+                          class="flex-1 px-4 py-3 border rounded-r-xl outline-none transition-colors bg-neutral-50 focus:border-primary focus:bg-white"
+                          [class.border-neutral-200]="!hasError('slug')" [class.border-red-500]="hasError('slug')" />
+                      </div>
+                      @if (hasError('slug')) {
+                      <p class="mt-1 text-sm text-red-500">{{ getErrorMessage('slug') }}</p>
+                      }
+                    </div>
+
+                    <!-- Location Autocomplete -->
+                    <div>
+                      <label class="flex items-center gap-1.5 text-sm font-medium text-neutral-700 mb-2">
+                        Location
+                        <span class="text-red-500">*</span>
+                      </label>
+                      <ui-location-autocomplete [apiKey]="googleMapsApiKey"
+                        [initialValue]="locationGroup?.get('address')?.value || (locationGroup?.get('city')?.value ? locationGroup?.get('city')?.value + ', ' + locationGroup?.get('country')?.value : '')"
+                        placeholder="Search for your location..." (locationSelected)="onLocationSelected($event)"
+                        (locationCleared)="onLocationCleared()" />
+                      @if (locationError()) {
+                      <p class="mt-1 text-sm text-red-500">{{ locationError() }}</p>
+                      } @else if (hasError('location.city')) {
+                      <p class="mt-1 text-sm text-red-500">Location is required.</p>
+                      }
+                      @if (isStripeConnected() && !locationError()) {
+                      <div class="mt-1.5 text-xs text-neutral-500 flex items-center gap-1">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>You can change city but country cannot be changed after Stripe is connected.</span>
+                      </div>
+                      }
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div>
+                      <label class="block text-sm font-medium text-neutral-700 mb-2">Phone Number</label>
+                      <ui-phone-input [initialValue]="profileForm.get('phoneNumber')?.value || ''"
+                        (phoneChange)="onPhoneChange($event)" />
+                      @if (hasError('phoneNumber')) {
+                      <p class="mt-1 text-sm text-red-500">{{ getErrorMessage('phoneNumber') }}</p>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Right: Social Links -->
+                  <div formGroupName="socialLinks">
+                    <label class="block text-sm font-medium text-neutral-700 mb-3">Add Contact Information</label>
+
+                    <!-- Social Icons Grid -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                      @for (field of socialFields; track field.id) {
+                      <button type="button" (click)="toggleSocialField(field)"
+                        class="inline-flex items-center h-10 px-3 border rounded-xl bg-white cursor-pointer transition-all gap-1"
+                        [class.border-neutral-200]="activeSocialField() !== field.id && !hasSocialValue(field.key)"
+                        [class.border-primary]="activeSocialField() === field.id"
+                        [class.bg-primary]="activeSocialField() === field.id"
+                        [class.text-white]="activeSocialField() === field.id"
+                        [class.border-green-500]="hasSocialValue(field.key) && activeSocialField() !== field.id"
+                        [class.hover:bg-neutral-50]="activeSocialField() !== field.id">
+                        <ui-icon [name]="hasSocialValue(field.key) ? 'check' : 'plus'" class="w-4 h-4"
+                          [class.text-green-500]="hasSocialValue(field.key) && activeSocialField() !== field.id"></ui-icon>
+                        <ui-icon [name]="field.icon" class="w-5 h-5"></ui-icon>
+                      </button>
+                      }
+                    </div>
+
+                    <!-- Active Social Input Field -->
+                    @for (field of socialFields; track field.id) {
+                    @if (activeSocialField() === field.id) {
+                    <div class="flex border border-neutral-200 rounded-xl overflow-hidden bg-neutral-50 mt-3">
+                      <span class="px-4 py-3 bg-white border-r border-neutral-200 text-neutral-500 flex items-center">
+                        <ui-icon [name]="field.icon" class="w-5 h-5"></ui-icon>
+                      </span>
+                      <input [type]="field.type" [placeholder]="field.placeholder" [formControlName]="field.key"
+                        class="flex-1 px-4 py-3 outline-none bg-neutral-50 focus:bg-white" />
+                    </div>
+                    }
+                    }
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed Footer -->
+  <div class="sticky bottom-0 bg-white border-t border-neutral-200 px-4 lg:px-8 py-4">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <button type="button" (click)="goBack()"
+        class="px-6 py-3 border border-neutral-300 rounded-full text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">
+        Back
+      </button>
+
+      <button type="button" (click)="saveAndExit()" [disabled]="isSaving()"
+        class="text-neutral-600 font-medium hover:text-neutral-900 transition-colors disabled:opacity-50">
+        Save and Exit
+      </button>
+
+      <button type="button" (click)="onContinue()" [disabled]="isSaving()"
+        class="px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2">
+        @if (isSaving()) {
+        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+        }
+        Continue
+      </button>
+    </div>
+  </div>
+  }
+</div>

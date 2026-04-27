@@ -1,0 +1,66 @@
+:host {
+  display: block;  
+}
+
+.header-notification-alert-card {
+  padding: 12px 20px;
+  display: grid;
+  grid-template-columns: 40px 1fr 12px;
+  gap: 12px;
+  transition: 0.25s background-color;
+
+  &:hover {
+    background: var(--surface-tertiary, #F5F5F5);
+  }
+
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F5F5F5;
+    border: 1px solid var(--border-solid, #DDDDDE);
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  &__content {
+
+    &.read {
+      color: var(--content-secondary, #7B7B7B);
+    }
+  }
+
+  &__description {
+    font-size: 0.9375rem;
+  }
+
+  &__date {
+    font-size: 0.812rem;
+  }
+
+  &__actions {
+    margin-block-start: 4px;
+    display: flex;
+    gap: 8px;
+
+    > .ui-button {
+      flex: 1 1 0;
+    }
+
+    > .ui-button:only-child {
+      width: 100%;
+    }
+  }
+
+  &__status {
+    grid-column: 3;
+    width: 12px;
+    height: 12px;
+    display: flex;
+    align-self: center;
+    border-radius: 50%;
+    background-color: var(--surface-notification, #5B91F4);
+  }
+}

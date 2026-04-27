@@ -1,0 +1,56 @@
+<div class="location-picker">
+  <!-- Search Input -->
+  <div class="relative mb-4">
+    <div
+      class="flex items-center border rounded-xl transition-colors"
+      [class.border-neutral-200]="!isFocused()"
+      [class.border-primary]="isFocused()"
+      [class.bg-neutral-50]="!isFocused()"
+      [class.bg-white]="isFocused()"
+    >
+      <span class="pl-4 text-neutral-400">
+        <ui-icon name="location" class="w-5 h-5"></ui-icon>
+      </span>
+      <input
+        #searchInput
+        type="text"
+        [placeholder]="placeholder()"
+        [disabled]="disabled()"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+        class="flex-1 px-3 py-3 bg-transparent outline-none text-neutral-900 placeholder-neutral-400"
+      />
+      @if (showClearButton() && hasLocation()) {
+        <button
+          type="button"
+          (click)="clearInput()"
+          class="pr-4 text-neutral-400 hover:text-neutral-600 transition-colors"
+        >
+          <ui-icon name="close" class="w-4 h-4"></ui-icon>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Map Container -->
+  <div class="relative rounded-xl overflow-hidden border border-neutral-200">
+    @if (isLoading()) {
+      <div
+        class="flex items-center justify-center bg-neutral-100"
+        [style.height]="mapHeight()"
+      >
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    }
+    <div
+      #mapContainer
+      [style.height]="mapHeight()"
+      [class.hidden]="isLoading()"
+    ></div>
+  </div>
+
+  <!-- Helper Text -->
+  <p class="mt-2 text-sm text-neutral-500">
+    Drag the marker to adjust the exact location
+  </p>
+</div>

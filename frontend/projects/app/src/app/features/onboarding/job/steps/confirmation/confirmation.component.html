@@ -1,0 +1,246 @@
+<div class="space-y-6">
+  <!-- Validation Errors Alert -->
+  @if (hasErrors()) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div class="flex items-start gap-3">
+        <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <div class="flex-1">
+          <h3 class="text-sm font-semibold text-red-800 mb-2">Please complete the following before publishing:</h3>
+          <ul class="space-y-2">
+            @for (error of validationErrors(); track error.message) {
+              <li class="flex items-center justify-between text-sm">
+                <span class="text-red-700">{{ error.message }}</span>
+                <button
+                  type="button"
+                  (click)="navigateToStep(error.step)"
+                  class="text-red-600 hover:text-red-800 font-medium underline"
+                >
+                  Go to {{ getStepLabel(error.step) }}
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Preview Banner -->
+  <div class="bg-neutral-500 text-white px-4 py-3 rounded-lg flex items-center gap-2">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span class="text-sm font-medium">Preview of your Job post to users.</span>
+  </div>
+
+  <!-- Job Preview Card -->
+  <div class="bg-white border border-neutral-200 rounded-xl overflow-hidden">
+    <!-- Header with Job Title -->
+    <div class="p-6 border-b border-neutral-200">
+      <div class="flex items-start justify-between">
+        <div>
+          <h2 class="text-xl font-bold text-neutral-900">{{ formData().jobTitle || 'Untitled Job' }}</h2>
+          <div class="flex flex-wrap items-center gap-2 mt-2">
+            <span class="px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+              {{ getEmploymentTypeLabel(formData().employmentType) }}
+            </span>
+            <span class="px-2.5 py-1 bg-neutral-100 text-neutral-700 text-xs font-medium rounded-full">
+              {{ getCategoryName(formData().categoryId) }}
+            </span>
+            <span class="px-2.5 py-1 bg-neutral-100 text-neutral-700 text-xs font-medium rounded-full">
+              {{ getServiceTypeName(formData().categoryId, formData().serviceTypeId) }}
+            </span>
+          </div>
+        </div>
+        <button
+          type="button"
+          (click)="editOverview()"
+          class="text-sm font-medium text-primary hover:text-primary-dark transition-colors"
+        >
+          Edit
+        </button>
+      </div>
+    </div>
+
+    <!-- Job Details Grid -->
+    <div class="p-6 grid grid-cols-2 md:grid-cols-4 gap-4 border-b border-neutral-200">
+      <!-- Expert Level -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs text-neutral-500">Expert Level</p>
+          <p class="text-sm font-medium text-neutral-900">{{ getExpertLevelLabel(formData().expertLevelId) }}</p>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs text-neutral-500">Location</p>
+          <p class="text-sm font-medium text-neutral-900">{{ getJobLocationLabel(formData().jobLocation) }}</p>
+        </div>
+      </div>
+
+      <!-- Duration -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs text-neutral-500">Duration</p>
+          <p class="text-sm font-medium text-neutral-900">{{ getDurationLabel(formData().duration) }}</p>
+        </div>
+      </div>
+
+      <!-- Budget -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs text-neutral-500">Budget</p>
+          <p class="text-sm font-medium text-neutral-900">{{ formatBudget() }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- About the Job -->
+    <div class="p-6 border-b border-neutral-200">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-semibold text-neutral-900">About the Job</h3>
+        <button
+          type="button"
+          (click)="editRequirements()"
+          class="text-sm font-medium text-primary hover:text-primary-dark transition-colors"
+        >
+          Edit
+        </button>
+      </div>
+      <p class="text-sm text-neutral-600 whitespace-pre-line">{{ formData().jobDescription || 'No description provided' }}</p>
+
+      @if (formData().jobSummary) {
+        <div class="mt-4 p-3 bg-neutral-50 rounded-lg">
+          <p class="text-xs text-neutral-500 mb-1">Summary</p>
+          <p class="text-sm text-neutral-700">{{ formData().jobSummary }}</p>
+        </div>
+      }
+    </div>
+
+    <!-- Required Skills -->
+    <div class="p-6 border-b border-neutral-200">
+      <h3 class="text-sm font-semibold text-neutral-900 mb-3">Required Skills</h3>
+      <div class="flex flex-wrap gap-2">
+        @for (skill of formData().skills; track skill) {
+          <span class="px-3 py-1.5 bg-primary/10 text-primary text-sm font-medium rounded-full">
+            {{ skill }}
+          </span>
+        } @empty {
+          <span class="text-sm text-neutral-500">No skills specified</span>
+        }
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="p-6 border-b border-neutral-200">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-semibold text-neutral-900">Timeline</h3>
+        <button
+          type="button"
+          (click)="editTimelineBudget()"
+          class="text-sm font-medium text-primary hover:text-primary-dark transition-colors"
+        >
+          Edit
+        </button>
+      </div>
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span class="text-sm text-neutral-600">Start: {{ formatStartDate() }}</span>
+      </div>
+    </div>
+
+    <!-- Meet the Client -->
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-semibold text-neutral-900">Meet the Client</h3>
+        <button
+          type="button"
+          (click)="editYourDetail()"
+          class="text-sm font-medium text-primary hover:text-primary-dark transition-colors"
+        >
+          Edit
+        </button>
+      </div>
+      <div class="flex items-start gap-4">
+        <!-- Logo or Avatar -->
+        <div class="w-12 h-12 bg-neutral-200 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
+          @if (formData().organization.logo) {
+            <img [src]="formData().organization.logo" alt="Organization" class="w-full h-full object-cover" />
+          } @else {
+            <svg class="w-6 h-6 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+          }
+        </div>
+        <div class="flex-1">
+          <p class="font-medium text-neutral-900">{{ formData().contactName }}</p>
+          @if (formData().organization.name) {
+            <p class="text-sm text-neutral-600">{{ formData().organization.name }}</p>
+          }
+          <p class="text-sm text-neutral-500">{{ formData().contactEmail }}</p>
+          @if (formData().contactPhone) {
+            <p class="text-sm text-neutral-500">{{ formData().phoneCountryCode }} {{ formData().contactPhone }}</p>
+          }
+          @if (formData().organization.about) {
+            <p class="text-sm text-neutral-600 mt-2">{{ formData().organization.about }}</p>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visibility Info -->
+  <div class="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+    <svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      @if (formData().accessMode === 'public') {
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      } @else {
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+      }
+    </svg>
+    <div class="text-sm text-blue-800">
+      @if (formData().accessMode === 'public') {
+        <strong>Public Job:</strong> This job will be visible to all experts on Mereka.
+      } @else {
+        <strong>Private Job:</strong> This job will only be visible to experts you invite.
+      }
+    </div>
+  </div>
+
+  <!-- Confirmation Message -->
+  <div class="text-center py-4">
+    <p class="text-sm text-neutral-600">
+      By posting this job, you agree to our
+      <a href="#" class="text-primary hover:underline">Terms of Service</a>
+      and
+      <a href="#" class="text-primary hover:underline">Privacy Policy</a>.
+    </p>
+  </div>
+</div>

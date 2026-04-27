@@ -1,0 +1,181 @@
+<div class="users-page animate-fade-in">
+  <!-- Header Navigation -->
+  <header class="users-header">
+    <nav class="nav-tabs">
+      <a routerLink="learners" routerLinkActive="active" class="nav-tab">Learners</a>
+      <span class="nav-divider">|</span>
+      <a routerLink="experts" routerLinkActive="active" class="nav-tab">Experts</a>
+      <span class="nav-divider">|</span>
+      <a routerLink="hub-admins" routerLinkActive="active" class="nav-tab">Hub Admins</a>
+    </nav>
+  </header>
+
+  <!-- Overview Section -->
+  <section class="overview-section">
+    <h2 class="section-title">Overview</h2>
+    <div class="stats-grid">
+      @for (stat of userStats(); track stat.label) {
+        <a [routerLink]="stat.route" class="stat-card panel panel-shadow">
+          <img [src]="stat.icon" alt="" class="stat-icon" />
+          <div class="stat-content">
+            <span class="stat-value">{{ stat.count | number }}</span>
+            <span class="stat-label">{{ stat.label }}</span>
+          </div>
+        </a>
+      }
+    </div>
+  </section>
+
+  <!-- Analytics Section -->
+  <section class="analytics-section">
+    <h2 class="section-title">Analytics and Reports</h2>
+
+    <div class="analytics-grid">
+      <!-- Left Column -->
+      <div class="analytics-left">
+        <!-- Last 7 Days Card -->
+        <div class="panel analytics-card">
+          <div class="panel-header">
+            <h3>Last 7 Days</h3>
+            <button class="dropdown-btn">
+              <img src="icons/icon-dropmenu.svg" alt="" />
+            </button>
+          </div>
+          <div class="stats-summary">
+            <div class="summary-item">
+              <span class="summary-label">New Users</span>
+              <span class="summary-value">1,500</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label muted">New Signups</span>
+              <span class="summary-value">15</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label muted">Average Engagement</span>
+              <span class="summary-value">15 mins</span>
+            </div>
+          </div>
+          <div class="chart-section">
+            <div class="change-indicator positive">
+              <img src="imgs/akar-icons_arrow-up.png" alt="" />
+              <span>00.5%</span>
+            </div>
+            <div class="line-chart-area">
+              <svg viewBox="0 0 400 100" class="line-chart-svg">
+                <defs>
+                  <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:var(--color-primary);stop-opacity:0.3" />
+                    <stop offset="100%" style="stop-color:var(--color-primary);stop-opacity:0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M0,80 L57,60 L114,70 L171,40 L228,50 L285,30 L342,45 L400,20"
+                  fill="none"
+                  stroke="var(--color-primary)"
+                  stroke-width="2"
+                />
+                <path
+                  d="M0,80 L57,60 L114,70 L171,40 L228,50 L285,30 L342,45 L400,20 L400,100 L0,100 Z"
+                  fill="url(#lineGradient)"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Country & Source Row -->
+        <div class="stats-row">
+          <!-- Users by Country -->
+          <div class="panel half-card">
+            <div class="panel-body">
+              <h4>Users Visit by Country</h4>
+              <div class="visits-list">
+                @for (country of countryVisits(); track country.country) {
+                  <div class="visit-item">
+                    <span class="visit-name">{{ country.country }}</span>
+                    <span class="visit-count">{{ country.count | number }}</span>
+                    <div class="change-indicator" [class.positive]="country.isPositive" [class.negative]="!country.isPositive">
+                      <img [src]="country.isPositive ? 'imgs/akar-icons_arrow-up.png' : 'imgs/akar-icons_arrow-down.png'" alt="" />
+                      <span>{{ country.change }}%</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Users by Source -->
+          <div class="panel half-card">
+            <div class="panel-body">
+              <h4>Users Visit by Source</h4>
+              <div class="visits-list">
+                @for (source of sourceVisits(); track source.source) {
+                  <div class="visit-item">
+                    <span class="visit-name">{{ source.source }}</span>
+                    <span class="visit-count">{{ source.count | number }}</span>
+                    <div class="change-indicator" [class.positive]="source.isPositive" [class.negative]="!source.isPositive">
+                      <img [src]="source.isPositive ? 'imgs/akar-icons_arrow-up.png' : 'imgs/akar-icons_arrow-down.png'" alt="" />
+                      <span>{{ source.change }}%</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="analytics-right">
+        <!-- Live on Mereka -->
+        <div class="panel live-card">
+          <div class="panel-body">
+            <h4>Live on Mereka</h4>
+            <p class="live-count">{{ liveUsers() }} USERS ARE ACTIVE ON THE PLATFORM</p>
+          </div>
+        </div>
+
+        <!-- Age Demographics -->
+        <div class="panel demographics-card">
+          <div class="panel-body">
+            <h4>Users Age Demographics</h4>
+            <div class="demographics-chart">
+              <div class="age-bar">
+                <div class="bar-wrapper">
+                  <div class="bar" style="--height: 30%"></div>
+                  <span class="bar-label">18-24</span>
+                </div>
+                <div class="bar-wrapper">
+                  <div class="bar highlight" style="--height: 65%"></div>
+                  <span class="bar-label">25-34</span>
+                </div>
+                <div class="bar-wrapper">
+                  <div class="bar" style="--height: 45%"></div>
+                  <span class="bar-label">35-44</span>
+                </div>
+                <div class="bar-wrapper">
+                  <div class="bar" style="--height: 25%"></div>
+                  <span class="bar-label">45-54</span>
+                </div>
+                <div class="bar-wrapper">
+                  <div class="bar" style="--height: 15%"></div>
+                  <span class="bar-label">55+</span>
+                </div>
+              </div>
+              <div class="demographics-legend">
+                <div class="legend-item">
+                  <span class="legend-dot male"></span>
+                  <span>Male 60%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot female"></span>
+                  <span>Female 40%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

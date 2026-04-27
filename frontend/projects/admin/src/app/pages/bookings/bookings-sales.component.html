@@ -1,0 +1,172 @@
+<div class="flex flex-col gap-5 animate-fade-in">
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-4 gap-4">
+    <ui-card>
+      <span class="text-sm text-gray-500">Total Sales</span>
+      <span class="text-2xl font-black">{{ summary().totalSales | currency:'MYR':'symbol':'1.0-0' }}</span>
+      <span class="text-sm text-green-500">+12.5% vs last month</span>
+    </ui-card>
+    <ui-card>
+      <span class="text-sm text-gray-500">Total Commission</span>
+      <span class="text-2xl font-black">{{ summary().totalCommission | currency:'MYR':'symbol':'1.0-0' }}</span>
+      <span class="text-sm text-green-500">+8.3% vs last month</span>
+    </ui-card>
+    <ui-card>
+      <span class="text-sm text-gray-500">Transactions</span>
+      <span class="text-2xl font-black">{{ summary().totalTransactions | number }}</span>
+      <span class="text-sm text-green-500">+15.2% vs last month</span>
+    </ui-card>
+    <ui-card>
+      <span class="text-sm text-gray-500">Avg Transaction</span>
+      <span class="text-2xl font-black">{{ summary().avgTransactionValue | currency:'MYR':'symbol':'1.0-0' }}</span>
+      <span class="text-sm text-red-500">-2.1% vs last month</span>
+    </ui-card>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex items-end gap-4 p-4 bg-white border border-gray-200 rounded-xl">
+    <div class="flex flex-col gap-1">
+      <label class="text-xs font-medium text-gray-500">Date Range</label>
+      <select [(ngModel)]="dateRange" (change)="filterData()" class="px-3 py-2 border border-gray-200 rounded-xl bg-white text-sm min-w-[140px]">
+        <option value="today">Today</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+        <option value="quarter">This Quarter</option>
+        <option value="year">This Year</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-xs font-medium text-gray-500">Status</label>
+      <select [(ngModel)]="statusFilter" (change)="filterData()" class="px-3 py-2 border border-gray-200 rounded-xl bg-white text-sm min-w-[140px]">
+        <option value="all">All Status</option>
+        <option value="completed">Completed</option>
+        <option value="pending">Pending</option>
+        <option value="refunded">Refunded</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-xs font-medium text-gray-500">Payment Method</label>
+      <select [(ngModel)]="paymentFilter" (change)="filterData()" class="px-3 py-2 border border-gray-200 rounded-xl bg-white text-sm min-w-[140px]">
+        <option value="all">All Methods</option>
+        <option value="card">Card</option>
+        <option value="bank_transfer">Bank Transfer</option>
+        <option value="ewallet">E-Wallet</option>
+      </select>
+    </div>
+
+    <div class="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-xl flex-1">
+      <img src="icons/icon-search.svg" alt="Search" class="w-4 h-4 opacity-50" />
+      <input
+        type="search"
+        placeholder="Search transactions..."
+        [(ngModel)]="searchQuery"
+        (input)="filterData()"
+        class="border-none bg-transparent outline-none w-full text-sm"
+      />
+    </div>
+
+    <button class="flex items-center gap-2 px-4 py-2 bg-primary text-white border-none rounded-xl cursor-pointer font-medium hover:opacity-90" (click)="exportData()">
+      <img src="icons/icon-copy.svg" alt="Export" class="w-4 h-4 brightness-0 invert" />
+      Export
+    </button>
+  </div>
+
+  <!-- Transactions Table -->
+  <ui-card [padding]="'p-0'">
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr>
+            <th class="p-3 px-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Transaction ID</th>
+            <th class="p-3 px-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Service</th>
+            <th class="p-3 px-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Hub</th>
+            <th class="p-3 px-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Customer</th>
+            <th class="p-3 px-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Date</th>
+            <th class="p-3 px-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Amount</th>
+            <th class="p-3 px-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Commission</th>
+            <th class="p-3 px-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Net</th>
+            <th class="p-3 px-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Payment</th>
+            <th class="p-3 px-4 text-left font-bold text-sm text-gray-500 bg-gray-50 border-b border-gray-200">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (tx of paginatedTransactions(); track tx.id) {
+            <tr>
+              <td class="p-3 px-4 border-b border-gray-200">
+                <div class="flex flex-col">
+                  <span class="font-bold">#{{ tx.id }}</span>
+                  <span class="text-xs text-gray-500">Booking: {{ tx.bookingId }}</span>
+                </div>
+              </td>
+              <td class="p-3 px-4 border-b border-gray-200">{{ tx.serviceName }}</td>
+              <td class="p-3 px-4 border-b border-gray-200">{{ tx.hubName }}</td>
+              <td class="p-3 px-4 border-b border-gray-200">{{ tx.customerName }}</td>
+              <td class="p-3 px-4 border-b border-gray-200">{{ tx.date | date:'MMM d, yyyy' }}</td>
+              <td class="p-3 px-4 border-b border-gray-200 font-medium">{{ tx.amount | currency:'MYR':'symbol':'1.0-0' }}</td>
+              <td class="p-3 px-4 border-b border-gray-200 text-gray-500">{{ tx.commission | currency:'MYR':'symbol':'1.0-0' }}</td>
+              <td class="p-3 px-4 border-b border-gray-200 font-bold text-green-600">{{ tx.netAmount | currency:'MYR':'symbol':'1.0-0' }}</td>
+              <td class="p-3 px-4 border-b border-gray-200">
+                <span
+                  class="inline-block px-2 py-1 rounded-sm text-xs font-medium"
+                  [class.bg-blue-100]="tx.paymentMethod === 'card'"
+                  [class.text-blue-700]="tx.paymentMethod === 'card'"
+                  [class.bg-green-100]="tx.paymentMethod === 'bank_transfer'"
+                  [class.text-green-700]="tx.paymentMethod === 'bank_transfer'"
+                  [class.bg-purple-100]="tx.paymentMethod === 'ewallet'"
+                  [class.text-purple-700]="tx.paymentMethod === 'ewallet'"
+                >
+                  {{ getPaymentLabel(tx.paymentMethod) }}
+                </span>
+              </td>
+              <td class="p-3 px-4 border-b border-gray-200">
+                <span
+                  class="inline-block px-2 py-1 rounded-sm text-xs font-medium capitalize"
+                  [class.bg-green-100]="tx.status === 'completed'"
+                  [class.text-green-700]="tx.status === 'completed'"
+                  [class.bg-orange-100]="tx.status === 'pending'"
+                  [class.text-orange-700]="tx.status === 'pending'"
+                  [class.bg-red-100]="tx.status === 'refunded'"
+                  [class.text-red-800]="tx.status === 'refunded'"
+                >
+                  {{ tx.status }}
+                </span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="10" class="text-center py-10 text-gray-500">
+                <p>No transactions found</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </ui-card>
+
+  <!-- Pagination -->
+  <div class="flex justify-between items-center p-4">
+    <span class="text-sm text-gray-500">
+      Showing {{ pageStart() }}-{{ pageEnd() }} of {{ filteredTransactions().length }} transactions
+    </span>
+    <div class="flex items-center gap-3">
+      <button
+        class="px-4 py-2 bg-white border border-gray-200 rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+        [disabled]="currentPage() === 1"
+        (click)="currentPage.set(currentPage() - 1)"
+      >
+        Previous
+      </button>
+      <span class="px-3 py-2 bg-primary text-white rounded-xl font-medium">{{ currentPage() }}</span>
+      <button
+        class="px-4 py-2 bg-white border border-gray-200 rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+        [disabled]="currentPage() === totalPages()"
+        (click)="currentPage.set(currentPage() + 1)"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,66 @@
+<div class="relative">
+  <div
+    class="flex border rounded-lg transition-colors bg-white"
+    [class.border-neutral-300]="!isFocused()"
+    [class.border-primary]="isFocused()"
+    [class.ring-2]="isFocused()"
+    [class.ring-primary/20]="isFocused()"
+    [class.opacity-50]="disabled()"
+  >
+    <!-- Country Selector -->
+    <div #dropdownContainer class="relative">
+      <button
+        type="button"
+        (click)="toggleDropdown()"
+        [disabled]="disabled()"
+        class="flex items-center gap-1.5 px-3 py-2.5 bg-neutral-50 border-r border-neutral-200 hover:bg-neutral-100 transition-colors cursor-pointer disabled:cursor-not-allowed rounded-l-lg"
+      >
+        <span class="text-lg leading-none">{{ selectedCountry().flag }}</span>
+        <span class="text-sm text-neutral-700">{{ selectedCountry().dialCode }}</span>
+        <svg
+          class="w-3.5 h-3.5 text-neutral-500 transition-transform"
+          [class.rotate-180]="isDropdownOpen()"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Phone Input -->
+    <input
+      type="tel"
+      [placeholder]="placeholder()"
+      [value]="phoneNumber()"
+      [disabled]="disabled()"
+      (input)="onPhoneInput($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      class="flex-1 px-3 py-2.5 outline-none bg-transparent text-neutral-900 placeholder-neutral-400 disabled:cursor-not-allowed rounded-r-lg"
+    />
+  </div>
+
+  <!-- Dropdown - Outside the overflow container -->
+  @if (isDropdownOpen()) {
+    <div
+      class="absolute left-0 top-full mt-1 w-64 bg-white border border-neutral-200 rounded-lg shadow-lg z-50"
+    >
+      <div class="max-h-60 overflow-y-auto py-1">
+        @for (country of filteredCountries(); track country.iso2) {
+          <button
+            type="button"
+            (click)="selectCountry(country)"
+            class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-neutral-50 transition-colors text-left"
+            [class.bg-primary/5]="country.iso2 === selectedCountry().iso2"
+          >
+            <span class="text-base leading-none">{{ country.flag }}</span>
+            <span class="flex-1 text-sm text-neutral-700">{{ country.name }}</span>
+            <span class="text-sm text-neutral-400">{{ country.dialCode }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,129 @@
+<div class="hub-settings-layout min-h-screen">
+  <div class="flex">
+    <!-- Desktop Sidebar -->
+    <aside class="settings-sidebar hidden lg:block w-64 flex-shrink-0 border-r border-neutral-200 bg-white min-h-[calc(100vh-84px)]">
+      <div class="p-6">
+        <h2 class="text-lg font-bold text-neutral-900 mb-6">Settings</h2>
+        <nav class="space-y-1">
+          @for (item of settingsMenuItems(); track item.label) {
+            @if (item.externalUrl) {
+              <a
+                [href]="item.externalUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors"
+              >
+                <ui-icon [name]="item.icon" size="md" />
+                <span class="font-medium">{{ item.label }}</span>
+                <ui-icon name="external" size="sm" class="ml-auto text-neutral-400" />
+              </a>
+            } @else if (item.fullPath) {
+              <a
+                [routerLink]="item.fullPath"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors"
+              >
+                <ui-icon [name]="item.icon" size="md" />
+                <span class="font-medium">{{ item.label }}</span>
+              </a>
+            } @else {
+              <a
+                [routerLink]="item.path"
+                routerLinkActive="bg-neutral-100 text-primary"
+                [routerLinkActiveOptions]="{ exact: item.path === 'account' }"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors"
+              >
+                <ui-icon [name]="item.icon" size="md" />
+                <span class="font-medium">{{ item.label }}</span>
+              </a>
+            }
+          }
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Mobile Sidebar Toggle -->
+    @if (isMobile()) {
+      <div class="mobile-sidebar-header p-4 border-b border-neutral-200 bg-white lg:hidden sticky top-14 z-40">
+        <button
+          type="button"
+          (click)="toggleMobileSidebar()"
+          class="flex items-center gap-2 px-4 py-2 border border-neutral-200 rounded-lg font-medium"
+        >
+          <ui-icon name="menu" size="sm" />
+          <span>Settings Menu</span>
+          <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+    }
+
+    <!-- Mobile Sidebar Drawer -->
+    @if (showMobileSidebar()) {
+      <div class="mobile-sidebar-overlay fixed inset-0 z-50 lg:hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/50" (click)="closeMobileSidebar()"></div>
+
+        <!-- Sidebar Content -->
+        <div class="absolute left-0 top-0 bottom-0 w-72 bg-white shadow-xl">
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-lg font-bold text-neutral-900">Settings</h2>
+              <button
+                type="button"
+                (click)="closeMobileSidebar()"
+                class="p-2 rounded-lg hover:bg-neutral-100 transition-colors"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <nav class="space-y-1">
+              @for (item of settingsMenuItems(); track item.label) {
+                @if (item.externalUrl) {
+                  <a
+                    [href]="item.externalUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors"
+                    (click)="closeMobileSidebar()"
+                  >
+                    <ui-icon [name]="item.icon" size="md" />
+                    <span class="font-medium">{{ item.label }}</span>
+                    <ui-icon name="external" size="sm" class="ml-auto text-neutral-400" />
+                  </a>
+                } @else if (item.fullPath) {
+                  <a
+                    [routerLink]="item.fullPath"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors"
+                    (click)="closeMobileSidebar()"
+                  >
+                    <ui-icon [name]="item.icon" size="md" />
+                    <span class="font-medium">{{ item.label }}</span>
+                  </a>
+                } @else {
+                  <a
+                    [routerLink]="item.path"
+                    routerLinkActive="bg-neutral-100 text-primary"
+                    [routerLinkActiveOptions]="{ exact: item.path === 'account' }"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors"
+                    (click)="closeMobileSidebar()"
+                  >
+                    <ui-icon [name]="item.icon" size="md" />
+                    <span class="font-medium">{{ item.label }}</span>
+                  </a>
+                }
+              }
+            </nav>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0">
+      <router-outlet />
+    </main>
+  </div>
+</div>

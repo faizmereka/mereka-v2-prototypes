@@ -1,0 +1,78 @@
+@use 'abstracts' as *;
+@use 'layout' as *;
+@use '../../pages/home/home.page.scss' as *;
+
+:host {
+  /* Background underlay */
+  &:before {
+    background-color: #F9F5E3;
+  }
+}
+
+.heading-accent {
+  background-image: linear-gradient(90deg, #FFA34E 34.8%, #EFC903 100%);
+}
+
+.experiences-filters {
+  display: flex;
+  gap: 12px;
+}
+
+.experiences-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  row-gap: var(--space-4xl);
+  column-gap: var(--space-m);
+}
+
+.placeholder-grid {
+  display: flex;
+  overflow: visible;
+  column-gap: var(--space-m);
+
+  > * {
+    min-width: get-clamp(370, 290);
+  }
+}
+
+@media screen and (width < $breakpoint-laptop) {
+  .experiences-filters {
+    width: calc(100% + var(--layout-section-padding) * 2);
+    margin-inline: calc(-1 * var(--layout-section-padding));
+    padding-inline: var(--layout-section-padding);
+    @include horizontal-scroll;
+  }
+}
+
+@media screen and (width >= $breakpoint-laptop) {
+  :host {
+    /* Background underlay */
+    &:before {
+      background-image: url('/assets/feat/homepage/images/bg-experiences.jpg');
+    }
+  }
+
+  .experiences-filters {
+    justify-content: center;
+  }
+
+  .experiences-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: 1fr;
+    row-gap: var(--space-4xl);
+    column-gap: var(--space-m);
+  }
+
+  .placeholder-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: 1fr;
+    row-gap: var(--space-4xl);
+    column-gap: var(--space-m);
+
+    > * {
+      min-width: 0;
+    }
+  }
+}

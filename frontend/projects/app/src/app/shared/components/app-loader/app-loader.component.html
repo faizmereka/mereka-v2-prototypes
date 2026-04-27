@@ -1,0 +1,59 @@
+<div class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center">
+  <!-- Logo with pulse animation -->
+  <div class="relative mb-8">
+    <!-- Animated rings -->
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="w-24 h-24 rounded-full border-2 border-primary/20 animate-ping"></div>
+    </div>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="w-20 h-20 rounded-full border-2 border-primary/30 animate-pulse"></div>
+    </div>
+
+    <!-- Mereka Logo -->
+    <div class="relative w-16 h-16 flex items-center justify-center">
+      <img
+        src="/assets/images/mereka-logo-symbol.svg"
+        alt="Mereka"
+        class="w-14 h-14 animate-pulse"
+      />
+    </div>
+  </div>
+
+  <!-- Brand name -->
+  <h1 class="text-2xl font-bold text-neutral-900 mb-2 tracking-tight">
+    Mereka
+  </h1>
+
+  <!-- Loading message -->
+  <p class="text-neutral-500 text-sm mb-6">
+    {{ message() }}
+  </p>
+
+  <!-- Progress bar -->
+  @if (showProgress()) {
+    <div class="w-48 h-1 bg-neutral-200 rounded-full overflow-hidden">
+      <div class="h-full bg-primary rounded-full animate-loading-bar"></div>
+    </div>
+  }
+</div>
+
+<style>
+  @keyframes loading-bar {
+    0% {
+      width: 0%;
+      margin-left: 0%;
+    }
+    50% {
+      width: 60%;
+      margin-left: 20%;
+    }
+    100% {
+      width: 0%;
+      margin-left: 100%;
+    }
+  }
+
+  .animate-loading-bar {
+    animation: loading-bar 1.5s ease-in-out infinite;
+  }
+</style>

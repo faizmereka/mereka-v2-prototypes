@@ -1,0 +1,12 @@
+:root {
+  --ui-sidenav-actions-height: 84px !important;
+  --ui-sidenav-header-height: 60px !important;
+}
+
+.ui-sidenav-container {
+  --mat-sidenav-container-elevation-shadow: none;
+  width: 100svw;
+  height: auto;
+  border-radius: 12px;
+  overflow: hidden;
+}

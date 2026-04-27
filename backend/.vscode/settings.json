@@ -1,0 +1,49 @@
+{
+  // TypeScript
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "typescript.suggest.autoImports": true,
+
+  // Biome - Unified linting and formatting
+  "editor.formatOnSave": false,
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "quickfix.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+
+  // Files
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  // Search Exclusions
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.cache": true,
+    "**/coverage": true,
+    "**/*.log": true,
+    "**/logs": true
+  },
+
+  // File Nesting (group test files)
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.test.ts, ${capture}.spec.ts",
+    "*.js": "${capture}.test.js, ${capture}.spec.js"
+  },
+
+  // Markdown (disable linting)
+  "markdownlint.enable": false,
+  "markdown.validate.enabled": false,
+
+  // Problems (hide markdown issues)
+  "problems.exclude": {
+    "**/*.md": true,
+    "**/CLAUDE.md": true,
+    "**/README.md": true
+  }
+}

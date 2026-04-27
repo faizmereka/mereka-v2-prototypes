@@ -1,0 +1,47 @@
+<div class="inner-container">
+  @if (!hideElements().includes('image')) {
+    <div ui-card-image [aspectRatio]="1">
+      <img ui-image [src]="image()" alt loading="lazy" />
+    </div>
+  }
+  <div ui-card-body>
+    <div ui-card-row>
+      <div>
+        <h3 ui-card-title>
+          @if (url()) {
+            <a ui-card-link
+              [routerLink]="url() ? [url()] : []"
+              [title]="title()"
+              [attr.target]="target() ?? null"
+              (click)="onClick()">
+              {{ title() }}
+            </a>
+          } @else if (href()) {
+            <a ui-card-link
+              [href]="href() ?? null"
+              [title]="title()"
+              [attr.target]="target() ?? null"
+              (click)="onClick()">
+              {{ title() }}
+            </a>
+          }
+        </h3>
+      </div>
+      @if (!hideElements().includes('hub-image')) {
+        <img ui-image [src]="expertImage()" class="hub-image" loading="lazy" alt>
+      }
+    </div>
+    @if (!hideElements().includes('description')) {
+      <p class="ui-card-desc">{{ description() || 'N/A' }}</p>
+    }
+  </div>
+  @if (!hideElements().includes('favourite')) {
+    <button ui-button-icon
+      class="ui-button-favourite"
+      (click)="toggleFavourite()">
+      <span ui-button-icon-wrapper>
+        <mat-icon [fontIcon]="isFavourite() ? 'favorite' : 'favorite_border'" />
+      </span>
+    </button>
+  }
+</div>

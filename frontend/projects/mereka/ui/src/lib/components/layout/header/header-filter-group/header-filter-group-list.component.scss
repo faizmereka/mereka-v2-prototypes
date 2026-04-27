@@ -1,0 +1,14 @@
+@use 'abstracts' as *;
+
+:host.header-filter-group-list {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  gap: var(--space-s, 0.5rem);
+}
+
+@media (width > $breakpoint-mobile) {
+  :host.header-filter-group-list {
+    flex-direction: row;
+  }
+}

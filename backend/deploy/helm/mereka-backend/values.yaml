@@ -1,0 +1,84 @@
+# Mereka Backend configuration
+image:
+  repository: gcr.io/mereka-dev/mereka-backend
+  tag: "latest"
+  pullPolicy: Always
+
+replicaCount: 1
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  host: ""  # Set in overlay (e.g., api.mereka.dev)
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  tls:
+    enabled: true
+    secretName: ""
+
+# Application configuration
+config:
+  nodeEnv: "production"
+  port: "3000"
+  frontendUrl: ""
+  corsOrigins: ""
+
+# MongoDB configuration
+mongodb:
+  uri: ""  # Set in overlay
+
+# Resource limits
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+# Horizontal Pod Autoscaling
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+# Health check
+healthCheck:
+  path: /health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# Secrets (override in environment values)
+secrets:
+  jwtSecret: ""
+  jwtRefreshSecret: ""
+  # Stripe Multi-Region Configuration
+  stripeAtlasSecretKey: ""
+  stripeAtlasWebhookSecret: ""
+  stripeAtlasPublishableKey: ""
+  stripeMySecretKey: ""
+  stripeMyWebhookSecret: ""
+  stripeMyPublishableKey: ""
+  # Firebase
+  firebaseProjectId: ""
+  firebaseClientEmail: ""
+  firebasePrivateKey: ""
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}

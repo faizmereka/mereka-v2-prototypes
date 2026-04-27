@@ -1,0 +1,523 @@
+<div class="min-h-screen bg-neutral-50 flex flex-col">
+  <!-- Loading State -->
+  @if (onboarding.isLoading()) {
+  <div class="flex-1 flex items-center justify-center">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+  } @else {
+  <!-- Main Content -->
+  <div class="flex-1 overflow-y-auto">
+    <div class="max-w-4xl mx-auto px-4 lg:px-8 py-6 lg:py-8">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl lg:text-4xl font-bold text-neutral-900 mb-2">Add details to your profile</h1>
+        <p class="text-base text-neutral-500">Showcase your work and credentials to build trust with customers.</p>
+      </div>
+
+      <div class="space-y-6" [formGroup]="detailsForm">
+        <!-- Intro Video Section -->
+        <ui-collapsible title="Intro Video" [expanded]="sections()['introVideo']"
+          (expandedChange)="toggleSection('introVideo')">
+          <div class="flex flex-col lg:flex-row gap-8 pt-6">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <h3 class="text-xl font-bold text-neutral-900">Upload a video</h3>
+                <span
+                  class="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-xs font-medium rounded uppercase">Optional</span>
+              </div>
+              <p class="text-sm text-neutral-500 mb-4">
+                Spruce up your profile by adding an intro video. You may insert a YouTube link or any other source.
+              </p>
+              <input type="text" formControlName="introVideo" placeholder="Insert YouTube or video link"
+                class="w-full px-4 py-3 border border-neutral-200 rounded-xl outline-none transition-colors bg-neutral-50 focus:border-primary focus:bg-white" />
+            </div>
+
+            <div class="lg:w-80 flex-shrink-0">
+              <div class="flex items-center gap-2 mb-3">
+                <ui-icon name="star" class="w-5 h-5 text-neutral-600"></ui-icon>
+                <span class="text-sm font-semibold text-neutral-900 uppercase tracking-wide">Tips</span>
+              </div>
+              <div class="text-sm text-neutral-500 space-y-2">
+                <p>An intro video may include:</p>
+                <ul class="list-disc list-inside space-y-1">
+                  <li>Your background and story</li>
+                  <li>General greetings and introduction</li>
+                  <li>Footage from previous experiences</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </ui-collapsible>
+
+        <!-- Gallery Section -->
+        <ui-collapsible title="Gallery" [expanded]="sections()['gallery']" (expandedChange)="toggleSection('gallery')">
+          <div class="flex flex-col lg:flex-row gap-8 pt-6">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <h3 class="text-xl font-bold text-neutral-900">Choose your gallery photos</h3>
+                <span
+                  class="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-xs font-medium rounded uppercase">Optional</span>
+              </div>
+              <p class="text-sm text-neutral-500 mb-4">
+                Upload 3-5 photos that highlight the different aspects of your services.
+              </p>
+
+              <!-- Gallery Images Grid -->
+              <div class="flex items-center gap-4 mb-4 flex-wrap">
+                @for (image of galleryImages; track $index) {
+                <div class="relative w-36 h-28 rounded-xl overflow-hidden border border-neutral-200 group">
+                  <img [src]="image" alt="Gallery" class="w-full h-full object-cover" />
+                  <div
+                    class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button type="button" (click)="removeGalleryImage($index)"
+                      class="p-2 bg-white rounded-full hover:bg-red-50 transition-colors">
+                      <ui-icon name="trash" class="w-4 h-4 text-red-500"></ui-icon>
+                    </button>
+                  </div>
+                </div>
+                }
+
+                <!-- Upload slot -->
+                <button type="button" (click)="triggerGalleryUpload()"
+                  class="w-36 h-28 border-2 border-dashed border-neutral-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-neutral-50 transition-colors">
+                  <ui-icon name="upload" class="w-6 h-6 text-neutral-400"></ui-icon>
+                  <span class="text-xs text-neutral-400 mt-1">Add Photo</span>
+                </button>
+              </div>
+
+              <!-- Auto populate toggle -->
+              <div class="flex items-start gap-4 p-4 bg-neutral-50 rounded-xl">
+                <div class="flex-1">
+                  <p class="text-base font-semibold text-neutral-900 mb-1">Auto populate images from listed services</p>
+                  <p class="text-sm text-neutral-500">
+                    By selecting this, all images from your services will be displayed in the gallery.
+                  </p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" [checked]="autoPopulateImages"
+                    (change)="onAutoPopulateChange($any($event.target).checked)" class="sr-only peer" />
+                  <div
+                    class="w-11 h-6 bg-neutral-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary">
+                  </div>
+                </label>
+              </div>
+
+              <input type="file" #galleryInput accept="image/*" multiple (change)="onGalleryImageChange($event)"
+                class="hidden" />
+            </div>
+
+            <div class="lg:w-80 flex-shrink-0">
+              <div class="flex items-center gap-2 mb-3">
+                <ui-icon name="star" class="w-5 h-5 text-neutral-600"></ui-icon>
+                <span class="text-sm font-semibold text-neutral-900 uppercase tracking-wide">Tips</span>
+              </div>
+              <div class="text-sm text-neutral-500 space-y-2">
+                <ul class="list-disc list-inside space-y-1.5">
+                  <li>Photos must be bright and clear</li>
+                  <li>They can't be edited with filters, text, graphics or logos</li>
+                  <li>They must belong to you — please don't use copyrighted work</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </ui-collapsible>
+
+        <!-- Projects Section - All Users -->
+        <ui-collapsible title="Projects" [expanded]="sections()['projects']"
+          (expandedChange)="toggleSection('projects')">
+          <div class="flex flex-col lg:flex-row gap-8 pt-6">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <h3 class="text-xl font-bold text-neutral-900">Add details of your projects to display on your profile
+                </h3>
+                <span
+                  class="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-xs font-medium rounded uppercase">Optional</span>
+              </div>
+              <p class="text-sm text-neutral-500 mb-4">
+                Build your credibility by showcasing relevant projects/achievements/experiences that you have
+                accomplished.
+              </p>
+
+              <!-- Portfolio List -->
+              @if (portfolioArray.length > 0) {
+              <div class="space-y-4 mb-4">
+                @for (portfolio of portfolioArray.controls; track $index) {
+                <div class="border border-neutral-200 rounded-xl overflow-hidden">
+                  <div class="p-4">
+                    <div class="flex items-start justify-between mb-3">
+                      <div class="flex-1">
+                        <h4 class="font-semibold text-neutral-900 mb-1">{{ portfolio.get('title')?.value }}</h4>
+                        @if (portfolio.get('year')?.value) {
+                        <p class="text-sm text-neutral-500">{{ portfolio.get('year')?.value }}</p>
+                        }
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <button type="button" (click)="editPortfolio($index)"
+                          class="p-2 hover:bg-neutral-100 rounded-lg transition-colors">
+                          <ui-icon name="edit" class="w-4 h-4 text-neutral-500"></ui-icon>
+                        </button>
+                        <button type="button" (click)="removePortfolio($index)"
+                          class="p-2 hover:bg-red-50 rounded-lg transition-colors">
+                          <ui-icon name="trash" class="w-4 h-4 text-red-500"></ui-icon>
+                        </button>
+                      </div>
+                    </div>
+                    @if (portfolio.get('description')?.value) {
+                    <p class="text-sm text-neutral-600 mb-3">{{ portfolio.get('description')?.value }}</p>
+                    }
+                    @if (portfolio.get('images')?.value && portfolio.get('images')?.value.length > 0) {
+                    <div class="flex gap-2 flex-wrap">
+                      @for (image of portfolio.get('images')?.value; track $index) {
+                      <img [src]="image" alt="Project"
+                        class="w-24 h-24 object-cover rounded-lg border border-neutral-200" />
+                      }
+                    </div>
+                    }
+                  </div>
+                </div>
+                }
+              </div>
+              }
+
+              <button type="button" (click)="openPortfolioForm()"
+                class="flex items-center gap-2 text-neutral-700 hover:text-primary transition-colors">
+                <ui-icon name="plus" class="w-5 h-5"></ui-icon>
+                <span class="font-medium">Add Projects</span>
+              </button>
+            </div>
+
+            <div class="lg:w-80 flex-shrink-0">
+              <div class="flex items-center gap-2 mb-3">
+                <ui-icon name="star" class="w-5 h-5 text-neutral-600"></ui-icon>
+                <span class="text-sm font-semibold text-neutral-900 uppercase tracking-wide">Tips</span>
+              </div>
+              <div class="text-sm text-neutral-500 space-y-2">
+                <p>Showcase your best work to build trust with potential customers.</p>
+              </div>
+            </div>
+          </div>
+        </ui-collapsible>
+
+        <!-- Experience Section - Scale Plan Only -->
+        @if (onboarding.isScalePlan()) {
+        <ui-collapsible title="Experience" [expanded]="sections()['experience']"
+          (expandedChange)="toggleSection('experience')">
+          <div class="pt-6">
+            <div class="flex items-center gap-2 mb-2">
+              <h3 class="text-xl font-bold text-neutral-900">Share your professional experience</h3>
+              <span
+                class="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-xs font-medium rounded uppercase">Optional</span>
+            </div>
+            <p class="text-sm text-neutral-500 mb-4">
+              Build credibility by showcasing relevant work experience.
+            </p>
+
+            <!-- Employment List -->
+            @if (employmentArray.length > 0) {
+            <div class="space-y-3 mb-4">
+              @for (employment of employmentArray.controls; track $index) {
+              <div class="flex items-center justify-between p-4 border border-neutral-200 rounded-xl">
+                <div>
+                  <h4 class="font-semibold text-neutral-900">{{ employment.get('title')?.value }}</h4>
+                  <p class="text-sm text-neutral-500">{{ employment.get('company')?.value }}</p>
+                  @if (employment.get('duration')?.value) {
+                  <p class="text-xs text-neutral-400">{{ employment.get('duration')?.value }}</p>
+                  }
+                </div>
+                <div class="flex items-center gap-2">
+                  <button type="button" (click)="editEmployment($index)"
+                    class="p-2 hover:bg-neutral-100 rounded-lg transition-colors">
+                    <ui-icon name="edit" class="w-4 h-4 text-neutral-500"></ui-icon>
+                  </button>
+                  <button type="button" (click)="removeEmployment($index)"
+                    class="p-2 hover:bg-red-50 rounded-lg transition-colors">
+                    <ui-icon name="trash" class="w-4 h-4 text-red-500"></ui-icon>
+                  </button>
+                </div>
+              </div>
+              }
+            </div>
+            }
+
+            <button type="button" (click)="openEmploymentForm()"
+              class="flex items-center gap-2 text-neutral-700 hover:text-primary transition-colors">
+              <ui-icon name="plus" class="w-5 h-5"></ui-icon>
+              <span class="font-medium">Add Experience</span>
+            </button>
+          </div>
+        </ui-collapsible>
+        }
+
+        <!-- Education/Qualifications Section - Scale Plan Only -->
+        @if (onboarding.isScalePlan()) {
+        <ui-collapsible title="Education & Qualifications" [expanded]="sections()['education']"
+          (expandedChange)="toggleSection('education')">
+          <div class="pt-6">
+            <div class="flex items-center gap-2 mb-2">
+              <h3 class="text-xl font-bold text-neutral-900">Add your educational background</h3>
+              <span
+                class="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-xs font-medium rounded uppercase">Optional</span>
+            </div>
+            <p class="text-sm text-neutral-500 mb-4">
+              Add any degrees, courses, or certifications you have earned.
+            </p>
+
+            <!-- Education List -->
+            @if (educationArray.length > 0) {
+            <div class="space-y-3 mb-4">
+              @for (education of educationArray.controls; track $index) {
+              <div class="flex items-center justify-between p-4 border border-neutral-200 rounded-xl">
+                <div>
+                  <h4 class="font-semibold text-neutral-900">{{ education.get('degree')?.value }}</h4>
+                  <p class="text-sm text-neutral-500">{{ education.get('institution')?.value }}</p>
+                  @if (education.get('year')?.value) {
+                  <p class="text-xs text-neutral-400">{{ education.get('year')?.value }}</p>
+                  }
+                </div>
+                <div class="flex items-center gap-2">
+                  <button type="button" (click)="editEducation($index)"
+                    class="p-2 hover:bg-neutral-100 rounded-lg transition-colors">
+                    <ui-icon name="edit" class="w-4 h-4 text-neutral-500"></ui-icon>
+                  </button>
+                  <button type="button" (click)="removeEducation($index)"
+                    class="p-2 hover:bg-red-50 rounded-lg transition-colors">
+                    <ui-icon name="trash" class="w-4 h-4 text-red-500"></ui-icon>
+                  </button>
+                </div>
+              </div>
+              }
+            </div>
+            }
+
+            <button type="button" (click)="openEducationForm()"
+              class="flex items-center gap-2 text-neutral-700 hover:text-primary transition-colors">
+              <ui-icon name="plus" class="w-5 h-5"></ui-icon>
+              <span class="font-medium">Add Education</span>
+            </button>
+          </div>
+        </ui-collapsible>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed Footer -->
+  <div class="sticky bottom-0 bg-white border-t border-neutral-200 px-4 lg:px-8 py-4">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <button type="button" (click)="goBack()"
+        class="px-6 py-3 border border-neutral-300 rounded-full text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">
+        Back
+      </button>
+
+      <button type="button" (click)="saveAndExit()" [disabled]="isSaving()"
+        class="text-neutral-600 font-medium hover:text-neutral-900 transition-colors disabled:opacity-50">
+        Save and Exit
+      </button>
+
+      <button type="button" (click)="onContinue()"
+        class="px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary/90 transition-colors flex items-center gap-2">
+        Continue
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- Employment Form Modal -->
+  @if (showEmploymentForm()) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-neutral-900">
+          {{ editingEmploymentIndex() !== null ? 'Edit Experience' : 'Add Experience' }}
+        </h3>
+        <button type="button" (click)="closeEmploymentForm()"
+          class="p-2 hover:bg-neutral-100 rounded-lg transition-colors">
+          <ui-icon name="close" class="w-5 h-5 text-neutral-500"></ui-icon>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Title -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">Job Title*</label>
+          <input type="text" [value]="newEmploymentTitle()" (input)="newEmploymentTitle.set($any($event.target).value)"
+            placeholder="e.g. Senior Consultant"
+            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+        </div>
+
+        <!-- Company -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">Company/Organization*</label>
+          <input type="text" [value]="newEmploymentCompany()"
+            (input)="newEmploymentCompany.set($any($event.target).value)" placeholder="e.g. ABC Consulting"
+            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+        </div>
+
+        <!-- Duration -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">Duration</label>
+          <input type="text" [value]="newEmploymentDuration()"
+            (input)="newEmploymentDuration.set($any($event.target).value)" placeholder="e.g. 2020 - Present"
+            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">Description</label>
+          <textarea [value]="newEmploymentDescription()"
+            (input)="newEmploymentDescription.set($any($event.target).value)"
+            placeholder="Describe your role and responsibilities..." rows="4"
+            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-6">
+        <button type="button" (click)="closeEmploymentForm()"
+          class="flex-1 px-4 py-2.5 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors font-medium">
+          Cancel
+        </button>
+        <button type="button" (click)="saveEmployment()"
+          [disabled]="!newEmploymentTitle().trim() || !newEmploymentCompany().trim()"
+          class="flex-1 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ editingEmploymentIndex() !== null ? 'Save Changes' : 'Add Experience' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Education Form Modal -->
+  @if (showEducationForm()) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-neutral-900">
+          {{ editingEducationIndex() !== null ? 'Edit Education' : 'Add Education' }}
+        </h3>
+        <button type="button" (click)="closeEducationForm()"
+          class="p-2 hover:bg-neutral-100 rounded-lg transition-colors">
+          <ui-icon name="close" class="w-5 h-5 text-neutral-500"></ui-icon>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Degree -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">Degree/Certificate*</label>
+          <input type="text" [value]="newEducationDegree()" (input)="newEducationDegree.set($any($event.target).value)"
+            placeholder="e.g. Bachelor of Business Administration"
+            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+        </div>
+
+        <!-- Institution -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">Institution*</label>
+          <input type="text" [value]="newEducationInstitution()"
+            (input)="newEducationInstitution.set($any($event.target).value)" placeholder="e.g. University of Malaysia"
+            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+        </div>
+
+        <!-- Year -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">Year</label>
+          <input type="text" [value]="newEducationYear()" (input)="newEducationYear.set($any($event.target).value)"
+            placeholder="e.g. 2020"
+            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-6">
+        <button type="button" (click)="closeEducationForm()"
+          class="flex-1 px-4 py-2.5 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors font-medium">
+          Cancel
+        </button>
+        <button type="button" (click)="saveEducation()"
+          [disabled]="!newEducationDegree().trim() || !newEducationInstitution().trim()"
+          class="flex-1 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ editingEducationIndex() !== null ? 'Save Changes' : 'Add Education' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Portfolio Form Modal -->
+  @if (showPortfolioForm()) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-neutral-900">
+          {{ editingPortfolioIndex() !== null ? 'Edit Project' : 'Add Project' }}
+        </h3>
+        <button type="button" (click)="closePortfolioForm()"
+          class="p-2 hover:bg-neutral-100 rounded-lg transition-colors">
+          <ui-icon name="close" class="w-5 h-5 text-neutral-500"></ui-icon>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Title -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">Project Title*</label>
+          <input type="text" [value]="newPortfolioTitle()" (input)="newPortfolioTitle.set($any($event.target).value)"
+            placeholder="e.g. Website Redesign Project"
+            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+        </div>
+
+        <!-- Year -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">Year</label>
+          <input type="text" [value]="newPortfolioYear()" (input)="newPortfolioYear.set($any($event.target).value)"
+            placeholder="e.g. 2023"
+            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">Description</label>
+          <textarea [value]="newPortfolioDescription()" (input)="newPortfolioDescription.set($any($event.target).value)"
+            placeholder="Describe your project..." rows="4"
+            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"></textarea>
+        </div>
+
+        <!-- Images -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">Project Images</label>
+          <div class="flex gap-2 flex-wrap mb-2">
+            @for (image of newPortfolioImages(); track $index) {
+            <div class="relative w-24 h-24 rounded-lg overflow-hidden border border-neutral-200 group">
+              <img [src]="image" alt="Project" class="w-full h-full object-cover" />
+              <div
+                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <button type="button" (click)="removePortfolioImage($index)"
+                  class="p-1 bg-white rounded-full hover:bg-red-50 transition-colors">
+                  <ui-icon name="trash" class="w-3 h-3 text-red-500"></ui-icon>
+                </button>
+              </div>
+            </div>
+            }
+          </div>
+          <input type="file" #portfolioImageInput accept="image/*" multiple (change)="onPortfolioImageChange($event)"
+            class="hidden" />
+          <button type="button" (click)="$any(portfolioImageInput).click()"
+            class="w-full px-4 py-2.5 border-2 border-dashed border-neutral-300 rounded-lg text-neutral-600 hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-2">
+            <ui-icon name="upload" class="w-5 h-5"></ui-icon>
+            <span>Upload Images</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-6">
+        <button type="button" (click)="closePortfolioForm()"
+          class="flex-1 px-4 py-2.5 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50 transition-colors font-medium">
+          Cancel
+        </button>
+        <button type="button" (click)="savePortfolio()" [disabled]="!newPortfolioTitle().trim()"
+          class="flex-1 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ editingPortfolioIndex() !== null ? 'Save Changes' : 'Add Project' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+</div>

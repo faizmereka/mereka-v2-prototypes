@@ -1,0 +1,30 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        // Enable emit for build
+        "noEmit": false,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "inlineSources": true,
+        // Output directories
+        "outDir": "./dist/types",
+        "declarationDir": "./dist/types",
+        "rootDir": "./src",
+        // Strip internal declarations
+        "stripInternal": true,
+        // Build info
+        "tsBuildInfoFile": "./dist/types/.tsbuildinfo"
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "src/**/*.test.ts",
+        "src/**/*.spec.ts",
+        "src/**/__tests__/**",
+        "node_modules",
+        "dist"
+    ]
+}

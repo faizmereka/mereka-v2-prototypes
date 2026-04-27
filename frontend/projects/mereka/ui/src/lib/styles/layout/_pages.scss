@@ -1,0 +1,118 @@
+@use '../abstracts/breakpoints' as *;
+@use '../abstracts/functions' as *;
+@use '../abstracts/mixins' as *;
+@use '../abstracts/variables' as *;
+
+@mixin horizontal-scroll {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  // To hide the horizontal scrollbar on mobile devices
+  // We add padding-bottom 30px to offset the clip path
+  clip-path: inset(0 0 12px 0);
+  padding-bottom: 12px;
+  margin-bottom: -12px;
+
+  > * {
+    scroll-snap-align: center;
+  }
+}
+
+@layer mereka-layout {
+  :root {
+    --layout-section-padding: #{$layout-section-padding};
+    --layout-container-width: #{$layout-container-width};
+    --layout-container-width-wide: #{$layout-container-width-wide};
+    --layout-container-width-small: #{$layout-container-width-small};
+    --layout-container-width-full: #{$layout-container-width-full};
+  }
+
+  .layout-section {
+    @include layout-section;
+  }
+
+  .layout-container {
+    @include layout-container();
+
+    &--wide {
+      max-width: var(--layout-container-width-wide);
+    }
+    &--small {
+      max-width: var(--layout-container-width-small);
+    }
+    &--full {
+      max-width: var(--layout-container-width-full);
+    }
+  }
+
+  /* For service detail pages */
+  .layout-container-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center; 
+    gap: var(--space-l);
+
+    &:has(.section-title) {
+      margin-block-end: get-clamp(24, 18);
+    }
+
+    &:has(.section-subtitle) {
+      margin-block-end: var(--space-m);
+    }
+  }
+
+  .section-title {
+    font-family: var(--font-primary);
+    font-size: var(--heading-2);
+    font-weight: 600;
+  }
+
+  .section-subtitle {
+    font-size: var(--heading-4);
+  }
+
+  .layout-row {
+    &:empty {
+      display: none;
+    }
+    &:has(+ &) {
+      margin-block-end: var(--space-xl);
+    }
+  }
+
+
+  /* Global styling for overflow scrollbars */
+  .scrollbar {
+    &::-webkit-scrollbar {
+      width: 6px !important;
+      height: 6px !important;
+      transition: 250ms;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #666;
+      border: 1px solid #666;
+      border-radius: 10px;
+      transition: 250ms;
+    }
+    &::-webkit-scrollbar-track {
+      background: #CCC;
+      transition: 250ms;
+    }
+    &--onhover:not(:hover) {
+      &::-webkit-scrollbar-thumb {
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 10px;
+      }
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+    }
+  }
+
+  @media (width >= $breakpoint-laptop) {
+    .layout-container-title {
+      display: flex;
+    }
+  }
+}

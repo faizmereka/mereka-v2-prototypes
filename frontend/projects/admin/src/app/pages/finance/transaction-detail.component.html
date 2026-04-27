@@ -1,0 +1,464 @@
+<div class="min-h-screen bg-gray-50 animate-fade-in">
+  <!-- Header -->
+  <div class="mb-6">
+    <button class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4" (click)="goBack()">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to Transactions
+    </button>
+    <h1 class="text-3xl font-bold text-gray-900">Transaction Details</h1>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+    <div class="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+      <p class="text-red-600">{{ error() }}</p>
+      <button class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" (click)="goBack()">
+        Go Back
+      </button>
+    </div>
+  }
+
+  <!-- Transaction Details -->
+  @if (transaction(); as t) {
+    <div class="space-y-6">
+      <!-- Main Info Card -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <h2 class="text-xl font-bold text-gray-900">{{ t.referenceId }}</h2>
+              <button class="text-gray-400 hover:text-gray-600" (click)="copyToClipboard(t.referenceId)" title="Copy Reference ID">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+            </div>
+            <p class="text-gray-500">{{ t.description || 'No description' }}</p>
+          </div>
+          <div class="text-right">
+            <span class="px-3 py-1 rounded-full text-sm font-medium" [class]="getStatusClass(t.status)">
+              {{ t.status | titlecase }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Amount Display -->
+        <div class="bg-gray-50 rounded-xl p-6 mb-6">
+          <div class="text-center">
+            <p class="text-sm text-gray-500 mb-1">Transaction Amount</p>
+            <p class="text-4xl font-bold text-gray-900">{{ formatCurrency(t.amount, t.currency) }}</p>
+            <div class="flex items-center justify-center gap-4 mt-3">
+              <span class="px-3 py-1 rounded-full text-xs font-medium" [class]="getTypeClass(t.type)">
+                {{ formatType(t.type) }}
+              </span>
+              <span class="px-3 py-1 rounded-full text-xs font-medium" [class]="getDirectionClass(t.direction)">
+                {{ formatDirection(t.direction) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Financial Breakdown -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <p class="text-sm text-blue-600 mb-1">Platform Fee</p>
+            <p class="text-xl font-bold text-blue-900">{{ formatCurrency(t.platformFee, t.currency) }}</p>
+            <p class="text-xs text-blue-500">{{ formatPercentage(t.platformFeeRate) }}</p>
+          </div>
+          <div class="bg-orange-50 rounded-lg p-4">
+            <p class="text-sm text-orange-600 mb-1">Stripe Fee</p>
+            <p class="text-xl font-bold text-orange-900">{{ formatCurrency(t.stripeFee, t.currency) }}</p>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4">
+            <p class="text-sm text-green-600 mb-1">Transfer Amount</p>
+            <p class="text-xl font-bold text-green-900">{{ formatCurrency(t.transferAmount, t.currency) }}</p>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4">
+            <p class="text-sm text-purple-600 mb-1">Net to Expert</p>
+            <p class="text-xl font-bold text-purple-900">{{ formatCurrency(t.amount - t.platformFee - t.stripeFee, t.currency) }}</p>
+          </div>
+        </div>
+
+        <!-- Dates -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <p class="text-sm text-gray-500">Created</p>
+            <p class="font-medium">{{ t.createdAt | date:'MMM d, y h:mm a' }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Last Updated</p>
+            <p class="font-medium">{{ t.updatedAt | date:'MMM d, y h:mm a' }}</p>
+          </div>
+          @if (t.transferredAt) {
+            <div>
+              <p class="text-sm text-gray-500">Transferred At</p>
+              <p class="font-medium">{{ t.transferredAt | date:'MMM d, y h:mm a' }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Parties Info -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- From User -->
+        @if (t.fromUser) {
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">From (Payer)</h3>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                <span class="text-lg font-bold text-blue-600">{{ t.fromUser.name.charAt(0) }}</span>
+              </div>
+              <div>
+                <p class="font-medium text-gray-900">{{ t.fromUser.name }}</p>
+                <p class="text-sm text-gray-500">{{ t.fromUser.email }}</p>
+                @if (t.fromUser.phone) {
+                  <p class="text-sm text-gray-500">{{ t.fromUser.phone }}</p>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- To User -->
+        @if (t.toUser) {
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">To (Receiver)</h3>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                <span class="text-lg font-bold text-green-600">{{ t.toUser.name.charAt(0) }}</span>
+              </div>
+              <div>
+                <p class="font-medium text-gray-900">{{ t.toUser.name }}</p>
+                <p class="text-sm text-gray-500">{{ t.toUser.email }}</p>
+                @if (t.toUser.phone) {
+                  <p class="text-sm text-gray-500">{{ t.toUser.phone }}</p>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Hub Info -->
+      @if (t.hub) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Hub</h3>
+          <div class="flex items-center gap-4">
+            @if (t.hub.logo) {
+              <img [src]="t.hub.logo" [alt]="t.hub.name" class="w-12 h-12 rounded-lg object-cover">
+            } @else {
+              <div class="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center">
+                <span class="text-lg font-bold text-indigo-600">{{ t.hub.name.charAt(0) }}</span>
+              </div>
+            }
+            <p class="font-medium text-gray-900">{{ t.hub.name }}</p>
+          </div>
+        </div>
+      }
+
+      <!-- Related Data Sections -->
+
+      <!-- Milestone Details -->
+      @if (t.milestone) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Milestone Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm text-gray-500">Task Name</p>
+              <p class="font-medium">{{ t.milestone.taskName }}</p>
+            </div>
+            @if (t.milestone.taskDescription) {
+              <div>
+                <p class="text-sm text-gray-500">Description</p>
+                <p class="font-medium">{{ t.milestone.taskDescription }}</p>
+              </div>
+            }
+            <div>
+              <p class="text-sm text-gray-500">Amount</p>
+              <p class="font-medium">{{ formatCurrency(t.milestone.amount, t.milestone.currency) }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Status</p>
+              <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">{{ t.milestone.status | titlecase }}</span>
+            </div>
+            @if (t.milestone.dueDate) {
+              <div>
+                <p class="text-sm text-gray-500">Due Date</p>
+                <p class="font-medium">{{ t.milestone.dueDate | date:'MMM d, y' }}</p>
+              </div>
+            }
+            @if (t.milestone.job) {
+              <div>
+                <p class="text-sm text-gray-500">Job</p>
+                <p class="font-medium">{{ t.milestone.job.title }}</p>
+              </div>
+            }
+            @if (t.milestone.contract) {
+              <div>
+                <p class="text-sm text-gray-500">Contract</p>
+                <p class="font-medium">{{ t.milestone.contract.contractTitle }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Timelog Details -->
+      @if (t.timelog) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Timelog Details (Weekly Job)</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <p class="text-sm text-gray-500">Work Date</p>
+              <p class="font-medium">{{ t.timelog.workDate | date:'MMM d, y' }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Week</p>
+              <p class="font-medium">Week {{ t.timelog.weekNumber }}, {{ t.timelog.year }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Time</p>
+              <p class="font-medium">{{ t.timelog.startTime }} - {{ t.timelog.endTime }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Hours Worked</p>
+              <p class="font-medium">{{ t.timelog.hoursWorked }} hours</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Hourly Rate</p>
+              <p class="font-medium">{{ formatCurrency(t.timelog.hourlyRate, t.currency) }}/hr</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Billable Amount</p>
+              <p class="font-medium">{{ formatCurrency(t.timelog.billableAmount, t.currency) }}</p>
+            </div>
+            @if (t.timelog.description) {
+              <div class="md:col-span-3">
+                <p class="text-sm text-gray-500">Description</p>
+                <p class="font-medium">{{ t.timelog.description }}</p>
+              </div>
+            }
+            @if (t.timelog.tasks && t.timelog.tasks.length > 0) {
+              <div class="md:col-span-3">
+                <p class="text-sm text-gray-500 mb-2">Tasks</p>
+                <div class="flex flex-wrap gap-2">
+                  @for (task of t.timelog.tasks; track task) {
+                    <span class="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-700">{{ task }}</span>
+                  }
+                </div>
+              </div>
+            }
+            @if (t.timelog.job) {
+              <div>
+                <p class="text-sm text-gray-500">Job</p>
+                <p class="font-medium">{{ t.timelog.job.title }}</p>
+              </div>
+            }
+            @if (t.timelog.contract) {
+              <div>
+                <p class="text-sm text-gray-500">Contract</p>
+                <p class="font-medium">{{ t.timelog.contract.contractTitle }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Booking Details -->
+      @if (t.booking) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Booking Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm text-gray-500">Booking Type</p>
+              <span class="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">{{ t.booking.bookingType | titlecase }}</span>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Status</p>
+              <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">{{ t.booking.status | titlecase }}</span>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Start Date</p>
+              <p class="font-medium">{{ t.booking.bookingStartDate | date:'MMM d, y h:mm a' }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">End Date</p>
+              <p class="font-medium">{{ t.booking.bookingEndDate | date:'MMM d, y h:mm a' }}</p>
+            </div>
+            @if (t.booking.service) {
+              <div class="md:col-span-2">
+                <p class="text-sm text-gray-500">Service</p>
+                <p class="font-medium">{{ t.booking.service.title || t.booking.service.name }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Contract Payment Details -->
+      @if (t.contractPayment) {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Contract Payment Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm text-gray-500">Payment Type</p>
+              <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">{{ t.contractPayment.paymentType | titlecase }}</span>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Status</p>
+              <span class="px-2 py-1 rounded-full text-xs font-medium" [class]="getStatusClass(t.contractPayment.status)">{{ t.contractPayment.status | titlecase }}</span>
+            </div>
+            @if (t.contractPayment.weekStartDate && t.contractPayment.weekEndDate) {
+              <div>
+                <p class="text-sm text-gray-500">Week Range</p>
+                <p class="font-medium">{{ t.contractPayment.weekStartDate | date:'MMM d' }} - {{ t.contractPayment.weekEndDate | date:'MMM d, y' }}</p>
+              </div>
+            }
+            @if (t.contractPayment.job) {
+              <div>
+                <p class="text-sm text-gray-500">Job</p>
+                <p class="font-medium">{{ t.contractPayment.job.title }}</p>
+              </div>
+            }
+            @if (t.contractPayment.contract) {
+              <div>
+                <p class="text-sm text-gray-500">Contract</p>
+                <p class="font-medium">{{ t.contractPayment.contract.contractTitle }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Stripe IDs -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Stripe References</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          @if (t.stripePaymentIntentId) {
+            <div>
+              <p class="text-sm text-gray-500">Payment Intent ID</p>
+              <div class="flex items-center gap-2">
+                <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ t.stripePaymentIntentId }}</code>
+                <button class="text-gray-400 hover:text-gray-600" (click)="copyToClipboard(t.stripePaymentIntentId)">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          }
+          @if (t.stripeChargeId) {
+            <div>
+              <p class="text-sm text-gray-500">Charge ID</p>
+              <div class="flex items-center gap-2">
+                <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ t.stripeChargeId }}</code>
+                <button class="text-gray-400 hover:text-gray-600" (click)="copyToClipboard(t.stripeChargeId)">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          }
+          @if (t.stripeTransferId) {
+            <div>
+              <p class="text-sm text-gray-500">Transfer ID</p>
+              <div class="flex items-center gap-2">
+                <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ t.stripeTransferId }}</code>
+                <button class="text-gray-400 hover:text-gray-600" (click)="copyToClipboard(t.stripeTransferId)">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          }
+          @if (t.stripeRefundId) {
+            <div>
+              <p class="text-sm text-gray-500">Refund ID</p>
+              <div class="flex items-center gap-2">
+                <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ t.stripeRefundId }}</code>
+                <button class="text-gray-400 hover:text-gray-600" (click)="copyToClipboard(t.stripeRefundId)">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          }
+          <div>
+            <p class="text-sm text-gray-500">Source Model</p>
+            <p class="font-medium">{{ t.sourceModel }}</p>
+          </div>
+          @if (t.serviceType) {
+            <div>
+              <p class="text-sm text-gray-500">Service Type</p>
+              <p class="font-medium">{{ t.serviceType | titlecase }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Error Info (if failed) -->
+      @if (t.errorCode || t.errorMessage) {
+        <div class="bg-red-50 rounded-xl border border-red-200 p-6">
+          <h3 class="text-lg font-semibold text-red-900 mb-4">Error Information</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @if (t.errorCode) {
+              <div>
+                <p class="text-sm text-red-600">Error Code</p>
+                <p class="font-medium text-red-900">{{ t.errorCode }}</p>
+              </div>
+            }
+            @if (t.errorMessage) {
+              <div class="md:col-span-2">
+                <p class="text-sm text-red-600">Error Message</p>
+                <p class="font-medium text-red-900">{{ t.errorMessage }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Refund Info -->
+      @if (t.refundedAmount && t.refundedAmount > 0) {
+        <div class="bg-orange-50 rounded-xl border border-orange-200 p-6">
+          <h3 class="text-lg font-semibold text-orange-900 mb-4">Refund Information</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <p class="text-sm text-orange-600">Refunded Amount</p>
+              <p class="font-medium text-orange-900">{{ formatCurrency(t.refundedAmount, t.currency) }}</p>
+            </div>
+            @if (t.refundedAt) {
+              <div>
+                <p class="text-sm text-orange-600">Refunded At</p>
+                <p class="font-medium text-orange-900">{{ t.refundedAt | date:'MMM d, y h:mm a' }}</p>
+              </div>
+            }
+            @if (t.refundReason) {
+              <div>
+                <p class="text-sm text-orange-600">Reason</p>
+                <p class="font-medium text-orange-900">{{ t.refundReason }}</p>
+              </div>
+            }
+            @if (t.refundedByUser) {
+              <div>
+                <p class="text-sm text-orange-600">Refunded By</p>
+                <p class="font-medium text-orange-900">{{ t.refundedByUser.name }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

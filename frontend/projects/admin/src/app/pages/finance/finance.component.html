@@ -1,0 +1,363 @@
+<div class="min-h-screen bg-gray-50 animate-fade-in">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Finance & Payments</h1>
+    <p class="text-gray-500 mt-1">Manage withdrawals, payments, and transactions</p>
+  </div>
+
+  <!-- Stats Overview -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Total Volume -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Total Volume</p>
+          @if (isLoadingStats()) {
+            <div class="h-8 w-24 bg-gray-200 animate-pulse rounded"></div>
+          } @else {
+            <p class="text-2xl font-bold text-gray-900">RM {{ totalRevenue() | number:'1.0-0' }}</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Platform Fees -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Platform Fees</p>
+          @if (isLoadingStats()) {
+            <div class="h-8 w-24 bg-gray-200 animate-pulse rounded"></div>
+          } @else {
+            <p class="text-2xl font-bold text-gray-900">RM {{ totalPlatformFees() | number:'1.0-0' }}</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Withdrawals -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-yellow-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Pending Withdrawals</p>
+          @if (isLoadingStats()) {
+            <div class="h-8 w-16 bg-gray-200 animate-pulse rounded"></div>
+          } @else {
+            <p class="text-2xl font-bold text-gray-900">{{ pendingWithdrawalsCount() }}</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Completed Withdrawals -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Completed Payouts</p>
+          @if (isLoadingStats()) {
+            <div class="h-8 w-24 bg-gray-200 animate-pulse rounded"></div>
+          } @else {
+            <p class="text-2xl font-bold text-gray-900">RM {{ completedWithdrawalsAmount() | number:'1.0-0' }}</p>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-1 bg-white rounded-xl shadow-sm border border-gray-100 p-1.5 mb-6">
+    @for (tab of tabs(); track tab.id) {
+      <button
+        class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm transition-all"
+        [class]="activeTab() === tab.id ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'"
+        (click)="setActiveTab(tab.id)"
+      >
+        {{ tab.label }}
+        @if (tab.badge !== null && tab.badge !== undefined) {
+          <span class="ml-2 px-2 py-0.5 rounded-full text-xs" [class]="activeTab() === tab.id ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700'">
+            {{ tab.badge }}
+          </span>
+        }
+      </button>
+    }
+  </div>
+
+  <!-- Withdrawals Tab -->
+  @if (activeTab() === 'withdrawals') {
+    <div class="space-y-4">
+      <!-- Filters -->
+      <div class="flex justify-between items-center flex-wrap gap-4">
+        <div class="flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-lg w-80">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search by user..."
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+            class="flex-1 bg-transparent border-none outline-none text-sm"
+          />
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          @for (status of withdrawalStatuses; track status) {
+            <button
+              class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+              [class]="withdrawalFilter() === status ? 'bg-primary text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'"
+              (click)="onWithdrawalFilterChange(status)"
+            >
+              {{ status === 'in_transit' ? 'In Transit' : (status | titlecase) }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Withdrawals Table -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        @if (isLoadingWithdrawals()) {
+          <div class="p-8 text-center">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <p class="mt-2 text-gray-500">Loading withdrawals...</p>
+          </div>
+        } @else {
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-100">
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">User</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Payout ID</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Source</th>
+                <th class="text-right px-6 py-4 text-sm font-semibold text-gray-600">Amount</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Requested</th>
+                <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">Status</th>
+                <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (withdrawal of filteredWithdrawals(); track withdrawal._id) {
+                <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div>
+                      <p class="font-medium text-gray-900">{{ withdrawal.user?.name || 'Unknown User' }}</p>
+                      <p class="text-sm text-gray-500">{{ withdrawal.user?.email || '-' }}</p>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-mono text-sm text-gray-600">{{ withdrawal.stripePayoutId }}</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                      {{ withdrawal.sourceType === 'bank_transfer' ? 'Bank' : (withdrawal.sourceType | titlecase) }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <span class="font-bold text-gray-900">{{ withdrawal.currency }} {{ withdrawal.amount | number:'1.2-2' }}</span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="text-sm text-gray-500">{{ withdrawal.createdAt | date:'MMM d, y h:mm a' }}</span>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <span class="px-3 py-1 rounded-full text-xs font-medium" [class]="getWithdrawalStatusClasses(withdrawal.status)">
+                      {{ withdrawal.status === 'in_transit' ? 'In Transit' : (withdrawal.status | titlecase) }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <button class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors" (click)="viewWithdrawalDetails(withdrawal)">
+                      View
+                    </button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                    No withdrawals found
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          @if (withdrawalTotalPages() > 1) {
+            <div class="flex items-center justify-between px-6 py-4 border-t border-gray-100">
+              <p class="text-sm text-gray-500">
+                Showing {{ (withdrawalPage() - 1) * withdrawalLimit() + 1 }} to {{ withdrawalPage() * withdrawalLimit() > withdrawalTotal() ? withdrawalTotal() : withdrawalPage() * withdrawalLimit() }} of {{ withdrawalTotal() }} withdrawals
+              </p>
+              <div class="flex gap-2">
+                <button
+                  class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                  [class]="withdrawalPage() === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'"
+                  [disabled]="withdrawalPage() === 1"
+                  (click)="onWithdrawalPageChange(withdrawalPage() - 1)"
+                >
+                  Previous
+                </button>
+                <button
+                  class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                  [class]="withdrawalPage() === withdrawalTotalPages() ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'"
+                  [disabled]="withdrawalPage() === withdrawalTotalPages()"
+                  (click)="onWithdrawalPageChange(withdrawalPage() + 1)"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Transactions Tab -->
+  @if (activeTab() === 'transactions') {
+    <div class="space-y-4">
+      <div class="flex justify-between items-center flex-wrap gap-4">
+        <div class="flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-lg w-80">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input type="text" placeholder="Search transactions..." class="flex-1 bg-transparent border-none outline-none text-sm" />
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          @for (type of transactionTypes; track type) {
+            <button
+              class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+              [class]="transactionFilter() === type ? 'bg-primary text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'"
+              (click)="onTransactionFilterChange(type)"
+            >
+              {{ type === 'all' ? 'All' : formatTransactionType(type) }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        @if (isLoadingTransactions()) {
+          <div class="p-8 text-center">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <p class="mt-2 text-gray-500">Loading transactions...</p>
+          </div>
+        } @else {
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-100">
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Reference</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">From / To</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Type</th>
+                <th class="text-right px-6 py-4 text-sm font-semibold text-gray-600">Amount</th>
+                <th class="text-right px-6 py-4 text-sm font-semibold text-gray-600">Platform Fee</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-gray-600">Date</th>
+                <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">Status</th>
+                <th class="text-center px-6 py-4 text-sm font-semibold text-gray-600">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (transaction of transactions(); track transaction._id) {
+                <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div>
+                      <p class="font-mono text-sm font-medium text-gray-900">{{ transaction.referenceId }}</p>
+                      <p class="text-xs text-gray-500">{{ transaction.description || '-' }}</p>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div>
+                      @if (transaction.fromUser) {
+                        <p class="text-sm text-gray-900">{{ transaction.fromUser.name }}</p>
+                      }
+                      @if (transaction.toUser) {
+                        <p class="text-xs text-gray-500">→ {{ transaction.toUser.name }}</p>
+                      }
+                      @if (!transaction.fromUser && !transaction.toUser) {
+                        <p class="text-sm text-gray-500">-</p>
+                      }
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="px-2.5 py-1 rounded-full text-xs font-medium" [class]="getTransactionTypeClasses(transaction.type)">
+                      {{ formatTransactionType(transaction.type) }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <span class="font-bold" [class]="getTransactionAmountClass(transaction.type)">
+                      {{ getTransactionDirectionIcon(transaction.type) }}{{ transaction.currency }} {{ transaction.amount | number:'1.2-2' }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <span class="text-sm text-gray-600">{{ transaction.currency }} {{ transaction.platformFee | number:'1.2-2' }}</span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="text-sm text-gray-500">{{ transaction.createdAt | date:'MMM d, y h:mm a' }}</span>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <span class="px-3 py-1 rounded-full text-xs font-medium" [class]="getTransactionStatusClasses(transaction.status)">
+                      {{ transaction.status | titlecase }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <button class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors" (click)="viewTransactionDetails(transaction)">
+                      View
+                    </button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                    No transactions found
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          @if (transactionTotalPages() > 1) {
+            <div class="flex items-center justify-between px-6 py-4 border-t border-gray-100">
+              <p class="text-sm text-gray-500">
+                Showing {{ (transactionPage() - 1) * transactionLimit() + 1 }} to {{ transactionPage() * transactionLimit() > transactionTotal() ? transactionTotal() : transactionPage() * transactionLimit() }} of {{ transactionTotal() }} transactions
+              </p>
+              <div class="flex gap-2">
+                <button
+                  class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                  [class]="transactionPage() === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'"
+                  [disabled]="transactionPage() === 1"
+                  (click)="onTransactionPageChange(transactionPage() - 1)"
+                >
+                  Previous
+                </button>
+                <button
+                  class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                  [class]="transactionPage() === transactionTotalPages() ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'"
+                  [disabled]="transactionPage() === transactionTotalPages()"
+                  (click)="onTransactionPageChange(transactionPage() + 1)"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+
+</div>

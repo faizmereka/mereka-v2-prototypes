@@ -1,0 +1,207 @@
+### Variables
+@baseUrl = http://localhost:3000/api/v1
+@token = your-access-token-here
+@sessionId = your-stripe-session-id-here
+
+### ==============================================
+### Subscription Endpoints
+### ==============================================
+
+### 1. Get All Plans (Public)
+# GET /subscription/plans
+# Retrieve all available subscription plans
+GET {{baseUrl}}/subscription/plans
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": [
+#     {
+#       "id": "...",
+#       "name": "Scale Plan",
+#       "stripeMalaysiaProductId": "...",
+#       "stripeAtlasProductId": "...",
+#       "prices": { ... },
+#       "features": [ ... ]
+#     },
+#     {
+#       "id": "...",
+#       "name": "Soar Plan",
+#       ...
+#     }
+#   ]
+# }
+
+### 2. Create Checkout Session
+# POST /subscription/create-checkout-session
+# Create Stripe checkout session for subscription
+POST {{baseUrl}}/subscription/create-checkout-session
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "planId": "scale-plan-id",
+  "country": "MY",
+  "successUrl": "https://app.mereka.io/subscription/success",
+  "cancelUrl": "https://app.mereka.io/subscription/cancel"
+}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "sessionId": "cs_test_...",
+#     "url": "https://checkout.stripe.com/c/pay/..."
+#   }
+# }
+
+### 2b. Create Checkout Session (International - Atlas Account)
+POST {{baseUrl}}/subscription/create-checkout-session
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "planId": "soar-plan-id",
+  "country": "US",
+  "successUrl": "https://app.mereka.io/subscription/success",
+  "cancelUrl": "https://app.mereka.io/subscription/cancel"
+}
+
+### 3. Verify Checkout Session
+# GET /subscription/verify-session/:sessionId
+# Verify payment completion and activate subscription
+GET {{baseUrl}}/subscription/verify-session/{{sessionId}}
+Authorization: Bearer {{token}}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": {
+#     "subscription": {
+#       "id": "...",
+#       "planId": "...",
+#       "status": "active",
+#       "stripeSubscriptionId": "sub_...",
+#       "currentPeriodStart": "2025-11-07T...",
+#       "currentPeriodEnd": "2025-12-07T...",
+#       "cancelAtPeriodEnd": false
+#     },
+#     "paymentStatus": "paid"
+#   }
+# }
+
+### 4. Get User's Subscriptions
+# GET /subscription/me
+# Retrieve all subscriptions for authenticated user
+GET {{baseUrl}}/subscription/me
+Authorization: Bearer {{token}}
+
+# Expected Response (200):
+# {
+#   "success": true,
+#   "data": [
+#     {
+#       "id": "...",
+#       "planId": "...",
+#       "planName": "Scale Plan",
+#       "status": "active",
+#       "currentPeriodStart": "...",
+#       "currentPeriodEnd": "...",
+#       "cancelAtPeriodEnd": false,
+#       "stripeSubscriptionId": "sub_...",
+#       "stripeAccount": "malaysia"
+#     }
+#   ]
+# }
+
+### 5. Stripe Webhook (Simulated)
+# POST /webhook/stripe
+# Handle Stripe webhook events (payment success, subscription updates)
+# NOTE: This requires a valid Stripe signature header
+POST {{baseUrl}}/webhook/stripe
+Content-Type: application/json
+Stripe-Signature: whsec_REDACTED
+
+{
+  "type": "checkout.session.completed",
+  "data": {
+    "object": {
+      "id": "cs_test_...",
+      "customer": "cus_...",
+      "subscription": "sub_...",
+      "payment_status": "paid",
+      "metadata": {
+        "userId": "user-id-here",
+        "planId": "plan-id-here"
+      }
+    }
+  }
+}
+
+# Expected Response (200):
+# {
+#   "received": true
+# }
+
+### ==============================================
+### Error Scenarios
+### ==============================================
+
+### Invalid Plan ID
+POST {{baseUrl}}/subscription/create-checkout-session
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "planId": "invalid-plan-id",
+  "country": "MY",
+  "successUrl": "https://app.mereka.io/subscription/success",
+  "cancelUrl": "https://app.mereka.io/subscription/cancel"
+}
+
+# Expected Response (404):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "PLAN_NOT_FOUND",
+#     "message": "Subscription plan not found"
+#   }
+# }
+
+### Unauthorized Access
+GET {{baseUrl}}/subscription/me
+
+# Expected Response (401):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "UNAUTHORIZED",
+#     "message": "Authentication required"
+#   }
+# }
+
+### Invalid Session ID
+GET {{baseUrl}}/subscription/verify-session/invalid-session-id
+Authorization: Bearer {{token}}
+
+# Expected Response (400):
+# {
+#   "success": false,
+#   "error": {
+#     "code": "INVALID_SESSION",
+#     "message": "Invalid or expired checkout session"
+#   }
+# }
+
+### ==============================================
+### Testing Notes
+### ==============================================
+
+# Stripe Test Cards:
+# - Success: 4242 4242 4242 4242
+# - Decline: 4000 0000 0000 0002
+# - Requires Auth: 4000 0025 0000 3155
+
+# Webhook Testing:
+# Use Stripe CLI to forward webhooks locally:
+# stripe listen --forward-to localhost:3000/api/v1/webhook/stripe

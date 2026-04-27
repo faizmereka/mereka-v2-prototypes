@@ -1,0 +1,23 @@
+@layer mereka-ui {
+  .ui-image {
+    background: #E0E0E0;
+
+    &.ui-image-loader {
+      animation-name: color;
+      animation-duration: 2s;
+      animation-iteration-count: infinite;
+    }
+  }
+
+  @keyframes color {
+    0% {
+      background-color: #E0E0E0;
+    }
+    50% {
+      background-color: #f0f0f0;
+    }
+    100% {
+      background-color: #E0E0E0;
+    }
+  }
+}

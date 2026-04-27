@@ -1,0 +1,55 @@
+@supports (display: -webkit-box) {
+  .block-ellipsis {
+    display: -webkit-box;
+    max-width: 100%;
+    margin: 0 auto;
+    // Default line clamp
+    // Actual line clamp is set in the component
+    -webkit-line-clamp: 2;
+    -ms-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;    
+    box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 1rem;
+
+  &--default {
+    align-items: flex-start;
+  }
+}
+
+.more-toggle {
+  color: #7b7b7b;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.text-content {
+  margin-bottom: 0;
+  word-break: break-word;  
+  white-space: pre-wrap;
+}
+
+:host {
+  display: block;
+}
+
+:host(.is-collapsible) .more-toggle {
+  display: inline;
+}
+
+:host(:not(.is-collapsible)) .more-toggle {
+  display: none;
+}
+
+:host(.is-collapsible) .text-content {
+  margin-bottom: 0.5rem;
+}

@@ -1,0 +1,166 @@
+<div>
+  <!-- Header -->
+  <h1 class="text-2xl font-semibold text-neutral-900 mb-6">Payment Information</h1>
+
+  <!-- Payment Methods Section -->
+  <div class="bg-white rounded-xl border border-neutral-200">
+    <div class="px-6 py-4 border-b border-neutral-200 flex items-center justify-between">
+      <h2 class="text-base font-semibold text-neutral-900">Payment Information</h2>
+      <button
+        type="button"
+        (click)="openAddPaymentDialog()"
+        class="text-sm text-primary font-medium hover:text-primary/80 transition-colors"
+      >
+        {{ paymentMethods().length > 0 ? 'Add Payment Method' : 'Set up payment method' }}
+      </button>
+    </div>
+
+    <div class="p-6">
+      <!-- Has Payment Methods -->
+      @if (paymentMethods().length > 0) {
+        <div class="space-y-4">
+          <p class="text-sm text-neutral-500">Preferred payment method</p>
+
+          <!-- Payment Method Selector -->
+          <div class="relative">
+            <button
+              type="button"
+              (click)="toggleDropdown()"
+              class="w-full flex items-center justify-between p-4 border border-neutral-200 rounded-lg hover:border-neutral-300 transition-colors"
+            >
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-8 bg-neutral-100 rounded flex items-center justify-center overflow-hidden">
+                  @if (selectedPaymentMethod()?.image) {
+                    <img [src]="selectedPaymentMethod()?.image" alt="Card" class="h-6" />
+                  } @else {
+                    <svg class="w-6 h-6 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                    </svg>
+                  }
+                </div>
+                <div class="text-left">
+                  <p class="text-sm font-medium text-neutral-900">{{ selectedPaymentMethod()?.title }}</p>
+                  <p class="text-sm text-neutral-500">{{ selectedPaymentMethod()?.subTitle }}</p>
+                </div>
+              </div>
+              <svg
+                class="w-5 h-5 text-neutral-400 transition-transform"
+                [class.rotate-180]="showDropdown()"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+
+            <!-- Dropdown -->
+            @if (showDropdown()) {
+              <div class="absolute top-full left-0 right-0 mt-1 bg-white border border-neutral-200 rounded-lg shadow-lg z-10 overflow-hidden">
+                @for (method of paymentMethods(); track method.id) {
+                  <div
+                    (click)="selectPaymentMethod(method)"
+                    class="flex items-center justify-between p-4 hover:bg-neutral-50 cursor-pointer border-b border-neutral-100 last:border-0"
+                  >
+                    <div class="flex items-center gap-4">
+                      <div class="w-12 h-8 bg-neutral-100 rounded flex items-center justify-center overflow-hidden">
+                        @if (method.image) {
+                          <img [src]="method.image" alt="Card" class="h-6" />
+                        } @else {
+                          <svg class="w-6 h-6 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                          </svg>
+                        }
+                      </div>
+                      <div class="text-left">
+                        <p class="text-sm font-medium text-neutral-900">{{ method.title }}</p>
+                        <p class="text-sm text-neutral-500">{{ method.subTitle }}</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      (click)="removePaymentMethod($event, method)"
+                      class="p-1 text-neutral-400 hover:text-error transition-colors"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </div>
+                }
+
+                <!-- Add New -->
+                <div
+                  (click)="openAddPaymentDialog()"
+                  class="p-4 hover:bg-neutral-50 cursor-pointer text-center border-t border-neutral-100"
+                >
+                  <span class="text-sm text-primary font-medium">Add Payment Method</span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      } @else {
+        <!-- No Payment Methods -->
+        <div class="text-center py-8">
+          <div class="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-neutral-900 mb-2">No payment methods</h3>
+          <p class="text-neutral-500 mb-6">Add a payment method to make bookings easier</p>
+          <button
+            type="button"
+            (click)="openAddPaymentDialog()"
+            class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add Payment Method
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Click outside to close dropdown -->
+  @if (showDropdown()) {
+    <div class="fixed inset-0 z-0" (click)="showDropdown.set(false)"></div>
+  }
+
+  <!-- Remove Card Confirmation Dialog -->
+  @if (showRemoveDialog()) {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-xl max-w-md w-full mx-4 overflow-hidden">
+        <div class="px-6 py-4 border-b border-neutral-200">
+          <h3 class="text-lg font-semibold text-neutral-900">Remove Card</h3>
+        </div>
+        <div class="p-6">
+          <p class="text-neutral-600">
+            You are about to remove your {{ paymentMethodToDelete()?.title }} ending with
+            ****{{ paymentMethodToDelete()?.last4 }}. This means that it will no longer be stored on this account.
+            You can always add your card details again in the future. Are you sure you want to remove?
+          </p>
+        </div>
+        <div class="px-6 py-4 bg-neutral-50 flex justify-end gap-3">
+          <button
+            type="button"
+            (click)="showRemoveDialog.set(false)"
+            class="px-4 py-2 text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            (click)="confirmRemovePaymentMethod()"
+            class="px-4 py-2 bg-error text-white rounded-lg hover:bg-error/90 transition-colors"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

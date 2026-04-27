@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Mereka - Stand on the shoulders of giants</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- Primary Meta Tags -->
+  <meta name="description" content="Mereka - Stand on the shoulders of giants. Connect with experts, learn new skills, and grow your career." />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Mereka - Stand on the shoulders of giants" />
+  <meta property="og:description" content="Connect with experts, learn new skills, and grow your career." />
+  <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/mereka-a4ae2.appspot.com/o/mereka-io-logo.png?alt=media&token=8fd42366-f5cf-4299-ad19-3ae40f47c7af" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:title" content="Mereka - Stand on the shoulders of giants" />
+  <meta property="twitter:description" content="Connect with experts, learn new skills, and grow your career." />
+  <meta property="twitter:image" content="https://firebasestorage.googleapis.com/v0/b/mereka-a4ae2.appspot.com/o/mereka-io-logo.png?alt=media&token=8fd42366-f5cf-4299-ad19-3ae40f47c7af" />
+
+  <!-- Lato Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Pre-bootstrap loader - shown before Angular loads */
+    .app-loading {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .app-loading-logo {
+      width: 56px;
+      height: 56px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .app-loading-title {
+      margin-top: 24px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #171717;
+    }
+    .app-loading-text {
+      margin-top: 8px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      color: #737373;
+    }
+    .app-loading-bar {
+      margin-top: 24px;
+      width: 192px;
+      height: 4px;
+      background: #e5e5e5;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .app-loading-bar-inner {
+      height: 100%;
+      background: #1a1623;
+      border-radius: 4px;
+      animation: loading-bar 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    @keyframes loading-bar {
+      0% { width: 0%; margin-left: 0%; }
+      50% { width: 60%; margin-left: 20%; }
+      100% { width: 0%; margin-left: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <app-root>
+    <!-- Static loader shown before Angular bootstraps -->
+    <div class="app-loading">
+      <img src="/assets/images/mereka-logo-symbol.svg" alt="Mereka" class="app-loading-logo" />
+      <div class="app-loading-title">Mereka</div>
+      <div class="app-loading-text">Loading...</div>
+      <div class="app-loading-bar">
+        <div class="app-loading-bar-inner"></div>
+      </div>
+    </div>
+  </app-root>
+</body>
+</html>

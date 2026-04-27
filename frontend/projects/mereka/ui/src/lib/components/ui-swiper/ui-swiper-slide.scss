@@ -1,0 +1,18 @@
+@use 'abstracts' as *;
+
+@layer mereka-ui {
+  .ui-swiper-slide {
+    max-width: get-clamp(370, 290);
+    height: auto !important;
+
+    .ui-card {
+      height: 100%;
+    }
+  }
+
+  @media screen and (width >= $breakpoint-tablet) {
+    .ui-swiper-slide {
+      max-width: unset;
+    }  
+  }
+}

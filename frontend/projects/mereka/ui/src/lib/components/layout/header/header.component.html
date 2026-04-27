@@ -1,0 +1,89 @@
+@defer (on viewport) {
+  @if (view.isMobile()) {
+    <common-header-search />
+    @if (showMobileSearchBar()) {
+      <div class="header-container">
+        <button ui-button-icon (click)="goBack()" type="button">
+          <span ui-button-icon-wrapper>
+            <svg class="header-back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+          </span>
+        </button>
+        <common-header-search-panel-toggle />
+        <ng-container [ngTemplateOutlet]="headerSidenavToggle"></ng-container>
+      </div>
+    }
+  } @else {
+    <div class="header-container">
+      <div class="header-main">
+        <div class="header-brand">
+          <a routerLink="/">
+            <site-logo logoType="symbol" aria-label="Back to homepage"></site-logo>
+          </a>
+          <a ui-button-fill href="https://corporate.mereka.io" target="_blank">
+            Corporate
+            <svg class="header-icon-external" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </a>
+        </div>
+        <div class="header-search">
+          <common-header-search />
+        </div>
+        <div class="header-user">
+          <ng-content select="[headerUser]"></ng-content>
+        </div>
+      </div>
+    </div>
+  }
+  <ng-container [ngTemplateOutlet]="headerContent"></ng-container>
+} @placeholder {
+  <div>
+    <div class="header-container placeholder-header-desktop">
+      <div class="header-main">
+        <div class="header-brand">
+          <a routerLink="/">
+            <site-logo logoType="symbol" aria-label="Back to homepage"></site-logo>
+          </a>
+          <a ui-button-fill href="https://corporate.mereka.io" target="_blank">
+            Corporate
+            <svg class="header-icon-external" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </a>
+        </div>
+        <div class="header-search">
+          <div class="placeholder-search-box">
+            <div ui-loader-skeleton appearance="square-rounded" class="placeholder-search-box__icon"></div>
+            <div ui-loader-skeleton appearance="line" [width]="50" class="placeholder-search-box__text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    @if (showMobileSearchBar()) {
+      <div class="header-container placeholder-header-mobile">
+        <button ui-button-icon (click)="goBack()" type="button">
+          <span ui-button-icon-wrapper>
+            <svg class="header-back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+          </span>
+        </button>
+        <div class="placeholder-search-box">
+          <div ui-loader-skeleton appearance="square-rounded" class="placeholder-search-box__icon"></div>
+          <div ui-loader-skeleton appearance="line" [width]="50" class="placeholder-search-box__text"></div>
+        </div>
+      </div>
+    }
+    <ng-container [ngTemplateOutlet]="headerContent"></ng-container>
+  </div>
+}
+
+<ng-template #headerSidenavToggle>
+  <ng-content select="button[headerSidenavToggle]"></ng-content>
+</ng-template>
+
+<ng-template #headerContent>
+  <ng-content></ng-content>
+</ng-template>

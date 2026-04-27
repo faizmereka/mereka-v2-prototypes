@@ -1,0 +1,214 @@
+<div>
+  <!-- Filter Tabs -->
+  <div class="flex items-center gap-2 mb-6">
+    <button
+      type="button"
+      (click)="setFilter('upcoming')"
+      class="px-4 py-2 text-sm font-medium rounded-full transition-colors"
+      [class.bg-[#1a1623]]="filter() === 'upcoming'"
+      [class.text-white]="filter() === 'upcoming'"
+      [class.bg-neutral-100]="filter() !== 'upcoming'"
+      [class.text-neutral-700]="filter() !== 'upcoming'"
+      [class.hover:bg-neutral-200]="filter() !== 'upcoming'"
+    >
+      Upcoming
+    </button>
+    <button
+      type="button"
+      (click)="setFilter('past')"
+      class="px-4 py-2 text-sm font-medium rounded-full transition-colors"
+      [class.bg-[#1a1623]]="filter() === 'past'"
+      [class.text-white]="filter() === 'past'"
+      [class.bg-neutral-100]="filter() !== 'past'"
+      [class.text-neutral-700]="filter() !== 'past'"
+      [class.hover:bg-neutral-200]="filter() !== 'past'"
+    >
+      Past
+    </button>
+    <button
+      type="button"
+      (click)="setFilter('cancelled')"
+      class="px-4 py-2 text-sm font-medium rounded-full transition-colors"
+      [class.bg-[#1a1623]]="filter() === 'cancelled'"
+      [class.text-white]="filter() === 'cancelled'"
+      [class.bg-neutral-100]="filter() !== 'cancelled'"
+      [class.text-neutral-700]="filter() !== 'cancelled'"
+      [class.hover:bg-neutral-200]="filter() !== 'cancelled'"
+    >
+      Cancelled
+    </button>
+    <button
+      type="button"
+      (click)="setFilter('all')"
+      class="px-4 py-2 text-sm font-medium rounded-full transition-colors"
+      [class.bg-[#1a1623]]="filter() === 'all'"
+      [class.text-white]="filter() === 'all'"
+      [class.bg-neutral-100]="filter() !== 'all'"
+      [class.text-neutral-700]="filter() !== 'all'"
+      [class.hover:bg-neutral-200]="filter() !== 'all'"
+    >
+      All
+    </button>
+
+    <!-- Clear session filter button -->
+    @if (hasEventFilter()) {
+      <button
+        type="button"
+        (click)="clearEventFilter()"
+        class="ml-2 px-3 py-1.5 text-sm font-medium text-orange-700 bg-orange-100 rounded-full hover:bg-orange-200 transition-colors flex items-center gap-1"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        Clear Session Filter
+      </button>
+    }
+  </div>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="flex items-center justify-center h-48">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900"></div>
+    </div>
+  } @else {
+    <!-- Bookings List -->
+    @if (bookings().length === 0) {
+      <div class="bg-white border border-neutral-200 rounded-xl p-12 text-center">
+        <svg class="w-16 h-16 text-neutral-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+        </svg>
+        <p class="text-neutral-500 text-lg mb-1">{{ getEmptyMessage() }}</p>
+        <p class="text-sm text-neutral-400">Bookings will appear here once learners book this experience</p>
+      </div>
+    } @else {
+      <!-- Desktop Table View -->
+      <div class="hidden lg:block bg-white border border-neutral-200 rounded-xl overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-neutral-50">
+            <tr>
+              <th class="text-left py-3 px-4 text-xs font-semibold text-neutral-500 uppercase">Learner</th>
+              <th class="text-left py-3 px-4 text-xs font-semibold text-neutral-500 uppercase">Session Date</th>
+              <th class="text-left py-3 px-4 text-xs font-semibold text-neutral-500 uppercase">Tickets</th>
+              <th class="text-left py-3 px-4 text-xs font-semibold text-neutral-500 uppercase">Amount</th>
+              <th class="text-left py-3 px-4 text-xs font-semibold text-neutral-500 uppercase">Status</th>
+              <th class="text-left py-3 px-4 text-xs font-semibold text-neutral-500 uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-neutral-100">
+            @for (booking of bookings(); track booking.id) {
+              <tr class="hover:bg-neutral-50">
+                <td class="py-4 px-4">
+                  <div class="font-medium text-neutral-900">{{ booking.bookerName }}</div>
+                  <div class="text-sm text-neutral-500">{{ booking.bookerEmail }}</div>
+                  @if (booking.learners.length > 1) {
+                    <div class="text-xs text-neutral-400 mt-1">+{{ booking.learners.length - 1 }} more attendee(s)</div>
+                  }
+                </td>
+                <td class="py-4 px-4">
+                  <div class="text-sm font-medium text-neutral-900">{{ formatDate(booking.date) }}</div>
+                  <div class="text-xs text-neutral-500">{{ formatTime(booking.date) }}</div>
+                </td>
+                <td class="py-4 px-4">
+                  <div class="text-sm text-neutral-900">{{ booking.ticketCount }} ticket(s)</div>
+                  <div class="text-xs text-neutral-500">{{ booking.ticketSummary }}</div>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-sm font-medium" [class.text-green-600]="booking.isFree" [class.text-neutral-900]="!booking.isFree">
+                    {{ formatAmount(booking.amount, booking.currency, booking.isFree) }}
+                  </span>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize" [class]="getStatusClass(booking.status)">
+                    {{ booking.status }}
+                  </span>
+                </td>
+                <td class="py-4 px-4">
+                  <button
+                    type="button"
+                    class="text-sm text-[#1a1623] hover:underline"
+                  >
+                    View Details
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Card View -->
+      <div class="lg:hidden space-y-4">
+        @for (booking of bookings(); track booking.id) {
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <div class="font-medium text-neutral-900">{{ booking.bookerName }}</div>
+                <div class="text-sm text-neutral-500">{{ booking.bookerEmail }}</div>
+              </div>
+              <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize" [class]="getStatusClass(booking.status)">
+                {{ booking.status }}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <div class="text-xs text-neutral-400 uppercase mb-1">Session</div>
+                <div class="text-sm font-medium text-neutral-900">{{ formatDate(booking.date) }}</div>
+                <div class="text-xs text-neutral-500">{{ formatTime(booking.date) }}</div>
+              </div>
+              <div>
+                <div class="text-xs text-neutral-400 uppercase mb-1">Tickets</div>
+                <div class="text-sm font-medium text-neutral-900">{{ booking.ticketCount }} ticket(s)</div>
+              </div>
+              <div>
+                <div class="text-xs text-neutral-400 uppercase mb-1">Amount</div>
+                <div class="text-sm font-medium" [class.text-green-600]="booking.isFree" [class.text-neutral-900]="!booking.isFree">
+                  {{ formatAmount(booking.amount, booking.currency, booking.isFree) }}
+                </div>
+              </div>
+              <div>
+                <div class="text-xs text-neutral-400 uppercase mb-1">Attendees</div>
+                <div class="text-sm font-medium text-neutral-900">{{ booking.learners.length }}</div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="w-full px-4 py-2 text-sm font-medium border border-neutral-200 rounded-lg hover:bg-neutral-50"
+            >
+              View Details
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages() > 1) {
+        <div class="flex items-center justify-between mt-6">
+          <div class="text-sm text-neutral-500">
+            Showing {{ (page() - 1) * 20 + 1 }} - {{ getShowingEnd() }} of {{ total() }} bookings
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              (click)="prevPage()"
+              [disabled]="page() === 1"
+              class="px-3 py-1.5 text-sm font-medium border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <span class="text-sm text-neutral-600">Page {{ page() }} of {{ totalPages() }}</span>
+            <button
+              type="button"
+              (click)="nextPage()"
+              [disabled]="page() === totalPages()"
+              class="px-3 py-1.5 text-sm font-medium border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      }
+    }
+  }
+</div>

@@ -1,0 +1,59 @@
+# Docker Compose for Mereka Backend Development
+version: "3.8"
+
+services:
+  # MongoDB database
+  mongodb:
+    image: mongo:8
+    container_name: mereka-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: mereka_dev
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mereka-network
+
+  # Backend API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: mereka-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      HOST: 0.0.0.0
+      MONGODB_URI: mongodb://mongodb:27017/mereka_dev
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-minimum-32-characters-long}
+      LOG_LEVEL: info
+      API_PREFIX: /api/v1
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - mereka-network
+    volumes:
+      - ./logs:/app/logs
+
+volumes:
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local
+
+networks:
+  mereka-network:
+    driver: bridge
