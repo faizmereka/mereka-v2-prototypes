@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Favourites · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-user">
+  <div id="side"></div>
+  <main class="user-main">
+    <h1>Favourites</h1>
+    <p class="sub">Saved experts, experiences, and hubs.</p>
+
+    <div class="tab-bar" style="margin-top:24px">
+      <a href="#" class="active">All · 18</a>
+      <a href="#">Experts · 6</a>
+      <a href="#">Experiences · 8</a>
+      <a href="#">Hubs · 3</a>
+      <a href="#">Courses · 1</a>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <!-- Card x9 -->
+      <div class="card" style="overflow:hidden">
+        <div style="height:140px;background:linear-gradient(135deg,#FDF2F8,#F3E8FF);position:relative"><button style="position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);border:none;font-size:14px;cursor:pointer">❤️</button></div>
+        <div style="padding:14px 16px"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em">Pottery · Bangsar</div><h3 style="font-size:14.5px;font-weight:700;margin-top:4px">Hand-Build Your First Vase</h3><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span style="font-size:12px"><span class="stars">★</span> 4.93 · 138</span><span style="font-size:13px;font-weight:700">RM 120</span></div></div>
+      </div>
+      <div class="card" style="overflow:hidden">
+        <div style="height:140px;background:linear-gradient(135deg,#CCFBF1,#DBEAFE);position:relative"><button style="position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);border:none;font-size:14px;cursor:pointer">❤️</button></div>
+        <div style="padding:14px 16px"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em">Career coach · Online</div><h3 style="font-size:14.5px;font-weight:700;margin-top:4px">Aizat Rahman</h3><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span style="font-size:12px"><span class="stars">★</span> 4.97 · 412</span><span style="font-size:13px;font-weight:700">RM 180/hr</span></div></div>
+      </div>
+      <div class="card" style="overflow:hidden">
+        <div style="height:140px;background:linear-gradient(135deg,#FEF3C7,#FCE7F3);position:relative"><button style="position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);border:none;font-size:14px;cursor:pointer">❤️</button></div>
+        <div style="padding:14px 16px"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em">Hub · Penang</div><h3 style="font-size:14.5px;font-weight:700;margin-top:4px">Penang Jobsearch Hub</h3><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span style="font-size:12px"><span class="stars">★</span> 4.7 · 128</span><span style="font-size:11px;color:#16A34A;font-weight:600">12 active programmes</span></div></div>
+      </div>
+      <div class="card" style="overflow:hidden">
+        <div style="height:140px;background:linear-gradient(135deg,#F3E8FF,#FCE7F3);position:relative"><button style="position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);border:none;font-size:14px;cursor:pointer">❤️</button></div>
+        <div style="padding:14px 16px"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em">Cooking · KL</div><h3 style="font-size:14.5px;font-weight:700;margin-top:4px">Sourdough Baking 101</h3><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span style="font-size:12px"><span class="stars">★</span> 4.85 · 67</span><span style="font-size:13px;font-weight:700">RM 150</span></div></div>
+      </div>
+      <div class="card" style="overflow:hidden">
+        <div style="height:140px;background:linear-gradient(135deg,#DCFCE7,#FEF3C7);position:relative"><button style="position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);border:none;font-size:14px;cursor:pointer">❤️</button></div>
+        <div style="padding:14px 16px"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em">Yoga · KLCC</div><h3 style="font-size:14.5px;font-weight:700;margin-top:4px">Sunrise Yoga at KLCC Park</h3><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span style="font-size:12px"><span class="stars">★</span> 4.91 · 245</span><span style="font-size:13px;font-weight:700">RM 65</span></div></div>
+      </div>
+      <div class="card" style="overflow:hidden">
+        <div style="height:140px;background:linear-gradient(135deg,#DBEAFE,#F3E8FF);position:relative"><button style="position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);border:none;font-size:14px;cursor:pointer">❤️</button></div>
+        <div style="padding:14px 16px"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em">UX Design · Online</div><h3 style="font-size:14.5px;font-weight:700;margin-top:4px">Diana Ngu</h3><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span style="font-size:12px"><span class="stars">★</span> 4.99 · 178</span><span style="font-size:13px;font-weight:700">RM 220/hr</span></div></div>
+      </div>
+      <div class="card" style="overflow:hidden">
+        <div style="height:140px;background:linear-gradient(135deg,#FCE7F3,#FFE4E6);position:relative"><button style="position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);border:none;font-size:14px;cursor:pointer">❤️</button></div>
+        <div style="padding:14px 16px"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em">Branding · Selangor</div><h3 style="font-size:14.5px;font-weight:700;margin-top:4px">Lily Wong</h3><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span style="font-size:12px"><span class="stars">★</span> 4.96 · 89</span><span style="font-size:13px;font-weight:700">RM 280/hr</span></div></div>
+      </div>
+      <div class="card" style="overflow:hidden">
+        <div style="height:140px;background:linear-gradient(135deg,#FEE2E2,#FEF3C7);position:relative"><button style="position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);border:none;font-size:14px;cursor:pointer">❤️</button></div>
+        <div style="padding:14px 16px"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em">Hub · Cheras</div><h3 style="font-size:14.5px;font-weight:700;margin-top:4px">Ahmad's Kitchen</h3><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span style="font-size:12px"><span class="stars">★</span> 4.82 · 95</span><span style="font-size:11px;color:#16A34A;font-weight:600">8 experiences</span></div></div>
+      </div>
+      <div class="card" style="overflow:hidden">
+        <div style="height:140px;background:linear-gradient(135deg,#CCFBF1,#FCE7F3);position:relative"><button style="position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);border:none;font-size:14px;cursor:pointer">❤️</button></div>
+        <div style="padding:14px 16px"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em">Course · 8 weeks</div><h3 style="font-size:14.5px;font-weight:700;margin-top:4px">Brand Identity Bootcamp</h3><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span style="font-size:12px"><span class="stars">★</span> 4.88 · 54</span><span style="font-size:13px;font-weight:700">RM 880</span></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = userSidebar('favorites');
+</script>
+</body></html>

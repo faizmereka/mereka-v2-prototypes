@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Subscription · Mereka Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css"><script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-hub">
+  <div id="side"></div>
+  <main>
+    <h1 style="font-size:24px;font-weight:800">Subscription</h1>
+    <p style="font-size:13.5px;color:#64748B;margin-top:4px;margin-bottom:20px">Your Mereka plan and platform fees.</p>
+
+    <div class="card" style="padding:24px;margin-bottom:18px;background:linear-gradient(135deg,#FDF2F8,#FFF7ED);border-color:#FBCFE8">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <span class="chip chip-y">Current plan</span>
+          <h2 style="font-size:24px;font-weight:800;margin-top:8px">Mereka PRO</h2>
+          <p style="font-size:13.5px;color:#64748B;margin-top:4px">Best for active hubs running cohorts and 1:1 services. 6% platform fee on bookings.</p>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:28px;font-weight:800">RM 199<span style="font-size:14px;color:#64748B;font-weight:500"> / month</span></div>
+          <div style="font-size:11.5px;color:#64748B;margin-top:2px">Renews 14 Apr 2025</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:18px"><button class="btn">Manage payment method</button><button class="btn">Download receipts</button><button class="btn-ghost btn" style="border:none;color:#DC2626">Cancel plan</button></div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:#0F172A">Compare plans</h3>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:30px">
+      <div class="card" style="padding:22px">
+        <h4 style="font-size:14px;font-weight:700">Starter</h4>
+        <div style="font-size:24px;font-weight:800;margin-top:8px">Free</div>
+        <div style="font-size:11.5px;color:#64748B">10% platform fee</div>
+        <ul style="font-size:12.5px;color:#475569;margin-top:14px;list-style:none;padding:0;display:flex;flex-direction:column;gap:8px">
+          <li>✓ 1 hub manager</li>
+          <li>✓ Up to 5 services</li>
+          <li>✓ Manual booking confirmation</li>
+          <li style="color:#94A3B8">✗ Custom domain</li>
+          <li style="color:#94A3B8">✗ Team roles</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:22px;border-color:#E5397B;border-width:2px;position:relative">
+        <span class="chip chip-y" style="position:absolute;top:-10px;right:14px">Current</span>
+        <h4 style="font-size:14px;font-weight:700">PRO</h4>
+        <div style="font-size:24px;font-weight:800;margin-top:8px">RM 199 <span style="font-size:13px;color:#64748B;font-weight:500">/ mo</span></div>
+        <div style="font-size:11.5px;color:#64748B">6% platform fee</div>
+        <ul style="font-size:12.5px;color:#475569;margin-top:14px;list-style:none;padding:0;display:flex;flex-direction:column;gap:8px">
+          <li>✓ Up to 10 team members</li>
+          <li>✓ Unlimited services</li>
+          <li>✓ Auto-confirm + waitlist</li>
+          <li>✓ Custom domain</li>
+          <li>✓ Cohort & class management</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:22px">
+        <h4 style="font-size:14px;font-weight:700">Studio</h4>
+        <div style="font-size:24px;font-weight:800;margin-top:8px">RM 599 <span style="font-size:13px;color:#64748B;font-weight:500">/ mo</span></div>
+        <div style="font-size:11.5px;color:#64748B">3% platform fee</div>
+        <ul style="font-size:12.5px;color:#475569;margin-top:14px;list-style:none;padding:0;display:flex;flex-direction:column;gap:8px">
+          <li>✓ Unlimited members</li>
+          <li>✓ White-label checkout</li>
+          <li>✓ API access</li>
+          <li>✓ Dedicated success manager</li>
+          <li>✓ Priority chat support</li>
+        </ul>
+        <button class="btn btn-pink" style="width:100%;justify-content:center;margin-top:14px">Upgrade to Studio</button>
+      </div>
+    </div>
+
+    <div class="card" style="overflow:hidden">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--line);font-size:13.5px;font-weight:700">Recent invoices</div>
+      <table class="table">
+        <thead><tr><th>Invoice</th><th>Date</th><th>Plan</th><th style="text-align:right">Amount</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>INV-PRO-0014</td><td>14 Mar 2025</td><td>PRO · monthly</td><td style="text-align:right;font-weight:600">RM 199.00</td><td><span class="chip chip-g">Paid</span></td><td><button class="btn-ghost btn" style="border:none">Receipt</button></td></tr>
+          <tr><td>INV-PRO-0013</td><td>14 Feb 2025</td><td>PRO · monthly</td><td style="text-align:right;font-weight:600">RM 199.00</td><td><span class="chip chip-g">Paid</span></td><td><button class="btn-ghost btn" style="border:none">Receipt</button></td></tr>
+          <tr><td>INV-PRO-0012</td><td>14 Jan 2025</td><td>PRO · monthly</td><td style="text-align:right;font-weight:600">RM 199.00</td><td><span class="chip chip-g">Paid</span></td><td><button class="btn-ghost btn" style="border:none">Receipt</button></td></tr>
+          <tr><td>INV-PRO-0011</td><td>14 Dec 2024</td><td>PRO · monthly</td><td style="text-align:right;font-weight:600">RM 199.00</td><td><span class="chip chip-g">Paid</span></td><td><button class="btn-ghost btn" style="border:none">Receipt</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = hubSidebar('subscription');
+</script>
+</body></html>

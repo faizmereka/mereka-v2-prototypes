@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Team Members · Mereka Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css"><script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-hub">
+  <div id="side"></div>
+  <main>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+      <div><h1 style="font-size:24px;font-weight:800">Team Members</h1><p style="font-size:13.5px;color:#64748B;margin-top:4px">Roles and permissions for your hub.</p></div>
+      <button class="btn btn-pink">+ Invite member</button>
+    </div>
+
+    <div class="card" style="overflow:hidden;margin-bottom:20px">
+      <table class="table">
+        <thead><tr><th>Member</th><th>Role</th><th>Status</th><th>Last active</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#E5397B)"></div><div><b>Faiz Aminuddin</b> <span class="chip chip-y" style="margin-left:4px">Owner</span><div style="font-size:11.5px;color:#94A3B8">faiz@penangjobsearch.com</div></div></div></td><td>Owner</td><td><span class="chip chip-g">Active</span></td><td>Just now</td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#9333EA,#E5397B)"></div><div><b>Aiyu Tan</b><div style="font-size:11.5px;color:#94A3B8">aiyu@penangjobsearch.com</div></div></div></td><td>Expert · Manager</td><td><span class="chip chip-g">Active</span></td><td>2h ago</td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#16A34A,#3B82F6)"></div><div><b>Hafiz Razak</b><div style="font-size:11.5px;color:#94A3B8">hafiz@penangjobsearch.com</div></div></div></td><td>Expert</td><td><span class="chip chip-g">Active</span></td><td>1d ago</td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#0D9488,#9333EA)"></div><div><b>Yi Wen Ng</b><div style="font-size:11.5px;color:#94A3B8">yiwen@penangjobsearch.com</div></div></div></td><td>Expert</td><td><span class="chip chip-g">Active</span></td><td>3d ago</td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#94A3B8,#64748B)"></div><div><b>Imran Yusof</b><div style="font-size:11.5px;color:#94A3B8">imran@penangjobsearch.com</div></div></div></td><td>Operations</td><td><span class="chip chip-y">Pending invite</span></td><td>—</td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="padding:22px">
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Roles</h3>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+        <div style="border:1px solid var(--line);padding:14px;border-radius:10px"><div style="display:flex;align-items:center;justify-content:space-between"><b style="font-size:13.5px">Owner</b><span class="chip chip-y">1</span></div><p style="font-size:12px;color:#64748B;margin-top:6px">Full access incl. billing & ownership.</p></div>
+        <div style="border:1px solid var(--line);padding:14px;border-radius:10px"><div style="display:flex;align-items:center;justify-content:space-between"><b style="font-size:13.5px">Manager</b><span class="chip chip-b">1</span></div><p style="font-size:12px;color:#64748B;margin-top:6px">Manage services, bookings, team. No billing.</p></div>
+        <div style="border:1px solid var(--line);padding:14px;border-radius:10px"><div style="display:flex;align-items:center;justify-content:space-between"><b style="font-size:13.5px">Expert</b><span class="chip chip-b">3</span></div><p style="font-size:12px;color:#64748B;margin-top:6px">Run own sessions, see own bookings.</p></div>
+        <div style="border:1px solid var(--line);padding:14px;border-radius:10px"><div style="display:flex;align-items:center;justify-content:space-between"><b style="font-size:13.5px">Operations</b><span class="chip chip-slate">1</span></div><p style="font-size:12px;color:#64748B;margin-top:6px">Confirm bookings, reply to chats.</p></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = hubSidebar('members');
+</script>
+</body></html>

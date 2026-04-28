@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Notifications · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<script src="../shell/shell.js"></script>
+<style>
+.notif{display:flex;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line-soft)}
+.notif.unread{background:#FDF2F8}
+.notif:hover{background:#FAFBFC}
+.notif.unread:hover{background:#FCE7F3}
+.notif .icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notif .body{flex:1;min-width:0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.notif .body b{color:var(--ink)}
+.notif .meta{font-size:11.5px;color:#94A3B8;margin-top:4px}
+.notif .dot-unread{width:8px;height:8px;border-radius:999px;background:#E5397B;flex-shrink:0;align-self:center}
+</style>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-user">
+  <div id="side"></div>
+  <main class="user-main">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div><h1>Notifications</h1><p class="sub">Activity, system updates, and reminders.</p></div>
+      <button class="btn">Mark all as read</button>
+    </div>
+
+    <div class="tab-bar" style="margin-top:24px">
+      <a href="#" class="active">All · 24</a>
+      <a href="#">Unread · 4</a>
+      <a href="#">Bookings</a>
+      <a href="#">Messages</a>
+      <a href="#">Reviews</a>
+      <a href="#">System</a>
+    </div>
+
+    <div class="card" style="overflow:hidden">
+      <div class="notif unread">
+        <div class="icon" style="background:#FCE7F3;color:#E5397B">📅</div>
+        <div class="body"><b>Booking confirmed.</b> Your Pottery Workshop with Sarah Tan on Sat 15 Mar 2:00 PM is confirmed. <a href="#" style="color:#E5397B;font-weight:600">View booking</a><div class="meta">2 minutes ago</div></div>
+        <div class="dot-unread"></div>
+      </div>
+      <div class="notif unread">
+        <div class="icon" style="background:#DBEAFE;color:#1E40AF">💬</div>
+        <div class="body"><b>Sarah Tan</b> sent you a message: "Looking forward to seeing you Saturday! Bring an apron…"<div class="meta">15 minutes ago</div></div>
+        <div class="dot-unread"></div>
+      </div>
+      <div class="notif unread">
+        <div class="icon" style="background:#FEF3C7;color:#D97706">⭐</div>
+        <div class="body"><b>Reviews waiting.</b> You have 3 reviews to write — for Aizat Rahman, Sarah Tan, and Yoga at Sunrise. <a href="#" style="color:#E5397B;font-weight:600">Write reviews</a><div class="meta">1 hour ago</div></div>
+        <div class="dot-unread"></div>
+      </div>
+      <div class="notif unread">
+        <div class="icon" style="background:#DCFCE7;color:#15803D">✓</div>
+        <div class="body"><b>Cohort starts Monday.</b> Digital Marketing Foundations begins 24 Mar 7:30 PM. Your Zoom link is ready. <a href="#" style="color:#E5397B;font-weight:600">Add to calendar</a><div class="meta">3 hours ago</div></div>
+        <div class="dot-unread"></div>
+      </div>
+      <div class="notif">
+        <div class="icon" style="background:#F3E8FF;color:#9333EA">💳</div>
+        <div class="body">Payment of <b>RM 1,200</b> for Digital Marketing Foundations was successful. Receipt sent to faiz@mereka.io.<div class="meta">5 days ago</div></div>
+      </div>
+      <div class="notif">
+        <div class="icon" style="background:#FCE7F3;color:#E5397B">📅</div>
+        <div class="body"><b>Aizat Rahman</b> confirmed your 1:1 Career Coaching session for Tue 18 Mar 8:00 PM.<div class="meta">5 days ago</div></div>
+      </div>
+      <div class="notif">
+        <div class="icon" style="background:#CCFBF1;color:#0D9488">⭐</div>
+        <div class="body">Your review for <b>Lily Wong</b> was published. Thanks for sharing your experience!<div class="meta">1 week ago</div></div>
+      </div>
+      <div class="notif">
+        <div class="icon" style="background:#F1F5F9;color:#475569">⚙️</div>
+        <div class="body"><b>Mereka v2 is here.</b> We've redesigned the dashboard. <a href="#" style="color:#E5397B;font-weight:600">See what's new</a><div class="meta">2 weeks ago</div></div>
+      </div>
+      <div class="notif">
+        <div class="icon" style="background:#FEE2E2;color:#991B1B">↩</div>
+        <div class="body">Your refund of <b>RM 150</b> for Sourdough Baking 101 is being processed. Funds typically arrive in 5-7 business days.<div class="meta">2 weeks ago</div></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = userSidebar('notifications');
+</script>
+</body></html>

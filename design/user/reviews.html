@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Reviews · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-user">
+  <div id="side"></div>
+  <main class="user-main">
+    <h1>Reviews</h1>
+    <p class="sub">Reviews you've received and reviews you owe.</p>
+
+    <div class="tab-bar" style="margin-top:24px">
+      <a href="#" class="active">To write · 3</a>
+      <a href="#">Received · 12</a>
+      <a href="#">Given · 8</a>
+    </div>
+
+    <div class="card" style="padding:18px 20px;margin-bottom:14px;background:#FDF2F8;border-color:#F9A8D4">
+      <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center">⭐</div><div style="flex:1"><h3 style="font-size:14px;font-weight:700">3 reviews waiting for you</h3><p style="font-size:12.5px;color:#64748B;margin-top:2px">Hosts and experts can only see your feedback after both sides review. You have 14 days left to share yours.</p></div></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="padding:18px 20px">
+        <div style="display:flex;gap:14px">
+          <div class="avatar-lg" style="width:48px;height:48px;font-size:14px;background:linear-gradient(135deg,#0D9488,#3B82F6)">AR</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;justify-content:space-between"><h3 style="font-size:14.5px;font-weight:700">Aizat Rahman</h3><span style="font-size:11.5px;color:#94A3B8">Session ended 12 Mar</span></div>
+            <p style="font-size:13px;color:#64748B;margin-top:2px">1:1 Career Coaching · 60 min</p>
+            <div style="display:flex;gap:6px;margin-top:14px;align-items:center"><span style="font-size:13px;font-weight:600;margin-right:6px">Your rating:</span>
+              <span style="color:#E2E8F0;font-size:18px;letter-spacing:2px;cursor:pointer">★★★★★</span>
+            </div>
+            <textarea placeholder="What did you think? Your review helps the community." style="width:100%;margin-top:12px;padding:11px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:13.5px;min-height:72px;resize:vertical;background:#F8FAFC"></textarea>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px"><button class="btn">Save draft</button><button class="btn btn-pink">Submit review</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:18px 20px">
+        <div style="display:flex;gap:14px">
+          <div class="avatar-lg" style="width:48px;height:48px;font-size:14px;background:linear-gradient(135deg,#9333EA,#E5397B)">ST</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;justify-content:space-between"><h3 style="font-size:14.5px;font-weight:700">Sarah Tan · The Studio @ Bangsar</h3><span style="font-size:11.5px;color:#94A3B8">Attended 14 Mar</span></div>
+            <p style="font-size:13px;color:#64748B;margin-top:2px">Pottery Workshop: Hand-Build Your First Vase</p>
+            <div style="display:flex;gap:6px;margin-top:14px;align-items:center"><span style="font-size:13px;font-weight:600;margin-right:6px">Your rating:</span>
+              <span class="stars" style="font-size:18px;letter-spacing:2px">★★★★★</span>
+            </div>
+            <textarea style="width:100%;margin-top:12px;padding:11px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:13.5px;min-height:72px;resize:vertical">Sarah was such a patient teacher. The studio is bright, well-stocked, and the take-home vase came out gorgeous. Will be back for the wheel-throwing class!</textarea>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px"><button class="btn">Save draft</button><button class="btn btn-pink">Submit review</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:18px 20px">
+        <div style="display:flex;gap:14px">
+          <div class="avatar-lg" style="width:48px;height:48px;font-size:14px;background:linear-gradient(135deg,#F59E0B,#16A34A)">YK</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;justify-content:space-between"><h3 style="font-size:14.5px;font-weight:700">Yoga at Sunrise · KLCC Park</h3><span style="font-size:11.5px;color:#94A3B8">Attended 22 Feb</span></div>
+            <p style="font-size:13px;color:#64748B;margin-top:2px">Drop-in class with instructor Yasmin Kassim</p>
+            <button class="btn" style="margin-top:14px">Write review</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = userSidebar('reviews');
+</script>
+</body></html>

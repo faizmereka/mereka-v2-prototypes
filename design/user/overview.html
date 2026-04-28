@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Account Details · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-user">
+  <div id="side"></div>
+  <main class="user-main">
+    <h1>Account Details</h1>
+    <p class="sub">Manage your profile, identity, and how you appear on Mereka.</p>
+
+    <div class="tab-bar" style="margin-top:24px">
+      <a href="#" class="active">Profile</a>
+      <a href="#">Public details</a>
+      <a href="#">Identity</a>
+      <a href="#">Preferences</a>
+    </div>
+
+    <div class="card" style="padding:28px;margin-bottom:24px">
+      <div style="display:flex;gap:24px;align-items:center;margin-bottom:24px">
+        <div class="avatar-lg" style="width:96px;height:96px;font-size:32px">FA</div>
+        <div style="flex:1">
+          <h3 style="font-size:18px;font-weight:700">Faiz Aminuddin</h3>
+          <p style="font-size:13px;color:#64748B;margin-top:2px">Member since April 2024 · Petaling Jaya, Malaysia</p>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn">Change photo</button>
+            <button class="btn-ghost btn" style="border:none">Remove</button>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <span class="chip chip-g">✓ Email verified</span>
+          <div style="margin-top:6px"><span class="chip chip-y">⚠ Phone unverified</span></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;border-top:1px solid var(--line);padding-top:24px">
+        <div class="field" style="margin-top:0"><label>Legal first name</label><input value="Faiz"/></div>
+        <div class="field" style="margin-top:0"><label>Legal last name</label><input value="Aminuddin"/></div>
+        <div class="field" style="margin-top:0"><label>Email address</label><input value="faiz@mereka.io"/></div>
+        <div class="field" style="margin-top:0"><label>Phone number</label><input value="+60 12 345 6789"/></div>
+        <div class="field" style="margin-top:0"><label>Government ID</label><input placeholder="Not provided" value=""/><span class="hint">Required for hosting experiences</span></div>
+        <div class="field" style="margin-top:0"><label>Address</label><input value="Petaling Jaya, Selangor, Malaysia"/></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:24px;padding-top:24px;border-top:1px solid var(--line)">
+        <button class="btn">Cancel</button>
+        <button class="btn btn-pink">Save changes</button>
+      </div>
+    </div>
+
+    <div class="card" style="padding:28px">
+      <h3 style="font-size:16px;font-weight:700">Connected accounts</h3>
+      <p style="font-size:13px;color:#64748B;margin-top:4px;margin-bottom:18px">Sign in faster by linking accounts.</p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;border:1px solid var(--line);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:32px;height:32px;border-radius:8px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700">G</div><div><div style="font-weight:600;font-size:14px">Google</div><div style="font-size:12px;color:#64748B">faiz@gmail.com</div></div></div>
+          <button class="btn">Disconnect</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;border:1px solid var(--line);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:32px;height:32px;border-radius:8px;background:#0F172A;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700"></div><div><div style="font-weight:600;font-size:14px">Apple</div><div style="font-size:12px;color:#64748B">Not connected</div></div></div>
+          <button class="btn">Connect</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;border:1px solid var(--line);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:32px;height:32px;border-radius:8px;background:#0A66C2;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px">in</div><div><div style="font-weight:600;font-size:14px">LinkedIn</div><div style="font-size:12px;color:#64748B">Not connected</div></div></div>
+          <button class="btn">Connect</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = userSidebar('overview');
+</script>
+</body></html>

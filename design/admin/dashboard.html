@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin Dashboard · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<style>
+:root{--side-w:220px}
+.admin-shell{display:grid;grid-template-columns:var(--side-w) 1fr;min-height:100vh}
+.admin-side{background:#0F172A;color:#fff;padding:18px;display:flex;flex-direction:column;gap:4px}
+.admin-side .brand{padding:8px 10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:8px;color:#fff}
+.admin-side .brand b{font-size:13px;font-weight:700}
+.admin-side .brand small{font-size:10.5px;color:#94A3B8;display:block}
+.admin-side .lbl{font-size:10.5px;color:#64748B;text-transform:uppercase;font-weight:700;letter-spacing:.08em;padding:14px 10px 6px}
+.admin-side a{padding:8px 10px;border-radius:8px;color:#CBD5E1;text-decoration:none;font-size:13px;display:flex;align-items:center;gap:10px}
+.admin-side a:hover{background:rgba(255,255,255,.06);color:#fff}
+.admin-side a.active{background:#E5397B;color:#fff;font-weight:600}
+.admin-main{padding:28px 32px;background:#FAFBFC}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="admin-side">
+    <div class="brand"><svg width="24" height="24" viewBox="0 0 50 36" fill="#E5397B"><path d="M38.26 35.97c3.728 0 6.75-3.022 6.75-6.749s-3.022-6.749-6.75-6.749-6.749 3.022-6.749 6.749 3.022 6.749 6.749 6.749z"/></svg><div><b>Mereka Admin</b><small>v2.4</small></div></div>
+    <div class="lbl">Overview</div>
+    <a href="dashboard.html" class="active">📊 Dashboard</a>
+    <a href="#">⚡ Activity feed</a>
+    <div class="lbl">People</div>
+    <a href="users.html">👥 Users <span style="margin-left:auto;font-size:10.5px;background:#E5397B;padding:1px 6px;border-radius:6px;font-weight:600">18,420</span></a>
+    <a href="hubs.html">🏢 Hubs</a>
+    <a href="#">⭐ Experts</a>
+    <a href="#">📄 KYC queue <span style="margin-left:auto;font-size:10.5px;background:#F59E0B;color:#0F172A;padding:1px 6px;border-radius:6px;font-weight:600">14</span></a>
+    <div class="lbl">Marketplace</div>
+    <a href="#">🛍️ Listings</a>
+    <a href="#">🚩 Reports <span style="margin-left:auto;font-size:10.5px;background:#DC2626;padding:1px 6px;border-radius:6px;font-weight:600">3</span></a>
+    <a href="#">⭐ Reviews</a>
+    <div class="lbl">Money</div>
+    <a href="finance.html">💰 Finance</a>
+    <a href="#">↩️ Refunds</a>
+    <a href="#">🧾 Invoices</a>
+    <div class="lbl">Platform</div>
+    <a href="#">⚙️ Settings</a>
+    <a href="#">🛡️ Audit log</a>
+  </aside>
+
+  <main class="admin-main">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px">
+      <div><h1 style="font-size:24px;font-weight:800;letter-spacing:-.02em">Platform overview</h1><p style="font-size:13px;color:#64748B;margin-top:4px">Live data · last updated 12 sec ago</p></div>
+      <div style="display:flex;gap:8px"><button class="btn">Last 30 days</button><button class="btn-dark btn">Export CSV</button></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px">
+      <div class="card kpi" style="padding:16px"><div class="label">Active users</div><div class="value" style="margin-top:4px;font-size:22px">18,420</div><div style="font-size:11px;color:#16A34A;font-weight:600;margin-top:2px">↑ 8.2%</div></div>
+      <div class="card kpi" style="padding:16px"><div class="label">Hubs</div><div class="value" style="margin-top:4px;font-size:22px">312</div><div style="font-size:11px;color:#16A34A;font-weight:600;margin-top:2px">↑ 14 new</div></div>
+      <div class="card kpi" style="padding:16px"><div class="label">Experts</div><div class="value" style="margin-top:4px;font-size:22px">1,840</div><div style="font-size:11px;color:#16A34A;font-weight:600;margin-top:2px">↑ 6.1%</div></div>
+      <div class="card kpi" style="padding:16px"><div class="label">GMV (30d)</div><div class="value" style="margin-top:4px;font-size:22px">RM 2.84M</div><div style="font-size:11px;color:#16A34A;font-weight:600;margin-top:2px">↑ 22%</div></div>
+      <div class="card kpi" style="padding:16px"><div class="label">Take rate</div><div class="value" style="margin-top:4px;font-size:22px">7.2%</div><div style="font-size:11px;color:#94A3B8;margin-top:2px">RM 204K rev</div></div>
+      <div class="card kpi" style="padding:16px"><div class="label">Bookings (30d)</div><div class="value" style="margin-top:4px;font-size:22px">14,820</div><div style="font-size:11px;color:#16A34A;font-weight:600;margin-top:2px">↑ 18%</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:18px">
+      <div class="card" style="padding:22px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h3 style="font-size:14px;font-weight:700">GMV trend · 30 days</h3><div style="display:flex;gap:6px"><button class="btn">All</button><button class="btn">Experiences</button><button class="btn">Expertise</button></div></div>
+        <svg viewBox="0 0 600 180" style="width:100%;height:180px">
+          <defs><linearGradient id="g2" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#E5397B" stop-opacity=".25"/><stop offset="100%" stop-color="#E5397B" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0,140 L30,135 L60,128 L90,135 L120,118 L150,122 L180,108 L210,114 L240,98 L270,102 L300,90 L330,82 L360,78 L390,68 L420,72 L450,58 L480,52 L510,48 L540,42 L570,38 L600,32 L600,180 L0,180 Z" fill="url(#g2)"/>
+          <path d="M0,140 L30,135 L60,128 L90,135 L120,118 L150,122 L180,108 L210,114 L240,98 L270,102 L300,90 L330,82 L360,78 L390,68 L420,72 L450,58 L480,52 L510,48 L540,42 L570,38 L600,32" stroke="#E5397B" stroke-width="2.5" fill="none"/>
+        </svg>
+      </div>
+      <div class="card" style="padding:22px">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Needs attention</h3>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <a href="hubs.html" style="display:flex;justify-content:space-between;padding:12px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:8px;text-decoration:none"><div><b style="font-size:13px;color:#92400E">14 hubs in KYC review</b><div style="font-size:11.5px;color:#92400E;opacity:.8">Oldest: 3 days · 2 over SLA</div></div><span style="font-size:18px">→</span></a>
+          <a href="#" style="display:flex;justify-content:space-between;padding:12px;background:#FEE2E2;border:1px solid #FCA5A5;border-radius:8px;text-decoration:none"><div><b style="font-size:13px;color:#991B1B">3 abuse reports</b><div style="font-size:11.5px;color:#991B1B;opacity:.8">Listings flagged · review &lt; 24h</div></div><span style="font-size:18px">→</span></a>
+          <a href="#" style="display:flex;justify-content:space-between;padding:12px;background:#DBEAFE;border:1px solid #93C5FD;border-radius:8px;text-decoration:none"><div><b style="font-size:13px;color:#1E40AF">8 refund disputes</b><div style="font-size:11.5px;color:#1E40AF;opacity:.8">Awaiting platform mediation</div></div><span style="font-size:18px">→</span></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:22px">
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Recent platform events</h3>
+      <table class="table" style="margin:-22px;width:calc(100% + 44px)">
+        <thead><tr><th>Time</th><th>Event</th><th>Actor</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>2 min ago</td><td><span class="chip chip-g">Hub created</span></td><td>Sarah Lee</td><td>"Cyberjaya Code School" · awaiting KYC</td></tr>
+          <tr><td>14 min ago</td><td><span class="chip chip-b">Booking</span></td><td>Faiz Aminuddin</td><td>RM 1,224 · Penang Jobsearch Hub</td></tr>
+          <tr><td>32 min ago</td><td><span class="chip chip-y">KYC submitted</span></td><td>KL Maker Studio</td><td>Auto-flagged · low signal</td></tr>
+          <tr><td>1h ago</td><td><span class="chip chip-r">Refund disputed</span></td><td>Adlina Hashim</td><td>BK-217994 · escalated</td></tr>
+          <tr><td>1h ago</td><td><span class="chip chip-b">Booking</span></td><td>Wei Liang Chen</td><td>RM 720 · Career Pivot Playbook</td></tr>
+          <tr><td>2h ago</td><td><span class="chip chip-g">Payout sent</span></td><td>System</td><td>RM 124,800 across 32 hubs</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+</body></html>

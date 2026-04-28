@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Become an Expert · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<script src="../shell/shell.js"></script>
+<style>
+.wiz{max-width:880px;margin:40px auto;padding:0 24px}
+.wiz-steps{display:flex;gap:8px;margin-bottom:28px}
+.wiz-step{flex:1;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;background:#F1F5F9;color:#64748B;display:flex;gap:8px;align-items:center}
+.wiz-step.active{background:#0F172A;color:#fff}
+.wiz-step.done{background:#DCFCE7;color:#166534}
+.wiz-step .num{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:10.5px}
+.wiz-step.done .num{background:#16A34A;color:#fff}
+.wiz-step:not(.active):not(.done) .num{background:#fff;color:#94A3B8}
+.tag-pick{display:flex;gap:6px;flex-wrap:wrap}
+.tag-pick label{padding:6px 12px;border:1px solid var(--line);border-radius:999px;font-size:12.5px;cursor:pointer}
+.tag-pick input{display:none}
+.tag-pick input:checked + .tag-card{background:#FDF2F8;border-color:#E5397B;color:#9D174D;font-weight:600}
+.tag-card{padding:6px 12px;border:1px solid var(--line);border-radius:999px;font-size:12.5px;display:inline-block}
+</style>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="wiz">
+  <a href="welcome.html" style="font-size:12.5px;color:#64748B;text-decoration:none">← Back</a>
+  <h1 style="font-size:28px;font-weight:800;letter-spacing:-.02em;margin-top:8px">Set up your expert profile</h1>
+  <p style="font-size:13.5px;color:#64748B;margin-top:4px;margin-bottom:28px">This is what learners will see when they discover you.</p>
+
+  <div class="wiz-steps">
+    <div class="wiz-step done"><span class="num">✓</span>Account</div>
+    <div class="wiz-step active"><span class="num">2</span>Profile & expertise</div>
+    <div class="wiz-step"><span class="num">3</span>Sessions & rate</div>
+    <div class="wiz-step"><span class="num">4</span>Verify & publish</div>
+  </div>
+
+  <div class="card" style="padding:32px">
+    <div style="display:flex;gap:18px;margin-bottom:24px">
+      <div style="width:96px;height:96px;border-radius:18px;background:linear-gradient(135deg,#9333EA,#E5397B);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:24px">FA</div>
+      <div style="flex:1"><div class="form-row" style="margin-bottom:8px"><button class="btn">Upload photo</button> <span style="font-size:12px;color:#94A3B8;margin-left:8px">JPG/PNG · square · min 400px</span></div></div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#0F172A">About you</h3>
+    <div class="form-row"><label>Display name</label><input class="input" value="Faiz Aminuddin"/></div>
+    <div class="form-row"><label>Headline</label><input class="input" placeholder="e.g. Career coach for tech leaders in SEA"/></div>
+    <div class="form-row"><label>Bio</label><textarea class="input" rows="4" placeholder="Tell learners about your background, work, and what makes your sessions valuable."></textarea></div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#0F172A;margin-top:24px">Areas of expertise</h3>
+    <p style="font-size:12.5px;color:#64748B;margin-top:-8px;margin-bottom:12px">Pick up to 5. These help the right learners find you.</p>
+    <div class="tag-pick">
+      <label><input type="checkbox" checked/><span class="tag-card">Career coaching</span></label>
+      <label><input type="checkbox" checked/><span class="tag-card">Resume review</span></label>
+      <label><input type="checkbox" checked/><span class="tag-card">Interview prep</span></label>
+      <label><input type="checkbox"/><span class="tag-card">Salary negotiation</span></label>
+      <label><input type="checkbox"/><span class="tag-card">LinkedIn audit</span></label>
+      <label><input type="checkbox"/><span class="tag-card">Tech leadership</span></label>
+      <label><input type="checkbox"/><span class="tag-card">Product management</span></label>
+      <label><input type="checkbox"/><span class="tag-card">Engineering</span></label>
+      <label><input type="checkbox"/><span class="tag-card">Design</span></label>
+      <label><input type="checkbox"/><span class="tag-card">Marketing</span></label>
+      <label><input type="checkbox"/><span class="tag-card">Entrepreneurship</span></label>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#0F172A;margin-top:24px">Languages</h3>
+    <div class="tag-pick">
+      <label><input type="checkbox" checked/><span class="tag-card">English</span></label>
+      <label><input type="checkbox" checked/><span class="tag-card">Bahasa Malaysia</span></label>
+      <label><input type="checkbox"/><span class="tag-card">Mandarin</span></label>
+      <label><input type="checkbox"/><span class="tag-card">Tamil</span></label>
+      <label><input type="checkbox"/><span class="tag-card">Cantonese</span></label>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;margin-top:24px"><button class="btn">← Save & exit</button><div style="display:flex;gap:8px"><button class="btn">Save draft</button><button class="btn btn-pink">Continue → Sessions</button></div></div>
+</div>
+<script>document.getElementById('topnav').innerHTML = topNav({});</script>
+</body></html>

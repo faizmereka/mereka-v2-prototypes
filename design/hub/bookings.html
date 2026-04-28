@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Bookings · Mereka Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-hub">
+  <div id="side"></div>
+  <main>
+    <h1 style="font-size:24px;font-weight:800">Bookings</h1>
+    <p style="font-size:13.5px;color:#64748B;margin-top:4px;margin-bottom:20px">Manage incoming bookings and your guests.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      <div class="card" style="padding:16px;border-color:#FCA5A5;background:#FFF1F2"><div style="font-size:11.5px;color:#991B1B;text-transform:uppercase;font-weight:700;letter-spacing:.06em">Awaiting approval</div><div style="font-size:24px;font-weight:800;margin-top:4px">4</div><div style="font-size:11px;color:#7F1D1D;margin-top:2px">Oldest: 2h ago</div></div>
+      <div class="card" style="padding:16px"><div style="font-size:11.5px;color:#64748B;text-transform:uppercase;font-weight:700;letter-spacing:.06em">Confirmed (this week)</div><div style="font-size:24px;font-weight:800;margin-top:4px">38</div><div style="font-size:11px;color:#16A34A;margin-top:2px">↑ 12% vs last week</div></div>
+      <div class="card" style="padding:16px"><div style="font-size:11.5px;color:#64748B;text-transform:uppercase;font-weight:700;letter-spacing:.06em">Cancelled</div><div style="font-size:24px;font-weight:800;margin-top:4px">2</div><div style="font-size:11px;color:#94A3B8;margin-top:2px">5.0% rate</div></div>
+      <div class="card" style="padding:16px"><div style="font-size:11.5px;color:#64748B;text-transform:uppercase;font-weight:700;letter-spacing:.06em">Revenue (this week)</div><div style="font-size:24px;font-weight:800;margin-top:4px">RM 12,840</div><div style="font-size:11px;color:#16A34A;margin-top:2px">↑ 8%</div></div>
+    </div>
+
+    <div class="tab-bar">
+      <a href="#" class="active">All · 84</a>
+      <a href="#">Pending · 4</a>
+      <a href="#">Upcoming · 38</a>
+      <a href="#">Past · 40</a>
+      <a href="#">Cancelled · 2</a>
+    </div>
+
+    <div class="card" style="overflow:hidden">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:8px"><button class="btn">All services</button><button class="btn">All time</button><div style="flex:1"></div><input placeholder="Search guest, service…" style="padding:7px 12px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;width:240px"/></div>
+      <table class="table">
+        <thead><tr><th>Guest</th><th>Service</th><th>Date & time</th><th>Spots</th><th style="text-align:right">Amount</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#9333EA,#E5397B)"></div><div><b>Faiz Aminuddin</b><div style="font-size:11.5px;color:#94A3B8">Repeat · 3 prior</div></div></div></td><td>Digital Marketing Foundations<br><span style="font-size:11.5px;color:#94A3B8">Cohort 4</span></td><td>24 Mar 7:30 PM<br><span style="font-size:11.5px;color:#94A3B8">8-week course</span></td><td>1</td><td style="text-align:right;font-weight:600">RM 1,200</td><td><span class="chip chip-y">Pending</span></td><td><div style="display:flex;gap:6px"><button class="btn">Review</button></div></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#16A34A,#3B82F6)"></div><div><b>Adlina Hashim</b><div style="font-size:11.5px;color:#94A3B8">New guest</div></div></div></td><td>Resume Workshop<br><span style="font-size:11.5px;color:#94A3B8">Drop-in</span></td><td>25 Mar 10:00 AM<br><span style="font-size:11.5px;color:#94A3B8">2 hours</span></td><td>1</td><td style="text-align:right;font-weight:600">RM 95</td><td><span class="chip chip-y">Pending</span></td><td><div style="display:flex;gap:6px"><button class="btn">Review</button></div></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#E5397B)"></div><div><b>Jason Lim</b><div style="font-size:11.5px;color:#94A3B8">Repeat · 1 prior</div></div></div></td><td>Mock Interview · 1:1</td><td>26 Mar 2:00 PM<br><span style="font-size:11.5px;color:#94A3B8">45 min</span></td><td>1</td><td style="text-align:right;font-weight:600">RM 180</td><td><span class="chip chip-g">Confirmed</span></td><td><button class="btn-ghost btn" style="border:none">Open</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#0D9488,#9333EA)"></div><div><b>Priya Sandran</b><div style="font-size:11.5px;color:#94A3B8">New guest</div></div></div></td><td>Mock Interview · 1:1</td><td>26 Mar 2:45 PM<br><span style="font-size:11.5px;color:#94A3B8">45 min</span></td><td>1</td><td style="text-align:right;font-weight:600">RM 180</td><td><span class="chip chip-g">Confirmed</span></td><td><button class="btn-ghost btn" style="border:none">Open</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#DC2626,#F59E0B)"></div><div><b>Wei Liang Chen</b><div style="font-size:11.5px;color:#94A3B8">Repeat · 5 prior</div></div></div></td><td>Career Pivot Playbook<br><span style="font-size:11.5px;color:#94A3B8">Cohort 3 wrap</span></td><td>26 Mar 3:00 PM<br><span style="font-size:11.5px;color:#94A3B8">2 hours</span></td><td>1</td><td style="text-align:right;font-weight:600">—</td><td><span class="chip chip-g">Confirmed</span></td><td><button class="btn-ghost btn" style="border:none">Open</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#9333EA)"></div><div><b>Faridah Mohamed</b><div style="font-size:11.5px;color:#94A3B8">New guest</div></div></div></td><td>Interview Sim Day · Slot 1<br><span style="font-size:11.5px;color:#94A3B8">Walk-in</span></td><td>27 Mar 9:30 AM<br><span style="font-size:11.5px;color:#94A3B8">30 min</span></td><td>1</td><td style="text-align:right;font-weight:600">RM 80</td><td><span class="chip chip-y">Pending</span></td><td><button class="btn">Review</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#9333EA,#0D9488)"></div><div><b>Tan Ming Yew</b><div style="font-size:11.5px;color:#94A3B8">Repeat · 2 prior</div></div></div></td><td>Resume Workshop · Drop-in</td><td>25 Mar 10:00 AM<br><span style="font-size:11.5px;color:#94A3B8">2 hours</span></td><td>2</td><td style="text-align:right;font-weight:600">RM 190</td><td><span class="chip chip-g">Confirmed</span></td><td><button class="btn-ghost btn" style="border:none">Open</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#16A34A,#0D9488)"></div><div><b>Kavitha Nair</b><div style="font-size:11.5px;color:#94A3B8">New guest</div></div></div></td><td>Career Coaching · 1:1</td><td>22 Mar 11:00 AM</td><td>1</td><td style="text-align:right;font-weight:600">RM 180</td><td><span class="chip chip-r">Cancelled</span></td><td><button class="btn-ghost btn" style="border:none">Open</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = hubSidebar('bookings');
+</script>
+</body></html>

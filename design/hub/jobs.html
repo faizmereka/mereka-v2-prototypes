@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Jobs · Mereka Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css"><script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-hub">
+  <div id="side"></div>
+  <main>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+      <div><h1 style="font-size:24px;font-weight:800">Manage Jobs</h1><p style="font-size:13.5px;color:#64748B;margin-top:4px">Posted jobs, proposals, contracts.</p></div>
+      <button class="btn btn-pink">+ Post a job</button>
+    </div>
+    <div class="tab-bar">
+      <a href="#" class="active">Open · 3</a>
+      <a href="#">In progress · 2</a>
+      <a href="#">Closed · 8</a>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr;gap:14px">
+      <div class="card" style="padding:20px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div><h3 style="font-size:16px;font-weight:700">Workshop facilitator · Resume Workshop weekly drop-in</h3><div style="font-size:12px;color:#64748B;margin-top:4px">Penang · Hybrid · RM 800 – 1,200 / session · Posted 4 days ago</div></div>
+          <span class="chip chip-g">Open</span>
+        </div>
+        <div style="display:flex;gap:24px;font-size:12.5px;color:#475569;margin-top:10px;padding-top:10px;border-top:1px solid var(--line-soft)">
+          <div><b style="color:#0F172A">14</b> proposals · <b style="color:#E5397B">3 new</b></div>
+          <div><b style="color:#0F172A">86</b> views</div>
+          <div>Closes in <b style="color:#0F172A">10 days</b></div>
+          <div style="margin-left:auto;display:flex;gap:6px"><button class="btn">View proposals</button><button class="btn">Edit</button></div>
+        </div>
+      </div>
+      <div class="card" style="padding:20px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div><h3 style="font-size:16px;font-weight:700">Video editor · Cohort highlight reels (3 videos)</h3><div style="font-size:12px;color:#64748B;margin-top:4px">Remote · Project · RM 2,500 fixed · Posted 6 days ago</div></div>
+          <span class="chip chip-g">Open</span>
+        </div>
+        <div style="display:flex;gap:24px;font-size:12.5px;color:#475569;margin-top:10px;padding-top:10px;border-top:1px solid var(--line-soft)">
+          <div><b style="color:#0F172A">22</b> proposals · <b style="color:#E5397B">5 new</b></div>
+          <div><b style="color:#0F172A">141</b> views</div>
+          <div>Closes in <b style="color:#0F172A">8 days</b></div>
+          <div style="margin-left:auto;display:flex;gap:6px"><button class="btn">View proposals</button><button class="btn">Edit</button></div>
+        </div>
+      </div>
+      <div class="card" style="padding:20px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div><h3 style="font-size:16px;font-weight:700">Career coach (BM/EN) · Cohort 5 cohort coach</h3><div style="font-size:12px;color:#64748B;margin-top:4px">KL or Penang · Part-time · RM 4,500 / month · Posted 12 days ago</div></div>
+          <span class="chip chip-g">Open</span>
+        </div>
+        <div style="display:flex;gap:24px;font-size:12.5px;color:#475569;margin-top:10px;padding-top:10px;border-top:1px solid var(--line-soft)">
+          <div><b style="color:#0F172A">8</b> proposals</div>
+          <div><b style="color:#0F172A">204</b> views</div>
+          <div>Closes in <b style="color:#0F172A">2 days</b></div>
+          <div style="margin-left:auto;display:flex;gap:6px"><button class="btn">View proposals</button><button class="btn">Edit</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = hubSidebar('jobs');
+</script>
+</body></html>

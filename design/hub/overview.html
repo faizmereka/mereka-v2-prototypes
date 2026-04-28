@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Hub Dashboard · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-hub">
+  <div id="side"></div>
+  <main>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px">
+      <div><h1 style="font-size:24px;font-weight:800">Welcome back, Penang Jobsearch Hub</h1><p style="font-size:13.5px;color:#64748B;margin-top:4px">Here's how your hub is doing this week.</p></div>
+      <div style="display:flex;gap:8px"><button class="btn">This week</button><button class="btn-pink btn">+ New experience</button></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+      <div class="card kpi" style="padding:18px"><div class="label">Bookings (7d)</div><div class="value" style="margin-top:6px">38</div><div style="font-size:11.5px;color:#16A34A;font-weight:600;margin-top:4px">↑ 12% vs last week</div></div>
+      <div class="card kpi" style="padding:18px"><div class="label">Revenue (7d)</div><div class="value" style="margin-top:6px">RM 12,840</div><div style="font-size:11.5px;color:#16A34A;font-weight:600;margin-top:4px">↑ 8% vs last week</div></div>
+      <div class="card kpi" style="padding:18px"><div class="label">New reviews</div><div class="value" style="margin-top:6px">6</div><div style="font-size:11.5px;color:#64748B;font-weight:500;margin-top:4px">★ 4.83 avg</div></div>
+      <div class="card kpi" style="padding:18px"><div class="label">Profile views</div><div class="value" style="margin-top:6px">1,284</div><div style="font-size:11.5px;color:#DC2626;font-weight:600;margin-top:4px">↓ 4% vs last week</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:18px">
+      <div class="card" style="padding:22px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h3 style="font-size:15px;font-weight:700">Bookings & revenue · last 30 days</h3><div style="display:flex;gap:6px"><button class="btn">Bookings</button><button class="btn-dark btn">Revenue</button></div></div>
+        <svg viewBox="0 0 600 200" style="width:100%;height:200px">
+          <defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#E5397B" stop-opacity=".25"/><stop offset="100%" stop-color="#E5397B" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0,160 L40,150 L80,140 L120,148 L160,130 L200,135 L240,110 L280,118 L320,90 L360,95 L400,82 L440,72 L480,70 L520,55 L560,52 L600,40 L600,200 L0,200 Z" fill="url(#g)"/>
+          <path d="M0,160 L40,150 L80,140 L120,148 L160,130 L200,135 L240,110 L280,118 L320,90 L360,95 L400,82 L440,72 L480,70 L520,55 L560,52 L600,40" stroke="#E5397B" stroke-width="2.5" fill="none"/>
+        </svg>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#94A3B8;margin-top:6px"><span>Feb 14</span><span>Feb 21</span><span>Feb 28</span><span>Mar 7</span><span>Today</span></div>
+      </div>
+      <div class="card" style="padding:22px">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:14px">Top services</h3>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:600">Digital Marketing Foundations</span><span style="color:#64748B">RM 4,800</span></div><div class="bar-track"><div class="bar-fill" style="width:88%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:600">Career Pivot Playbook</span><span style="color:#64748B">RM 3,240</span></div><div class="bar-track"><div class="bar-fill" style="width:60%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:600">Resume Workshop · Drop-in</span><span style="color:#64748B">RM 1,950</span></div><div class="bar-track"><div class="bar-fill" style="width:36%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:600">Interview Sim · 1:1</span><span style="color:#64748B">RM 1,420</span></div><div class="bar-track"><div class="bar-fill" style="width:26%"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px">
+      <div class="card" style="padding:22px">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:14px">Upcoming this week</h3>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:14px"><div style="text-align:center;width:46px;flex-shrink:0"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase">Mon</div><div style="font-size:20px;font-weight:700">24</div></div><div style="flex:1;border-left:2px solid #FCE7F3;padding-left:14px"><div style="font-weight:600;font-size:13.5px">Digital Marketing Foundations · Cohort 4 kickoff</div><div style="font-size:12px;color:#64748B">7:30 PM · Zoom · 18 enrolled</div></div></div>
+          <div style="display:flex;gap:14px"><div style="text-align:center;width:46px;flex-shrink:0"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase">Tue</div><div style="font-size:20px;font-weight:700">25</div></div><div style="flex:1;border-left:2px solid #FCE7F3;padding-left:14px"><div style="font-weight:600;font-size:13.5px">Resume Workshop · Drop-in</div><div style="font-size:12px;color:#64748B">10:00 AM · Hub @ Penang · 12 / 20 spots filled</div></div></div>
+          <div style="display:flex;gap:14px"><div style="text-align:center;width:46px;flex-shrink:0"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase">Wed</div><div style="font-size:20px;font-weight:700">26</div></div><div style="flex:1;border-left:2px solid #FCE7F3;padding-left:14px"><div style="font-weight:600;font-size:13.5px">Mock Interview Day</div><div style="font-size:12px;color:#64748B">2:00 PM – 6:00 PM · 8 sessions booked</div></div></div>
+          <div style="display:flex;gap:14px"><div style="text-align:center;width:46px;flex-shrink:0"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase">Thu</div><div style="font-size:20px;font-weight:700">27</div></div><div style="flex:1;border-left:2px solid #FCE7F3;padding-left:14px"><div style="font-weight:600;font-size:13.5px">Digital Marketing Foundations · Session 2</div><div style="font-size:12px;color:#64748B">7:30 PM · Zoom</div></div></div>
+        </div>
+      </div>
+      <div class="card" style="padding:22px">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:14px">Tasks</h3>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:8px;cursor:pointer" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''"><input type="checkbox"/><div style="flex:1"><div style="font-size:13.5px;font-weight:500">Confirm 4 pending bookings</div><div style="font-size:11.5px;color:#94A3B8">Awaiting your approval — 2h SLA</div></div><span class="chip chip-r">Urgent</span></label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:8px;cursor:pointer" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''"><input type="checkbox" checked/><div style="flex:1;text-decoration:line-through;color:#94A3B8"><div style="font-size:13.5px;font-weight:500">Send Cohort 4 welcome pack</div><div style="font-size:11.5px">Done · 18 emails sent</div></div></label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:8px;cursor:pointer" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''"><input type="checkbox"/><div style="flex:1"><div style="font-size:13.5px;font-weight:500">Reply to 3 chat messages</div><div style="font-size:11.5px;color:#94A3B8">Average response time: 2.4h</div></div></label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:8px;cursor:pointer" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''"><input type="checkbox"/><div style="flex:1"><div style="font-size:13.5px;font-weight:500">Update April calendar availability</div><div style="font-size:11.5px;color:#94A3B8">Next month opens for booking on Mon</div></div></label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:8px;cursor:pointer" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background=''"><input type="checkbox"/><div style="flex:1"><div style="font-size:13.5px;font-weight:500">Submit Q1 impact report</div><div style="font-size:11.5px;color:#94A3B8">Due 31 Mar · 7 days left</div></div></label>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = hubSidebar('overview');
+</script>
+</body></html>
