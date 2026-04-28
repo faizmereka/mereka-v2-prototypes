@@ -54,7 +54,64 @@
   .detail-back{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:12.5px;font-weight:500;color:#475569;cursor:pointer;border:1px solid var(--line);background:#fff;margin-bottom:16px;transition:all .15s}
   .detail-back:hover{background:#F8FAFC;color:var(--ink)}
   .detail-back svg{width:14px;height:14px}
-  .detail-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px}
+  .detail-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:16px}
+  .detail-header-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+  .detail-action-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;border:1px solid var(--line);background:#fff;transition:all .15s;font-family:inherit}
+  .detail-action-btn:hover{background:#F8FAFC;border-color:#CBD5E1}
+  .detail-action-btn svg{width:13px;height:13px}
+  .detail-action-btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .detail-action-btn.primary:hover{background:#1E293B}
+  .detail-action-btn.primary[disabled]{background:#CBD5E1;border-color:#CBD5E1;cursor:not-allowed;color:#fff}
+  .detail-action-btn.primary[disabled]:hover{background:#CBD5E1}
+  .detail-action-btn[disabled]{opacity:.55;cursor:not-allowed}
+
+  /* Service modals (bookings + edit) */
+  .svc-modal-overlay{position:fixed;inset:0;z-index:95;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px}
+  .svc-modal-overlay.open{display:flex}
+  .svc-modal{background:#fff;border-radius:14px;box-shadow:0 20px 60px rgba(15,23,42,.2);width:100%;max-width:720px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+  .svc-modal.wide{max-width:860px}
+  .svc-modal-header{padding:20px 24px;border-bottom:1px solid var(--line-soft);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .svc-modal-title{font-size:16px;font-weight:800;letter-spacing:-.01em;color:var(--ink);margin:0}
+  .svc-modal-sub{font-size:12px;color:#64748B;margin-top:2px}
+  .svc-modal-close{width:28px;height:28px;border-radius:8px;border:none;background:#F1F5F9;color:#64748B;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+  .svc-modal-close:hover{background:#E2E8F0;color:var(--ink)}
+  .svc-modal-body{padding:20px 24px;overflow:auto;flex:1}
+  .svc-modal-footer{padding:14px 24px;border-top:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between;gap:10px;background:#F8FAFC}
+  .svc-modal-footer .left{font-size:11.5px;color:#94A3B8}
+
+  .svc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+  .svc-stat{background:#F8FAFC;border:1px solid var(--line-soft);border-radius:8px;padding:10px 12px}
+  .svc-stat .l{font-size:10.5px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+  .svc-stat .v{font-size:16px;font-weight:700;color:var(--ink);margin-top:3px;letter-spacing:-.01em}
+
+  .svc-table{width:100%;border-collapse:collapse;font-size:12.5px}
+  .svc-table th{text-align:left;padding:8px 10px;font-size:10.5px;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line-soft);background:#F8FAFC}
+  .svc-table td{padding:10px;border-bottom:1px solid var(--line-soft);color:var(--ink-2)}
+  .svc-table tbody tr:last-child td{border-bottom:none}
+  .svc-table tbody tr:hover{background:#FAFBFC}
+  .svc-table .who{display:flex;align-items:center;gap:8px}
+  .svc-table .who .a{width:26px;height:26px;border-radius:999px;font-size:10px;font-weight:700;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#FB7185,#F472B6)}
+  .svc-table .who .n{font-weight:600;color:var(--ink)}
+  .svc-table .who .e{font-size:11px;color:#94A3B8}
+
+  .booking-status{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .booking-status.confirmed{background:#DCFCE7;color:#15803D}
+  .booking-status.pending{background:#FEF3C7;color:#92400E}
+  .booking-status.attended{background:#DBEAFE;color:#1E40AF}
+  .booking-status.cancelled{background:#FEE2E2;color:#B91C1C}
+
+  /* Edit form */
+  .edit-form{display:flex;flex-direction:column;gap:14px}
+  .edit-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .edit-field label{display:block;font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+  .edit-field input,.edit-field select,.edit-field textarea{width:100%;padding:9px 12px;font-size:13px;border:1px solid var(--line);border-radius:8px;color:var(--ink);background:#fff;font-family:inherit;transition:all .15s}
+  .edit-field input:focus,.edit-field select:focus,.edit-field textarea:focus{outline:none;border-color:#F9A8D4;box-shadow:0 0 0 3px #FDF2F8}
+  .edit-field textarea{min-height:90px;resize:vertical;line-height:1.55}
+  .edit-field .hint{font-size:10.5px;color:#94A3B8;margin-top:4px}
+  .edit-readonly-banner{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;padding:10px 14px;border-radius:8px;font-size:12px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+  .edit-readonly-banner svg{width:14px;height:14px;flex-shrink:0}
+  .edit-saved-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0F172A;color:#fff;padding:10px 18px;border-radius:10px;font-size:12.5px;font-weight:600;box-shadow:0 10px 30px rgba(15,23,42,.25);z-index:120;opacity:0;pointer-events:none;transition:all .25s}
+  .edit-saved-toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
   .detail-title{font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
   .detail-subtitle{font-size:13px;color:#64748B;margin-top:4px}
   .detail-desc{font-size:13.5px;line-height:1.7;color:var(--ink-2)}
@@ -178,6 +235,80 @@
   body.pgm-lens .pgm-overlay{display:inline-block}
   body.pgm-only-with .row-standalone{display:none}
   body.pgm-only-standalone .row-program{display:none}
+
+  /* Catalogue tables */
+  /* Inline filter bar */
+  .cat-filter-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line-soft);background:#FBFBFC}
+  .cat-filter-bar .cf-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#94A3B8;margin-right:4px}
+  .cat-filter-bar .cf-divider{width:1px;height:18px;background:var(--line);margin:0 4px}
+  .cat-filter-bar .cf-clear{display:none;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;font-size:11.5px;font-weight:600;color:var(--brand-pink);background:transparent;border:1px dashed var(--brand-pink);cursor:pointer;margin-left:auto}
+  .cat-filter-bar .cf-clear.show{display:inline-flex}
+  .cat-filter-bar .cf-clear:hover{background:#FDF2F8}
+  /* Select-style filter */
+  .cf-select{position:relative;display:inline-block}
+  .cf-trigger{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;font-size:12.5px;font-weight:500;color:var(--ink-2);background:#fff;border:1px solid var(--line);border-radius:7px;cursor:pointer;transition:all .15s;min-width:0;max-width:220px}
+  .cf-trigger:hover{border-color:#CBD5E1;background:#F8FAFC}
+  .cf-trigger.active{background:var(--accent-50,#FDF2F8);border-color:var(--accent-300,#F9A8D4);color:var(--accent-800,#9D174D)}
+  .cf-trigger .cf-cnt{background:var(--brand-pink);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;min-width:16px;text-align:center}
+  .cf-trigger .cf-car{font-size:10px;color:#94A3B8;margin-left:auto}
+  .cf-trigger .cf-tlbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cf-pop{position:absolute;top:calc(100% + 6px);left:0;z-index:30;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(15,23,42,.1);min-width:220px;padding:6px;display:none}
+  .cf-pop.open{display:block}
+  .cf-opt{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:6px;font-size:12.5px;color:var(--ink-2);cursor:pointer}
+  .cf-opt:hover{background:#F8FAFC}
+  .cf-opt.sel{background:var(--accent-50,#FDF2F8);color:var(--accent-800,#9D174D);font-weight:500}
+  .cf-cb{width:14px;height:14px;border:1.5px solid #CBD5E1;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;background:#fff;flex-shrink:0;font-size:9px;font-weight:900}
+  .cf-opt.sel .cf-cb{background:var(--brand-pink);border-color:var(--brand-pink);color:#fff}
+  /* Range slider — dual handle approximation: two inputs stacked */
+  .cf-range{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;background:#fff;border:1px solid var(--line);border-radius:7px;font-size:12px;color:var(--ink-2);height:30px}
+  .cf-range.active{background:var(--accent-50,#FDF2F8);border-color:var(--accent-300,#F9A8D4);color:var(--accent-800,#9D174D)}
+  .cf-range .cf-rlbl{font-weight:500;font-size:12px}
+  .cf-range .cf-rval{font-variant-numeric:tabular-nums;font-weight:600;font-size:11.5px;color:var(--ink)}
+  .cf-range .cf-slider{position:relative;width:120px;height:18px;display:flex;align-items:center}
+  .cf-range .cf-slider .cf-track{position:absolute;left:0;right:0;height:3px;background:var(--line);border-radius:999px;top:50%;transform:translateY(-50%)}
+  .cf-range .cf-slider .cf-fill{position:absolute;height:3px;background:var(--brand-pink);border-radius:999px;top:50%;transform:translateY(-50%)}
+  .cf-range .cf-slider input[type=range]{position:absolute;left:0;right:0;width:100%;background:transparent;pointer-events:none;-webkit-appearance:none;appearance:none;height:18px;margin:0}
+  .cf-range .cf-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;background:#fff;border:2px solid var(--brand-pink);border-radius:999px;cursor:pointer;pointer-events:auto;box-shadow:0 1px 3px rgba(0,0,0,.15);position:relative;z-index:2}
+  .cf-range .cf-slider input[type=range]::-moz-range-thumb{width:14px;height:14px;background:#fff;border:2px solid var(--brand-pink);border-radius:999px;cursor:pointer;pointer-events:auto;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+  .cf-range .cf-slider input[type=range]::-webkit-slider-runnable-track{background:transparent}
+  /* Active filter chips row (summary below bar) */
+  .cat-active-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px;border-bottom:1px solid var(--line-soft);background:#FBFBFC}
+  .cat-active-chips:empty{display:none}
+  .cat-active-chips.empty{display:none}
+  .cat-achip{display:inline-flex;align-items:center;gap:4px;padding:3px 4px 3px 9px;border-radius:999px;font-size:11.5px;font-weight:500;background:var(--accent-50,#FDF2F8);color:var(--accent-800,#9D174D);border:1px solid var(--accent-200,#FBCFE8)}
+  .cat-achip .cf-tag{font-weight:700;opacity:.7;margin-right:3px}
+  .cat-achip .cf-x{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:999px;color:var(--accent-800,#9D174D);cursor:pointer;font-size:13px;line-height:1}
+  .cat-achip .cf-x:hover{background:rgba(0,0,0,.06)}
+
+  .cat-search-wrap{position:relative;display:flex;align-items:center;gap:8px;background:#F8FAFC;border:1px solid var(--line);border-radius:8px;padding:8px 12px;transition:all .15s}
+  .cat-search-wrap:focus-within{border-color:var(--brand-pink);background:#fff;box-shadow:0 0 0 3px rgba(229,57,123,.08)}
+  .cat-search-wrap svg{flex-shrink:0;color:#94A3B8}
+  .cat-search{flex:1;border:none;background:transparent;outline:none;font-size:13px;color:var(--ink);font-family:inherit}
+  .cat-search::placeholder{color:#94A3B8}
+  .cat-table thead th{cursor:pointer;user-select:none;position:relative;white-space:nowrap}
+  .cat-table thead th:hover{background:#F1F5F9;color:var(--ink-2)}
+  .cat-table thead th[data-sort]::after{content:'↕';opacity:.25;margin-left:6px;font-size:10px}
+  .cat-table thead th.sort-asc::after{content:'↑';opacity:1;color:var(--brand-pink)}
+  .cat-table thead th.sort-desc::after{content:'↓';opacity:1;color:var(--brand-pink)}
+  .cat-table tbody tr{cursor:pointer;transition:background .12s}
+  .cat-table tbody tr:hover{background:#FDF2F8}
+  .cat-empty{padding:60px 20px;text-align:center;color:#94A3B8;font-size:13px}
+  .cat-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;line-height:1.4}
+  .cat-pill.active{background:#DCFCE7;color:#166534}
+  .cat-pill.completed{background:#E0E7FF;color:#3730A3}
+  .cat-pill.upcoming{background:#FEF3C7;color:#92400E}
+  .cat-pill.archived{background:#F1F5F9;color:#475569}
+  .cat-pill.open{background:#DCFCE7;color:#166534}
+  .cat-pill.in-progress{background:#FEF3C7;color:#92400E}
+  .cat-pill.cancelled{background:#FEE2E2;color:#991B1B}
+  .cat-pill.available{background:#DCFCE7;color:#166534}
+  .cat-pill.busy{background:#FEE2E2;color:#991B1B}
+  .cat-pill.limited{background:#FEF3C7;color:#92400E}
+  .cat-pill.physical{background:#F1F5F9;color:#475569}
+  .cat-pill.virtual{background:#DBEAFE;color:#1E40AF}
+  .cat-pill.hybrid{background:#F3E8FF;color:#6B21A8}
+  .cat-pill.linked{background:#FCE7F3;color:#9D174D}
+  .cat-pill.standalone{background:#F1F5F9;color:#475569}
   .when-all,.when-with,.when-standalone{display:none}
   body.mode-all .when-all{display:inline}
   body.mode-with .when-with{display:inline}
@@ -305,7 +436,6 @@
       </div>
     </div>
     <div class="flex items-center gap-3">
-      <button class="btn" id="apiConnBtn" onclick="openApiModal()" style="font-size:11.5px;gap:5px"><span class="conn-dot demo" id="connDot"></span><span id="connLabel">Sample Data</span></button>
       <button class="btn btn-pink">My Dashboard</button>
       <button class="relative w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
@@ -358,8 +488,6 @@
         <p class="text-[12.5px] text-slate-500 mt-0.5">Cross-service performance and impact metrics at a glance</p>
       </div>
       <div class="flex items-center gap-2">
-        <button class="btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Customize</button>
-        <button class="btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg>Last 3 months<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
         <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button>
       </div>
     </div>
@@ -404,11 +532,6 @@
         <button class="btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
       </div>
       <div class="p-5">
-        <div class="segment mb-4">
-          <div class="seg-item active">All Segments</div>
-          <div class="seg-item">BAE Only</div>
-          <div class="seg-item">Non-Members (PDRM)</div>
-        </div>
         <div class="grid grid-cols-3 gap-3 mb-5">
           <div class="rounded-xl p-4" style="background:#DCFCE7;border:1px solid #BBF7D0">
             <div class="text-[11px] font-bold text-green-800 uppercase tracking-wider">PROGRAMMES ONLY</div>
@@ -527,7 +650,7 @@
         <h1 class="text-[22px] font-bold">Programme Analytics</h1>
         <p class="text-[12.5px] text-slate-500 mt-0.5">Performance, learner journeys, and outcomes across programmes</p>
       </div>
-      <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button>
+      <div class="flex items-center gap-2"><button class="btn" onclick="show('cat-programmes')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M13 5l7 7-7 7"/></svg>View all programmes</button><button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button></div>
     </div>
 
 
@@ -591,7 +714,6 @@
           <div class="text-[12px] text-slate-500 mt-0.5">Each programme is a curated combination — sharing count shows components reused across other programmes</div>
         </div>
         <div class="flex items-center gap-2">
-          <button class="btn">By reuse %<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
           <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
         </div>
       </div>
@@ -937,7 +1059,8 @@
         <div class="mt-3" style="height:220px"><canvas id="progCompletion"></canvas></div>
       </div>
     </div>
-  </section>
+  
+</section>
 
   <!-- ============================================================ -->
   <!-- VIEW: COURSES                                                 -->
@@ -948,7 +1071,7 @@
         <h1 class="text-[22px] font-bold">Course Analytics</h1>
         <p class="text-[12.5px] text-slate-500 mt-0.5">Self-paced learning modules — enrollment, completion, and cross-programme reuse</p>
       </div>
-      <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button>
+      <div class="flex items-center gap-2"><button class="btn" onclick="show('cat-courses')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M13 5l7 7-7 7"/></svg>View all courses</button><button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button></div>
     </div>
 
 
@@ -1082,7 +1205,8 @@
         </div>
       </div>
     </div>
-  </section>
+  
+</section>
 
   <!-- ============================================================ -->
   <!-- VIEW: EXPERIENCE                                              -->
@@ -1093,7 +1217,7 @@
         <h1 class="text-[22px] font-bold">Experience Analytics</h1>
         <p class="text-[12.5px] text-slate-500 mt-0.5">Event and experience performance tracking across all categories</p>
       </div>
-      <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button>
+      <div class="flex items-center gap-2"><button class="btn" onclick="show('cat-experience')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M13 5l7 7-7 7"/></svg>View all experiences</button><button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button></div>
     </div>
 
 
@@ -1145,7 +1269,8 @@
         <div style="height:240px"><canvas id="expType"></canvas></div>
       </div>
     </div>
-  </section>
+  
+</section>
 
   <!-- ============================================================ -->
   <!-- VIEW: EXPERTISE                                               -->
@@ -1156,7 +1281,7 @@
         <h1 class="text-[22px] font-bold">Expertise Analytics</h1>
         <p class="text-[12.5px] text-slate-500 mt-0.5">Marketplace health for expert service listings, bookings, and outcomes</p>
       </div>
-      <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button>
+      <div class="flex items-center gap-2"><button class="btn" onclick="show('cat-expertise')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M13 5l7 7-7 7"/></svg>View all expertise</button><button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button></div>
     </div>
 
 
@@ -1234,7 +1359,8 @@
       </div>
       <div class="flex items-center gap-2 mt-4"><span class="mini-tag">responsive · 112</span><span class="mini-tag">expert · 84</span><span class="mini-tag">insightful · 61</span><span class="mini-tag">value · 42</span></div>
     </div>
-  </section>
+  
+</section>
 
   <!-- ============================================================ -->
   <!-- VIEW: GIGS                                                    -->
@@ -1245,7 +1371,7 @@
         <h1 class="text-[22px] font-bold">Gig Analytics</h1>
         <p class="text-[12.5px] text-slate-500 mt-0.5">Freelance marketplace performance — RFQ, matching, outcomes</p>
       </div>
-      <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button>
+      <div class="flex items-center gap-2"><button class="btn" onclick="show('cat-gigs')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M13 5l7 7-7 7"/></svg>View all gigs</button><button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button></div>
     </div>
 
 
@@ -1301,9 +1427,155 @@
         <div class="grid grid-cols-[140px_1fr_120px] items-center gap-3"><span>&gt; RM 10K</span><div class="bar-track h-4"><div class="bar-fill" style="width:24%;background:#CCFBF1"></div></div><span class="text-right text-slate-500 font-medium">92 freelancers</span></div>
       </div>
     </div>
-  </section>
+  
+</section>
 
   
+  
+  <!-- ============================================================ -->
+  <!-- VIEW: CATALOGUES (full searchable tables)                     -->
+  <!-- ============================================================ -->
+  <section class="view" id="view-cat-programmes">
+    <button class="detail-back" onclick="show('programmes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>Back to analytics</button>
+    <div class="flex items-start justify-between mb-1">
+      <div>
+        <h1 class="text-[24px] font-semibold tracking-tight">All programmes</h1>
+        <p class="text-[13px] text-slate-500 mt-1">Browse the full catalogue. Click any row to open details.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-[12px] text-slate-500" id="cat-programmes-count"></span>
+        <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+      </div>
+    </div>
+    <div class="card mt-5">
+      <div class="p-4 border-b border-slate-100 flex items-center gap-3">
+        <div class="cat-search-wrap" style="flex:1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" class="cat-search" data-cat="programmes" placeholder="Search programmes by name, focus, or lead..." />
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="table cat-table" data-cat="programmes">
+          <thead><tr><th data-sort="name">Programme</th><th data-sort="focus">Focus</th><th data-sort="status">Status</th><th data-sort="duration">Duration</th><th data-sort="cohorts" class="text-right">Cohorts</th><th data-sort="enrolled" class="text-right">Enrolled</th><th data-sort="completion" class="text-right">Completion</th><th data-sort="rating" class="text-right">Rating</th><th data-sort="revenue" class="text-right">Revenue</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-cat-courses">
+    <button class="detail-back" onclick="show('courses')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>Back to analytics</button>
+    <div class="flex items-start justify-between mb-1">
+      <div>
+        <h1 class="text-[24px] font-semibold tracking-tight">All courses</h1>
+        <p class="text-[13px] text-slate-500 mt-1">Browse the full catalogue. Click any row to open details.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-[12px] text-slate-500" id="cat-courses-count"></span>
+        <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+      </div>
+    </div>
+    <div class="card mt-5">
+      <div class="p-4 border-b border-slate-100 flex items-center gap-3">
+        <div class="cat-search-wrap" style="flex:1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" class="cat-search" data-cat="courses" placeholder="Search courses by title, instructor, or category..." />
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="table cat-table" data-cat="courses">
+          <thead><tr><th data-sort="name">Course</th><th data-sort="category">Category</th><th data-sort="instructor">Instructor</th><th data-sort="link">Link</th><th data-sort="duration" class="text-right">Hours</th><th data-sort="enrolled" class="text-right">Enrolled</th><th data-sort="completion" class="text-right">Completion</th><th data-sort="rating" class="text-right">Rating</th><th data-sort="revenue" class="text-right">Revenue</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-cat-experience">
+    <button class="detail-back" onclick="show('experience')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>Back to analytics</button>
+    <div class="flex items-start justify-between mb-1">
+      <div>
+        <h1 class="text-[24px] font-semibold tracking-tight">All experiences</h1>
+        <p class="text-[13px] text-slate-500 mt-1">Browse the full catalogue. Click any row to open details.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-[12px] text-slate-500" id="cat-experience-count"></span>
+        <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+      </div>
+    </div>
+    <div class="card mt-5">
+      <div class="p-4 border-b border-slate-100 flex items-center gap-3">
+        <div class="cat-search-wrap" style="flex:1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" class="cat-search" data-cat="experience" placeholder="Search experiences by name, type, location..." />
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="table cat-table" data-cat="experience">
+          <thead><tr><th data-sort="name">Experience</th><th data-sort="type">Type</th><th data-sort="mode">Mode</th><th data-sort="date">Date</th><th data-sort="location">Location</th><th data-sort="tickets" class="text-right">Tickets</th><th data-sort="fillRate" class="text-right">Fill Rate</th><th data-sort="rating" class="text-right">Rating</th><th data-sort="revenue" class="text-right">Revenue</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-cat-expertise">
+    <button class="detail-back" onclick="show('expertise')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>Back to analytics</button>
+    <div class="flex items-start justify-between mb-1">
+      <div>
+        <h1 class="text-[24px] font-semibold tracking-tight">All expertise</h1>
+        <p class="text-[13px] text-slate-500 mt-1">Browse the full catalogue. Click any row to open details.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-[12px] text-slate-500" id="cat-expertise-count"></span>
+        <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+      </div>
+    </div>
+    <div class="card mt-5">
+      <div class="p-4 border-b border-slate-100 flex items-center gap-3">
+        <div class="cat-search-wrap" style="flex:1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" class="cat-search" data-cat="expertise" placeholder="Search experts by name, expertise, skills..." />
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="table cat-table" data-cat="expertise">
+          <thead><tr><th data-sort="name">Expert</th><th data-sort="expertise">Expertise</th><th data-sort="rate" class="text-right">Rate</th><th data-sort="availability">Availability</th><th data-sort="bookings" class="text-right">Bookings</th><th data-sort="rating" class="text-right">Rating</th><th data-sort="response">Response</th><th data-sort="revenue" class="text-right">Revenue</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-cat-gigs">
+    <button class="detail-back" onclick="show('gigs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>Back to analytics</button>
+    <div class="flex items-start justify-between mb-1">
+      <div>
+        <h1 class="text-[24px] font-semibold tracking-tight">All gigs</h1>
+        <p class="text-[13px] text-slate-500 mt-1">Browse the full catalogue. Click any row to open details.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-[12px] text-slate-500" id="cat-gigs-count"></span>
+        <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+      </div>
+    </div>
+    <div class="card mt-5">
+      <div class="p-4 border-b border-slate-100 flex items-center gap-3">
+        <div class="cat-search-wrap" style="flex:1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" class="cat-search" data-cat="gigs" placeholder="Search gigs by title, category, client..." />
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="table cat-table" data-cat="gigs">
+          <thead><tr><th data-sort="name">Gig Title</th><th data-sort="category">Category</th><th data-sort="client">Client</th><th data-sort="status">Status</th><th data-sort="budget" class="text-right">Budget</th><th data-sort="proposals" class="text-right">Proposals</th><th data-sort="posted">Posted</th><th data-sort="duration">Duration</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+
   <!-- ============================================================ -->
   <!-- VIEW: DETAIL (dynamic)                                        -->
   <!-- ============================================================ -->
@@ -1886,11 +2158,21 @@
 
   // ===================== DETAIL RENDERING =====================
   let currentDetailParent = null;
+  let currentDetailId = null;
+  let currentDetailType = null;
 
   function showDetail(type, id) {
     const data = DETAIL_DATA[type]?.[id];
     if (!data) return;
-    currentDetailParent = type === 'programme' ? 'programmes' : type === 'course' ? 'courses' : type === 'experience' ? 'experience' : 'expertise';
+    currentDetailId = id;
+    currentDetailType = type;
+    // Remember which view we came from so "Back" returns to it (catalogue or analytics)
+    const activeView = document.querySelector('.view.active');
+    if (activeView && activeView.id !== 'view-detail') {
+      currentDetailParent = activeView.id.replace(/^view-/, '');
+    } else {
+      currentDetailParent = type === 'programme' ? 'programmes' : type === 'course' ? 'courses' : type === 'experience' ? 'experience' : 'expertise';
+    }
     const container = document.getElementById('detail-content');
     let html = '';
 
@@ -1910,6 +2192,22 @@
     if (currentDetailParent) show(currentDetailParent);
   }
 
+  // Header action buttons shared across all 4 detail types
+  function detailActions(type, id, d){
+    const live = (window.API && API.mode === 'live');
+    const editTip = live ? 'Edit details' : 'Sign in to live mode to edit';
+    return `
+      <button class="detail-action-btn" onclick="openBookingsModal('${type}','${id}')" title="View bookings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Bookings
+      </button>
+      <button class="detail-action-btn primary" onclick="openEditModal('${type}','${id}')" title="${editTip}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit
+      </button>
+    `;
+  }
+
   function renderProgrammeDetail(d) {
     const statusColor = d.completion >= 65 ? 'chip-g' : d.completion >= 55 ? 'chip-y' : 'chip-r';
     return `
@@ -1920,7 +2218,10 @@
           <div class="detail-title">${d.name}</div>
           <div class="detail-subtitle">${d.tagline}</div>
         </div>
-        <span class="chip ${statusColor}">${d.status}</span>
+        <div class="detail-header-right">
+          <span class="chip ${statusColor}">${d.status}</span>
+          ${detailActions('programme', d.id || currentDetailId, d)}
+        </div>
       </div>
       <div class="grid grid-cols-5 gap-4">
         <div class="card kpi p-4"><div class="label">Members</div><div class="value mt-2">${d.members}</div></div>
@@ -1964,7 +2265,10 @@
           <div class="detail-title">${d.name}</div>
           <div class="detail-subtitle">${d.modules} modules · ${d.hours} hours</div>
         </div>
-        <span class="chip" style="background:${d.catColor}20;color:${d.catColor}">${d.category}</span>
+        <div class="detail-header-right">
+          <span class="chip" style="background:${d.catColor}20;color:${d.catColor}">${d.category}</span>
+          ${detailActions('course', d.id || currentDetailId, d)}
+        </div>
       </div>
       <div class="grid grid-cols-5 gap-4">
         <div class="card kpi p-4"><div class="label">Enrolled</div><div class="value mt-2">${d.enrolled.toLocaleString()}</div></div>
@@ -2009,7 +2313,10 @@
           <div class="detail-title">${d.name}</div>
           <div class="detail-subtitle">${d.date} · ${d.mode} · ${d.location}</div>
         </div>
-        <span class="chip" style="background:${d.typeColor}20;color:${d.typeColor}">${d.type}</span>
+        <div class="detail-header-right">
+          <span class="chip" style="background:${d.typeColor}20;color:${d.typeColor}">${d.type}</span>
+          ${detailActions('experience', d.id || currentDetailId, d)}
+        </div>
       </div>
       <div class="grid grid-cols-4 gap-4">
         <div class="card kpi p-4"><div class="label">Tickets Sold</div><div class="value mt-2">${d.tickets.toLocaleString()}</div></div>
@@ -2058,7 +2365,10 @@
             <div class="detail-subtitle">${d.expertise} · ${d.rate}</div>
           </div>
         </div>
-        <span class="avail-badge ${d.availability}">${d.availability === 'available' ? '● Available' : '● Busy'}</span>
+        <div class="detail-header-right">
+          <span class="avail-badge ${d.availability}">${d.availability === 'available' ? '● Available' : '● Busy'}</span>
+          ${detailActions('expert', d.id || currentDetailId, d)}
+        </div>
       </div>
       <div class="grid grid-cols-5 gap-4">
         <div class="card kpi p-4"><div class="label">Bookings</div><div class="value mt-2">${d.bookings}</div></div>
@@ -2089,6 +2399,491 @@
       </div>`;
   }
 
+  // ===================== CATALOGUE DATA + CONTROLLER =====================
+  const CATALOGUE = {
+    programmes: [
+      {id:'aiau',name:'AI Accelerator (AIAU)',focus:'Flagship · Applied AI',status:'active',duration:'12 weeks',cohorts:6,enrolled:328,completion:72,rating:4.7,revenue:146000,lead:'Chris Wales'},
+      {id:'ai-literacy',name:'AI Literacy Programme',focus:'Short intro · AI basics',status:'active',duration:'4 weeks',cohorts:8,enrolled:412,completion:68,rating:4.5,revenue:198000,lead:'Nadira Tan'},
+      {id:'career-accel',name:'Career Accelerator',focus:'Career-switch · Tech roles',status:'active',duration:'8 weeks',cohorts:5,enrolled:382,completion:62,rating:4.4,revenue:152000,lead:'Priya Anand'},
+      {id:'proconnect',name:'ProConnect Pathways',focus:'Hospitality · Digital skills',status:'active',duration:'6 weeks',cohorts:3,enrolled:298,completion:65,rating:4.3,revenue:128000,lead:'Sarah Wong'},
+      {id:'creators-lab',name:'Creators Lab',focus:'Media & content',status:'active',duration:'6 weeks',cohorts:4,enrolled:214,completion:58,rating:4.2,revenue:112000,lead:'Jason Brown'},
+      {id:'women-in-tech',name:'Women in Tech',focus:'Partnership · Diversity',status:'active',duration:'10 weeks',cohorts:3,enrolled:198,completion:54,rating:4.6,revenue:98000,lead:'Dr. Aminah Yusof'},
+      {id:'founder-fellowship',name:'Founder Fellowship',focus:'Incubator · Startups',status:'active',duration:'12 weeks',cohorts:2,enrolled:184,completion:70,rating:4.8,revenue:218000,lead:'Chris Wales'},
+      {id:'data-bootcamp',name:'Data Analytics Bootcamp',focus:'Career-switch · Data',status:'active',duration:'10 weeks',cohorts:3,enrolled:176,completion:69,rating:4.5,revenue:132000,lead:'Sophia Chen'},
+      {id:'impact-builders',name:'Impact Builders',focus:'Social impact',status:'active',duration:'8 weeks',cohorts:2,enrolled:142,completion:61,rating:4.3,revenue:78000,lead:'Emma Johnson'},
+      {id:'no-code-studio',name:'No-Code Studio',focus:'Tooling · No-code apps',status:'active',duration:'6 weeks',cohorts:3,enrolled:128,completion:66,rating:4.4,revenue:64000,lead:'Noah Davis'}
+    ],
+    courses: [
+      {id:'genai',name:'Gen AI Fundamentals',category:'AI & ML',instructor:'Chris Wales',link:'linked',duration:12,enrolled:1284,completion:82,rating:4.8,revenue:128400},
+      {id:'ux-research',name:'UX Research Masterclass',category:'Design',instructor:'Jason Brown',link:'linked',duration:9,enrolled:842,completion:78,rating:4.7,revenue:84200},
+      {id:'python-data',name:'Python for Data',category:'Data',instructor:'Sophia Chen',link:'linked',duration:16,enrolled:768,completion:74,rating:4.6,revenue:76800},
+      {id:'product-discovery',name:'Product Discovery 101',category:'Product',instructor:'Liam Smith',link:'linked',duration:7,enrolled:512,completion:72,rating:4.7,revenue:51200},
+      {id:'responsible-ai',name:'Responsible AI Ethics',category:'AI & ML',instructor:'Emma Johnson',link:'linked',duration:6,enrolled:684,completion:78,rating:4.5,revenue:68400},
+      {id:'intro-nocode',name:'Intro to No-Code',category:'Dev',instructor:'Noah Davis',link:'standalone',duration:8,enrolled:342,completion:58,rating:4.2,revenue:34200},
+      {id:'marketing-analytics',name:'Marketing Analytics',category:'Marketing',instructor:'Ava Martinez',link:'standalone',duration:7,enrolled:264,completion:48,rating:3.9,revenue:26400},
+      {id:'capstone',name:'Capstone Workshop',category:'AI & ML',instructor:'Chris Wales',link:'linked',duration:8,enrolled:218,completion:68,rating:4.6,revenue:21800}
+    ],
+    experience: [
+      {id:'ai-everyday',name:'AI In Everyday Life Talk',type:'Talks',mode:'hybrid',date:'14 Apr 2026',dateSort:20260414,location:'Mereka Hub, Bangsar South',tickets:342,fillRate:94,rating:4.8,revenue:48200},
+      {id:'genai-workshop',name:'Generative AI Workshop',type:'Workshop',mode:'physical',date:'09 Apr 2026',dateSort:20260409,location:'Mereka Makerspace, KL',tickets:84,fillRate:92,rating:4.7,revenue:32400},
+      {id:'digital-expo',name:'Digital Future Expo',type:'Events',mode:'physical',date:'01 Apr 2026',dateSort:20260401,location:'KL Convention Centre',tickets:1248,fillRate:88,rating:4.6,revenue:186000},
+      {id:'rai-forum',name:'Responsible AI Forum',type:'Talks',mode:'hybrid',date:'27 Mar 2026',dateSort:20260327,location:"Taylor's University, Subang Jaya",tickets:284,fillRate:85,rating:4.3,revenue:38400},
+      {id:'copilot-workshop',name:'Copilot Hands-On Workshop',type:'Workshop',mode:'physical',date:'18 Mar 2026',dateSort:20260318,location:'Mereka Hub, Bangsar South',tickets:68,fillRate:76,rating:4.4,revenue:21600},
+      {id:'ml-summit',name:'Machine Learning Summit',type:'Events',mode:'hybrid',date:'12 Mar 2026',dateSort:20260312,location:'Connexion Conference Centre',tickets:512,fillRate:82,rating:4.5,revenue:92800}
+    ],
+    expertise: [
+      {id:'chris-wales',name:'Chris Wales',expertise:'AI Strategy',rate:500,availability:'available',bookings:142,rating:4.9,response:'42m',revenue:72000},
+      {id:'jason-brown',name:'Jason Brown',expertise:'UX/UI Design',rate:400,availability:'available',bookings:118,rating:4.8,response:'58m',revenue:58000},
+      {id:'sophia-chen',name:'Sophia Chen',expertise:'Data Science',rate:400,availability:'available',bookings:96,rating:4.7,response:'1h 12m',revenue:48000},
+      {id:'liam-smith',name:'Liam Smith',expertise:'Product Management',rate:450,availability:'busy',bookings:84,rating:4.7,response:'1h 28m',revenue:42000},
+      {id:'emma-johnson',name:'Emma Johnson',expertise:'AI Ethics & Policy',rate:300,availability:'available',bookings:78,rating:4.6,response:'2h 14m',revenue:36000},
+      {id:'noah-davis',name:'Noah Davis',expertise:'No-Code & Automation',rate:280,availability:'available',bookings:72,rating:4.6,response:'1h 04m',revenue:36000},
+      {id:'ava-martinez',name:'Ava Martinez',expertise:'Growth Marketing',rate:350,availability:'available',bookings:72,rating:4.6,response:'1h 04m',revenue:36000}
+    ],
+    gigs: [
+      {id:'g-001',name:'AI chatbot for SME e-commerce',category:'AI & ML',client:'Maybank Innovation',status:'open',budget:8500,proposals:12,posted:'18 Apr 2026',postedSort:20260418,duration:'4 weeks'},
+      {id:'g-002',name:'UX research for fintech app',category:'Design',client:'TNG Digital',status:'in-progress',budget:6200,proposals:18,posted:'12 Apr 2026',postedSort:20260412,duration:'3 weeks'},
+      {id:'g-003',name:'Data dashboard build',category:'Data',client:'Petronas',status:'open',budget:14800,proposals:9,posted:'22 Apr 2026',postedSort:20260422,duration:'6 weeks'},
+      {id:'g-004',name:'Brand identity for D2C startup',category:'Design',client:'Local Brew Co',status:'open',budget:4200,proposals:24,posted:'20 Apr 2026',postedSort:20260420,duration:'2 weeks'},
+      {id:'g-005',name:'Product strategy review',category:'Product',client:'GrabFood Malaysia',status:'completed',budget:3800,proposals:7,posted:'05 Mar 2026',postedSort:20260305,duration:'1 week'},
+      {id:'g-006',name:'Webflow site rebuild',category:'Dev',client:'Mereka',status:'in-progress',budget:9600,proposals:14,posted:'28 Mar 2026',postedSort:20260328,duration:'5 weeks'},
+      {id:'g-007',name:'Growth marketing audit',category:'Marketing',client:'AirAsia Move',status:'open',budget:5400,proposals:11,posted:'24 Apr 2026',postedSort:20260424,duration:'2 weeks'},
+      {id:'g-008',name:'Python ETL pipeline',category:'Data',client:'CIMB',status:'open',budget:18200,proposals:6,posted:'21 Apr 2026',postedSort:20260421,duration:'8 weeks'},
+      {id:'g-009',name:'No-code internal tool',category:'Dev',client:'Sunway Group',status:'completed',budget:3200,proposals:8,posted:'02 Mar 2026',postedSort:20260302,duration:'2 weeks'},
+      {id:'g-010',name:'AI prompt engineering training',category:'AI & ML',client:'Khazanah Nasional',status:'open',budget:7600,proposals:15,posted:'19 Apr 2026',postedSort:20260419,duration:'3 weeks'},
+      {id:'g-011',name:'Mobile app UI overhaul',category:'Design',client:'Touch \'n Go',status:'cancelled',budget:11200,proposals:21,posted:'10 Feb 2026',postedSort:20260210,duration:'7 weeks'},
+      {id:'g-012',name:'PM coaching engagement',category:'Product',client:'Kitchenomics SaaS',status:'in-progress',budget:4800,proposals:5,posted:'02 Apr 2026',postedSort:20260402,duration:'4 weeks'}
+    ]
+  };
+
+  const CAT_DETAIL_TYPE = {
+    programmes:'programme', courses:'course', experience:'experience', expertise:'expert', gigs:'gig'
+  };
+
+  // ===================== CATALOGUE FILTERS =====================
+  // Schema per cat: array of filter defs. Kinds: 'multi' (chip multi-select), 'range' (numeric min/max).
+  const CAT_FILTERS = {
+    programmes: [
+      {key:'status',label:'Status',kind:'multi',field:r=>r.status,options:['active','paused','draft']},
+      {key:'duration',label:'Duration',kind:'multi',field:r=>r.duration,options:['4 weeks','6 weeks','8 weeks','10 weeks','12 weeks']},
+      {key:'lead',label:'Lead',kind:'multi',field:r=>r.lead,dynamic:true},
+      {key:'enrolled',label:'Enrolled',kind:'range',field:r=>r.enrolled,unit:''},
+      {key:'completion',label:'Completion',kind:'range',field:r=>r.completion,unit:'%'},
+      {key:'rating',label:'Rating',kind:'range',field:r=>r.rating,unit:'★',step:0.1},
+      {key:'revenue',label:'Revenue',kind:'range',field:r=>r.revenue,unit:'RM',fmt:v=>'RM '+(v>=1000?(v/1000).toFixed(0)+'K':v)}
+    ],
+    courses: [
+      {key:'category',label:'Category',kind:'multi',field:r=>r.category,dynamic:true},
+      {key:'instructor',label:'Instructor',kind:'multi',field:r=>r.instructor,dynamic:true},
+      {key:'link',label:'Type',kind:'multi',field:r=>r.link,options:['linked','standalone'],labels:{linked:'Programme',standalone:'Standalone'}},
+      {key:'duration',label:'Duration (h)',kind:'range',field:r=>r.duration,unit:'h'},
+      {key:'enrolled',label:'Enrolled',kind:'range',field:r=>r.enrolled},
+      {key:'completion',label:'Completion',kind:'range',field:r=>r.completion,unit:'%'},
+      {key:'rating',label:'Rating',kind:'range',field:r=>r.rating,unit:'★',step:0.1}
+    ],
+    experience: [
+      {key:'type',label:'Type',kind:'multi',field:r=>r.type,dynamic:true},
+      {key:'mode',label:'Mode',kind:'multi',field:r=>r.mode,options:['physical','virtual','hybrid']},
+      {key:'tickets',label:'Tickets',kind:'range',field:r=>r.tickets},
+      {key:'fillRate',label:'Fill Rate',kind:'range',field:r=>r.fillRate,unit:'%'},
+      {key:'rating',label:'Rating',kind:'range',field:r=>r.rating,unit:'★',step:0.1},
+      {key:'revenue',label:'Revenue',kind:'range',field:r=>r.revenue,fmt:v=>'RM '+(v>=1000?(v/1000).toFixed(0)+'K':v)}
+    ],
+    expertise: [
+      {key:'expertise',label:'Expertise',kind:'multi',field:r=>r.expertise,dynamic:true},
+      {key:'availability',label:'Availability',kind:'multi',field:r=>r.availability,options:['available','busy','offline']},
+      {key:'rate',label:'Rate (RM/hr)',kind:'range',field:r=>r.rate,unit:'/hr',fmt:v=>'RM '+v},
+      {key:'bookings',label:'Bookings',kind:'range',field:r=>r.bookings},
+      {key:'rating',label:'Rating',kind:'range',field:r=>r.rating,unit:'★',step:0.1}
+    ],
+    gigs: [
+      {key:'category',label:'Category',kind:'multi',field:r=>r.category,dynamic:true},
+      {key:'status',label:'Status',kind:'multi',field:r=>r.status,options:['open','in-progress','completed','cancelled']},
+      {key:'client',label:'Client',kind:'multi',field:r=>r.client,dynamic:true},
+      {key:'budget',label:'Budget',kind:'range',field:r=>r.budget,fmt:v=>'RM '+(v>=1000?(v/1000).toFixed(1)+'K':v)},
+      {key:'proposals',label:'Proposals',kind:'range',field:r=>r.proposals}
+    ]
+  };
+
+  // For each cat, compute range bounds and option lists from data
+  function buildFilterMeta(cat){
+    const data = CATALOGUE[cat] || [];
+    const defs = CAT_FILTERS[cat] || [];
+    return defs.map(d => {
+      const meta = {...d};
+      if(d.kind === 'range'){
+        const vals = data.map(d.field).filter(v=>typeof v==='number');
+        meta.min = Math.floor(Math.min(...vals));
+        meta.max = Math.ceil(Math.max(...vals));
+        if(d.step==null) meta.step = (meta.max - meta.min) > 100 ? 100 : 1;
+      } else if(d.kind === 'multi' && d.dynamic){
+        meta.options = [...new Set(data.map(d.field))].sort();
+      }
+      return meta;
+    });
+  }
+
+  // catState now also stores `f` (filter values keyed by filter.key)
+  const catState = {
+    programmes:{q:'',sort:null,dir:1,f:{}},
+    courses:{q:'',sort:null,dir:1,f:{}},
+    experience:{q:'',sort:null,dir:1,f:{}},
+    expertise:{q:'',sort:null,dir:1,f:{}},
+    gigs:{q:'',sort:null,dir:1,f:{}}
+  };
+  const CAT_FILTER_META = {};
+
+  function activeFilterCount(cat){
+    const meta = CAT_FILTER_META[cat] || [];
+    const f = catState[cat].f;
+    let n = 0;
+    meta.forEach(m => {
+      const v = f[m.key];
+      if(!v) return;
+      if(m.kind === 'multi' && Array.isArray(v) && v.length) n++;
+      if(m.kind === 'range' && (v.min !== m.min || v.max !== m.max)) n++;
+    });
+    return n;
+  }
+
+  function passesFilters(cat, r){
+    const meta = CAT_FILTER_META[cat] || [];
+    const f = catState[cat].f;
+    for(const m of meta){
+      const v = f[m.key];
+      if(!v) continue;
+      if(m.kind === 'multi' && Array.isArray(v) && v.length){
+        if(!v.includes(m.field(r))) return false;
+      }
+      if(m.kind === 'range'){
+        const x = m.field(r);
+        if(typeof x !== 'number') continue;
+        if(x < v.min || x > v.max) return false;
+      }
+    }
+    return true;
+  }
+
+  // Build filter bar HTML for a cat
+  function renderFilterBar(cat){
+    const meta = CAT_FILTER_META[cat];
+    if(!meta) return;
+    const host = document.querySelector(`#cat-filter-${cat}`);
+    if(!host) return;
+    const f = catState[cat].f;
+    const ctrls = meta.map(m => {
+      if(m.kind === 'multi'){
+        const sel = f[m.key] || [];
+        const active = sel.length > 0;
+        const lbl = active
+          ? (sel.length === 1 ? (m.labels?.[sel[0]] || sel[0]) : `${sel.length} selected`)
+          : m.label;
+        const opts = m.options.map(o => {
+          const isSel = sel.includes(o);
+          const dispLbl = m.labels?.[o] || (o.charAt(0).toUpperCase()+o.slice(1).replace('-',' '));
+          return `<div class="cf-opt ${isSel?'sel':''}" data-cat="${cat}" data-fk="${m.key}" data-fv="${o}">
+            <span class="cf-cb">${isSel?'✓':''}</span><span>${dispLbl}</span>
+          </div>`;
+        }).join('');
+        return `<div class="cf-select" data-cat="${cat}" data-fk="${m.key}">
+          <button type="button" class="cf-trigger ${active?'active':''}" data-pop="${cat}-${m.key}">
+            <span class="cf-tlbl">${m.label}${active && sel.length===1 ? ': '+lbl : ''}</span>
+            ${active && sel.length>1 ? `<span class="cf-cnt">${sel.length}</span>` : ''}
+            <span class="cf-car">▾</span>
+          </button>
+          <div class="cf-pop" id="cfpop-${cat}-${m.key}">${opts}</div>
+        </div>`;
+      }
+      if(m.kind === 'range'){
+        const v = f[m.key] || {min:m.min, max:m.max};
+        const active = (v.min !== m.min || v.max !== m.max);
+        const fmt = m.fmt || (x => x + (m.unit||''));
+        return `<div class="cf-range ${active?'active':''}" data-cat="${cat}" data-fk="${m.key}">
+          <span class="cf-rlbl">${m.label}</span>
+          <span class="cf-rval">${fmt(v.min)}–${fmt(v.max)}</span>
+          <div class="cf-slider">
+            <div class="cf-track"></div>
+            <div class="cf-fill"></div>
+            <input type="range" min="${m.min}" max="${m.max}" step="${m.step}" value="${v.min}" data-handle="min" />
+            <input type="range" min="${m.min}" max="${m.max}" step="${m.step}" value="${v.max}" data-handle="max" />
+          </div>
+        </div>`;
+      }
+    }).join('');
+    const cnt = activeFilterCount(cat);
+    host.innerHTML = `
+      <span class="cf-label">Filter</span>
+      ${ctrls}
+      <button type="button" class="cf-clear ${cnt>0?'show':''}" data-cat="${cat}">✕ Clear ${cnt>0?`(${cnt})`:''}</button>
+    `;
+    // update slider fills
+    host.querySelectorAll('.cf-range').forEach(rg => updateSliderFill(rg));
+  }
+
+  function updateSliderFill(rangeEl){
+    const inputs = rangeEl.querySelectorAll('input[type=range]');
+    if(inputs.length < 2) return;
+    const min = +inputs[0].min, max = +inputs[0].max;
+    const lo = Math.min(+inputs[0].value, +inputs[1].value);
+    const hi = Math.max(+inputs[0].value, +inputs[1].value);
+    const fill = rangeEl.querySelector('.cf-fill');
+    const pct = v => ((v-min)/(max-min))*100;
+    fill.style.left = pct(lo)+'%';
+    fill.style.right = (100 - pct(hi))+'%';
+  }
+
+  // Active filter chips below bar
+  function renderActiveChips(cat){
+    const host = document.querySelector(`#cat-active-${cat}`);
+    if(!host) return;
+    const meta = CAT_FILTER_META[cat] || [];
+    const f = catState[cat].f;
+    const chips = [];
+    meta.forEach(m => {
+      const v = f[m.key];
+      if(!v) return;
+      if(m.kind === 'multi' && Array.isArray(v) && v.length){
+        v.forEach(val => {
+          const dispLbl = m.labels?.[val] || (val.charAt(0).toUpperCase()+val.slice(1).replace('-',' '));
+          chips.push(`<span class="cat-achip"><span class="cf-tag">${m.label}:</span>${dispLbl}<span class="cf-x" data-cat="${cat}" data-fk="${m.key}" data-fv="${val}">×</span></span>`);
+        });
+      }
+      if(m.kind === 'range' && (v.min !== m.min || v.max !== m.max)){
+        const fmt = m.fmt || (x => x + (m.unit||''));
+        chips.push(`<span class="cat-achip"><span class="cf-tag">${m.label}:</span>${fmt(v.min)}–${fmt(v.max)}<span class="cf-x" data-cat="${cat}" data-fk="${m.key}" data-clear="1">×</span></span>`);
+      }
+    });
+    host.innerHTML = chips.join('');
+    host.classList.toggle('empty', chips.length === 0);
+  }
+
+
+  function fmtRM(n){ return 'RM ' + (n >= 1000 ? (n/1000).toFixed(n >= 10000 ? 0 : 1) + 'K' : n.toLocaleString()); }
+  function pill(cls, txt){ return `<span class="cat-pill ${cls}">${txt}</span>`; }
+  function stars(r){ return `<span style="color:#F59E0B;font-weight:600">★</span> <span style="font-weight:600">${r.toFixed(1)}</span>`; }
+
+  const CAT_RENDERERS = {
+    programmes: r => `
+      <td><div class="font-semibold text-[13px]">${r.name}</div><div class="text-[11px] text-slate-400 mt-0.5">${r.lead}</div></td>
+      <td class="text-slate-600">${r.focus}</td>
+      <td>${pill(r.status, r.status[0].toUpperCase()+r.status.slice(1))}</td>
+      <td class="text-slate-600">${r.duration}</td>
+      <td class="text-right font-medium">${r.cohorts}</td>
+      <td class="text-right font-semibold">${r.enrolled.toLocaleString()}</td>
+      <td class="text-right"><span class="${r.completion >= 70 ? 'text-green-600' : r.completion >= 60 ? 'text-amber-600' : 'text-red-600'} font-semibold">${r.completion}%</span></td>
+      <td class="text-right">${stars(r.rating)}</td>
+      <td class="text-right font-semibold">${fmtRM(r.revenue)}</td>`,
+    courses: r => `
+      <td><div class="font-semibold text-[13px]">${r.name}</div><div class="text-[11px] text-slate-400 mt-0.5">${r.duration}h · ${r.category}</div></td>
+      <td class="text-slate-600">${r.category}</td>
+      <td class="text-slate-600">${r.instructor}</td>
+      <td>${pill(r.link === 'linked' ? 'linked' : 'standalone', r.link === 'linked' ? 'Programme' : 'Standalone')}</td>
+      <td class="text-right font-medium">${r.duration}h</td>
+      <td class="text-right font-semibold">${r.enrolled.toLocaleString()}</td>
+      <td class="text-right"><span class="${r.completion >= 70 ? 'text-green-600' : r.completion >= 60 ? 'text-amber-600' : 'text-red-600'} font-semibold">${r.completion}%</span></td>
+      <td class="text-right">${stars(r.rating)}</td>
+      <td class="text-right font-semibold">${fmtRM(r.revenue)}</td>`,
+    experience: r => `
+      <td><div class="font-semibold text-[13px]">${r.name}</div></td>
+      <td class="text-slate-600">${r.type}</td>
+      <td>${pill(r.mode, r.mode[0].toUpperCase()+r.mode.slice(1))}</td>
+      <td class="text-slate-600">${r.date}</td>
+      <td class="text-slate-600 text-[12px]">${r.location}</td>
+      <td class="text-right font-medium">${r.tickets.toLocaleString()}</td>
+      <td class="text-right"><span class="${r.fillRate >= 85 ? 'text-green-600' : r.fillRate >= 70 ? 'text-amber-600' : 'text-red-600'} font-semibold">${r.fillRate}%</span></td>
+      <td class="text-right">${stars(r.rating)}</td>
+      <td class="text-right font-semibold">${fmtRM(r.revenue)}</td>`,
+    expertise: r => `
+      <td><div class="font-semibold text-[13px]">${r.name}</div></td>
+      <td class="text-slate-600">${r.expertise}</td>
+      <td class="text-right font-semibold">RM ${r.rate}/hr</td>
+      <td>${pill(r.availability, r.availability[0].toUpperCase()+r.availability.slice(1))}</td>
+      <td class="text-right font-medium">${r.bookings}</td>
+      <td class="text-right">${stars(r.rating)}</td>
+      <td class="text-slate-600">${r.response}</td>
+      <td class="text-right font-semibold">${fmtRM(r.revenue)}</td>`,
+    gigs: r => `
+      <td><div class="font-semibold text-[13px]">${r.name}</div></td>
+      <td class="text-slate-600">${r.category}</td>
+      <td class="text-slate-600">${r.client}</td>
+      <td>${pill(r.status, r.status[0].toUpperCase()+r.status.slice(1).replace('-',' '))}</td>
+      <td class="text-right font-semibold">${fmtRM(r.budget)}</td>
+      <td class="text-right font-medium">${r.proposals}</td>
+      <td class="text-slate-600">${r.posted}</td>
+      <td class="text-slate-600">${r.duration}</td>`
+  };
+
+  function renderCatalogue(cat){
+    const tbody = document.querySelector(`.cat-table[data-cat="${cat}"] tbody`);
+    if(!tbody) return;
+    const state = catState[cat];
+    const data = CATALOGUE[cat] || [];
+    const q = state.q.trim().toLowerCase();
+    let rows = data.filter(r => {
+      if(!passesFilters(cat, r)) return false;
+      if(!q) return true;
+      return Object.values(r).some(v => String(v).toLowerCase().includes(q));
+    });
+    if(state.sort){
+      const k = state.sort, d = state.dir;
+      rows = [...rows].sort((a,b) => {
+        let av = a[k], bv = b[k];
+        // sort dates by sortable numeric key when present
+        if(k === 'date' && a.dateSort !== undefined){ av = a.dateSort; bv = b.dateSort; }
+        if(k === 'posted' && a.postedSort !== undefined){ av = a.postedSort; bv = b.postedSort; }
+        if(typeof av === 'number' && typeof bv === 'number') return (av - bv) * d;
+        return String(av).localeCompare(String(bv)) * d;
+      });
+    }
+    const renderer = CAT_RENDERERS[cat];
+    const detailType = CAT_DETAIL_TYPE[cat];
+    tbody.innerHTML = rows.length === 0
+      ? `<tr><td colspan="20" class="cat-empty">No matches. Try clearing your search.</td></tr>`
+      : rows.map(r => `<tr data-id="${r.id}" data-type="${detailType}">${renderer(r)}</tr>`).join('');
+    // wire row clicks (gigs have no detail; do nothing on click)
+    tbody.querySelectorAll('tr[data-id]').forEach(tr => {
+      tr.onclick = () => {
+        const t = tr.dataset.type, id = tr.dataset.id;
+        if(t === 'gig') return;  // no gig detail page yet
+        if(typeof showDetail === 'function' && DETAIL_DATA[t]?.[id]) showDetail(t, id);
+      };
+    });
+    const countEl = document.getElementById(`cat-${cat}-count`);
+    if(countEl) countEl.textContent = `${rows.length} of ${data.length}`;
+    // sort indicator
+    const ths = document.querySelectorAll(`.cat-table[data-cat="${cat}"] thead th`);
+    ths.forEach(th => {
+      th.classList.remove('sort-asc','sort-desc');
+      if(th.dataset.sort === state.sort) th.classList.add(state.dir === 1 ? 'sort-asc' : 'sort-desc');
+    });
+  }
+
+  // wire search + sort
+  document.querySelectorAll('.cat-search').forEach(input => {
+    const cat = input.dataset.cat;
+    input.addEventListener('input', e => { catState[cat].q = e.target.value; renderCatalogue(cat); });
+  });
+  document.querySelectorAll('.cat-table thead th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const cat = th.closest('.cat-table').dataset.cat;
+      const k = th.dataset.sort;
+      const s = catState[cat];
+      if(s.sort === k) s.dir *= -1; else { s.sort = k; s.dir = 1; }
+      renderCatalogue(cat);
+    });
+  });
+
+  // ===== filter wiring =====
+  // Build meta + initial filter bar for each cat
+  ['programmes','courses','experience','expertise','gigs'].forEach(cat => {
+    CAT_FILTER_META[cat] = buildFilterMeta(cat);
+    // init range state to full bounds (so chips etc work)
+    CAT_FILTER_META[cat].forEach(m => {
+      if(m.kind === 'range') catState[cat].f[m.key] = {min:m.min, max:m.max};
+      if(m.kind === 'multi') catState[cat].f[m.key] = [];
+    });
+    renderFilterBar(cat);
+    renderActiveChips(cat);
+  });
+
+  // Filter bar — multi-select trigger toggles its popover; clicks elsewhere close all
+  document.addEventListener('click', e => {
+    const trig = e.target.closest('.cf-trigger');
+    const opt = e.target.closest('.cf-opt');
+    const x = e.target.closest('.cf-x');
+    const clr = e.target.closest('.cf-clear');
+    // close any open popover unless the click is inside one
+    if(!e.target.closest('.cf-pop') && !trig){
+      document.querySelectorAll('.cf-pop.open').forEach(p => p.classList.remove('open'));
+    }
+    if(trig){
+      e.stopPropagation();
+      const id = trig.dataset.pop;
+      const pop = document.getElementById('cfpop-'+id);
+      const wasOpen = pop?.classList.contains('open');
+      document.querySelectorAll('.cf-pop.open').forEach(p => p.classList.remove('open'));
+      if(pop && !wasOpen) pop.classList.add('open');
+      return;
+    }
+    if(opt){
+      e.stopPropagation();
+      const cat = opt.dataset.cat, fk = opt.dataset.fk, fv = opt.dataset.fv;
+      const arr = catState[cat].f[fk] || [];
+      const i = arr.indexOf(fv);
+      if(i >= 0) arr.splice(i, 1); else arr.push(fv);
+      catState[cat].f[fk] = arr;
+      renderFilterBar(cat);
+      // reopen the same popover so user can pick more
+      const pop = document.getElementById(`cfpop-${cat}-${fk}`);
+      if(pop) pop.classList.add('open');
+      renderActiveChips(cat);
+      renderCatalogue(cat);
+      return;
+    }
+    if(x){
+      const cat = x.dataset.cat, fk = x.dataset.fk;
+      if(x.dataset.clear === '1'){
+        const m = CAT_FILTER_META[cat].find(m => m.key === fk);
+        catState[cat].f[fk] = {min:m.min, max:m.max};
+      } else {
+        const fv = x.dataset.fv;
+        const arr = catState[cat].f[fk] || [];
+        const i = arr.indexOf(fv);
+        if(i >= 0) arr.splice(i, 1);
+      }
+      renderFilterBar(cat);
+      renderActiveChips(cat);
+      renderCatalogue(cat);
+      return;
+    }
+    if(clr){
+      const cat = clr.dataset.cat;
+      CAT_FILTER_META[cat].forEach(m => {
+        if(m.kind === 'multi') catState[cat].f[m.key] = [];
+        if(m.kind === 'range') catState[cat].f[m.key] = {min:m.min, max:m.max};
+      });
+      renderFilterBar(cat);
+      renderActiveChips(cat);
+      renderCatalogue(cat);
+    }
+  });
+
+  // Range slider live updates
+  document.addEventListener('input', e => {
+    const inp = e.target.closest('.cf-range input[type=range]');
+    if(!inp) return;
+    const rangeEl = inp.closest('.cf-range');
+    const cat = rangeEl.dataset.cat, fk = rangeEl.dataset.fk;
+    const inputs = rangeEl.querySelectorAll('input[type=range]');
+    const lo = Math.min(+inputs[0].value, +inputs[1].value);
+    const hi = Math.max(+inputs[0].value, +inputs[1].value);
+    catState[cat].f[fk] = {min:lo, max:hi};
+    // update label without rebuilding (keeps focus on slider)
+    const m = CAT_FILTER_META[cat].find(x => x.key === fk);
+    const fmt = m.fmt || (x => x + (m.unit||''));
+    // value label may be inside .cf-range (inline) or in parent .fab-filter-group label (FAB)
+    const valEl = rangeEl.querySelector('.cf-rval') || rangeEl.closest('.fab-filter-group')?.querySelector('.cf-rval');
+    if(valEl) valEl.textContent = `${fmt(lo)} – ${fmt(hi)}`;
+    rangeEl.classList.toggle('active', lo !== m.min || hi !== m.max);
+    updateSliderFill(rangeEl);
+  });
+  document.addEventListener('change', e => {
+    const inp = e.target.closest('.cf-range input[type=range]');
+    if(!inp) return;
+    const rangeEl = inp.closest('.cf-range');
+    const cat = rangeEl.dataset.cat;
+    renderActiveChips(cat); // safe no-op if no inline host
+    renderCatalogue(cat);
+    // refresh FAB badge + filter label colors when sliders settle
+    if(typeof updateFabBadge === 'function') updateFabBadge();
+    if(typeof renderFabFilters === 'function' && document.getElementById('fabPanel')?.classList.contains('open')){
+      renderFabFilters();
+    }
+  });
+
+  // initial render for all
+  ['programmes','courses','experience','expertise','gigs'].forEach(renderCatalogue);
+
   show('overview');
 </script>
 
@@ -2111,6 +2906,272 @@
     </div>
   </div>
 </div>
+
+<!-- ===== BOOKINGS MODAL ===== -->
+<div class="svc-modal-overlay" id="bookingsModalOverlay" onclick="if(event.target===this)closeBookingsModal()">
+  <div class="svc-modal wide">
+    <div class="svc-modal-header">
+      <div>
+        <h3 class="svc-modal-title" id="bookingsModalTitle">Bookings</h3>
+        <div class="svc-modal-sub" id="bookingsModalSub">Recent activity</div>
+      </div>
+      <button class="svc-modal-close" onclick="closeBookingsModal()" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="svc-modal-body" id="bookingsModalBody"></div>
+    <div class="svc-modal-footer">
+      <span class="left" id="bookingsModalCount"></span>
+      <button class="detail-action-btn" onclick="closeBookingsModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EDIT MODAL ===== -->
+<div class="svc-modal-overlay" id="editModalOverlay" onclick="if(event.target===this)closeEditModal()">
+  <div class="svc-modal">
+    <div class="svc-modal-header">
+      <div>
+        <h3 class="svc-modal-title" id="editModalTitle">Edit</h3>
+        <div class="svc-modal-sub" id="editModalSub">Service details</div>
+      </div>
+      <button class="svc-modal-close" onclick="closeEditModal()" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="svc-modal-body" id="editModalBody"></div>
+    <div class="svc-modal-footer">
+      <span class="left" id="editModalHint"></span>
+      <div style="display:flex;gap:8px">
+        <button class="detail-action-btn" onclick="closeEditModal()">Cancel</button>
+        <button class="detail-action-btn primary" id="editModalSave" onclick="saveEditModal()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="edit-saved-toast" id="editSavedToast">Changes saved</div>
+
+<script>
+// ===================== BOOKINGS + EDIT MODAL CONTROLLERS =====================
+const FIRST_NAMES = ['Aisha','Daniel','Mei','Karthik','Sara','Hafiz','Lina','Wei','Nadia','Joshua','Priya','Faris','Tasha','Eric','Sofia','Rahul','Nadira','Jamal','Ying','Arjun','Hannah','Isaac','Layla','Marcus','Nuha','Omar','Ravi','Tariq','Vivian','Zara'];
+const LAST_NAMES = ['Tan','Lim','Wong','Rahman','Singh','Chen','Anand','Lee','Brown','Hassan','Yusof','Goh','Patel','Khoo','Aziz','Ng','Sharma','Lau','Mahmood','Choo'];
+const COMPANIES = ['Maybank','Petronas','PNB','BNM','Khazanah','Telekom','Axiata','CIMB','MDEC','Sime Darby','Sunway','IJM','Public Bank','Genting'];
+const BOOKING_STATUSES = ['confirmed','attended','pending','confirmed','attended','confirmed','cancelled'];
+
+function _seed(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return ()=>{h+=0x6D2B79F5;let t=h;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
+
+function generateBookings(type, id, d){
+  const rnd = _seed(type+'|'+id);
+  const pick = a => a[Math.floor(rnd()*a.length)];
+  const count = type==='expert' ? 14 : type==='experience' ? 18 : type==='programme' ? 24 : 20;
+  const out = [];
+  const base = new Date(2026, 3, 27); // 27 Apr 2026
+  for(let i=0;i<count;i++){
+    const f=pick(FIRST_NAMES), l=pick(LAST_NAMES);
+    const name = f+' '+l;
+    const initials = (f[0]+l[0]).toUpperCase();
+    const email = (f.toLowerCase()+'.'+l.toLowerCase()+'@'+(rnd()<.4?pick(COMPANIES).toLowerCase().replace(/\s/g,'')+'.com':'gmail.com'));
+    const dayOffset = Math.floor(rnd()*60)-45;
+    const dt = new Date(base); dt.setDate(dt.getDate()+dayOffset);
+    const dateStr = dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    const status = pick(BOOKING_STATUSES);
+    out.push({name,initials,email,date:dateStr,sortKey:dt.getTime(),status,company:rnd()<.45?pick(COMPANIES):null});
+  }
+  out.sort((a,b)=>b.sortKey-a.sortKey);
+  return out;
+}
+
+function openBookingsModal(type, id){
+  const d = DETAIL_DATA[type]?.[id]; if(!d) return;
+  const bookings = generateBookings(type, id, d);
+  const labels = {
+    programme: {title:'Programme bookings', col1:'Member', col2:'Cohort', col3:'Enrolled'},
+    course:    {title:'Course enrollments', col1:'Student', col2:'Source', col3:'Started'},
+    experience:{title:'Ticket sales', col1:'Attendee', col2:'Ticket', col3:'Booked'},
+    expert:    {title:'Recent bookings', col1:'Client', col2:'Type', col3:'Session date'}
+  }[type];
+  document.getElementById('bookingsModalTitle').textContent = labels.title;
+  document.getElementById('bookingsModalSub').textContent = d.name;
+
+  const confirmed = bookings.filter(b=>b.status==='confirmed'||b.status==='attended').length;
+  const pending = bookings.filter(b=>b.status==='pending').length;
+  const cancelled = bookings.filter(b=>b.status==='cancelled').length;
+
+  // middle column varies by type
+  const col2for = (b,i) => {
+    if(type==='programme') return ['Cohort APR 2026','Cohort JAN 2026','Cohort OCT 2025'][i%3];
+    if(type==='course')    return ['Direct','Programme','Marketplace','Corporate'][i%4];
+    if(type==='experience')return ['General','VIP','Early bird','Group'][i%4];
+    return ['Programme','Corporate','1:1'][i%3];
+  };
+
+  document.getElementById('bookingsModalBody').innerHTML = `
+    <div class="svc-stats">
+      <div class="svc-stat"><div class="l">Total</div><div class="v">${bookings.length}</div></div>
+      <div class="svc-stat"><div class="l">Confirmed</div><div class="v" style="color:#15803D">${confirmed}</div></div>
+      <div class="svc-stat"><div class="l">Pending</div><div class="v" style="color:#92400E">${pending}</div></div>
+      <div class="svc-stat"><div class="l">Cancelled</div><div class="v" style="color:#B91C1C">${cancelled}</div></div>
+    </div>
+    <table class="svc-table">
+      <thead><tr><th>${labels.col1}</th><th>${labels.col2}</th><th>${labels.col3}</th><th>Status</th></tr></thead>
+      <tbody>
+        ${bookings.map((b,i)=>`
+          <tr>
+            <td><div class="who"><div class="a">${b.initials}</div><div><div class="n">${b.name}</div><div class="e">${b.email}</div></div></div></td>
+            <td>${col2for(b,i)}${b.company?` · <span style="color:#94A3B8">${b.company}</span>`:''}</td>
+            <td style="color:#64748B">${b.date}</td>
+            <td><span class="booking-status ${b.status}">${b.status}</span></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  document.getElementById('bookingsModalCount').textContent = `Showing ${bookings.length} ${type==='expert'?'sessions':type==='experience'?'tickets':type==='course'?'enrollments':'bookings'} · last 60 days`;
+  document.getElementById('bookingsModalOverlay').classList.add('open');
+}
+function closeBookingsModal(){ document.getElementById('bookingsModalOverlay').classList.remove('open'); }
+
+// ----- EDIT MODAL -----
+let _editCtx = null;
+
+function _editFields(type, d){
+  if(type==='programme'){
+    return [
+      {k:'name',     label:'Programme name', kind:'text',     value:d.name, w:1},
+      {k:'tagline',  label:'Tagline',         kind:'text',     value:d.tagline, w:1},
+      {k:'status',   label:'Status',          kind:'select',   value:d.status, options:['Active','Paused','Draft','Archived'], w:.5},
+      {k:'lead',     label:'Lead',            kind:'text',     value:(CATALOGUE.programmes.find(p=>p.id===currentDetailId)?.lead)||'', w:.5},
+      {k:'desc',     label:'Description',     kind:'textarea', value:d.desc, w:1},
+    ];
+  }
+  if(type==='course'){
+    return [
+      {k:'name',     label:'Course name',     kind:'text',     value:d.name, w:1},
+      {k:'category', label:'Category',        kind:'select',   value:d.category, options:['AI','Data','Design','Engineering','Business','Marketing','Career'], w:.5},
+      {k:'modules',  label:'Modules',         kind:'number',   value:d.modules, w:.25},
+      {k:'hours',    label:'Hours',           kind:'number',   value:d.hours, w:.25},
+      {k:'desc',     label:'Description',     kind:'textarea', value:d.desc, w:1},
+    ];
+  }
+  if(type==='experience'){
+    return [
+      {k:'name',     label:'Experience name', kind:'text',     value:d.name, w:1},
+      {k:'type',     label:'Type',            kind:'select',   value:d.type, options:['Workshop','Events','Webinar','Bootcamp','Conference','Networking'], w:.5},
+      {k:'mode',     label:'Mode',            kind:'select',   value:d.mode, options:['Online','In-person','Hybrid'], w:.5},
+      {k:'date',     label:'Date',            kind:'text',     value:d.date, w:.5},
+      {k:'location', label:'Location',        kind:'text',     value:d.location, w:.5},
+      {k:'desc',     label:'Description',     kind:'textarea', value:d.desc, w:1},
+    ];
+  }
+  // expert
+  return [
+    {k:'name',         label:'Expert name',  kind:'text',   value:d.name, w:1},
+    {k:'expertise',    label:'Expertise',    kind:'text',   value:d.expertise, w:.5},
+    {k:'rate',         label:'Rate',         kind:'text',   value:d.rate, w:.5},
+    {k:'availability', label:'Availability', kind:'select', value:d.availability, options:['available','busy'], w:.5},
+    {k:'responseTime', label:'Avg response', kind:'text',   value:d.responseTime, w:.5},
+    {k:'bio',          label:'Bio',          kind:'textarea',value:d.bio, w:1},
+  ];
+}
+
+function _renderEditFields(fields, readonly){
+  // group fields into rows by width (w in {1, .5, .25})
+  const rows=[]; let row=[]; let acc=0;
+  for(const f of fields){
+    if(f.w>=1){ if(row.length){rows.push(row);row=[];acc=0;} rows.push([f]); }
+    else { row.push(f); acc+=f.w; if(acc>=.99){rows.push(row);row=[];acc=0;} }
+  }
+  if(row.length) rows.push(row);
+
+  const fieldHtml = f => {
+    const dis = readonly ? 'disabled' : '';
+    if(f.kind==='textarea') return `<textarea data-k="${f.k}" ${dis}>${(f.value||'').replace(/</g,'&lt;')}</textarea>`;
+    if(f.kind==='select')   return `<select data-k="${f.k}" ${dis}>${f.options.map(o=>`<option ${o===f.value?'selected':''}>${o}</option>`).join('')}</select>`;
+    if(f.kind==='number')   return `<input type="number" data-k="${f.k}" value="${f.value??''}" ${dis} />`;
+    return `<input type="text" data-k="${f.k}" value="${(f.value||'').replace(/"/g,'&quot;')}" ${dis} />`;
+  };
+  return rows.map(r => {
+    if(r.length===1 && r[0].w>=1) return `<div class="edit-field">
+      <label>${r[0].label}</label>${fieldHtml(r[0])}</div>`;
+    // multi-col row
+    return `<div style="display:grid;grid-template-columns:${r.map(f=>`${Math.round(f.w*4)}fr`).join(' ')};gap:14px">
+      ${r.map(f=>`<div class="edit-field"><label>${f.label}</label>${fieldHtml(f)}</div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function openEditModal(type, id){
+  const d = DETAIL_DATA[type]?.[id]; if(!d) return;
+  _editCtx = {type, id, d};
+  const live = (window.API && API.mode === 'live');
+  const labels = {programme:'Programme', course:'Course', experience:'Experience', expert:'Expert'}[type];
+  document.getElementById('editModalTitle').textContent = `Edit ${labels.toLowerCase()}`;
+  document.getElementById('editModalSub').textContent = d.name;
+
+  const banner = !live ? `
+    <div class="edit-readonly-banner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <span>You're in <b>Sample Data Mode</b>. Changes will preview locally but won't persist. Sign in to live mode to save to the Mereka platform.</span>
+    </div>` : '';
+
+  const fields = _editFields(type, d);
+  document.getElementById('editModalBody').innerHTML = banner + `<div class="edit-form">${_renderEditFields(fields, false)}</div>`;
+  document.getElementById('editModalHint').textContent = live ? 'Saving to live API · api.mereka.dev' : 'Local preview only';
+  const saveBtn = document.getElementById('editModalSave');
+  saveBtn.disabled = false;
+  saveBtn.textContent = live ? 'Save changes' : 'Apply locally';
+  document.getElementById('editModalOverlay').classList.add('open');
+}
+function closeEditModal(){ document.getElementById('editModalOverlay').classList.remove('open'); _editCtx=null; }
+
+function saveEditModal(){
+  if(!_editCtx) return;
+  const {type, id, d} = _editCtx;
+  // Read inputs and write into in-memory data
+  const inputs = document.querySelectorAll('#editModalBody [data-k]');
+  inputs.forEach(el=>{
+    const k = el.getAttribute('data-k');
+    let v = el.value;
+    if(el.type==='number') v = Number(v)||0;
+    d[k] = v;
+  });
+  // If name/status changed and there's a catalogue row, update it too
+  const catKey = type==='programme'?'programmes':type==='course'?'courses':type==='experience'?'experience':'expertise';
+  if(CATALOGUE[catKey]){
+    const row = CATALOGUE[catKey].find(r=>r.id===id);
+    if(row){
+      if(d.name) row.name = d.name;
+      if(type==='programme' && d.status) row.status = d.status.toLowerCase();
+      if(type==='expert' && d.availability) row.availability = d.availability;
+      if(type==='course' && d.category) row.category = d.category;
+      if(type==='experience' && d.type) row.type = d.type;
+    }
+  }
+  // Re-render the detail view in place
+  const container = document.getElementById('detail-content');
+  let html = '';
+  if(type==='programme') html = renderProgrammeDetail(d);
+  else if(type==='course') html = renderCourseDetail(d);
+  else if(type==='experience') html = renderExperienceDetail(d);
+  else if(type==='expert') html = renderExpertDetail(d);
+  container.innerHTML = html;
+  // Re-render the parent catalogue too
+  if(typeof renderCatalogue === 'function' && catKey) try{ renderCatalogue(catKey); }catch(e){}
+  closeEditModal();
+  const toast = document.getElementById('editSavedToast');
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 1800);
+}
+
+// Esc to close
+document.addEventListener('keydown', e => {
+  if(e.key==='Escape'){
+    if(document.getElementById('bookingsModalOverlay').classList.contains('open')) closeBookingsModal();
+    if(document.getElementById('editModalOverlay').classList.contains('open')) closeEditModal();
+  }
+});
+</script>
 
 <script>
 // ===================== API DATA LAYER =====================
@@ -2632,8 +3693,8 @@ function updateGigCategories(){
       </div>
     </div>
   </div>
-  <button class="fab-btn" id="fabToggle" onclick="toggleFab()" title="Search & Filters">
-    <svg id="fabIconFilter" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+  <button class="fab-btn" id="fabToggle" onclick="toggleFab()" title="Filters & Search">
+    <svg id="fabIconFilter" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
     <svg id="fabIconClose" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M18 6L6 18M6 6l12 12"/></svg>
     <span class="fab-badge" id="fabBadge" style="display:none">0</span>
   </button>
@@ -2855,6 +3916,58 @@ function getCurrentViewKey(){
 function renderFabFilters(){
   const container = document.getElementById('fabFilters');
   const viewKey = getCurrentViewKey();
+
+  // ===== Catalogue views: data-driven filters =====
+  // catalogue view IDs are "view-cat-<name>" -> getCurrentViewKey returns "cat-<name>"
+  const catKey = viewKey.startsWith('cat-') ? viewKey.slice(4) : viewKey;
+  const CAT_VIEWS = {programmes:1, courses:1, experience:1, expertise:1, gigs:1};
+  if(CAT_VIEWS[catKey] && typeof CAT_FILTER_META !== 'undefined' && CAT_FILTER_META[catKey]){
+    const cat = catKey;
+    const meta = CAT_FILTER_META[cat];
+    const f = catState[cat].f;
+    document.getElementById('fabTitle').textContent = ({
+      programmes:'Programme Filters', courses:'Course Filters', experience:'Experience Filters',
+      expertise:'Expertise Filters', gigs:'Gig Filters'
+    })[cat];
+    container.innerHTML = meta.map(m => {
+      if(m.kind === 'multi'){
+        const sel = f[m.key] || [];
+        return `<div class="fab-filter-group">
+          <div class="fab-filter-label">${m.label}${sel.length?` <span style="color:var(--brand-pink);font-weight:700">(${sel.length})</span>`:''}</div>
+          <div class="fab-filter-chips">
+            ${m.options.map(o => {
+              const isSel = sel.includes(o);
+              const dispLbl = m.labels?.[o] || (o.charAt(0).toUpperCase()+o.slice(1).replace('-',' '));
+              return `<div class="fab-fchip ${isSel?'active':''}" data-cat="${cat}" data-fk="${m.key}" data-fv="${o}" onclick="toggleCatFabFilter(this)"><span class="sr-name">${dispLbl}</span></div>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }
+      if(m.kind === 'range'){
+        const v = f[m.key] || {min:m.min, max:m.max};
+        const fmt = m.fmt || (x => x + (m.unit||''));
+        const active = (v.min !== m.min || v.max !== m.max);
+        return `<div class="fab-filter-group">
+          <div class="fab-filter-label" style="display:flex;justify-content:space-between;align-items:center">
+            <span>${m.label}${active?` <span style="color:var(--brand-pink);font-weight:700">●</span>`:''}</span>
+            <span class="cf-rval" style="font-variant-numeric:tabular-nums;font-size:11px;color:${active?'var(--brand-pink)':'#94A3B8'}">${fmt(v.min)} – ${fmt(v.max)}</span>
+          </div>
+          <div class="cf-range" data-cat="${cat}" data-fk="${m.key}" style="border:none;background:transparent;padding:6px 0;height:auto;width:100%">
+            <div class="cf-slider" style="width:100%">
+              <div class="cf-track"></div>
+              <div class="cf-fill"></div>
+              <input type="range" min="${m.min}" max="${m.max}" step="${m.step}" value="${v.min}" data-handle="min" />
+              <input type="range" min="${m.min}" max="${m.max}" step="${m.step}" value="${v.max}" data-handle="max" />
+            </div>
+          </div>
+        </div>`;
+      }
+    }).join('');
+    container.querySelectorAll('.cf-range').forEach(rg => updateSliderFill(rg));
+    updateFabBadge();
+    return;
+  }
+
   const cfg = VIEW_FILTERS[viewKey];
   if(!cfg){ container.innerHTML=''; return; }
 
@@ -2869,6 +3982,20 @@ function renderFabFilters(){
       }).join('') +
     '</div></div>';
   }).join('');
+}
+
+// Toggle a catalogue filter chip from inside the FAB
+function toggleCatFabFilter(el){
+  const cat = el.dataset.cat, fk = el.dataset.fk, fv = el.dataset.fv;
+  const arr = catState[cat].f[fk] || [];
+  const i = arr.indexOf(fv);
+  if(i >= 0) arr.splice(i, 1); else arr.push(fv);
+  catState[cat].f[fk] = arr;
+  el.classList.toggle('active');
+  // update group counter
+  renderFabFilters();
+  renderCatalogue(cat);
+  updateFabBadge();
 }
 
 function toggleFabChip(el){
@@ -2901,6 +4028,12 @@ function toggleFabChipByKey(filterKey, itemId){
 function updateFabBadge(){
   let total = 0;
   for(const s of Object.values(fabActiveFilters)) total += s.size;
+  // include catalogue filter counts when on a catalogue view
+  const vk = getCurrentViewKey();
+  const ck = vk.startsWith('cat-') ? vk.slice(4) : vk;
+  if(['programmes','courses','experience','expertise','gigs'].includes(ck) && typeof activeFilterCount === 'function'){
+    total += activeFilterCount(ck);
+  }
   const badge = document.getElementById('fabBadge');
   if(total > 0){
     badge.textContent = total;
@@ -2916,6 +4049,15 @@ function resetFabFilters(){
   updateFabBadge();
 }
 
+// (legacy duplicate kept above for hoisting safety; full reset is below)
+
+// Tweak defaults — kept in this exact form so the host can rewrite on disk.
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "pink",
+  "surface": "soft",
+  "density": "standard"
+}/*EDITMODE-END*/;
+
 function resetFabFilters(){
   // Reset all fab chips
   document.querySelectorAll('.fab-fchip.active').forEach(c => c.classList.remove('active'));
@@ -2924,11 +4066,181 @@ function resetFabFilters(){
     filterState.set(chip, new Set());
     updateChipDisplay(chip);
   });
+  // Reset catalogue filters
+  if(typeof CAT_FILTER_META !== 'undefined'){
+    ['programmes','courses','experience','expertise','gigs'].forEach(cat => {
+      (CAT_FILTER_META[cat]||[]).forEach(m => {
+        if(m.kind === 'multi') catState[cat].f[m.key] = [];
+        if(m.kind === 'range') catState[cat].f[m.key] = {min:m.min, max:m.max};
+      });
+      if(typeof renderCatalogue === 'function') renderCatalogue(cat);
+    });
+  }
+  fabActiveFilters = {};
   // Clear search
   document.getElementById('fabSearch').value = '';
   document.getElementById('fabSearchResults').innerHTML = '';
   document.getElementById('fabSearchResults').classList.remove('has-results');
+  renderFabFilters();
+  updateFabBadge();
 }
+</script>
+
+<!-- ===== Tweakable theme layer ===== -->
+<style id="tweak-layer">
+  /* Accent palettes — drive both the --brand-pink token AND the hardcoded soft/dark tints used throughout. */
+  body[data-accent="pink"]   { --brand-pink:#E5397B; --accent-50:#FDF2F8; --accent-100:#FCE7F3; --accent-200:#FBCFE8; --accent-300:#F9A8D4; --accent-700:#BE185D; --accent-800:#9D174D; --accent-900:#831843; --accent-hover:#CF2B6B; --accent-shadow: 229,57,123; }
+  body[data-accent="indigo"] { --brand-pink:#4F46E5; --accent-50:#EEF2FF; --accent-100:#E0E7FF; --accent-200:#C7D2FE; --accent-300:#A5B4FC; --accent-700:#4338CA; --accent-800:#3730A3; --accent-900:#312E81; --accent-hover:#4338CA; --accent-shadow: 79,70,229; }
+  body[data-accent="teal"]   { --brand-pink:#0D9488; --accent-50:#F0FDFA; --accent-100:#CCFBF1; --accent-200:#99F6E4; --accent-300:#5EEAD4; --accent-700:#0F766E; --accent-800:#115E59; --accent-900:#134E4A; --accent-hover:#0F766E; --accent-shadow: 13,148,136; }
+  body[data-accent="amber"]  { --brand-pink:#D97706; --accent-50:#FFFBEB; --accent-100:#FEF3C7; --accent-200:#FDE68A; --accent-300:#FCD34D; --accent-700:#B45309; --accent-800:#92400E; --accent-900:#78350F; --accent-hover:#B45309; --accent-shadow: 217,119,6; }
+  body[data-accent="violet"] { --brand-pink:#7C3AED; --accent-50:#F5F3FF; --accent-100:#EDE9FE; --accent-200:#DDD6FE; --accent-300:#C4B5FD; --accent-700:#6D28D9; --accent-800:#5B21B6; --accent-900:#4C1D95; --accent-hover:#6D28D9; --accent-shadow: 124,58,237; }
+
+  /* Rebind every hardcoded pink reference through the override layer.
+     Selectors mirror the originals so specificity wins. */
+  body[data-accent] table.table tr[data-detail]:hover td{background:var(--accent-50) !important}
+  body[data-accent] .testimonial{border-left-color:var(--brand-pink)}
+  body[data-accent] .btn-pink:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+  body[data-accent] .fchip.active{background:var(--accent-50);border-color:var(--accent-300);color:var(--accent-800)}
+  body[data-accent] .pop .search:focus{border-color:var(--accent-300);box-shadow:0 0 0 3px var(--accent-50)}
+  body[data-accent] .pop .opt.sel{background:var(--accent-50);color:var(--accent-800)}
+  body[data-accent] .pgm-tag.sub{background:var(--accent-50);color:var(--accent-700);border-color:var(--accent-200)}
+  body[data-accent] .prog-pill{background:var(--accent-50);color:var(--accent-700);border-color:var(--accent-200)}
+  body[data-accent] .path-node.active{border-color:var(--accent-300);background:var(--accent-50)}
+  body[data-accent] .map-card{background:linear-gradient(135deg,var(--accent-50) 0%,#F5F3FF 100%);border-color:var(--accent-200)}
+  body[data-accent] .map-pill.crs{background:var(--accent-100);color:var(--accent-800);border-color:var(--accent-300)}
+  body[data-accent] .pgm-overlay{color:var(--accent-800);background:var(--accent-50);border-color:var(--accent-300)}
+  body[data-accent] .cat-search-wrap:focus-within{box-shadow:0 0 0 3px rgba(var(--accent-shadow),.08)}
+  body[data-accent] .cat-table tbody tr:hover{background:var(--accent-50)}
+  body[data-accent] .cat-pill.linked{background:var(--accent-100);color:var(--accent-800)}
+  body[data-accent] .lens-banner{background:linear-gradient(90deg,var(--accent-50),var(--accent-100));border-color:var(--accent-200);color:var(--accent-800)}
+  body[data-accent] .fab-btn{box-shadow:0 4px 20px rgba(var(--accent-shadow),.35)}
+  body[data-accent] .fab-btn:hover{box-shadow:0 6px 28px rgba(var(--accent-shadow),.45)}
+  body[data-accent] .fab-search:focus{border-color:var(--accent-300);box-shadow:0 0 0 3px var(--accent-50);background:#fff}
+  body[data-accent] .fab-search-results{}
+  body[data-accent] .fab-sr-item:hover{background:var(--accent-50)}
+  body[data-accent] .fab-sr-item .sr-type.t-course{background:var(--accent-100);color:var(--accent-800)}
+  body[data-accent] .fab-fchip.active{background:var(--accent-50);border-color:var(--accent-300);color:var(--accent-800)}
+  body[data-accent] .api-input:focus{border-color:var(--accent-300);box-shadow:0 0 0 3px var(--accent-50)}
+  body[data-accent] .api-login-btn:hover{background:var(--accent-hover)}
+
+  /* ===== Surface variants — reshape ground, cards, dividers ===== */
+  /* Soft (default): keep current values, no overrides needed beyond accent. */
+  body[data-surface="crisp"]{
+    --bg:#FFFFFF; --line:#D1D5DB; --line-soft:#E5E7EB;
+  }
+  body[data-surface="crisp"] .card{box-shadow:none;border-radius:10px;border-color:var(--line)}
+  body[data-surface="crisp"] .btn{border-radius:6px}
+  body[data-surface="crisp"] .table th{background:#FFFFFF;border-bottom:1px solid var(--line);text-transform:uppercase}
+
+  body[data-surface="editorial"]{
+    --bg:#F4EFE6; --line:#E8DFCD; --line-soft:#EEE7D8;
+    --ink:#1C1A14; --ink-2:#3D372A;
+  }
+  body[data-surface="editorial"] html, body[data-surface="editorial"]{background:var(--bg) !important}
+  body[data-surface="editorial"] .card{background:#FBF7EE;border-radius:6px;border-color:var(--line);box-shadow:none}
+  body[data-surface="editorial"] .btn{background:#FBF7EE;border-radius:4px}
+  body[data-surface="editorial"] .btn-dark{background:#1C1A14;border-color:#1C1A14}
+  body[data-surface="editorial"] .table th{background:#F4EFE6;border-bottom:1px solid var(--line);font-family:'Inter',serif}
+  body[data-surface="editorial"] .table td{border-bottom-color:var(--line-soft)}
+  body[data-surface="editorial"] .chip,
+  body[data-surface="editorial"] .cat-pill{border-radius:3px}
+  body[data-surface="editorial"] .fab-btn,
+  body[data-surface="editorial"] .fab-panel{border-radius:6px}
+  body[data-surface="editorial"] .api-modal{border-radius:6px}
+  body[data-surface="editorial"] h1,
+  body[data-surface="editorial"] h2,
+  body[data-surface="editorial"] h3,
+  body[data-surface="editorial"] .detail-title,
+  body[data-surface="editorial"] .kpi .value{font-family:'Crimson Pro',Georgia,serif;letter-spacing:-0.01em;font-weight:600}
+
+  /* ===== Density variants — scale padding/typography ===== */
+  body[data-density="compact"] .card .p-5{padding:14px}
+  body[data-density="compact"] .card .p-4{padding:10px}
+  body[data-density="compact"] .table th{padding:8px 12px;font-size:10px}
+  body[data-density="compact"] .table td{padding:9px 12px;font-size:12.5px}
+  body[data-density="compact"] .kpi .value{font-size:24px}
+  body[data-density="compact"] .kpi .label{font-size:10.5px}
+  body[data-density="compact"] .side-item{padding:4px 12px 4px 24px;font-size:12.5px}
+  body[data-density="compact"] .btn{padding:5px 10px;font-size:12px}
+  body[data-density="compact"] main.flex-1.p-6,
+  body[data-density="compact"] main.flex-1.p-7{padding:18px}
+
+  body[data-density="comfy"] .card .p-5{padding:24px}
+  body[data-density="comfy"] .card .p-4{padding:20px}
+  body[data-density="comfy"] .table th{padding:14px 20px}
+  body[data-density="comfy"] .table td{padding:18px 20px;font-size:13.5px}
+  body[data-density="comfy"] .kpi .value{font-size:32px}
+  body[data-density="comfy"] .side-item{padding:9px 12px 9px 24px}
+  body[data-density="comfy"] .btn{padding:9px 14px}
+  body[data-density="comfy"] main.flex-1.p-6,
+  body[data-density="comfy"] main.flex-1.p-7{padding:32px}
+</style>
+
+<!-- ===== React + Babel + Tweaks panel ===== -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<div id="tweaks-root"></div>
+<script type="text/babel">
+const { useEffect } = React;
+
+function applyTweaks(t){
+  const b = document.body;
+  b.setAttribute('data-accent', t.accent);
+  b.setAttribute('data-surface', t.surface);
+  b.setAttribute('data-density', t.density);
+}
+
+function TweaksApp(){
+  const [t, setTweak] = useTweaks(window.TWEAK_DEFAULTS);
+  useEffect(() => { applyTweaks(t); }, [t.accent, t.surface, t.density]);
+  return (
+    <TweaksPanel>
+      <TweakSection label="Brand accent" />
+      <TweakRadio
+        label="Hue"
+        value={t.accent}
+        options={[
+          { value: 'pink',   label: 'Pink' },
+          { value: 'indigo', label: 'Indigo' },
+          { value: 'teal',   label: 'Teal' },
+          { value: 'amber',  label: 'Amber' },
+          { value: 'violet', label: 'Violet' },
+        ]}
+        onChange={(v) => setTweak('accent', v)}
+      />
+      <TweakSection label="Surface" />
+      <TweakRadio
+        label="Vibe"
+        value={t.surface}
+        options={[
+          { value: 'soft',      label: 'Soft' },
+          { value: 'crisp',     label: 'Crisp' },
+          { value: 'editorial', label: 'Editorial' },
+        ]}
+        onChange={(v) => setTweak('surface', v)}
+      />
+      <TweakSection label="Density" />
+      <TweakRadio
+        label="Spacing"
+        value={t.density}
+        options={[
+          { value: 'compact',  label: 'Compact' },
+          { value: 'standard', label: 'Standard' },
+          { value: 'comfy',    label: 'Comfy' },
+        ]}
+        onChange={(v) => setTweak('density', v)}
+      />
+    </TweaksPanel>
+  );
+}
+
+window.TWEAK_DEFAULTS = TWEAK_DEFAULTS;
+// Apply defaults immediately so initial paint reflects them
+applyTweaks(TWEAK_DEFAULTS);
+ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<TweaksApp />);
 </script>
 </body>
 </html>
