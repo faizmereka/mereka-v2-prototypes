@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Hub Settings · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css"><script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-hub">
+  <div id="side"></div>
+  <main>
+    <h1 style="font-size:24px;font-weight:800">Account Settings</h1>
+    <p style="font-size:13.5px;color:#64748B;margin-top:4px;margin-bottom:20px">Hub identity, policies, and public profile.</p>
+
+    <div class="card" style="padding:24px;margin-bottom:18px">
+      <div style="display:flex;align-items:center;gap:18px">
+        <div style="width:96px;height:96px;border-radius:18px;background:linear-gradient(135deg,#F59E0B,#E5397B);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:28px;flex-shrink:0">PJ</div>
+        <div style="flex:1">
+          <h2 style="font-size:18px;font-weight:700">Penang Jobsearch Hub</h2>
+          <p style="font-size:13px;color:#64748B;margin-top:2px">@penangjobsearch · mereka.io/hubs/penang-jobsearch</p>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="chip chip-y">Verified</span><span class="chip chip-p">PRO plan</span><span class="chip chip-b">Career & jobs</span></div>
+        </div>
+        <button class="btn">Upload new logo</button><button class="btn">View public page</button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card" style="padding:22px">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Public profile</h3>
+        <div class="form-row"><label>Hub name</label><input class="input" value="Penang Jobsearch Hub"/></div>
+        <div class="form-row"><label>Tagline</label><input class="input" value="Helping Malaysians land their next chapter"/></div>
+        <div class="form-row"><label>About</label><textarea class="input" rows="4">A career hub serving Penang and the Northern region. We run cohort-based courses, expert sessions, and community events for job-seekers and career switchers.</textarea></div>
+        <div class="form-row"><label>Categories</label><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip chip-b">Career & jobs</span><span class="chip chip-b">Coaching</span><span class="chip chip-b">Workshops</span><button class="btn" style="padding:2px 8px;height:24px">+ Add</button></div></div>
+      </div>
+      <div class="card" style="padding:22px">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Location & contact</h3>
+        <div class="form-row"><label>Address</label><input class="input" value="55 Lebuh Carnarvon, 10100 George Town, Penang"/></div>
+        <div class="form-row"><label>Phone (WhatsApp)</label><input class="input" value="+60 4 261 0040"/></div>
+        <div class="form-row"><label>Public email</label><input class="input" value="hello@penangjobsearch.com"/></div>
+        <div class="form-row"><label>Hours</label><input class="input" value="Mon – Sat · 10:00 – 18:00"/></div>
+      </div>
+      <div class="card" style="padding:22px">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Booking policies</h3>
+        <div class="form-row"><label>Cancellation</label>
+          <select class="input">
+            <option>Flexible · full refund up to 24h before</option>
+            <option selected>Standard · full refund up to 72h before</option>
+            <option>Strict · 50% refund up to 7 days before</option>
+          </select>
+        </div>
+        <div class="form-row"><label>Approval</label>
+          <select class="input"><option selected>Manual approval (you confirm each booking)</option><option>Auto-confirm</option></select>
+        </div>
+        <div class="form-row" style="display:flex;align-items:center;gap:10px;margin-bottom:0"><input type="checkbox" id="ws" checked/><label for="ws" style="margin:0">Allow waitlist when fully booked</label></div>
+      </div>
+      <div class="card" style="padding:22px">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Payouts & tax</h3>
+        <div class="form-row"><label>Payout method</label><div style="padding:10px 12px;border:1px solid var(--line);border-radius:8px;display:flex;justify-content:space-between;align-items:center;font-size:13px"><span>Maybank · Acc ending 4291</span><button class="btn-ghost btn" style="border:none">Change</button></div></div>
+        <div class="form-row"><label>Payout schedule</label><select class="input"><option>Weekly (every Monday)</option><option selected>Bi-weekly</option><option>Monthly</option></select></div>
+        <div class="form-row"><label>SST registration</label><input class="input" value="W10-2-3-1234"/></div>
+        <div class="form-row" style="margin-bottom:0"><label>Currency</label><input class="input" value="MYR" readonly/></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:18px"><button class="btn">Cancel</button><button class="btn btn-pink">Save changes</button></div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = hubSidebar('settings');
+</script>
+</body></html>

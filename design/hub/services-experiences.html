@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Manage Experiences · Mereka Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css"><script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-hub">
+  <div id="side"></div>
+  <main>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+      <div><h1 style="font-size:24px;font-weight:800">Manage Experiences</h1><p style="font-size:13.5px;color:#64748B;margin-top:4px">Events, classes, and workshops your hub offers.</p></div>
+      <a href="../onboarding/experience-select.html" class="btn btn-pink">+ New experience</a>
+    </div>
+    <div class="tab-bar"><a href="#" class="active">Live · 8</a><a href="#">Drafts · 2</a><a href="#">Archived · 5</a></div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px">
+      <!-- 6 cards -->
+      <div class="card" style="overflow:hidden;display:grid;grid-template-columns:160px 1fr">
+        <div style="background:linear-gradient(135deg,#FEF3C7,#FCE7F3);height:100%;min-height:140px"></div>
+        <div style="padding:16px">
+          <div style="display:flex;gap:6px;margin-bottom:6px"><span class="chip chip-y">Course</span><span class="chip chip-g">Live</span></div>
+          <h3 style="font-size:15px;font-weight:700">Digital Marketing Foundations</h3>
+          <p style="font-size:12px;color:#64748B;margin-top:4px">8-week cohort · Mon/Thu 7:30 PM Zoom · RM 1,200</p>
+          <div style="display:flex;gap:18px;font-size:11.5px;margin-top:10px;color:#475569"><span><b style="color:#0F172A">22</b> bookings</span><span><b style="color:#0F172A">★ 4.9</b></span><span><b style="color:#0F172A">RM 26,400</b></span></div>
+          <div style="display:flex;gap:6px;margin-top:12px"><button class="btn">Edit</button><button class="btn">Duplicate</button><button class="btn btn-ghost" style="margin-left:auto;border:none;padding:4px">⋯</button></div>
+        </div>
+      </div>
+      <div class="card" style="overflow:hidden;display:grid;grid-template-columns:160px 1fr">
+        <div style="background:linear-gradient(135deg,#CCFBF1,#DBEAFE);height:100%;min-height:140px"></div>
+        <div style="padding:16px">
+          <div style="display:flex;gap:6px;margin-bottom:6px"><span class="chip chip-y">Course</span><span class="chip chip-g">Live</span></div>
+          <h3 style="font-size:15px;font-weight:700">Career Pivot Playbook</h3>
+          <p style="font-size:12px;color:#64748B;margin-top:4px">8-module self-paced + group · RM 720</p>
+          <div style="display:flex;gap:18px;font-size:11.5px;margin-top:10px;color:#475569"><span><b style="color:#0F172A">18</b> bookings</span><span><b style="color:#0F172A">★ 4.8</b></span><span><b style="color:#0F172A">RM 12,960</b></span></div>
+          <div style="display:flex;gap:6px;margin-top:12px"><button class="btn">Edit</button><button class="btn">Duplicate</button><button class="btn btn-ghost" style="margin-left:auto;border:none;padding:4px">⋯</button></div>
+        </div>
+      </div>
+      <div class="card" style="overflow:hidden;display:grid;grid-template-columns:160px 1fr">
+        <div style="background:linear-gradient(135deg,#F3E8FF,#FCE7F3);height:100%;min-height:140px"></div>
+        <div style="padding:16px">
+          <div style="display:flex;gap:6px;margin-bottom:6px"><span class="chip chip-b">Workshop</span><span class="chip chip-g">Live</span></div>
+          <h3 style="font-size:15px;font-weight:700">Resume Workshop</h3>
+          <p style="font-size:12px;color:#64748B;margin-top:4px">Drop-in · Tue 10:00 AM · RM 95 / seat</p>
+          <div style="display:flex;gap:18px;font-size:11.5px;margin-top:10px;color:#475569"><span><b style="color:#0F172A">48</b> bookings</span><span><b style="color:#0F172A">★ 4.7</b></span><span><b style="color:#0F172A">RM 3,420</b></span></div>
+          <div style="display:flex;gap:6px;margin-top:12px"><button class="btn">Edit</button><button class="btn">Duplicate</button><button class="btn btn-ghost" style="margin-left:auto;border:none;padding:4px">⋯</button></div>
+        </div>
+      </div>
+      <div class="card" style="overflow:hidden;display:grid;grid-template-columns:160px 1fr">
+        <div style="background:linear-gradient(135deg,#DCFCE7,#FEF3C7);height:100%;min-height:140px"></div>
+        <div style="padding:16px">
+          <div style="display:flex;gap:6px;margin-bottom:6px"><span class="chip chip-p">Event</span><span class="chip chip-g">Live</span></div>
+          <h3 style="font-size:15px;font-weight:700">Mock Interview Day</h3>
+          <p style="font-size:12px;color:#64748B;margin-top:4px">Quarterly · Hub @ Penang · RM 80 / 30-min slot</p>
+          <div style="display:flex;gap:18px;font-size:11.5px;margin-top:10px;color:#475569"><span><b style="color:#0F172A">62</b> bookings</span><span><b style="color:#0F172A">★ 4.95</b></span><span><b style="color:#0F172A">RM 4,580</b></span></div>
+          <div style="display:flex;gap:6px;margin-top:12px"><button class="btn">Edit</button><button class="btn">Duplicate</button><button class="btn btn-ghost" style="margin-left:auto;border:none;padding:4px">⋯</button></div>
+        </div>
+      </div>
+      <div class="card" style="overflow:hidden;display:grid;grid-template-columns:160px 1fr;opacity:.65">
+        <div style="background:repeating-linear-gradient(45deg,#F1F5F9,#F1F5F9 8px,#E2E8F0 8px,#E2E8F0 16px);height:100%;min-height:140px;display:flex;align-items:center;justify-content:center;color:#94A3B8;font-weight:600">DRAFT</div>
+        <div style="padding:16px">
+          <div style="display:flex;gap:6px;margin-bottom:6px"><span class="chip chip-y">Course</span><span class="chip chip-slate">Draft</span></div>
+          <h3 style="font-size:15px;font-weight:700">LinkedIn Mastery · Cohort 1</h3>
+          <p style="font-size:12px;color:#64748B;margin-top:4px">4-week intensive · Sat 10:00 AM · Pricing TBD</p>
+          <div style="display:flex;gap:18px;font-size:11.5px;margin-top:10px;color:#475569"><span>Outline 60%</span><span>Photos missing</span></div>
+          <div style="display:flex;gap:6px;margin-top:12px"><button class="btn btn-pink">Continue</button><button class="btn btn-ghost" style="margin-left:auto;border:none;padding:4px">⋯</button></div>
+        </div>
+      </div>
+      <div class="card" style="overflow:hidden;display:grid;grid-template-columns:160px 1fr">
+        <div style="background:linear-gradient(135deg,#FEE2E2,#FCE7F3);height:100%;min-height:140px"></div>
+        <div style="padding:16px">
+          <div style="display:flex;gap:6px;margin-bottom:6px"><span class="chip chip-b">Workshop</span><span class="chip chip-g">Live</span></div>
+          <h3 style="font-size:15px;font-weight:700">Network Like a Pro</h3>
+          <p style="font-size:12px;color:#64748B;margin-top:4px">Hybrid · monthly · RM 120</p>
+          <div style="display:flex;gap:18px;font-size:11.5px;margin-top:10px;color:#475569"><span><b style="color:#0F172A">14</b> bookings</span><span><b style="color:#0F172A">★ 4.6</b></span><span><b style="color:#0F172A">RM 1,680</b></span></div>
+          <div style="display:flex;gap:6px;margin-top:12px"><button class="btn">Edit</button><button class="btn">Duplicate</button><button class="btn btn-ghost" style="margin-left:auto;border:none;padding:4px">⋯</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = hubSidebar('experiences');
+</script>
+</body></html>

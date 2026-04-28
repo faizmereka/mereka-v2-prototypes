@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Hubs · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<style>
+:root{--side-w:220px}
+.admin-shell{display:grid;grid-template-columns:var(--side-w) 1fr;min-height:100vh}
+.admin-side{background:#0F172A;color:#fff;padding:18px;display:flex;flex-direction:column;gap:4px}
+.admin-side .brand{padding:8px 10px 14px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:8px;color:#fff}
+.admin-side .lbl{font-size:10.5px;color:#64748B;text-transform:uppercase;font-weight:700;letter-spacing:.08em;padding:14px 10px 6px}
+.admin-side a{padding:8px 10px;border-radius:8px;color:#CBD5E1;text-decoration:none;font-size:13px;display:flex;align-items:center;gap:10px}
+.admin-side a:hover{background:rgba(255,255,255,.06);color:#fff}
+.admin-side a.active{background:#E5397B;color:#fff;font-weight:600}
+.admin-main{padding:28px 32px;background:#FAFBFC}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="admin-side">
+    <div class="brand"><b style="font-size:13px">Mereka Admin</b></div>
+    <div class="lbl">Overview</div><a href="dashboard.html">📊 Dashboard</a>
+    <div class="lbl">People</div><a href="users.html">👥 Users</a><a href="hubs.html" class="active">🏢 Hubs</a><a href="#">⭐ Experts</a><a href="#">📄 KYC queue</a>
+    <div class="lbl">Money</div><a href="finance.html">💰 Finance</a>
+  </aside>
+
+  <main class="admin-main">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
+      <div><h1 style="font-size:22px;font-weight:800">Hubs · 312</h1><p style="font-size:12.5px;color:#64748B;margin-top:2px">Approve, manage, and review platform hubs.</p></div>
+    </div>
+
+    <div class="tab-bar">
+      <a href="#" class="active">All · 312</a>
+      <a href="#" style="color:#92400E">Pending KYC · 14</a>
+      <a href="#">Live · 287</a>
+      <a href="#">Suspended · 11</a>
+    </div>
+
+    <div class="card" style="overflow:hidden">
+      <table class="table">
+        <thead><tr><th>Hub</th><th>Plan</th><th>Owner</th><th>Country</th><th>Members</th><th style="text-align:right">GMV (30d)</th><th>Rating</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#F59E0B,#E5397B);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;flex-shrink:0">PJ</div><div><b>Penang Jobsearch Hub</b><div style="font-size:11px;color:#94A3B8">penang-jobsearch · ID H002</div></div></div></td><td><span class="chip chip-p">PRO</span></td><td>Aiyu Tan</td><td>🇲🇾 Penang</td><td>5</td><td style="text-align:right;font-weight:600">RM 48,920</td><td>★ 4.83</td><td><span class="chip chip-g">Live</span></td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#9333EA,#3B82F6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;flex-shrink:0">KL</div><div><b>KL Maker Studio</b><div style="font-size:11px;color:#94A3B8">kl-maker · ID H001</div></div></div></td><td><span class="chip chip-y">Studio</span></td><td>Sarah Lee</td><td>🇲🇾 KL</td><td>12</td><td style="text-align:right;font-weight:600">RM 124,800</td><td>★ 4.91</td><td><span class="chip chip-g">Live</span></td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#0D9488,#3B82F6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;flex-shrink:0">CC</div><div><b>Cyberjaya Code School</b><div style="font-size:11px;color:#94A3B8">cyberjaya-code · ID H312 · Submitted 2 min ago</div></div></div></td><td><span class="chip chip-slate">Starter</span></td><td>Sarah Lee</td><td>🇲🇾 Cyberjaya</td><td>1</td><td style="text-align:right;color:#94A3B8">—</td><td>—</td><td><span class="chip chip-y">Pending KYC</span></td><td><button class="btn-pink btn">Review</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#E5397B,#F59E0B);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;flex-shrink:0">JB</div><div><b>JB Creative Collective</b><div style="font-size:11px;color:#94A3B8">jb-creative · ID H148</div></div></div></td><td><span class="chip chip-p">PRO</span></td><td>Marcus Goh</td><td>🇲🇾 Johor Bahru</td><td>4</td><td style="text-align:right;font-weight:600">RM 18,400</td><td>★ 4.72</td><td><span class="chip chip-g">Live</span></td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#16A34A,#3B82F6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;flex-shrink:0">SK</div><div><b>Sabah Wellness Hub</b><div style="font-size:11px;color:#94A3B8">sabah-wellness · ID H209</div></div></div></td><td><span class="chip chip-p">PRO</span></td><td>Linda Kong</td><td>🇲🇾 Kota Kinabalu</td><td>3</td><td style="text-align:right;font-weight:600">RM 8,400</td><td>★ 4.96</td><td><span class="chip chip-g">Live</span></td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><div style="display:flex;gap:10px;align-items:center"><div style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#94A3B8,#64748B);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;flex-shrink:0">YS</div><div><b>YouthSkills KK</b><div style="font-size:11px;color:#94A3B8">youthskills · ID H087</div></div></div></td><td><span class="chip chip-slate">Starter</span></td><td>Vincent Tang</td><td>🇲🇾 Sabah</td><td>2</td><td style="text-align:right;color:#DC2626;font-weight:600">RM 0</td><td>—</td><td><span class="chip chip-r">Suspended</span></td><td><button class="btn">Restore</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+</body></html>

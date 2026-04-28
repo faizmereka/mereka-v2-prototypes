@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Communication Logs · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-user">
+  <div id="side"></div>
+  <main class="user-main">
+    <h1>Communication Logs</h1>
+    <p class="sub">A log of system emails and messages Mereka has sent you. Useful for support and tax records.</p>
+
+    <div class="card" style="overflow:hidden;margin-top:24px">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:8px"><button class="btn">All channels</button><button class="btn">Last 30 days</button><button class="btn">All status</button><div style="flex:1"></div><button class="btn">Search</button></div>
+      <table class="table">
+        <thead><tr><th>Sent at</th><th>Channel</th><th>Subject</th><th>To</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>14 Mar 2025 · 10:24</td><td><span class="chip chip-b">Email</span></td><td><b>Booking confirmed: Pottery Workshop</b></td><td>faiz@mereka.io</td><td><span class="chip chip-g">Delivered</span></td><td><button class="btn-ghost btn" style="border:none">Preview</button></td></tr>
+          <tr><td>14 Mar 2025 · 10:24</td><td><span class="chip chip-p">Push</span></td><td>Booking confirmed</td><td>iPhone (Faiz)</td><td><span class="chip chip-g">Read</span></td><td></td></tr>
+          <tr><td>14 Mar 2025 · 10:24</td><td><span class="chip chip-y">SMS</span></td><td>Mereka: Booking confirmed for Sat 15 Mar 2pm</td><td>+60 12 345 6789</td><td><span class="chip chip-g">Delivered</span></td><td></td></tr>
+          <tr><td>12 Mar 2025 · 19:08</td><td><span class="chip chip-b">Email</span></td><td><b>Receipt for your purchase: RM 180</b></td><td>faiz@mereka.io</td><td><span class="chip chip-g">Delivered · Opened</span></td><td><button class="btn-ghost btn" style="border:none">Preview</button></td></tr>
+          <tr><td>12 Mar 2025 · 18:55</td><td><span class="chip chip-b">Email</span></td><td><b>Aizat Rahman accepted your session</b></td><td>faiz@mereka.io</td><td><span class="chip chip-g">Delivered · Opened</span></td><td><button class="btn-ghost btn" style="border:none">Preview</button></td></tr>
+          <tr><td>08 Mar 2025 · 14:31</td><td><span class="chip chip-b">Email</span></td><td><b>Welcome to Digital Marketing Foundations cohort</b></td><td>faiz@mereka.io</td><td><span class="chip chip-g">Delivered · Opened</span></td><td><button class="btn-ghost btn" style="border:none">Preview</button></td></tr>
+          <tr><td>04 Mar 2025 · 06:00</td><td><span class="chip chip-b">Email</span></td><td>Mereka Pro: monthly receipt</td><td>faiz@mereka.io</td><td><span class="chip chip-g">Delivered</span></td><td><button class="btn-ghost btn" style="border:none">Preview</button></td></tr>
+          <tr><td>28 Feb 2025 · 16:15</td><td><span class="chip chip-b">Email</span></td><td>Refund initiated: Sourdough Baking 101</td><td>faiz@mereka.io</td><td><span class="chip chip-y">Bounced (resent)</span></td><td><button class="btn-ghost btn" style="border:none">Resend</button></td></tr>
+          <tr><td>22 Feb 2025 · 09:00</td><td><span class="chip chip-p">Push</span></td><td>Yoga at Sunrise · Class starts in 1 hour</td><td>iPhone (Faiz)</td><td><span class="chip chip-slate">Sent</span></td><td></td></tr>
+          <tr><td>20 Feb 2025 · 12:00</td><td><span class="chip chip-b">Email</span></td><td>Your weekly recommendations</td><td>faiz@mereka.io</td><td><span class="chip chip-slate">Delivered</span></td><td><button class="btn-ghost btn" style="border:none">Preview</button></td></tr>
+        </tbody>
+      </table>
+      <div style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center;color:#64748B;font-size:12.5px;border-top:1px solid var(--line)">
+        <span>Showing 10 of 184 entries</span>
+        <div style="display:flex;gap:6px"><button class="btn">Previous</button><button class="btn">Next</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = userSidebar('comm-logs');
+</script>
+</body></html>

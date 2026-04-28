@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Notification Settings · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<script src="../shell/shell.js"></script>
+<style>
+.toggle{position:relative;display:inline-block;width:42px;height:24px}
+.toggle input{display:none}
+.slider-t{position:absolute;inset:0;background:#CBD5E1;border-radius:999px;transition:.2s;cursor:pointer}
+.slider-t::before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked + .slider-t{background:var(--brand-pink)}
+.toggle input:checked + .slider-t::before{transform:translateX(18px)}
+.row{display:grid;grid-template-columns:1fr auto auto auto;gap:24px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px}
+.row:last-child{border-bottom:0}
+.row .col-h{font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;text-align:center;width:42px}
+</style>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-user">
+  <div id="side"></div>
+  <main class="user-main">
+    <h1>Notification Settings</h1>
+    <p class="sub">Choose how Mereka contacts you.</p>
+
+    <div class="card" style="padding:24px;margin-top:24px">
+      <div class="row" style="border-bottom:1px solid var(--line);padding-bottom:8px"><div></div><div class="col-h">Email</div><div class="col-h">Push</div><div class="col-h">SMS</div></div>
+
+      <h3 style="font-size:13px;font-weight:700;color:#0F172A;margin-top:20px;margin-bottom:4px">Bookings & sessions</h3>
+      <div class="row"><div><b>Booking confirmations</b><div style="font-size:12px;color:#64748B">When a host accepts or declines</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+      </div>
+      <div class="row"><div><b>Reminders</b><div style="font-size:12px;color:#64748B">24h and 1h before sessions</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+      </div>
+      <div class="row"><div><b>Cancellations & refunds</b><div style="font-size:12px;color:#64748B">Important — we recommend keeping these on</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+      </div>
+
+      <h3 style="font-size:13px;font-weight:700;color:#0F172A;margin-top:24px;margin-bottom:4px">Messages & community</h3>
+      <div class="row"><div><b>New messages</b><div style="font-size:12px;color:#64748B">From hosts, experts, hubs</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+      </div>
+      <div class="row"><div><b>Reviews</b><div style="font-size:12px;color:#64748B">When someone reviews you, or invites a review</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+      </div>
+      <div class="row"><div><b>Mentions in community posts</b><div style="font-size:12px;color:#64748B">From hubs you've joined</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+      </div>
+
+      <h3 style="font-size:13px;font-weight:700;color:#0F172A;margin-top:24px;margin-bottom:4px">Recommendations & marketing</h3>
+      <div class="row"><div><b>Personalised recommendations</b><div style="font-size:12px;color:#64748B">Weekly digest of experts & experiences</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+      </div>
+      <div class="row"><div><b>Mereka newsletter</b><div style="font-size:12px;color:#64748B">Stories from the community, monthly</div></div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+      </div>
+      <div class="row"><div><b>Promotions & offers</b><div style="font-size:12px;color:#64748B">Discounts and limited-time offers</div></div>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+        <label class="toggle"><input type="checkbox"><span class="slider-t"></span></label>
+      </div>
+    </div>
+
+    <div class="card" style="padding:22px;margin-top:18px">
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:8px">Quiet hours</h3>
+      <p style="font-size:13px;color:#64748B;margin-bottom:14px">We'll hold non-urgent push notifications during these hours and deliver them next morning.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:end">
+        <div class="field" style="margin-top:0"><label>From</label><input type="time" value="22:00"/></div>
+        <div class="field" style="margin-top:0"><label>To</label><input type="time" value="07:30"/></div>
+        <div><label class="toggle"><input type="checkbox" checked><span class="slider-t"></span></label> <span style="font-size:13px;margin-left:6px">Enabled</span></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = userSidebar('notification-settings');
+</script>
+</body></html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Finance · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<style>
+:root{--side-w:220px}
+.admin-shell{display:grid;grid-template-columns:var(--side-w) 1fr;min-height:100vh}
+.admin-side{background:#0F172A;color:#fff;padding:18px;display:flex;flex-direction:column;gap:4px}
+.admin-side .brand{padding:8px 10px 14px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:8px;color:#fff}
+.admin-side .lbl{font-size:10.5px;color:#64748B;text-transform:uppercase;font-weight:700;letter-spacing:.08em;padding:14px 10px 6px}
+.admin-side a{padding:8px 10px;border-radius:8px;color:#CBD5E1;text-decoration:none;font-size:13px;display:flex;align-items:center;gap:10px}
+.admin-side a:hover{background:rgba(255,255,255,.06);color:#fff}
+.admin-side a.active{background:#E5397B;color:#fff;font-weight:600}
+.admin-main{padding:28px 32px;background:#FAFBFC}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="admin-side">
+    <div class="brand"><b style="font-size:13px">Mereka Admin</b></div>
+    <div class="lbl">Overview</div><a href="dashboard.html">📊 Dashboard</a>
+    <div class="lbl">People</div><a href="users.html">👥 Users</a><a href="hubs.html">🏢 Hubs</a>
+    <div class="lbl">Money</div><a href="finance.html" class="active">💰 Finance</a><a href="#">↩️ Refunds</a>
+  </aside>
+
+  <main class="admin-main">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+      <div><h1 style="font-size:22px;font-weight:800">Finance</h1><p style="font-size:12.5px;color:#64748B;margin-top:2px">Platform revenue, payouts, and tax reports.</p></div>
+      <div style="display:flex;gap:8px"><button class="btn">March 2025</button><button class="btn-dark btn">Export ledger</button></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+      <div class="card kpi" style="padding:18px"><div class="label">GMV (MTD)</div><div class="value" style="margin-top:6px">RM 2.84M</div><div style="font-size:11.5px;color:#16A34A;font-weight:600;margin-top:4px">↑ 22% MoM</div></div>
+      <div class="card kpi" style="padding:18px"><div class="label">Platform revenue</div><div class="value" style="margin-top:6px">RM 204,480</div><div style="font-size:11.5px;color:#64748B;margin-top:4px">7.2% take rate</div></div>
+      <div class="card kpi" style="padding:18px"><div class="label">Payouts owed</div><div class="value" style="margin-top:6px">RM 612,200</div><div style="font-size:11.5px;color:#94A3B8;margin-top:4px">Next batch · 31 Mar</div></div>
+      <div class="card kpi" style="padding:18px"><div class="label">Refunds (MTD)</div><div class="value" style="margin-top:6px;color:#DC2626">RM 38,420</div><div style="font-size:11.5px;color:#94A3B8;margin-top:4px">1.35% of GMV</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+      <div class="card" style="padding:22px">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Revenue mix · MTD</h3>
+        <svg viewBox="0 0 200 200" style="width:160px;height:160px;margin:0 auto;display:block">
+          <circle r="80" cx="100" cy="100" fill="transparent" stroke="#E5397B" stroke-width="40" stroke-dasharray="285 503" stroke-dashoffset="0"/>
+          <circle r="80" cx="100" cy="100" fill="transparent" stroke="#9333EA" stroke-width="40" stroke-dasharray="125 503" stroke-dashoffset="-285"/>
+          <circle r="80" cx="100" cy="100" fill="transparent" stroke="#F59E0B" stroke-width="40" stroke-dasharray="65 503" stroke-dashoffset="-410"/>
+          <circle r="80" cx="100" cy="100" fill="transparent" stroke="#0D9488" stroke-width="40" stroke-dasharray="28 503" stroke-dashoffset="-475"/>
+        </svg>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;margin-top:14px">
+          <div><span style="color:#E5397B">●</span> <b>Experiences</b> · RM 116,800 (57%)</div>
+          <div><span style="color:#9333EA">●</span> <b>Expertise</b> · RM 51,120 (25%)</div>
+          <div><span style="color:#F59E0B">●</span> <b>Subs (PRO/Studio)</b> · RM 26,400 (13%)</div>
+          <div><span style="color:#0D9488">●</span> <b>Job posting fees</b> · RM 10,160 (5%)</div>
+        </div>
+      </div>
+      <div class="card" style="padding:22px">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Top-grossing hubs · MTD</h3>
+        <table class="table" style="margin:-22px;width:calc(100% + 44px)">
+          <thead><tr><th>Hub</th><th style="text-align:right">GMV</th><th style="text-align:right">Take</th></tr></thead>
+          <tbody>
+            <tr><td>KL Maker Studio</td><td style="text-align:right;font-weight:600">RM 124,800</td><td style="text-align:right">RM 8,736</td></tr>
+            <tr><td>Penang Jobsearch Hub</td><td style="text-align:right;font-weight:600">RM 48,920</td><td style="text-align:right">RM 2,935</td></tr>
+            <tr><td>JB Creative Collective</td><td style="text-align:right;font-weight:600">RM 18,400</td><td style="text-align:right">RM 1,288</td></tr>
+            <tr><td>The Wellness Loft KL</td><td style="text-align:right;font-weight:600">RM 14,820</td><td style="text-align:right">RM 1,038</td></tr>
+            <tr><td>Sabah Wellness Hub</td><td style="text-align:right;font-weight:600">RM 8,400</td><td style="text-align:right">RM 504</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="overflow:hidden">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px"><b style="font-size:13.5px">Recent ledger entries</b><div style="flex:1"></div><button class="btn">All accounts</button></div>
+      <table class="table">
+        <thead><tr><th>Date</th><th>Entry</th><th>Counterparty</th><th>Reference</th><th style="text-align:right">Debit</th><th style="text-align:right">Credit</th></tr></thead>
+        <tbody>
+          <tr><td>25 Mar 2025</td><td><span class="chip chip-g">Income · platform fee</span></td><td>Penang Jobsearch Hub</td><td>BK-218201</td><td style="text-align:right">—</td><td style="text-align:right;color:#16A34A;font-weight:600">RM 73.44</td></tr>
+          <tr><td>25 Mar 2025</td><td><span class="chip chip-b">Liability · payout owed</span></td><td>Penang Jobsearch Hub</td><td>BK-218201</td><td style="text-align:right;color:#DC2626;font-weight:600">RM 1,150.56</td><td style="text-align:right">—</td></tr>
+          <tr><td>22 Mar 2025</td><td><span class="chip chip-r">Refund processed</span></td><td>Adlina Hashim</td><td>BK-217994</td><td style="text-align:right;color:#DC2626;font-weight:600">RM 180.00</td><td style="text-align:right">—</td></tr>
+          <tr><td>17 Mar 2025</td><td><span class="chip chip-b">Payout sent</span></td><td>Penang Jobsearch Hub · MBB ····4291</td><td>PO-00214</td><td style="text-align:right;color:#DC2626;font-weight:600">RM 9,820.00</td><td style="text-align:right">—</td></tr>
+          <tr><td>14 Mar 2025</td><td><span class="chip chip-g">Subscription · PRO</span></td><td>Penang Jobsearch Hub</td><td>INV-PRO-0014</td><td style="text-align:right">—</td><td style="text-align:right;color:#16A34A;font-weight:600">RM 199.00</td></tr>
+          <tr><td>14 Mar 2025</td><td><span class="chip chip-g">Subscription · Studio</span></td><td>KL Maker Studio</td><td>INV-STD-0009</td><td style="text-align:right">—</td><td style="text-align:right;color:#16A34A;font-weight:600">RM 599.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+</body></html>

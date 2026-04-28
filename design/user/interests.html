@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Interests · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<script src="../shell/shell.js"></script>
+<style>
+.tag{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;font-size:13px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:500;color:var(--ink-2);transition:all .12s}
+.tag:hover{border-color:#94A3B8}
+.tag.on{background:var(--brand-pink);color:#fff;border-color:var(--brand-pink);font-weight:600}
+.tag .x{margin-left:2px;opacity:.7}
+</style>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-user">
+  <div id="side"></div>
+  <main class="user-main">
+    <h1>Interests</h1>
+    <p class="sub">Pick topics you care about — we use this to personalise your feed and recommendations.</p>
+
+    <div class="card" style="padding:24px;margin-top:24px">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:6px">Your interests <span style="color:#64748B;font-weight:500">· 12 selected</span></h3>
+      <p style="font-size:13px;color:#64748B;margin-bottom:18px">Tap a topic to add or remove. The more you select, the better we can tailor what we show you.</p>
+
+      <div style="font-size:11.5px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;margin:14px 0 10px">Creative & arts</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <button class="tag on">🎨 Pottery <span class="x">×</span></button>
+        <button class="tag on">📸 Photography <span class="x">×</span></button>
+        <button class="tag on">🎭 Visual art <span class="x">×</span></button>
+        <button class="tag">✏️ Calligraphy</button>
+        <button class="tag">🎼 Music</button>
+        <button class="tag">📐 Architecture</button>
+        <button class="tag">🧵 Textile arts</button>
+      </div>
+
+      <div style="font-size:11.5px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;margin:24px 0 10px">Career & skills</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <button class="tag on">🎯 Career coaching <span class="x">×</span></button>
+        <button class="tag on">💼 Marketing <span class="x">×</span></button>
+        <button class="tag on">🖌️ UX design <span class="x">×</span></button>
+        <button class="tag on">📊 Data analytics <span class="x">×</span></button>
+        <button class="tag">💰 Finance</button>
+        <button class="tag">🤝 Sales</button>
+        <button class="tag">⚖️ Leadership</button>
+        <button class="tag">📝 Copywriting</button>
+        <button class="tag">🤖 AI / ML</button>
+      </div>
+
+      <div style="font-size:11.5px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;margin:24px 0 10px">Food & wellness</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <button class="tag on">🍞 Baking <span class="x">×</span></button>
+        <button class="tag on">🧘 Yoga <span class="x">×</span></button>
+        <button class="tag">🏋️ Fitness</button>
+        <button class="tag">🥗 Cooking</button>
+        <button class="tag">☕ Coffee</button>
+        <button class="tag">🌿 Mindfulness</button>
+        <button class="tag">🍷 Wine</button>
+      </div>
+
+      <div style="font-size:11.5px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;margin:24px 0 10px">Outdoors & community</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <button class="tag on">🌱 Sustainability <span class="x">×</span></button>
+        <button class="tag on">🏝️ Travel <span class="x">×</span></button>
+        <button class="tag on">🎉 Events <span class="x">×</span></button>
+        <button class="tag">🏃 Running</button>
+        <button class="tag">🚲 Cycling</button>
+        <button class="tag">⛰️ Hiking</button>
+        <button class="tag">🌊 Diving</button>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:20px;border-top:1px solid var(--line)">
+        <p style="font-size:12.5px;color:#64748B">Pick at least 3 to start getting better recommendations.</p>
+        <button class="btn btn-pink">Save interests</button>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = userSidebar('interests');
+document.querySelectorAll('.tag').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('on')));
+</script>
+</body></html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>My Bookings · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-user">
+  <div id="side"></div>
+  <main class="user-main">
+    <h1>My Bookings</h1>
+    <p class="sub">Sessions, classes, and experiences you have booked.</p>
+
+    <div class="tab-bar" style="margin-top:24px">
+      <a href="#" class="active">Upcoming · 4</a>
+      <a href="#">Past · 12</a>
+      <a href="#">Cancelled</a>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="padding:0;overflow:hidden;display:grid;grid-template-columns:200px 1fr auto">
+        <div style="background:linear-gradient(135deg,#FDF2F8,#F3E8FF);height:160px;display:flex;align-items:center;justify-content:center;color:#9333EA;font-weight:600;font-size:13px">Workshop image</div>
+        <div style="padding:18px 20px">
+          <div style="display:flex;gap:8px;margin-bottom:8px"><span class="chip chip-y">Experience</span><span class="chip chip-g">Confirmed</span></div>
+          <h3 style="font-size:16px;font-weight:700">Pottery Workshop: Hand-Build Your First Vase</h3>
+          <p style="font-size:13px;color:#64748B;margin-top:6px">Hosted by <b style="color:#0F172A">Sarah Tan</b> · The Studio @ Bangsar</p>
+          <div style="display:flex;gap:18px;margin-top:14px;font-size:13px;color:#475569">
+            <div>📅 Sat, 15 Mar 2025</div>
+            <div>🕒 2:00 PM – 5:00 PM</div>
+            <div>👥 2 attendees</div>
+          </div>
+        </div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;border-left:1px solid var(--line-soft)">
+          <div style="text-align:right"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em">Total paid</div><div style="font-size:18px;font-weight:700">RM 240</div></div>
+          <div style="display:flex;flex-direction:column;gap:6px;width:140px"><button class="btn" style="justify-content:center">View details</button><button class="btn-ghost btn" style="border:none;justify-content:center;color:#DC2626">Cancel booking</button></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden;display:grid;grid-template-columns:200px 1fr auto">
+        <div style="background:linear-gradient(135deg,#CCFBF1,#DBEAFE);height:160px;display:flex;align-items:center;justify-content:center;color:#0D9488;font-weight:600;font-size:13px">Session image</div>
+        <div style="padding:18px 20px">
+          <div style="display:flex;gap:8px;margin-bottom:8px"><span class="chip chip-t">Expertise</span><span class="chip chip-g">Confirmed</span></div>
+          <h3 style="font-size:16px;font-weight:700">1:1 Career Coaching with Aizat Rahman</h3>
+          <p style="font-size:13px;color:#64748B;margin-top:6px">60-min Zoom session · Career strategy & next steps</p>
+          <div style="display:flex;gap:18px;margin-top:14px;font-size:13px;color:#475569">
+            <div>📅 Tue, 18 Mar 2025</div>
+            <div>🕒 8:00 PM – 9:00 PM</div>
+            <div>💻 Zoom (link sent 1h before)</div>
+          </div>
+        </div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;border-left:1px solid var(--line-soft)">
+          <div style="text-align:right"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em">Total paid</div><div style="font-size:18px;font-weight:700">RM 180</div></div>
+          <div style="display:flex;flex-direction:column;gap:6px;width:140px"><button class="btn btn-pink" style="justify-content:center">Join Zoom</button><button class="btn" style="justify-content:center">Reschedule</button></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden;display:grid;grid-template-columns:200px 1fr auto">
+        <div style="background:linear-gradient(135deg,#FEF3C7,#FCE7F3);height:160px;display:flex;align-items:center;justify-content:center;color:#92400E;font-weight:600;font-size:13px">Course image</div>
+        <div style="padding:18px 20px">
+          <div style="display:flex;gap:8px;margin-bottom:8px"><span class="chip chip-b">Course</span><span class="chip chip-y">Starts Mon</span></div>
+          <h3 style="font-size:16px;font-weight:700">Digital Marketing Foundations · 8-week cohort</h3>
+          <p style="font-size:13px;color:#64748B;margin-top:6px">Hosted by <b style="color:#0F172A">Penang Jobsearch Hub</b></p>
+          <div style="display:flex;gap:18px;margin-top:14px;font-size:13px;color:#475569">
+            <div>📅 Mar 24 – May 19, 2025</div>
+            <div>🕒 Mon/Thu 7:30 PM</div>
+            <div>📚 24 modules</div>
+          </div>
+        </div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;border-left:1px solid var(--line-soft)">
+          <div style="text-align:right"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em">Total paid</div><div style="font-size:18px;font-weight:700">RM 1,200</div></div>
+          <div style="display:flex;flex-direction:column;gap:6px;width:140px"><button class="btn" style="justify-content:center">Course page</button><button class="btn" style="justify-content:center">Add to calendar</button></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden;display:grid;grid-template-columns:200px 1fr auto">
+        <div style="background:linear-gradient(135deg,#F3E8FF,#FCE7F3);height:160px;display:flex;align-items:center;justify-content:center;color:#9333EA;font-weight:600;font-size:13px">Event image</div>
+        <div style="padding:18px 20px">
+          <div style="display:flex;gap:8px;margin-bottom:8px"><span class="chip chip-y">Experience</span><span class="chip chip-slate">Pending host</span></div>
+          <h3 style="font-size:16px;font-weight:700">Sourdough Baking 101</h3>
+          <p style="font-size:13px;color:#64748B;margin-top:6px">Hosted by <b style="color:#0F172A">Ahmad's Kitchen</b> · Cheras KL</p>
+          <div style="display:flex;gap:18px;margin-top:14px;font-size:13px;color:#475569">
+            <div>📅 Sun, 30 Mar 2025</div>
+            <div>🕒 10:00 AM – 1:00 PM</div>
+            <div>👥 1 attendee</div>
+          </div>
+        </div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;border-left:1px solid var(--line-soft)">
+          <div style="text-align:right"><div style="font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em">Pending</div><div style="font-size:18px;font-weight:700">RM 150</div></div>
+          <div style="display:flex;flex-direction:column;gap:6px;width:140px"><button class="btn" style="justify-content:center">Message host</button><button class="btn-ghost btn" style="border:none;justify-content:center;color:#DC2626">Withdraw</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = userSidebar('bookings');
+</script>
+</body></html>

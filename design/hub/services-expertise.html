@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Manage Expertise · Mereka Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css"><script src="../shell/shell.js"></script>
+</head>
+<body>
+<div id="topnav"></div>
+<div class="layout-hub">
+  <div id="side"></div>
+  <main>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+      <div><h1 style="font-size:24px;font-weight:800">Manage Expertise</h1><p style="font-size:13.5px;color:#64748B;margin-top:4px">1:1 expert sessions offered by your hub team.</p></div>
+      <button class="btn btn-pink">+ New expertise</button>
+    </div>
+    <div class="tab-bar"><a href="#" class="active">Live · 5</a><a href="#">Drafts · 1</a></div>
+    <div class="card" style="overflow:hidden">
+      <table class="table">
+        <thead><tr><th>Service</th><th>Expert</th><th>Session</th><th style="text-align:right">Rate</th><th>Bookings</th><th>Rating</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><b>Career Coaching · 1:1</b><div style="font-size:11.5px;color:#94A3B8">15 min intro · 60 min full</div></td><td><div style="display:flex;gap:8px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#9333EA,#E5397B)"></div>Aiyu Tan</div></td><td>Video · 60 min</td><td style="text-align:right;font-weight:600">RM 180</td><td>36</td><td>★ 4.92</td><td><span class="chip chip-g">Live</span></td></tr>
+          <tr><td><b>Mock Interview · 1:1</b><div style="font-size:11.5px;color:#94A3B8">Behavioural + technical</div></td><td><div style="display:flex;gap:8px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#16A34A,#3B82F6)"></div>Hafiz Razak</div></td><td>Video · 45 min</td><td style="text-align:right;font-weight:600">RM 180</td><td>62</td><td>★ 4.95</td><td><span class="chip chip-g">Live</span></td></tr>
+          <tr><td><b>Resume Review</b><div style="font-size:11.5px;color:#94A3B8">Async + 30 min review call</div></td><td><div style="display:flex;gap:8px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#9333EA)"></div>Yi Wen Ng</div></td><td>Async + Video · 30 min</td><td style="text-align:right;font-weight:600">RM 95</td><td>28</td><td>★ 4.85</td><td><span class="chip chip-g">Live</span></td></tr>
+          <tr><td><b>LinkedIn Audit</b><div style="font-size:11.5px;color:#94A3B8">Full profile teardown</div></td><td><div style="display:flex;gap:8px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#0D9488,#E5397B)"></div>Aiyu Tan</div></td><td>Async · 48h turnaround</td><td style="text-align:right;font-weight:600">RM 140</td><td>11</td><td>★ 4.78</td><td><span class="chip chip-g">Live</span></td></tr>
+          <tr><td><b>Salary Negotiation Coaching</b><div style="font-size:11.5px;color:#94A3B8">Strategy + role-play</div></td><td><div style="display:flex;gap:8px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#9333EA)"></div>Hafiz Razak</div></td><td>Video · 75 min</td><td style="text-align:right;font-weight:600">RM 240</td><td>9</td><td>★ 5.00</td><td><span class="chip chip-g">Live</span></td></tr>
+          <tr><td><b>Tech Interview Prep</b><div style="font-size:11.5px;color:#94A3B8">SWE-focused</div></td><td><div style="display:flex;gap:8px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#94A3B8,#94A3B8)"></div>—</div></td><td>—</td><td style="text-align:right;color:#94A3B8">draft</td><td>—</td><td>—</td><td><span class="chip chip-slate">Draft</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('topnav').innerHTML = topNav({active:'workspace'});
+document.getElementById('side').innerHTML = hubSidebar('expertise');
+</script>
+</body></html>

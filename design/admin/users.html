@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Users · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<style>
+:root{--side-w:220px}
+.admin-shell{display:grid;grid-template-columns:var(--side-w) 1fr;min-height:100vh}
+.admin-side{background:#0F172A;color:#fff;padding:18px;display:flex;flex-direction:column;gap:4px}
+.admin-side .brand{padding:8px 10px 14px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:8px;color:#fff}
+.admin-side .lbl{font-size:10.5px;color:#64748B;text-transform:uppercase;font-weight:700;letter-spacing:.08em;padding:14px 10px 6px}
+.admin-side a{padding:8px 10px;border-radius:8px;color:#CBD5E1;text-decoration:none;font-size:13px;display:flex;align-items:center;gap:10px}
+.admin-side a:hover{background:rgba(255,255,255,.06);color:#fff}
+.admin-side a.active{background:#E5397B;color:#fff;font-weight:600}
+.admin-main{padding:28px 32px;background:#FAFBFC}
+</style>
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="admin-side">
+    <div class="brand"><b style="font-size:13px">Mereka Admin</b></div>
+    <div class="lbl">Overview</div><a href="dashboard.html">📊 Dashboard</a>
+    <div class="lbl">People</div><a href="users.html" class="active">👥 Users</a><a href="hubs.html">🏢 Hubs</a><a href="#">⭐ Experts</a><a href="#">📄 KYC queue</a>
+    <div class="lbl">Money</div><a href="finance.html">💰 Finance</a>
+  </aside>
+
+  <main class="admin-main">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
+      <div><h1 style="font-size:22px;font-weight:800">Users · 18,420</h1><p style="font-size:12.5px;color:#64748B;margin-top:2px">All platform users incl. learners, experts, and hub members.</p></div>
+      <div style="display:flex;gap:8px"><button class="btn">Export</button><button class="btn-pink btn">+ Invite admin</button></div>
+    </div>
+
+    <div class="card" style="overflow:hidden">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input placeholder="Search by name, email, ID…" class="input" style="width:280px;margin:0;padding:7px 12px;font-size:12.5px"/>
+        <button class="btn">Role: All</button>
+        <button class="btn">Status: All</button>
+        <button class="btn">Country: MY</button>
+        <button class="btn">Joined: Last 90d</button>
+        <div style="flex:1"></div>
+        <span style="font-size:12px;color:#94A3B8">3 selected</span>
+        <button class="btn">Suspend</button><button class="btn">Email</button>
+      </div>
+      <table class="table">
+        <thead><tr><th style="width:30px"><input type="checkbox"/></th><th>User</th><th>Role</th><th>Joined</th><th>Bookings</th><th style="text-align:right">GMV</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><input type="checkbox" checked/></td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#9333EA,#E5397B)"></div><div><b>Faiz Aminuddin</b><div style="font-size:11px;color:#94A3B8">faiz@mereka.io · ID 18420</div></div></div></td><td><span class="chip chip-b">Learner</span></td><td>14 Jan 2024</td><td>12</td><td style="text-align:right;font-weight:600">RM 4,820</td><td><span class="chip chip-g">Active</span></td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><input type="checkbox" checked/></td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#16A34A,#3B82F6)"></div><div><b>Aiyu Tan</b><div style="font-size:11px;color:#94A3B8">aiyu@penangjobsearch.com · ID 11240</div></div></div></td><td><span class="chip chip-y">Hub Owner</span></td><td>21 Jul 2023</td><td>—</td><td style="text-align:right;font-weight:600">RM 124,800</td><td><span class="chip chip-g">Active</span></td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><input type="checkbox" checked/></td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#E5397B)"></div><div><b>Hafiz Razak</b><div style="font-size:11px;color:#94A3B8">hafiz@penangjobsearch.com · ID 11288</div></div></div></td><td><span class="chip chip-p">Expert</span></td><td>4 Aug 2023</td><td>62</td><td style="text-align:right;font-weight:600">RM 11,160</td><td><span class="chip chip-g">Active</span></td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><input type="checkbox"/></td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#0D9488,#9333EA)"></div><div><b>Priya Sandran</b><div style="font-size:11px;color:#94A3B8">priya@example.com · ID 18411</div></div></div></td><td><span class="chip chip-b">Learner</span></td><td>22 Mar 2025</td><td>1</td><td style="text-align:right;font-weight:600">RM 180</td><td><span class="chip chip-g">Active</span></td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><input type="checkbox"/></td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#DC2626,#F59E0B)"></div><div><b>Wei Liang Chen</b><div style="font-size:11px;color:#94A3B8">weiliang@example.com · ID 14820</div></div></div></td><td><span class="chip chip-b">Learner</span></td><td>14 Sep 2024</td><td>5</td><td style="text-align:right;font-weight:600">RM 3,400</td><td><span class="chip chip-g">Active</span></td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><input type="checkbox"/></td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#94A3B8,#64748B)"></div><div><b>Tan Ming Yew</b><div style="font-size:11px;color:#94A3B8">tan.my@example.com · ID 09812</div></div></div></td><td><span class="chip chip-b">Learner</span></td><td>12 Mar 2023</td><td>2</td><td style="text-align:right;font-weight:600">RM 380</td><td><span class="chip chip-y">Inactive</span></td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+          <tr><td><input type="checkbox"/></td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#9333EA)"></div><div><b>Faridah Mohamed</b><div style="font-size:11px;color:#94A3B8">faridah.m@example.com · ID 18399</div></div></div></td><td><span class="chip chip-b">Learner</span></td><td>20 Mar 2025</td><td>0</td><td style="text-align:right;font-weight:600">—</td><td><span class="chip chip-r">Suspended</span></td><td><button class="btn-ghost btn" style="border:none">⋯</button></td></tr>
+        </tbody>
+      </table>
+      <div style="padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:#64748B"><span>Showing 1–7 of 18,420</span><div style="display:flex;gap:6px"><button class="btn">‹ Prev</button><button class="btn btn-dark">1</button><button class="btn">2</button><button class="btn">3</button><span>…</span><button class="btn">2,632</button><button class="btn">Next ›</button></div></div>
+    </div>
+  </main>
+</div>
+</body></html>

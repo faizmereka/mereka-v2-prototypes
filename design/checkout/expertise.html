@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Book Expert Session · Mereka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shell/mereka-shell.css">
+<style>body{background:#FAFBFC}.co-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;max-width:1100px;margin:32px auto;padding:0 24px;align-items:start}.slot-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.slot-grid button{padding:8px 4px;border:1px solid var(--line);background:#fff;border-radius:8px;font-size:11.5px;cursor:pointer;font-weight:500}.slot-grid button:hover{border-color:#E5397B}.slot-grid button.active{background:#E5397B;border-color:#E5397B;color:#fff}.slot-grid button:disabled{color:#CBD5E1;background:#F8FAFC;cursor:not-allowed}</style>
+</head>
+<body>
+<div style="background:#fff;border-bottom:1px solid var(--line);padding:16px 32px"><a href="../index.html" style="font-size:12.5px;color:#64748B;text-decoration:none">← Back to expert</a></div>
+<div class="co-grid">
+  <div>
+    <h1 style="font-size:24px;font-weight:800;letter-spacing:-.02em">Book a session</h1>
+
+    <div class="card" style="padding:22px;margin-top:16px">
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">1. Choose session</h3>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label style="display:flex;justify-content:space-between;align-items:center;padding:14px;border:2px solid #E5397B;background:#FDF2F8;border-radius:10px;cursor:pointer"><div><b style="font-size:13.5px">Mock Interview · 1:1</b><div style="font-size:11.5px;color:#64748B;margin-top:2px">45 min · Video on Mereka Meet</div></div><span style="font-weight:700">RM 180</span></label>
+        <label style="display:flex;justify-content:space-between;align-items:center;padding:14px;border:1px solid var(--line);border-radius:10px;cursor:pointer"><div><b style="font-size:13.5px">Resume Review</b><div style="font-size:11.5px;color:#64748B;margin-top:2px">30 min review call + async feedback</div></div><span style="font-weight:600">RM 95</span></label>
+        <label style="display:flex;justify-content:space-between;align-items:center;padding:14px;border:1px solid var(--line);border-radius:10px;cursor:pointer"><div><b style="font-size:13.5px">Career Coaching · 1:1</b><div style="font-size:11.5px;color:#64748B;margin-top:2px">60 min · Video</div></div><span style="font-weight:600">RM 180</span></label>
+      </div>
+    </div>
+
+    <div class="card" style="padding:22px;margin-top:14px">
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:6px">2. Pick a time</h3>
+      <p style="font-size:12px;color:#94A3B8;margin-bottom:14px">All times in Asia/Kuala_Lumpur · Earliest available: tomorrow</p>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <button class="btn" style="width:32px;height:32px;padding:0;justify-content:center">‹</button>
+        <b style="font-size:13.5px">Wed 26 Mar — Tue 1 Apr</b>
+        <button class="btn" style="width:32px;height:32px;padding:0;justify-content:center">›</button>
+      </div>
+      <div class="slot-grid" style="margin-bottom:6px;font-size:11px;color:#94A3B8;text-align:center;font-weight:600">
+        <div>WED 26</div><div>THU 27</div><div>FRI 28</div><div>SAT 29</div><div>SUN 30</div><div>MON 31</div><div>TUE 1</div>
+      </div>
+      <div class="slot-grid">
+        <button>10:00</button><button disabled>—</button><button>09:00</button><button disabled>—</button><button disabled>—</button><button>10:00</button><button>09:30</button>
+        <button>11:00</button><button>14:00</button><button class="active">10:30</button><button>11:00</button><button disabled>—</button><button>11:00</button><button>10:30</button>
+        <button disabled>—</button><button>15:00</button><button>14:00</button><button>14:00</button><button disabled>—</button><button>14:00</button><button>14:00</button>
+        <button>16:00</button><button>16:00</button><button>15:30</button><button disabled>—</button><button disabled>—</button><button>15:00</button><button>16:00</button>
+      </div>
+      <p style="font-size:12px;color:#475569;margin-top:14px;padding:10px;background:#F8FAFC;border-radius:8px;display:flex;align-items:center;gap:8px"><span style="color:#E5397B">●</span>Selected · <b>Fri 28 Mar · 10:30 – 11:15</b></p>
+    </div>
+
+    <div class="card" style="padding:22px;margin-top:14px">
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">3. Tell Hafiz about you</h3>
+      <div class="form-row"><label>What role / industry are you preparing for?</label><input class="input" placeholder="e.g. Senior Product Manager · fintech"/></div>
+      <div class="form-row"><label>What would success look like for this session?</label><textarea class="input" rows="3" placeholder="Be specific — your expert prepares ahead."></textarea></div>
+      <div class="form-row" style="margin-bottom:0"><label>Upload (optional)</label><div style="border:1.5px dashed var(--line);padding:18px;border-radius:10px;text-align:center;font-size:12.5px;color:#64748B">📎 Drop CV, JD, or notes · PDF/DOCX</div></div>
+    </div>
+
+    <a href="confirmation.html" class="btn btn-pink" style="width:100%;justify-content:center;padding:13px;border-radius:12px;margin-top:18px;font-size:14px">Continue to payment →</a>
+  </div>
+
+  <aside style="position:sticky;top:24px">
+    <div class="card" style="padding:22px">
+      <div style="display:flex;gap:12px;align-items:center"><div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#16A34A,#3B82F6);flex-shrink:0"></div><div><b style="font-size:14px">Hafiz Razak</b><div style="font-size:11.5px;color:#64748B">Career Coach · Penang Jobsearch Hub</div><div style="font-size:11.5px;color:#475569;margin-top:2px">★ 4.95 (62) · ⚡ Replies in 2h</div></div></div>
+      <div style="border-top:1px solid var(--line);margin-top:16px;padding-top:14px;display:flex;flex-direction:column;gap:8px;font-size:13.5px">
+        <div style="display:flex;justify-content:space-between"><span style="color:#64748B">Mock Interview · 45 min</span><span>RM 180.00</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#64748B">Service fee</span><span>RM 6.00</span></div>
+      </div>
+      <div style="border-top:1px solid var(--line);margin-top:14px;padding-top:14px;display:flex;justify-content:space-between;font-size:16px;font-weight:700"><span>Total</span><span>RM 186.00</span></div>
+      <div style="margin-top:14px;padding:10px;background:#FDF2F8;border-radius:8px;font-size:11.5px;color:#9D174D;line-height:1.5">Reschedule free up to 24h before · Cancel for full refund up to 48h before.</div>
+    </div>
+  </aside>
+</div>
+</body></html>
