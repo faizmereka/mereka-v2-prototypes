@@ -468,9 +468,9 @@
       </div>
       <div class="divider my-3 mx-3"></div>
       <div class="flex flex-col gap-0.5">
-        <div class="side-item">Correlations</div>
-        <div class="side-item">API builder</div>
-        <div class="side-item">Bill Impact</div>
+        <div class="side-item" data-view="correlations">Correlations</div>
+        <div class="side-item" data-view="api-builder">API builder</div>
+        <div class="side-item" data-view="financial-analytics">Financial Analytics</div>
       </div>
     </div>
   </aside>
@@ -1583,6 +1583,497 @@
     <div id="detail-content"></div>
   </section>
 
+
+  <!-- ============================================================ -->
+  <!-- VIEW: CORRELATIONS                                            -->
+  <!-- ============================================================ -->
+  <section class="view" id="view-correlations">
+    <div class="flex items-start justify-between mb-1">
+      <div>
+        <h1 class="text-[22px] font-bold">Correlations</h1>
+        <p class="text-[12.5px] text-slate-500 mt-0.5">Discover how services interact, conversion paths, and optimal member journeys</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export data</button>
+      </div>
+    </div>
+
+    <!-- Cross-Service Impact -->
+    <div class="card mt-5 p-6">
+      <div class="text-[15px] font-semibold mb-1">Cross-Service Impact</div>
+      <p class="text-[12px] text-slate-500 mb-5">How each service type lifts performance of others</p>
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="p-4 rounded-xl" style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1px solid #BBF7D0">
+          <div class="text-[11px] font-bold text-green-700 uppercase tracking-wider mb-1">Experience → Completion</div>
+          <div class="text-[28px] font-bold text-green-800">+41%</div>
+          <div class="text-[11.5px] text-green-700 mt-1">Members who attend 3+ experiences have 41% higher course completion</div>
+        </div>
+        <div class="p-4 rounded-xl" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:1px solid #BFDBFE">
+          <div class="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-1">Coaching → NPS</div>
+          <div class="text-[28px] font-bold text-blue-800">+18pts</div>
+          <div class="text-[11.5px] text-blue-700 mt-1">Members with expert coaching sessions score 18pts higher NPS</div>
+        </div>
+        <div class="p-4 rounded-xl" style="background:linear-gradient(135deg,#FDF2F8,#FCE7F3);border:1px solid #FBCFE8">
+          <div class="text-[11px] font-bold text-pink-700 uppercase tracking-wider mb-1">Course → Bookings</div>
+          <div class="text-[28px] font-bold text-pink-800">2.4x</div>
+          <div class="text-[11.5px] text-pink-700 mt-1">Course completers book 2.4x more expert sessions than non-completers</div>
+        </div>
+      </div>
+
+      <div class="text-[13px] font-semibold mb-3">Impact Matrix</div>
+      <div style="overflow-x:auto">
+        <table class="table">
+          <thead><tr><th>Driver Service</th><th>Impact On</th><th>Metric</th><th>Effect Size</th><th>Confidence</th><th>Sample</th></tr></thead>
+          <tbody>
+            <tr><td><span class="chip chip-y">Experience</span></td><td>Course Completion</td><td>Completion Rate</td><td class="font-bold text-green-700">+41%</td><td><span class="chip chip-g">High (p&lt;0.01)</span></td><td>1,284</td></tr>
+            <tr><td><span class="chip chip-t">Expertise</span></td><td>Programme NPS</td><td>NPS Score</td><td class="font-bold text-green-700">+18pts</td><td><span class="chip chip-g">High (p&lt;0.01)</span></td><td>892</td></tr>
+            <tr><td><span class="chip chip-g">Course</span></td><td>Expert Bookings</td><td>Booking Rate</td><td class="font-bold text-green-700">2.4x</td><td><span class="chip chip-g">High (p&lt;0.01)</span></td><td>612</td></tr>
+            <tr><td><span class="chip chip-y">Experience</span></td><td>Expert Repeat Rate</td><td>Repeat %</td><td class="font-bold text-green-700">+28%</td><td><span class="chip chip-b">Medium (p&lt;0.05)</span></td><td>418</td></tr>
+            <tr><td><span class="chip chip-t">Expertise</span></td><td>Course Completion</td><td>Completion Rate</td><td class="font-bold text-green-700">+22%</td><td><span class="chip chip-b">Medium (p&lt;0.05)</span></td><td>536</td></tr>
+            <tr><td><span class="chip chip-g">Course</span></td><td>Gig Applications</td><td>Application Rate</td><td class="font-bold text-green-700">3.1x</td><td><span class="chip chip-g">High (p&lt;0.01)</span></td><td>318</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Funnel & Conversion Correlations -->
+    <div class="card mt-5 p-6">
+      <div class="text-[15px] font-semibold mb-1">Funnel & Conversion Correlations</div>
+      <p class="text-[12px] text-slate-500 mb-5">Which touchpoints correlate with higher conversion at each funnel stage</p>
+      <div class="grid grid-cols-2 gap-4 mb-5">
+        <div>
+          <div class="text-[13px] font-semibold mb-3">Top Conversion Drivers</div>
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+              <div><div class="text-[12.5px] font-semibold">Free Experience → Registration</div><div class="text-[11px] text-slate-500">Walk-in attendees who then register</div></div>
+              <div class="text-[14px] font-bold text-green-700">34%</div>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+              <div><div class="text-[12.5px] font-semibold">Course Preview → Enrollment</div><div class="text-[11px] text-slate-500">Preview viewers who enroll</div></div>
+              <div class="text-[14px] font-bold text-green-700">28%</div>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+              <div><div class="text-[12.5px] font-semibold">Expert Consult → Programme</div><div class="text-[11px] text-slate-500">1:1 session leads to programme signup</div></div>
+              <div class="text-[14px] font-bold text-green-700">22%</div>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+              <div><div class="text-[12.5px] font-semibold">Referral → Enrollment</div><div class="text-[11px] text-slate-500">Member referrals that convert</div></div>
+              <div class="text-[14px] font-bold text-green-700">46%</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="text-[13px] font-semibold mb-3">Funnel Stage Correlation</div>
+          <canvas id="funnelCorrelation" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Member Journey Paths -->
+    <div class="card mt-5 p-6">
+      <div class="text-[15px] font-semibold mb-1">Member Journey Paths</div>
+      <p class="text-[12px] text-slate-500 mb-5">Which service combinations lead to the best outcomes</p>
+      <div class="grid grid-cols-1 gap-3">
+        <div class="p-4 rounded-xl border border-green-200 bg-green-50/50">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-[13px] font-bold text-green-800">🏆 Optimal Path (Highest Completion + NPS)</div>
+            <div class="chip chip-g">87% completion · NPS 82</div>
+          </div>
+          <div class="flex items-center gap-2 text-[12px]">
+            <span class="px-2 py-1 rounded bg-white border border-green-200 font-medium">Experience (Talk)</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2 py-1 rounded bg-white border border-green-200 font-medium">Course (Fundamentals)</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2 py-1 rounded bg-white border border-green-200 font-medium">Expert Coaching (2+)</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2 py-1 rounded bg-white border border-green-200 font-medium">Workshop</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2 py-1 rounded bg-white border border-green-200 font-medium">Capstone</span>
+          </div>
+          <div class="text-[11px] text-green-700 mt-2">248 members followed this path · Avg time to complete: 9.2 weeks</div>
+        </div>
+        <div class="p-4 rounded-xl border border-blue-200 bg-blue-50/50">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-[13px] font-bold text-blue-800">⚡ Fast Track (Quickest to Outcome)</div>
+            <div class="chip chip-b">72% completion · NPS 74</div>
+          </div>
+          <div class="flex items-center gap-2 text-[12px]">
+            <span class="px-2 py-1 rounded bg-white border border-blue-200 font-medium">Course (Intensive)</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2 py-1 rounded bg-white border border-blue-200 font-medium">Expert Coaching (1)</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2 py-1 rounded bg-white border border-blue-200 font-medium">Capstone</span>
+          </div>
+          <div class="text-[11px] text-blue-700 mt-2">184 members followed this path · Avg time to complete: 5.4 weeks</div>
+        </div>
+        <div class="p-4 rounded-xl border border-amber-200 bg-amber-50/50">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-[13px] font-bold text-amber-800">⚠️ Drop-off Risk Path</div>
+            <div class="chip chip-y">38% completion · NPS 52</div>
+          </div>
+          <div class="flex items-center gap-2 text-[12px]">
+            <span class="px-2 py-1 rounded bg-white border border-amber-200 font-medium">Course Only</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2 py-1 rounded bg-white border border-amber-200 font-medium">No Coaching</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2 py-1 rounded bg-white border border-amber-200 font-medium">No Events</span>
+          </div>
+          <div class="text-[11px] text-amber-700 mt-2">412 members on this path · Intervention recommended at week 3</div>
+        </div>
+        <div class="p-4 rounded-xl border border-purple-200 bg-purple-50/50">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-[13px] font-bold text-purple-800">🔄 Community-Led (Highest Retention)</div>
+            <div class="chip chip-p">68% completion · NPS 79 · 92% return</div>
+          </div>
+          <div class="flex items-center gap-2 text-[12px]">
+            <span class="px-2 py-1 rounded bg-white border border-purple-200 font-medium">Experience (Workshop)</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2 py-1 rounded bg-white border border-purple-200 font-medium">Community Events (3+)</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2 py-1 rounded bg-white border border-purple-200 font-medium">Course</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2 py-1 rounded bg-white border border-purple-200 font-medium">Peer Mentoring</span>
+          </div>
+          <div class="text-[11px] text-purple-700 mt-2">156 members followed this path · Highest lifetime engagement score</div>
+        </div>
+      </div>
+
+      <div class="insight mt-5">
+        <b class="lbl">Key Insight</b>
+        Members who combine at least 3 service types (course + experience + coaching) are 2.8x more likely to complete their programme and 3.4x more likely to return for a second programme. The single biggest predictor of completion is attending at least one experience within the first 2 weeks of enrollment.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VIEW: API BUILDER                                             -->
+  <!-- ============================================================ -->
+  <section class="view" id="view-api-builder">
+    <div class="flex items-start justify-between mb-1">
+      <div>
+        <h1 class="text-[22px] font-bold">API Builder</h1>
+        <p class="text-[12.5px] text-slate-500 mt-0.5">Generate embeddable widgets and iframes of your dashboard views</p>
+      </div>
+    </div>
+
+    <!-- Widget Templates -->
+    <div class="card mt-5 p-6">
+      <div class="text-[15px] font-semibold mb-1">Widget Templates</div>
+      <p class="text-[12px] text-slate-500 mb-5">Choose a pre-built widget or configure a custom embed</p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl border border-slate-200 hover:border-pink-300 hover:bg-pink-50/30 cursor-pointer transition-all" onclick="selectWidget('kpi')">
+          <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mb-3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <div class="text-[13px] font-semibold">KPI Cards</div>
+          <div class="text-[11.5px] text-slate-500 mt-1">Live metrics cards showing key numbers</div>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-200 hover:border-pink-300 hover:bg-pink-50/30 cursor-pointer transition-all" onclick="selectWidget('chart')">
+          <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
+          <div class="text-[13px] font-semibold">Charts</div>
+          <div class="text-[11.5px] text-slate-500 mt-1">Interactive charts with live data updates</div>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-200 hover:border-pink-300 hover:bg-pink-50/30 cursor-pointer transition-all" onclick="selectWidget('table')">
+          <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mb-3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div>
+          <div class="text-[13px] font-semibold">Data Tables</div>
+          <div class="text-[11.5px] text-slate-500 mt-1">Sortable tables with search and pagination</div>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-200 hover:border-pink-300 hover:bg-pink-50/30 cursor-pointer transition-all" onclick="selectWidget('leaderboard')">
+          <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center mb-3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2"><path d="M12 15l-2 5l9-13h-6l2-7l-9 13h6z"/></svg></div>
+          <div class="text-[13px] font-semibold">Leaderboard</div>
+          <div class="text-[11.5px] text-slate-500 mt-1">Top performers ranked by selected metric</div>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-200 hover:border-pink-300 hover:bg-pink-50/30 cursor-pointer transition-all" onclick="selectWidget('funnel')">
+          <div class="w-10 h-10 rounded-lg bg-teal-100 flex items-center justify-center mb-3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></div>
+          <div class="text-[13px] font-semibold">Funnel</div>
+          <div class="text-[11.5px] text-slate-500 mt-1">Enrollment/conversion funnel visualization</div>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-200 hover:border-pink-300 hover:bg-pink-50/30 cursor-pointer transition-all" onclick="selectWidget('full')">
+          <div class="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center mb-3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E5397B" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <div class="text-[13px] font-semibold">Full Dashboard</div>
+          <div class="text-[11.5px] text-slate-500 mt-1">Complete dashboard view in an iframe</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Configuration Panel -->
+    <div class="card mt-5 p-6">
+      <div class="text-[15px] font-semibold mb-1">Configure Widget</div>
+      <p class="text-[12px] text-slate-500 mb-5">Customize your embed settings</p>
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <div class="edit-form">
+            <div class="edit-field">
+              <label>Widget Type</label>
+              <select id="widget-type">
+                <option value="kpi">KPI Cards</option>
+                <option value="chart">Revenue Chart</option>
+                <option value="table">Programme Table</option>
+                <option value="leaderboard">Expert Leaderboard</option>
+                <option value="funnel">Enrollment Funnel</option>
+                <option value="full">Full Dashboard</option>
+              </select>
+            </div>
+            <div class="edit-field">
+              <label>Data Source</label>
+              <select id="widget-source">
+                <option value="programmes">Programmes</option>
+                <option value="courses">Courses</option>
+                <option value="experiences">Experiences</option>
+                <option value="expertise">Expertise</option>
+                <option value="gigs">Gigs</option>
+                <option value="all">All Services</option>
+              </select>
+            </div>
+            <div class="edit-row">
+              <div class="edit-field">
+                <label>Width</label>
+                <input type="text" value="100%" id="widget-width"/>
+              </div>
+              <div class="edit-field">
+                <label>Height</label>
+                <input type="text" value="400px" id="widget-height"/>
+              </div>
+            </div>
+            <div class="edit-field">
+              <label>Theme</label>
+              <select id="widget-theme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="brand">Brand (Pink)</option>
+                <option value="auto">Auto (System)</option>
+              </select>
+            </div>
+            <div class="edit-field">
+              <label>Refresh Interval</label>
+              <select id="widget-refresh">
+                <option value="realtime">Real-time</option>
+                <option value="60">Every minute</option>
+                <option value="300">Every 5 minutes</option>
+                <option value="3600">Every hour</option>
+                <option value="manual">Manual only</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-3">Preview</div>
+          <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 h-[200px] flex items-center justify-center">
+            <div class="text-center">
+              <div class="w-12 h-12 rounded-full bg-slate-200 mx-auto mb-3 flex items-center justify-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+              <div class="text-[12px] text-slate-500">Widget preview will appear here</div>
+              <div class="text-[11px] text-slate-400 mt-1">Select options and click Generate</div>
+            </div>
+          </div>
+          <button class="btn btn-pink w-full mt-4 justify-center" style="padding:10px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Generate Embed Code
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generated Code -->
+    <div class="card mt-5 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <div class="text-[15px] font-semibold">Embed Code</div>
+          <p class="text-[12px] text-slate-500 mt-0.5">Copy and paste into your website or application</p>
+        </div>
+        <button class="btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy Code</button>
+      </div>
+      <div class="rounded-lg bg-slate-900 p-4 font-mono text-[12px] text-green-400 overflow-x-auto">
+        <pre>&lt;iframe
+  src="https://app.mereka.io/embed/kpi?source=programmes&amp;theme=light"
+  width="100%"
+  height="400px"
+  frameborder="0"
+  style="border-radius: 12px; border: 1px solid #E5E7EB;"
+  allow="clipboard-write"
+&gt;&lt;/iframe&gt;</pre>
+      </div>
+      <div class="flex items-center gap-3 mt-4">
+        <div class="chip chip-g">CORS enabled</div>
+        <div class="chip chip-b">Auto-resize</div>
+        <div class="chip chip-slate">API key required for private data</div>
+      </div>
+    </div>
+
+    <!-- Active Embeds -->
+    <div class="card mt-5 p-6">
+      <div class="text-[15px] font-semibold mb-4">Active Embeds</div>
+      <table class="table">
+        <thead><tr><th>Widget</th><th>Embedded On</th><th>Type</th><th>Views (30d)</th><th>Last Access</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td class="font-semibold">Programme KPIs</td><td class="text-[12px]">mereka.io/about</td><td><span class="chip chip-g">KPI Cards</span></td><td>12,482</td><td>2 min ago</td><td><span class="chip chip-g">Active</span></td></tr>
+          <tr><td class="font-semibold">Revenue Chart</td><td class="text-[12px]">internal.mereka.io/reports</td><td><span class="chip chip-b">Chart</span></td><td>3,841</td><td>14 min ago</td><td><span class="chip chip-g">Active</span></td></tr>
+          <tr><td class="font-semibold">Expert Leaderboard</td><td class="text-[12px]">mereka.io/experts</td><td><span class="chip chip-p">Leaderboard</span></td><td>8,294</td><td>6 min ago</td><td><span class="chip chip-g">Active</span></td></tr>
+          <tr><td class="font-semibold">Enrollment Funnel</td><td class="text-[12px]">pitch-deck.mereka.io</td><td><span class="chip chip-t">Funnel</span></td><td>642</td><td>3 days ago</td><td><span class="chip chip-y">Idle</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VIEW: FINANCIAL ANALYTICS                                     -->
+  <!-- ============================================================ -->
+  <section class="view" id="view-financial-analytics">
+    <div class="flex items-start justify-between mb-1">
+      <div>
+        <h1 class="text-[22px] font-bold">Financial Analytics</h1>
+        <p class="text-[12.5px] text-slate-500 mt-0.5">Revenue trends, cost structure, and profitability analysis across all services</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="segment">
+          <div class="seg-item active">Monthly</div>
+          <div class="seg-item">Quarterly</div>
+          <div class="seg-item">YTD</div>
+        </div>
+        <button class="btn btn-dark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+      </div>
+    </div>
+
+    <!-- Financial KPIs -->
+    <div class="grid grid-cols-4 gap-4 mt-5">
+      <div class="card kpi p-4">
+        <div class="label">Total Revenue</div>
+        <div class="value mt-1">RM 1.24M</div>
+        <div class="delta up mt-1"><span class="delta-pill">↑ 18%</span> vs last month</div>
+      </div>
+      <div class="card kpi p-4">
+        <div class="label">Gross Margin</div>
+        <div class="value mt-1">68.4%</div>
+        <div class="delta up mt-1"><span class="delta-pill">↑ 2.1pt</span> vs last month</div>
+      </div>
+      <div class="card kpi p-4">
+        <div class="label">Operating Costs</div>
+        <div class="value mt-1">RM 392K</div>
+        <div class="delta down mt-1"><span class="delta-pill dn">↑ 8%</span> vs last month</div>
+      </div>
+      <div class="card kpi p-4">
+        <div class="label">Net Profit</div>
+        <div class="value mt-1">RM 456K</div>
+        <div class="delta up mt-1"><span class="delta-pill">↑ 24%</span> vs last month</div>
+      </div>
+    </div>
+
+    <!-- Revenue Breakdown -->
+    <div class="grid grid-cols-2 gap-5 mt-5">
+      <div class="card p-5">
+        <div class="text-[15px] font-semibold mb-1">Revenue by Service</div>
+        <p class="text-[12px] text-slate-500 mb-4">April 2026</p>
+        <canvas id="revenueByService" height="200"></canvas>
+      </div>
+      <div class="card p-5">
+        <div class="text-[15px] font-semibold mb-1">Revenue Trend</div>
+        <p class="text-[12px] text-slate-500 mb-4">Last 6 months</p>
+        <canvas id="revenueTrendFinance" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- Budget vs Actual -->
+    <div class="card mt-5 p-6">
+      <div class="text-[15px] font-semibold mb-1">Budget vs Actual</div>
+      <p class="text-[12px] text-slate-500 mb-5">April 2026 performance against plan</p>
+      <table class="table">
+        <thead><tr><th>Category</th><th class="text-right">Budget</th><th class="text-right">Actual</th><th class="text-right">Variance</th><th class="text-right">%</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td class="font-semibold">Programme Revenue</td><td class="text-right">RM 580K</td><td class="text-right">RM 624K</td><td class="text-right font-bold text-green-700">+RM 44K</td><td class="text-right text-green-700">+7.6%</td><td><span class="chip chip-g">Above</span></td></tr>
+          <tr><td class="font-semibold">Experience Revenue</td><td class="text-right">RM 280K</td><td class="text-right">RM 312K</td><td class="text-right font-bold text-green-700">+RM 32K</td><td class="text-right text-green-700">+11.4%</td><td><span class="chip chip-g">Above</span></td></tr>
+          <tr><td class="font-semibold">Expertise Revenue</td><td class="text-right">RM 180K</td><td class="text-right">RM 168K</td><td class="text-right font-bold text-red-700">-RM 12K</td><td class="text-right text-red-700">-6.7%</td><td><span class="chip chip-r">Below</span></td></tr>
+          <tr><td class="font-semibold">Gig Commissions</td><td class="text-right">RM 120K</td><td class="text-right">RM 136K</td><td class="text-right font-bold text-green-700">+RM 16K</td><td class="text-right text-green-700">+13.3%</td><td><span class="chip chip-g">Above</span></td></tr>
+          <tr style="background:#F8FAFC"><td class="font-bold">Total Revenue</td><td class="text-right font-bold">RM 1.16M</td><td class="text-right font-bold">RM 1.24M</td><td class="text-right font-bold text-green-700">+RM 80K</td><td class="text-right font-bold text-green-700">+6.9%</td><td><span class="chip chip-g">Above</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Cost Structure -->
+    <div class="grid grid-cols-2 gap-5 mt-5">
+      <div class="card p-5">
+        <div class="text-[15px] font-semibold mb-1">Cost Structure</div>
+        <p class="text-[12px] text-slate-500 mb-4">Operating cost breakdown</p>
+        <div class="flex flex-col gap-3">
+          <div>
+            <div class="flex items-center justify-between text-[12.5px] mb-1"><span class="font-medium">Expert Payouts</span><span class="font-semibold">RM 142K (36%)</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:36%;background:var(--brand-pink)"></div></div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-[12.5px] mb-1"><span class="font-medium">Platform & Tech</span><span class="font-semibold">RM 78K (20%)</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:20%;background:#2563EB"></div></div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-[12.5px] mb-1"><span class="font-medium">Venue & Events</span><span class="font-semibold">RM 64K (16%)</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:16%;background:#F59E0B"></div></div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-[12.5px] mb-1"><span class="font-medium">Marketing & Acquisition</span><span class="font-semibold">RM 52K (13%)</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:13%;background:#16A34A"></div></div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-[12.5px] mb-1"><span class="font-medium">Team & Operations</span><span class="font-semibold">RM 38K (10%)</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:10%;background:#9333EA"></div></div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-[12.5px] mb-1"><span class="font-medium">Other</span><span class="font-semibold">RM 18K (5%)</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:5%;background:#64748B"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card p-5">
+        <div class="text-[15px] font-semibold mb-1">Unit Economics</div>
+        <p class="text-[12px] text-slate-500 mb-4">Per-member metrics</p>
+        <div class="flex flex-col gap-4">
+          <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+            <div><div class="text-[12.5px] font-semibold">Customer Acquisition Cost (CAC)</div><div class="text-[11px] text-slate-500">Marketing spend / new enrollments</div></div>
+            <div class="text-[16px] font-bold">RM 124</div>
+          </div>
+          <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+            <div><div class="text-[12.5px] font-semibold">Lifetime Value (LTV)</div><div class="text-[11px] text-slate-500">Avg revenue per member over 12 months</div></div>
+            <div class="text-[16px] font-bold">RM 1,840</div>
+          </div>
+          <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+            <div><div class="text-[12.5px] font-semibold">LTV:CAC Ratio</div><div class="text-[11px] text-slate-500">Target: >3.0</div></div>
+            <div class="text-[16px] font-bold text-green-700">14.8x</div>
+          </div>
+          <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+            <div><div class="text-[12.5px] font-semibold">Payback Period</div><div class="text-[11px] text-slate-500">Time to recover CAC</div></div>
+            <div class="text-[16px] font-bold">18 days</div>
+          </div>
+          <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+            <div><div class="text-[12.5px] font-semibold">Revenue per Active Member</div><div class="text-[11px] text-slate-500">April 2026</div></div>
+            <div class="text-[16px] font-bold">RM 482</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Forecast -->
+    <div class="card mt-5 p-6">
+      <div class="text-[15px] font-semibold mb-1">Revenue Forecast</div>
+      <p class="text-[12px] text-slate-500 mb-4">Projected revenue next 3 months based on current trajectory</p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl border border-slate-200 text-center">
+          <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">May 2026</div>
+          <div class="text-[24px] font-bold mt-1">RM 1.38M</div>
+          <div class="text-[11.5px] text-green-700 font-semibold mt-1">↑ 11% growth</div>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-200 text-center">
+          <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">June 2026</div>
+          <div class="text-[24px] font-bold mt-1">RM 1.52M</div>
+          <div class="text-[11.5px] text-green-700 font-semibold mt-1">↑ 10% growth</div>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-200 text-center">
+          <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">July 2026</div>
+          <div class="text-[24px] font-bold mt-1">RM 1.64M</div>
+          <div class="text-[11.5px] text-green-700 font-semibold mt-1">↑ 8% growth</div>
+        </div>
+      </div>
+      <div class="insight mt-5">
+        <b class="lbl">Forecast Note</b>
+        At current growth rate, Mereka is on track to hit RM 16M ARR by Q4 2026. Programme revenue growth is accelerating (+18% MoM) while expertise revenue needs attention (-6.7% vs budget). Recommend increasing expert recruitment and coaching capacity to meet demand.
+      </div>
+    </div>
+  </section>
+
+
   </main>
 </div>
 
@@ -1834,6 +2325,20 @@
         {label:'Shows',data:[2,3,4,5,6,7,8],backgroundColor:'#B45309',borderRadius:4}
       ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:'#F1F5F9'}}}}});
       mk('expType',{type:'bar',data:{labels:['Events','Workshops','Talks','Shows'],datasets:[{data:[1248,682,542,375],backgroundColor:['#F59E0B','#D97706','#B45309','#92400E'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#F1F5F9'}},x:{grid:{display:false}}}}});
+    }
+    
+    if(v==='correlations'){
+      mk('funnelCorrelation',{type:'bar',data:{labels:['Impression','View','Register','Apply','Enroll','Active','Complete'],datasets:[
+        {label:'With Experiences',data:[100,62,38,22,14,11,9],backgroundColor:'rgba(229,57,123,.7)',borderRadius:4},
+        {label:'Without Experiences',data:[100,58,28,14,8,5,3],backgroundColor:'rgba(148,163,184,.4)',borderRadius:4}
+      ]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}},x:{grid:{display:false}}}}});
+    }
+    if(v==='financial-analytics'){
+      mk('revenueByService',{type:'doughnut',data:{labels:['Programmes','Experiences','Expertise','Gigs'],datasets:[{data:[624,312,168,136],backgroundColor:['#16A34A','#F59E0B','#0D9488','#9333EA'],borderWidth:0,spacing:2}]},options:{responsive:true,cutout:'65%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}}}});
+      mk('revenueTrendFinance',{type:'line',data:{labels:['Nov','Dec','Jan','Feb','Mar','Apr'],datasets:[
+        {label:'Revenue',data:[840,920,980,1060,1120,1240],borderColor:'#16A34A',backgroundColor:'rgba(22,163,74,.1)',tension:.4,borderWidth:2,pointRadius:0,fill:true},
+        {label:'Costs',data:[310,330,345,355,370,392],borderColor:'#DC2626',backgroundColor:'rgba(220,38,38,.05)',tension:.4,borderWidth:2,pointRadius:0,fill:true}
+      ]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'RM '+v+'K'}},x:{grid:{display:false}}}}});
     }
     if(v==='gigs'){
       mk('gigVolume',{type:'line',data:{labels:['OCT','NOV','DEC','JAN','FEB','MAR','APR'],datasets:[
